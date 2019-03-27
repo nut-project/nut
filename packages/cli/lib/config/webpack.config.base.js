@@ -15,10 +15,19 @@ const webpackConfig = {
     },
     modules: [
       path.join( dirs.project, 'node_modules' ),
+      path.join( dirs.cli, '../../' ),
       path.join( dirs.cli, 'node_modules' ),
       'node_modules',
     ],
     extensions: [ '.js', '.json', '.md' ]
+  },
+  resolveLoader: {
+    modules: [
+      path.join( dirs.project, 'node_modules' ),
+      path.join( dirs.cli, '../../' ),
+      path.join( dirs.cli, 'node_modules' ),
+      'node_modules',
+    ],
   },
   module: {
     rules: [
@@ -130,12 +139,6 @@ const webpackConfig = {
         ]
       },
     ]
-  },
-  resolveLoader: {
-    modules: [
-      path.join( dirs.project, 'node_modules' ),
-      path.join( dirs.cli, 'node_modules' ),
-    ],
   },
   plugins: [
     new HtmlWebpackPlugin( {

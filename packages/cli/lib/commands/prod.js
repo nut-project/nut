@@ -28,6 +28,9 @@ async function prod(){
       path: path.join( dirs.project, 'dist' ),
       filename: '[name].[hash].js',
       publicPath: './'
+    },
+    stats: {
+      warnings: false,
     }
   } )
 
@@ -50,8 +53,17 @@ async function prod(){
 
   compiler.run( ( err, stats ) => {
     if ( err ) {
-      return console.log( err )
+      console.error(err)
+      return
     }
+
+    console.log(
+      stats.toString( {
+        chunks: false,
+        colors: true,
+        warnings: false,
+      } )
+    )
   } )
 }
 
