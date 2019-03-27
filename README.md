@@ -19,3 +19,14 @@
 | ocean | sakura |
 | :---: | :---: |
 | ![ocean](./media/ocean.jpg) | ![sakura](./media/sakura.jpg) |
+
+## 如何开始
+
+```bash
+yarn global add @nut-project/cli
+```
+
+```bash
+nut # develop locally
+nut --prod # build for production
+```
