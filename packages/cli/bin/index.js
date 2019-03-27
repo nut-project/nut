@@ -1,5 +1,18 @@
 #!/usr/bin/env node
 
-const app = require( '../index' )
+const cli = require('cac')()
+const app = require( '../lib' )
 
-app()
+cli.option( '--prod', 'build in production mode' )
+
+cli.version( require( '../package.json' ).version )
+
+cli.help()
+
+const parsed = cli.parse()
+
+if ( parsed.options.prod ) {
+  app.prod()
+} else {
+  app.dev()
+}

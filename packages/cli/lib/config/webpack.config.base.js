@@ -3,12 +3,11 @@ const webpack = require( 'webpack' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 
 const dirs = {
-  cli: path.join( __dirname, '../' ),
+  cli: path.join( __dirname, '../../' ),
   project: process.cwd(),
 }
 
 const webpackConfig = {
-  mode: 'development',
   entry: path.join( dirs.cli, 'lib/runtime/entry.js' ),
   resolve: {
     alias: {
@@ -26,35 +25,35 @@ const webpackConfig = {
       {
         test: /\.module\.less$/,
         use: [ {
-          loader: 'style-loader', // creates style nodes from JS strings
+          loader: 'style-loader',
         }, {
-          loader: 'css-loader', // translates CSS into CommonJS
+          loader: 'css-loader',
           options: {
             modules: true,
             localIdentName: "[local]___[hash:base64:5]",
           },
         }, {
-          loader: 'less-loader' // compiles Less to CSS
+          loader: 'less-loader'
         } ]
       },
       {
         test: /\.less$/,
         exclude: /\.module\.less$/,
         use: [ {
-          loader: 'style-loader', // creates style nodes from JS strings
+          loader: 'style-loader',
         }, {
-          loader: 'css-loader' // translates CSS into CommonJS
+          loader: 'css-loader'
         }, {
-          loader: 'less-loader' // compiles Less to CSS
+          loader: 'less-loader'
         } ]
       },
 
       {
         test: /\.module\.css$/,
         use: [ {
-          loader: 'style-loader', // creates style nodes from JS strings
+          loader: 'style-loader',
         }, {
-          loader: 'css-loader', // translates CSS into CommonJS
+          loader: 'css-loader',
           options: {
             modules: true,
             localIdentName: "[local]___[hash:base64:5]",
@@ -65,9 +64,9 @@ const webpackConfig = {
         test: /\.css$/,
         exclude: /\.module\.less$/,
         use: [ {
-          loader: 'style-loader', // creates style nodes from JS strings
+          loader: 'style-loader',
         }, {
-          loader: 'css-loader' // translates CSS into CommonJS
+          loader: 'css-loader'
         } ]
       },
 
@@ -75,16 +74,16 @@ const webpackConfig = {
         test: /\.md$/,
         use: [
           {
-            loader: require.resolve( './loader/md2rgl' ),
+            loader: require.resolve( '../loader/md2rgl' ),
           },
           {
-            loader: require.resolve( './loader/md' ),
+            loader: require.resolve( '../loader/md' ),
             options: {
               gfm: true,
             },
           },
           {
-            loader: require.resolve( './loader/strip-fm' ),
+            loader: require.resolve( '../loader/strip-fm' ),
           },
         ]
       },
@@ -102,7 +101,7 @@ const webpackConfig = {
           //   }
           // },
           {
-            loader: require.resolve( './loader/strip-fm' ),
+            loader: require.resolve( '../loader/strip-fm' ),
           },
         ]
       },

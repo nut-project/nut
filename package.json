@@ -5,7 +5,8 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "node ./packages/cli/lib/index.js"
+    "dev": "node ./packages/cli/bin/index.js",
+    "build": "node ./packages/cli/bin/index.js --prod"
   },
   "repository": {
     "type": "git",
