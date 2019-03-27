@@ -1,0 +1,25 @@
+{
+  "name": "nut",
+  "private": true,
+  "description": "",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ./packages/cli/lib/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fengzilong/nut.git"
+  },
+  "keywords": [],
+  "author": "fengzilong1992@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fengzilong/nut/issues"
+  },
+  "homepage": "https://github.com/fengzilong/nut#readme",
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
