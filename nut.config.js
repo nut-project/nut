@@ -5,7 +5,7 @@ module.exports = {
     theme: 'prism-tomorrow',
   },
   theme: 'sakura',
-  layout: 'saber',
+  layout: 'default',
   sidebar: [
     {
       icon: 'sketch',

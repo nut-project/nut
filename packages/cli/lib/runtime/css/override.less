@@ -1,0 +1,86 @@
+pre[class*="language-"] {
+  font-size: 14px;
+  position: relative;
+}
+
+code[class*="language-"], pre[class*="language-"], code {
+  font-family: 'Source Code Pro', monospace;
+}
+
+pre[class*='language-']::before {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  text-align: right;
+  color: #444;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-radius: 0 0 5px 5px;
+  background: #ddd;
+  content: attr(data-lang)
+}
+
+pre[class='language-javascript']::before {
+  background: #f7df1e;
+}
+
+pre[class='language-js']::before {
+  background: #f7df1e;
+}
+
+pre[class='language-jsx']::before {
+  background: #61dafb;
+}
+
+pre[class='language-graphql']::before {
+  background: #E10098;
+  color: #fff;
+  font-weight: 400;
+}
+
+pre[class='language-html']::before {
+  background: #3192d9;
+  color: #fff;
+  font-weight: 400;
+}
+
+pre[class='language-css']::before {
+  background: #eeb72d;
+  color: #fff;
+  font-weight: 400;
+}
+
+pre[class='language-shell']::before {
+}
+
+pre[class='language-sh']::before {
+}
+
+pre[class='language-bash']::before {
+}
+
+pre[class='language-yaml']::before {
+  background: #ffa8df;
+}
+
+pre[class='language-markdown']::before {
+}
+
+pre[class='language-json']::before, pre[class='language-json5']::before {
+  background: linen;
+}
+
+pre[class='language-diff']::before {
+  background: #e6ffed;
+}
+
+pre[class='language-text']::before {
+  background: #fff;
+}
+
+pre[class='language-flow']::before {
+  background: #E8BD36;
+}

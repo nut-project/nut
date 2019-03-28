@@ -5,6 +5,8 @@ const path = require( 'path' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const chokidar = require( 'chokidar' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
+const loadConfig = require( '../utils/loadConfig' )
+const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 const baseWebpackConfig = require( '../config/webpack.config.base' )
 
 process
@@ -22,23 +24,19 @@ const explorer = cosmiconfig( 'nut', {
 } )
 
 async function dev(){
+  let result = await loadConfig()
+  let config = result.config || {}
+
+  ensureConfigDefaults( config )
+
   const webpackConfig = Object.assign( {}, baseWebpackConfig, {
     mode: 'development',
   } )
 
-  let result = {}
-  let config = {}
-  try {
-    result = await explorer.search()
-    config = result.config
-  } catch ( e ) {
-    console.log( e )
-  }
+  webpackConfig.resolve.alias[ 'nut-markdown-theme' ] = 'prismjs/themes/' + config.markdown.theme + '.css'
 
   const modules = await generateVirtualModules( config )
-
   const virtualModules = new VirtualModulesPlugin( modules )
-
   webpackConfig.plugins.push( virtualModules )
 
   const options = {

@@ -4,10 +4,12 @@ import NProgress from 'nprogress'
 
 import Tippy from './regular-plugins/tippy'
 import createNico from './core/router'
-import './css/global.less'
+import './css/reset.less'
 import './css/nprogress.less'
 import './css/markdown.less'
 import './fonts/iconfont.css'
+import 'nut-markdown-theme'
+import './css/override.less'
 
 import routes from 'nut-auto-generated-routes'
 import nutConfig from 'nut-auto-generated-nut-config'

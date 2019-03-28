@@ -10,6 +10,12 @@ title: 如何使用
 
 <img src="https://haitao.nos.netease.com/d4caa92f-aab1-4853-b762-18a1fe337e0a_1200_1200.jpeg" width="200px" alt="">
 
+```js
+const path = require( 'path' )
+
+console.log( path.join( __dirname, 'index.js' ) )
+```
+
 ## 接口说明
 
 | 水果     |   价格 |  数量  |

@@ -19,7 +19,7 @@ const webpackConfig = {
       path.join( dirs.cli, 'node_modules' ),
       'node_modules',
     ],
-    extensions: [ '.js', '.json', '.md' ]
+    extensions: [ '.js', '.json', '.md', '.less', '.css' ]
   },
   resolveLoader: {
     modules: [
