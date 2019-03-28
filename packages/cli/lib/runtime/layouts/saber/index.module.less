@@ -1,0 +1,78 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 60px;
+  background-color: var(--primary-color);
+  color: #fff;
+  line-height: 60px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+
+  &__name {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  &__user {
+
+  }
+}
+
+.navbar {
+  height: 60px;
+  line-height: 60px;
+  padding: 0 20px;
+  background-color: #fff;
+
+  &__items {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    height: 60px;
+    box-sizing: border-box;
+
+    &.is_active {
+      border-bottom: solid 2px var(--primary-color);
+      background-color: #fdfdfd;
+    }
+
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 0 20px;
+      text-decoration: none;
+      color: var(--primary-color);
+    }
+  }
+}
+
+.content {
+  width: 100%;
+  background-color: #f7f7f7;
+  flex: 1;
+}
+
+.markdown {
+  background-color: #fff;
+  margin-top: 15px;
+}
+
+.other {
+  min-height: 100vh;
+  padding: 20px;
+}

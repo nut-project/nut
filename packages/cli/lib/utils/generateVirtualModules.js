@@ -62,14 +62,20 @@ async function normalizeConfig( config ) {
       }
 
       const trimed = page.replace( /^(!|\/|^)/g, '' )
-      const route = '/defaultの' + trimed.replace( /(\/_)(.+)/g, '/:$2' )
 
       const filepath = await resolve( trimed )
-
       const buffer = await fse.readFile( filepath )
       const content = buffer.toString()
-
       const result = fm( content )
+      const attributes = result.attributes || {}
+
+      const route = '/' + ( attributes.layout || config.layout ) + 'の' + trimed.replace( /(\/_)(.+)/g, '/:$2' )
+      const extname = path.extname( filepath )
+      const types = {
+        '.js': 'js',
+        '.md': 'markdown',
+      }
+      const type = types[ extname ]
 
       return {
         name: ensureUnique(
@@ -78,7 +84,8 @@ async function normalizeConfig( config ) {
         path: trimed,
         route,
         hidden,
-        attributes: result.attributes || {},
+        attributes,
+        type,
       }
     } )
 

@@ -4,15 +4,15 @@ module.exports = {
   markdown: {
     theme: 'prism-tomorrow',
   },
-  theme: 'ocean',
-  layout: 'default',
+  theme: 'sakura',
+  layout: 'saber',
   sidebar: [
     {
       icon: 'sketch',
       title: '宝石',
       pages: [
-        'pages/home/foo/index',
-        'pages/home/bar/index',
+        'pages/home/foo',
+        'pages/home/bar',
         '!pages/home/demo/_id', // 隐藏页面（!）
       ]
     },

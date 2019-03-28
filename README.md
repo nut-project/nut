@@ -14,11 +14,19 @@
 - 配置管理
 - 插件化
 
-## 内置主题
+## 内置 layout
+
+### default
 
 | ocean | sakura |
 | :---: | :---: |
-| ![ocean](./media/ocean.jpg) | ![sakura](./media/sakura.jpg) |
+| ![ocean](./media/default-ocean.jpg) | ![sakura](./media/default-sakura.jpg) |
+
+### saber
+
+| ocean | sakura |
+| :---: | :---: |
+| ![ocean](./media/saber-ocean.jpg) | ![sakura](./media/saber-sakura.jpg) |
 
 ## 如何开始
 

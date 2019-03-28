@@ -1,4 +1,5 @@
 import defaultLayout from '../layouts/default'
+import saberLayout from '../layouts/saber'
 
 export default function createNico( rootRouter, router, prefix = '' ) {
   return {
@@ -306,6 +307,7 @@ function findView( context ) {
 
 const layouts = {
   default: defaultLayout,
+  saber: saberLayout,
 }
 
 function findLayout( name ) {

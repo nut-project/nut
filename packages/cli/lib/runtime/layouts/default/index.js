@@ -114,7 +114,7 @@ const Shell = Regular.extend( {
           <div class="${ styles.progress_container }" id="progress-container"></div>
         </div>
 
-        {#if currentPages}
+        {#if currentPages && currentPages.length > 0}
         <nut-navbar
           pages="{ currentPages }"
           active="{ ctx.router.name }"
@@ -130,14 +130,17 @@ const Shell = Regular.extend( {
 
   computed: {
     currentPages() {
-      if ( !this.data.ctx ) {
-        return
-      }
-      return this.getCurrentPages( this.data.ctx.app.sidebar, this.data.ctx.router.name )
+      return this.getCurrentPages()
     },
   },
 
-  getCurrentPages( sidebar, activeName ) {
+  getCurrentPages() {
+    if ( !this.data.ctx ) {
+      return []
+    }
+
+    const sidebar = this.data.ctx.app.sidebar
+    const activeName = this.data.ctx.router.name
     const found = sidebar.find( s => {
       const pages = s.pages
       return pages.some( page => page.name === activeName )

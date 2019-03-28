@@ -106,6 +106,7 @@ app( context )
     } )
 
     nico.on( 'layout', function ( { layout, router } ) {
+      // TODO: 计算page和pages，以及添加nutconfig上的active属性
       layout.data.ctx = {
         ...context,
         app: nutConfig,
