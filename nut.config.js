@@ -1,22 +1,13 @@
 module.exports = {
-  zh: '某个不知名的系统',
-  en: 'pmp',
-  markdown: {
-    theme: 'prism-tomorrow',
-  },
-  theme: 'ocean',
-  layout: 'default',
+  zh: '某个不知名的系统!!!',
+  en: 'PMP',
+  theme: 'sakura',
+  layout: 'saber',
   plugins: [
     require.resolve( './plugins/login-netease-openid' ),
   ],
-  landing: {
-    use: 'default',
-    options: {
-      title: '某个不知名的系统',
-      description: '哈哈哈',
-      preview: '',
-      buttonText: '',
-    },
+  markdown: {
+    theme: 'prism-tomorrow',
   },
   sidebar: [
     {
@@ -25,7 +16,7 @@ module.exports = {
       pages: [
         'pages/home/foo',
         'pages/home/bar',
-        '!pages/home/demo/_id', // 隐藏页面（!）
+        '!pages/home/demo/_id', // 隐藏页面（!）TODO: 将_id和另一个页面放一起
       ]
     },
     {
@@ -37,4 +28,13 @@ module.exports = {
       ],
     },
   ],
+  landing: {
+    use: 'default',
+    options: {
+      title: '某个不知名的系统',
+      description: '哈哈哈',
+      preview: '',
+      buttonText: '',
+    },
+  },
 }

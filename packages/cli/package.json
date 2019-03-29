@@ -38,7 +38,7 @@
     "regularjs": "^0.6.2",
     "style-loader": "^0.23.1",
     "tippy.js": "^4.2.1",
-    "unfancy-router": "^0.0.9",
+    "unfancy-router": "^0.0.10",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.6",
     "webpack-dev-server": "^3.2.1",

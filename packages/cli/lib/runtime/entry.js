@@ -55,10 +55,11 @@ if ( module.hot ) {
     if ( nico.layout ) {
       nico.layout.data.ctx.app = nutConfig
       nico.layout.$update()
-
-      switchTheme( nutConfig && nutConfig.theme || 'ocean' )
     }
+    switchTheme( nutConfig && nutConfig.theme || 'ocean' )
   } )
+
+  module.hot.accept( './core/router', () => {} )
 }
 
 function switchTheme( theme ) {

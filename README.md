@@ -2,6 +2,8 @@
 
 **开发中**
 
+<img src="./media/hmr.gif" alt="hmr" width="600px">
+
 ## 特性
 
 - 灵活的 layout 机制
@@ -12,6 +14,7 @@
 - 内置的许多指令
 - 启动顺序管理
 - 配置管理
+- 热重载
 - 插件化
 
 ## 内置 layout

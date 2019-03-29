@@ -9,8 +9,10 @@ const Shell = Regular.extend( {
           { ctx.app.zh }
         </div>
         <div class="${ styles.header__user }">
+          {#if ctx.user.username}
           <i class="iconfont icon-user"></i>
           { ctx.user.username }
+          {/if}
         </div>
       </div>
       <div class="${ styles.navbar }">

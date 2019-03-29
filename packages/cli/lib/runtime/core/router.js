@@ -1,8 +1,22 @@
-import defaultLayout from '../layouts/default'
-import saberLayout from '../layouts/saber'
+import nutConfig from 'nut-auto-generated-nut-config'
+import layoutDefault from '../layouts/default'
+import layoutSaber from '../layouts/saber'
 
 export default function createNico( rootRouter, router, prefix = '' ) {
-  return {
+  const layoutCaches = {}
+  const nico = {
+    getLayout( name ) {
+      const cached = layoutCaches[ name ]
+      if ( cached ) {
+        return cached
+      }
+
+      const layout = createLayout( name )
+      layoutCaches[ name ] = layout
+
+      return layout
+    },
+
     on( ...args ) {
       return rootRouter.on( ...args )
     },
@@ -25,8 +39,6 @@ export default function createNico( rootRouter, router, prefix = '' ) {
 
     define( routeConfigs, root = rootRouter ) {
       const self = this
-
-      const layoutCaches = {}
 
       // build
       walk( routeConfigs, ( routeConfig, parent ) => {
@@ -163,25 +175,19 @@ export default function createNico( rootRouter, router, prefix = '' ) {
 
               const view = findView( this ) || self.mountNode
 
-              // 尝试复用旧路由的layout，同时做一层历史layout的缓存
-              const oldSegment = from && from.segment
-              const newSegment = to && to.segment
+              const DEFAULT_LAYOUT = nutConfig.layout || 'default'
+              const oldLayout = from && from.options && from.layout || DEFAULT_LAYOUT
+              const newLayout = to && to.options && to.layout || DEFAULT_LAYOUT
 
-              const oldLayout = parseLayout( oldSegment ) || 'default'
-              const newLayout = parseLayout( newSegment ) || 'default'
-
-              if ( !layoutCaches[ newLayout ] ) {
-                const Layout = findLayout( newLayout )
-                // layout缓存
-                layoutCaches[ newLayout ] = new Layout()
-              }
+              // layout 缓存
+              self.getLayout( newLayout )
 
               let layout = null
 
               if ( oldLayout !== newLayout ) {
-                // 移除老的layout
+                // TODO: 这里的查找不严谨
                 if ( layoutCaches[ oldLayout ] ) {
-                  // TODO: 这里的查找不严谨
+                  // 移除老的layout
                   layoutCaches[ oldLayout ].$inject( false )
                 }
 
@@ -189,17 +195,22 @@ export default function createNico( rootRouter, router, prefix = '' ) {
                 layoutCaches[ newLayout ].$inject( view )
 
                 layout = layoutCaches[ newLayout ]
-              } else if ( oldSegment ) {
+              } else if ( from ) {
                 // TODO: 需保证 parentNode 相同(或者traces一致)
                 layout = layoutCaches[ oldLayout ]
               } else {
+                self.getLayout( oldLayout )
                 layout = layoutCaches[ oldLayout ]
                 layout.$inject( view )
               }
 
+              self.vm = instance
+              self.layoutName = newLayout
               self.layout = layout
+              self.router = this
+              self.params = params
 
-              rootRouter.emit( 'layout', {
+              nico.emit( 'layout', {
                 layout,
                 router: this,
               } )
@@ -212,26 +223,10 @@ export default function createNico( rootRouter, router, prefix = '' ) {
               }
               instance.$update()
 
-              // 检查当前是否在视图中
-              if (
-                instance.group &&
-                instance.group.children &&
-                instance.group.children.find( n => {
-                  if ( typeof n.nodeType !== 'undefined' ) {
-                    return !n.parentNode
-                  }
-
-                  if ( typeof n.node === 'function' ) {
-                    return !n.node().parentNode
-                  }
-
-                  return true
-                } )
-              ) {
-                // 检查 $$view 下挂载的 layout 是否是和自己匹配的，如果匹配则不用销毁，否则需要先销毁
-                if ( layout.$refs.$$view ) {
-                  instance.$inject( layout.$refs.$$view )
-                }
+              // 检查 $$view 下挂载的 layout 是否是和自己匹配的，如果匹配则不用销毁，否则需要先销毁
+              if ( layout.$refs.$$view ) {
+                instance.$inject( false )
+                instance.$inject( layout.$refs.$$view )
               }
             }
 
@@ -283,6 +278,47 @@ export default function createNico( rootRouter, router, prefix = '' ) {
       } )
     },
   }
+
+  if ( module.hot ) {
+    module.hot.accept( 'nut-auto-generated-nut-config', () => {
+      const newLayout = nutConfig && nutConfig.layout || 'default'
+      if ( nico.layoutName !== newLayout ) {
+        switchLayout( nico, nutConfig && nutConfig.layout || 'default' )
+      }
+    } )
+  }
+
+  return nico
+}
+
+function switchLayout( nico, name ) {
+  if ( nico.layout ) {
+    const mountNode = nico.layout.parentNode
+
+    if ( mountNode ) {
+      nico.layout.$inject( false )
+
+      const newLayout = nico.getLayout( name )
+
+      // 动态的$refs，先尝试更新
+      nico.emit( 'layout', {
+        layout: newLayout,
+        router: nico.router,
+      } )
+      newLayout.$update()
+
+      const $view = newLayout.$refs.$$view
+      if ( $view && nico.vm ) {
+        nico.vm.$inject( false )
+        nico.vm.$inject( $view )
+      }
+
+      nico.layout = newLayout
+      nico.layoutName = name
+
+      newLayout.$inject( mountNode )
+    }
+  }
 }
 
 function findView( context ) {
@@ -306,12 +342,13 @@ function findView( context ) {
 }
 
 const layouts = {
-  default: defaultLayout,
-  saber: saberLayout,
+  default: layoutDefault,
+  saber: layoutSaber,
 }
 
-function findLayout( name ) {
-  return layouts[ name ] || layouts.default
+function createLayout( name ) {
+  const Layout = layouts[ name ] || layouts.default
+  return new Layout()
 }
 
 function parseLayout( segment ) {

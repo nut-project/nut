@@ -69,7 +69,7 @@ async function normalizeConfig( config ) {
       const result = fm( content )
       const attributes = result.attributes || {}
 
-      const route = '/' + ( attributes.layout || config.layout ) + 'の' + trimed.replace( /(\/_)(.+)/g, '/:$2' )
+      const route = '/' + trimed.replace( /(\/_)(.+)/g, '/:$2' )
       const extname = path.extname( filepath )
       const types = {
         '.js': 'js',
@@ -106,8 +106,8 @@ async function generateRoutes( config = {} ) {
   const imports = []
 
   sidebar.map( s => {
-    s.pages.map( ( { name, path, route, hidden } = {} ) => {
-      imports.push( { name, path, route, hidden } )
+    s.pages.map( ( { name, path, route, hidden, attributes = {} } = {} ) => {
+      imports.push( { name, path, route, hidden, layout: attributes.layout } )
     } )
   } )
 
@@ -120,6 +120,7 @@ async function generateRoutes( config = {} ) {
   output = output + 'const routes = [\n' + imports
     .map( imp => `{
       name: '${ imp.name }',
+      layout: '${ imp.layout }',
       path: '${ imp.route }',
       component: ${ imp.name },
     }` ).join( ',\n' ) + '\n];' +
