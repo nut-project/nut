@@ -16,10 +16,12 @@ const dirs = {
 async function generateVirtualModules( config ) {
   const normalized = await normalizeConfig( config )
   const routes = await generateRoutes( normalized )
+  const markdownThemeCSS =  await generateMarkdownThemeCSS( config )
 
   return {
     'node_modules/nut-auto-generated-routes.js': routes,
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
+    'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
   }
 }
 
@@ -27,6 +29,22 @@ const resolver = ResolverFactory.createResolver( {
   extensions: [ '.js', '.md' ],
   fileSystem: new CachedInputFileSystem( new NodeJsInputFileSystem(), 4000 )
 } )
+
+async function generateMarkdownThemeCSS( config ) {
+  const lookupStartPath = path.join( dirs.cli, 'node_modules' )
+  const request = 'prismjs/themes/' + config.markdown.theme + '.css'
+
+  return await new Promise( ( resolve, reject ) => {
+    resolver.resolve( {}, lookupStartPath, './' + request, {}, async ( err, filepath ) => {
+      if ( err ) {
+        return reject( err )
+      }
+
+      const buffer = await fse.readFile( filepath )
+      resolve( buffer.toString() )
+    } )
+  } )
+}
 
 function resolve( request ) {
   const lookupStartPath = path.join( dirs.project, 'src' )

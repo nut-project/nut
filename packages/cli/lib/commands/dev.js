@@ -33,8 +33,6 @@ async function dev(){
     mode: 'development',
   } )
 
-  webpackConfig.resolve.alias[ 'nut-markdown-theme' ] = 'prismjs/themes/' + config.markdown.theme + '.css'
-
   const modules = await generateVirtualModules( config )
   const virtualModules = new VirtualModulesPlugin( modules )
   webpackConfig.plugins.push( virtualModules )

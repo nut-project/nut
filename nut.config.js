@@ -7,7 +7,7 @@ module.exports = {
     require.resolve( './plugins/login-netease-openid' ),
   ],
   markdown: {
-    theme: 'prism-tomorrow',
+    theme: 'prism-okaidia',
   },
   sidebar: [
     {

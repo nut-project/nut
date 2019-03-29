@@ -2,7 +2,8 @@
 
 **开发中**
 
-<img src="./media/hmr.gif" alt="hmr" width="600px">
+<img src="./media/hmr.gif" alt="hmr.gif" width="600px">
+<img src="./media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
 
 ## 特性
 

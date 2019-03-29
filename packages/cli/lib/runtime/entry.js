@@ -8,7 +8,7 @@ import './css/reset.less'
 import './css/nprogress.less'
 import './css/markdown.less'
 import './fonts/iconfont.css'
-import 'nut-markdown-theme'
+import 'nut-auto-generated-markdown-theme'
 import './css/override.less'
 
 import routes from 'nut-auto-generated-routes'
