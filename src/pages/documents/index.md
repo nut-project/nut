@@ -12,7 +12,6 @@ title: 如何使用
 
 ```js
 const path = require( 'path' )
-
 console.log( path.join( __dirname, 'index.js' ) )
 ```
 

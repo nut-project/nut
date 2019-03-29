@@ -4,8 +4,20 @@ module.exports = {
   markdown: {
     theme: 'prism-tomorrow',
   },
-  theme: 'sakura',
+  theme: 'ocean',
   layout: 'default',
+  plugins: [
+    require.resolve( './plugins/login-netease-openid' ),
+  ],
+  landing: {
+    use: 'default',
+    options: {
+      title: '某个不知名的系统',
+      description: '哈哈哈',
+      preview: '',
+      buttonText: '',
+    },
+  },
   sidebar: [
     {
       icon: 'sketch',
