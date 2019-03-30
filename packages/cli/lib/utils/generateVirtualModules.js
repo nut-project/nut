@@ -16,13 +16,34 @@ const dirs = {
 async function generateVirtualModules( config ) {
   const normalized = await normalizeConfig( config )
   const routes = await generateRoutes( normalized )
+  const plugins = await generatePlugins( normalized )
   const markdownThemeCSS =  await generateMarkdownThemeCSS( config )
 
   return {
     'node_modules/nut-auto-generated-routes.js': routes,
+    'node_modules/nut-auto-generated-plugins.js': plugins,
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
   }
+}
+
+async function generatePlugins( config ) {
+  const plugins = config.plugins || []
+
+  const imports = plugins.map( ( plugin, index ) => {
+    return `import plugin_${ index } from '${ plugin }';`
+  } ).join( '\n' )
+
+  return `
+    ${ imports }
+    export default [
+      ${
+        plugins.map( ( plugin, index ) => {
+          return `plugin_${ index }`
+        } ).join( ',' )
+      }
+    ]
+  `
 }
 
 const resolver = ResolverFactory.createResolver( {

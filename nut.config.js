@@ -4,7 +4,7 @@ module.exports = {
   theme: 'sakura',
   layout: 'saber',
   plugins: [
-    require.resolve( './plugins/login-netease-openid' ),
+    require.resolve( './plugins/login-netease-openid' )
   ],
   markdown: {
     theme: 'prism-okaidia',

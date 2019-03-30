@@ -1,9 +1,3 @@
-import Router from 'unfancy-router'
-import Regular from 'regularjs'
-import NProgress from 'nprogress'
-
-import Tippy from './regular-plugins/tippy'
-import createNico from './core/router'
 import './css/reset.less'
 import './css/nprogress.less'
 import './css/markdown.less'
@@ -11,123 +5,81 @@ import './fonts/iconfont.css'
 import 'nut-auto-generated-markdown-theme'
 import './css/override.less'
 
-import routes from 'nut-auto-generated-routes'
 import nutConfig from 'nut-auto-generated-nut-config'
+import plugins from 'nut-auto-generated-plugins'
+
+import installDirectives from './steps/install-directives'
+import applyPlugins from './steps/apply-plugins'
+import setupNProgress from './steps/setup-nprogress'
+import setupNico from './steps/setup-nico'
+
+import getFirstRoute from './utils/get-first-route'
+import switchTheme from './utils/switch-theme'
+
 import app from '@/app.js'
+import events from './events'
+import api from './api'
 
-Regular.use( Tippy )
-
-const PROGRESS_CONTAINER_ID = 'progress-container'
-
-NProgress.configure( {
-  parent: '#' + PROGRESS_CONTAINER_ID
-} )
-
-const router = Router()
-
-const root = router.create( {
-  name: '_',
-  path: '',
-} )
-
-const nico = createNico( root, router )
-
-nico.beforeEach( () => {
-  const parent = document.getElementById( PROGRESS_CONTAINER_ID )
-  if ( !parent ) {
-    return
+;( async function () {
+  const context = {
+    env: process.env.NODE_ENV,
+    plugins,
+    app: nutConfig,
+    config: {},
   }
-  NProgress.start()
-} )
 
-nico.afterEach( () => {
-  const parent = document.getElementById( PROGRESS_CONTAINER_ID )
-  if ( !parent ) {
-    return
-  }
-  NProgress.done()
-} )
+  await events.emit( 'system:before-startup', context )
+  await app( context )
 
-nico.define( routes )
+  await installDirectives()
 
-if ( module.hot ) {
-  module.hot.accept( 'nut-auto-generated-nut-config', () => {
-    if ( nico.layout ) {
-      nico.layout.data.ctx.app = nutConfig
-      nico.layout.$update()
+  await events.emit( 'system:before-apply-plugins', context )
+  await applyPlugins( plugins, { api, events } )
+  await events.emit( 'system:after-apply-plugins', context )
+
+  const nico = await setupNico()
+  await setupNProgress( nico )
+
+  nico.on( 'notfound', () => {
+    events.emit( 'route:404', context )
+  } )
+
+  nico.on( 'layout', function ( { layout, router } ) {
+    // TODO: 计算page和pages，以及添加nutconfig上的active属性
+    layout.data.ctx = {
+      ...context,
+      app: nutConfig,
+      config: {},
+      router,
     }
+
+    console.log( context )
+
+    layout.$update()
+
     switchTheme( nutConfig && nutConfig.theme || 'ocean' )
   } )
 
-  module.hot.accept( './core/router', () => {} )
-}
+  nico.start( '#app' )
 
-function switchTheme( theme ) {
-  switch ( theme ) {
-    case 'ocean':
-      document.documentElement.style.setProperty('--primary-color', '#79bef6')
-      document.documentElement.style.setProperty('--primary-color-dark', '#568ffd')
-      break
-    case 'sakura':
-      document.documentElement.style.setProperty('--primary-color', '#f67995')
-      document.documentElement.style.setProperty('--primary-color-dark', '#ff6a8b')
-      break
-  }
-}
+  events.emit( 'route:enabled', context )
 
-function getFirstRoute( config ) {
-  let found
-
-  const sidebar = config.sidebar
-
-  sidebar.some( s => {
-    const pages = s.pages
-
-    return pages.some( page => {
-      if ( !page.hidden ) {
-        found = page
-        return true
-      }
-
-      return false
-    } )
-  } )
-
-  if ( !found ) {
-    return
+  if ( !location.hash ) {
+    const firstRoute = getFirstRoute( nutConfig )
+    if ( firstRoute ) {
+      location.href = '#' + firstRoute
+    }
   }
 
-  return found.route
-}
+  events.emit( 'system:after-startup', context )
 
-const context = {}
-
-app( context )
-  .then( () => {
-    nico.on( 'notfound', () => {
-      location.replace( '#/404' )
-    } )
-
-    nico.on( 'layout', function ( { layout, router } ) {
-      // TODO: 计算page和pages，以及添加nutconfig上的active属性
-      layout.data.ctx = {
-        ...context,
-        app: nutConfig,
-        config: {},
-        router,
+  if ( module.hot ) {
+    module.hot.accept( 'nut-auto-generated-nut-config', () => {
+      if ( nico.layout ) {
+        nico.layout.data.ctx.app = nutConfig
+        nico.layout.$update()
       }
-
-      layout.$update()
-
       switchTheme( nutConfig && nutConfig.theme || 'ocean' )
     } )
-
-    nico.start( '#app' )
-
-    if ( !location.hash ) {
-      const firstRoute = getFirstRoute( nutConfig )
-      if ( firstRoute ) {
-        location.href = '#' + firstRoute
-      }
-    }
-  } )
+  }
+} )()

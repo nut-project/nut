@@ -1,13 +1,14 @@
-const cosmiconfig = require( 'cosmiconfig' )
-const WebpackDevServer = require( 'webpack-dev-server' )
-const webpack = require( 'webpack' )
 const path = require( 'path' )
-const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const chokidar = require( 'chokidar' )
+const cosmiconfig = require( 'cosmiconfig' )
+const webpack = require( 'webpack' )
+const WebpackDevServer = require( 'webpack-dev-server' )
+const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+
+const baseWebpackConfig = require( '../config/webpack.config.base' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
-const baseWebpackConfig = require( '../config/webpack.config.base' )
 
 process
   .on('unhandledRejection', (reason, p) => {

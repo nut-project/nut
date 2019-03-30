@@ -1,12 +1,13 @@
-const WebpackDevServer = require( 'webpack-dev-server' )
-const webpack = require( 'webpack' )
 const path = require( 'path' )
-const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+const webpack = require( 'webpack' )
 const chokidar = require( 'chokidar' )
+const WebpackDevServer = require( 'webpack-dev-server' )
+const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+
+const baseWebpackConfig = require( '../config/webpack.config.base' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
-const baseWebpackConfig = require( '../config/webpack.config.base' )
 
 process
   .on('unhandledRejection', (reason, p) => {
