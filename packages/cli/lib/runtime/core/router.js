@@ -51,13 +51,14 @@ export default function createNico( rootRouter, router, prefix = '' ) {
             const ctor = routeConfig.component
             const self = this
 
-            if ( process.env.NODE_ENV === 'development' )
-            console.log(
-              '\n%cMatch%c' + routeConfig.filepath + '%c\n',
-              'background-color: #0089ff;color: #fff;padding: 2px 6px;',
-              'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
-              ''
-            )
+            if ( process.env.NODE_ENV === 'development' ) {
+              console.log(
+                '\n%cMatch%c' + routeConfig.filepath + '%c\n',
+                'background-color: #0089ff;color: #fff;padding: 2px 6px;',
+                'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
+                ''
+              )
+            }
 
             if ( typeof ctor === 'function' ) {
               let instance = this.$instance

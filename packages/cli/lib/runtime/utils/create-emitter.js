@@ -82,6 +82,15 @@ export default function createEmitter () {
 
     async emit (name) {
       if (name !== '*') {
+        if ( process.env.NODE_ENV === 'development' ) {
+          console.log(
+            '\n%cEvent%c' + name + '%c\n',
+            'background-color: #a5d484;color: #fff;padding: 2px 6px;',
+            'background-color: #67b731;color: #fff;padding: 2px 6px;',
+            ''
+          )
+        }
+
         var args = [].slice.call(arguments);
         var callbacks = app._allEvents[name] || []
         var allCallbacks = app._allEvents['*'] || []
