@@ -1,5 +1,6 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
+const tildify = require( 'tildify' )
 const {
   NodeJsInputFileSystem,
   CachedInputFileSystem,
@@ -150,6 +151,7 @@ async function normalizeConfig( config ) {
         name: ensureUnique(
           slugify( trimed, { separator: '$' } )
         ),
+        filepath,
         path: trimed,
         route,
         hidden,
@@ -175,8 +177,8 @@ async function generateRoutes( config = {} ) {
   const imports = []
 
   sidebar.map( s => {
-    s.pages.map( ( { name, path, route, hidden, attributes = {} } = {} ) => {
-      imports.push( { name, path, route, hidden, layout: attributes.layout } )
+    s.pages.map( ( { name, path, filepath, route, hidden, attributes = {} } = {} ) => {
+      imports.push( { name, path, filepath, route, hidden, layout: attributes.layout } )
     } )
   } )
 
@@ -191,6 +193,7 @@ async function generateRoutes( config = {} ) {
       name: '${ imp.name }',
       layout: '${ imp.layout }',
       path: '${ imp.route }',
+      filepath: '${ tildify( imp.filepath ) }',
       component: ${ imp.name },
     }` ).join( ',\n' ) + '\n];' +
     `export default routes;`

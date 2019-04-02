@@ -37,6 +37,7 @@
     "prismjs": "^1.16.0",
     "regularjs": "^0.6.2",
     "style-loader": "^0.23.1",
+    "tildify": "^1.2.0",
     "tippy.js": "^4.2.1",
     "unfancy-router": "^0.0.10",
     "url-loader": "^1.1.2",
