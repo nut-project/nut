@@ -77,10 +77,10 @@ const Header = Regular.extend( {
         {#inc title | t }
       </div>
       <div class="${ styles.header__user }">
-        {#if user}
+        {#if user && user.nickname}
         <span style="cursor: pointer;">
           <i class="iconfont icon-user"></i>
-          { user.username }
+          { user.nickname }
         </span>
         {/if}
       </div>

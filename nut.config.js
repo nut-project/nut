@@ -8,7 +8,7 @@ module.exports = {
       path: require.resolve( './plugins/login-netease-openid' ),
       enable: true,
       env: [ 'development' ],
-      options: {},
+      // options: {}, // 需区分环境
     }
   },
   markdown: {

@@ -9,9 +9,9 @@ const Shell = Regular.extend( {
           { ctx.app.zh }
         </div>
         <div class="${ styles.header__user }">
-          {#if ctx.user.username}
+          {#if ctx.user && ctx.user.nickname}
           <i class="iconfont icon-user"></i>
-          { ctx.user.username }
+          { ctx.user.nickname }
           {/if}
         </div>
       </div>

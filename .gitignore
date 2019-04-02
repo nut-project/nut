@@ -1,5 +1,6 @@
 /dist
 /examples
+/plugins/login-netease-openid
 
 # Logs
 logs

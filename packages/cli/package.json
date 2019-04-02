@@ -19,6 +19,7 @@
     "@babel/preset-env": "^7.4.2",
     "@babel/runtime": "^7.4.2",
     "@sindresorhus/slugify": "^0.9.0",
+    "axios": "^0.18.0",
     "babel-loader": "^8.0.5",
     "cac": "^6.4.2",
     "chokidar": "^2.1.5",
