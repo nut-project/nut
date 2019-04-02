@@ -34,7 +34,9 @@ async function dev(){
     mode: 'development',
   } )
 
-  const modules = await generateVirtualModules( config )
+  const modules = await generateVirtualModules( config, {
+    env: 'development'
+  } )
   const virtualModules = new VirtualModulesPlugin( modules )
   webpackConfig.plugins.push( virtualModules )
 
@@ -58,7 +60,9 @@ async function dev(){
         result = await explorer.search()
         config = result.config
 
-        const modules = await generateVirtualModules( config )
+        const modules = await generateVirtualModules( config, {
+          env: 'development'
+        } )
 
         for ( let [ path, content ] of Object.entries( modules ) ) {
           virtualModules.writeModule(

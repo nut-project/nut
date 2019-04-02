@@ -23,42 +23,41 @@ import api from './api'
 ;( async function () {
   const context = {
     env: process.env.NODE_ENV,
-    plugins,
+    plugins: {},
     app: nutConfig,
     config: {},
+    api,
+    events,
   }
-
-  await events.emit( 'system:before-startup', context )
-  await app( context )
 
   await installDirectives()
 
   await events.emit( 'system:before-apply-plugins', context )
-  await applyPlugins( plugins, { api, events } )
+  await applyPlugins( plugins, context )
   await events.emit( 'system:after-apply-plugins', context )
 
   const nico = await setupNico()
   await setupNProgress( nico )
 
   nico.on( 'notfound', () => {
-    events.emit( 'route:404', context )
+    events.emit( 'route:notfound', context )
   } )
 
   nico.on( 'layout', function ( { layout, router } ) {
     // TODO: 计算page和pages，以及添加nutconfig上的active属性
     layout.data.ctx = {
       ...context,
-      app: nutConfig,
-      config: {},
       router,
     }
-
-    console.log( context )
 
     layout.$update()
 
     switchTheme( nutConfig && nutConfig.theme || 'ocean' )
   } )
+
+  await events.emit( 'system:before-startup', context )
+
+  await app( context )
 
   nico.start( '#app' )
 

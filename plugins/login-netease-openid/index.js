@@ -1,9 +1,11 @@
 exports.name = 'netease-openid'
 
-// 唯一，只能存在一个
-exports.alias = 'login'
+// login 类型的插件只能存在一个
+exports.type = 'login'
 
-exports.apply = function ( api, events ) {
+exports.apply = function ( ctx, options ) {
+  const { api, events } = ctx
+
   async function getUser() {
     return {
       username: '不愿透露姓名的x先生',

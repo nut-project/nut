@@ -1,28 +1,35 @@
-export default async function applyPlugins( plugins, { api, events } = {} ) {
-  for ( let i = 0, len = plugins.length; i < len; i++ ) {
-    const plugin = plugins[ i ]
+export default async function applyPlugins( allPlugins, { env, app, api, events, plugins } = {} ) {
+  for ( let i = 0, len = allPlugins.length; i < len; i++ ) {
+    const plugin = allPlugins[ i ][ 0 ]
+    const pluginOptions = allPlugins[ i ][ 1 ] || {}
 
     if ( !plugin.apply ) {
       return
     }
 
     const stubAPI = {
-      expose( methodName, method ) {
-        return api.expose( plugin.name, methodName, method )
-      },
       ...api,
+      expose( prop, value ) {
+        plugins[ plugin.localName ] = plugins[ plugin.localName ] || {}
+        plugins[ plugin.localName ][ prop ] = value
+      },
     }
 
     const stubEvents = {
+      ...events,
       pluginEmit( name, ...args ) {
         if ( name !== '*' ) {
-          name = 'plugin:' + plugin.name + ':' + name
+          name = 'plugin:' + plugin.localName + ':' + name
         }
         return events.emit( name, ...args )
       },
-      ...events,
     }
 
-    plugin.apply( stubAPI, events )
+    await plugin.apply( {
+      env,
+      app,
+      api: stubAPI,
+      events: stubEvents,
+    }, pluginOptions )
   }
 }

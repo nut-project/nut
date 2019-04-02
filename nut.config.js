@@ -3,9 +3,14 @@ module.exports = {
   en: 'PMP',
   theme: 'sakura',
   layout: 'saber',
-  plugins: [
-    require.resolve( './plugins/login-netease-openid' )
-  ],
+  plugins: {
+    login: {
+      path: require.resolve( './plugins/login-netease-openid' ),
+      enable: true,
+      env: [ 'development' ],
+      options: {},
+    }
+  },
   markdown: {
     theme: 'prism-okaidia',
   },

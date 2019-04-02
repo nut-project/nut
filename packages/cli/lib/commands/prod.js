@@ -34,7 +34,9 @@ async function prod(){
     },
   } )
 
-  const modules = await generateVirtualModules( config )
+  const modules = await generateVirtualModules( config, {
+    env: 'production'
+  } )
   const virtualModules = new VirtualModulesPlugin( modules )
   webpackConfig.plugins.push( virtualModules )
 

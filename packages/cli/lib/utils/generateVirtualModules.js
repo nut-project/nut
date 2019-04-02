@@ -13,10 +13,10 @@ const dirs = {
   project: process.cwd(),
 }
 
-async function generateVirtualModules( config ) {
+async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const normalized = await normalizeConfig( config )
   const routes = await generateRoutes( normalized )
-  const plugins = await generatePlugins( normalized )
+  const plugins = await generatePlugins( normalized, { env } )
   const markdownThemeCSS =  await generateMarkdownThemeCSS( config )
 
   return {
@@ -27,23 +27,53 @@ async function generateVirtualModules( config ) {
   }
 }
 
-async function generatePlugins( config ) {
-  const plugins = config.plugins || []
+async function generatePlugins( config, { env = 'development' } = {} ) {
+  const pluginsObj = config.plugins || {}
 
-  const imports = plugins.map( ( plugin, index ) => {
-    return `import plugin_${ index } from '${ plugin }';`
+  let plugins = Object.keys( pluginsObj )
+    .map( localName => ( {
+      localName,
+      ...pluginsObj[ localName ],
+    } ) )
+    .map( normalizePlugin )
+
+  // filter truthy
+  plugins = plugins.filter( Boolean )
+  // filter enable
+  plugins = plugins.filter( plugin => plugin.enable )
+  // filter env
+  plugins = plugins.filter( plugin => ~plugin.env.indexOf( env ) )
+
+  const _imports = plugins.map( ( plugin, index ) => {
+    return `import plugin_${ index } from '${ plugin.path || plugin.package }';`
   } ).join( '\n' )
 
+  const _localnames = plugins.map( ( plugin, index ) => {
+    return `plugin_${ index }.localName = ${ JSON.stringify( plugin.localName ) }`
+  } ).join( '\n' )
+
+  const _exports = `export default [
+    ${
+      plugins
+        .map( ( plugin, index ) => `[ plugin_${ index }, ${ JSON.stringify( plugin.options ) } ]` )
+        .join( ',' )
+    }
+  ]`
+
   return `
-    ${ imports }
-    export default [
-      ${
-        plugins.map( ( plugin, index ) => {
-          return `plugin_${ index }`
-        } ).join( ',' )
-      }
-    ]
+    ${ _imports }
+    ${ _localnames }
+    ${ _exports }
   `
+}
+
+function normalizePlugin( plugin ) {
+  plugin.env = plugin.env || [ 'development', 'production' ]
+  plugin.enable = typeof plugin.enable !== 'undefined' ?
+    !!plugin.enable :
+    true
+
+  return plugin
 }
 
 const resolver = ResolverFactory.createResolver( {
