@@ -39,7 +39,7 @@ export default function createEmitter () {
 
     use (plugin, options) {
       const ret = plugin(app, options)
-      return ret || app
+      return ret || this
     },
 
     on (name, handler, once) {
@@ -53,16 +53,20 @@ export default function createEmitter () {
         }
       }
 
+      if ( handler.__from === 'plugin' ) {
+        func.__plugin = handler.__plugin
+      }
+
       var fn = once ? func : handler
       fn.__sourceString = handler.toString()
 
       e.push(fn)
-      return app
+      return this
     },
 
     once (name, handler) {
       app.on(name, handler, true)
-      return app
+      return this
     },
 
     off (name, handler) {
@@ -77,7 +81,7 @@ export default function createEmitter () {
         app._allEvents = Object.create(null)
       }
 
-      return app
+      return this
     },
 
     async emit (name) {
@@ -85,8 +89,8 @@ export default function createEmitter () {
         if ( process.env.NODE_ENV === 'development' ) {
           console.log(
             '\n%cEvent%c' + name + '%c\n',
-            'background-color: #a5d484;color: #fff;padding: 2px 6px;',
-            'background-color: #67b731;color: #fff;padding: 2px 6px;',
+            'background-color: #48d67a;color: #fff;padding: 2px 6px;',
+            'background-color: #31b754;color: #fff;padding: 2px 6px;',
             ''
           )
         }
@@ -97,6 +101,18 @@ export default function createEmitter () {
 
         for ( let i = 0, len = callbacks.length; i < len; i++ ) {
           const callback = callbacks[ i ]
+
+          if ( process.env.NODE_ENV === 'development' ) {
+            if ( callback.__plugin ) {
+              console.log(
+                '\n%cPlugin:' + callback.__plugin + '%c process ' + name + '%c\n',
+                'background-color: #ff76a8;color: #fff;padding: 2px 6px;',
+                'background-color: #da4590;color: #fff;padding: 2px 6px;',
+                ''
+              )
+            }
+          }
+
           const result = callback.apply(callback, args.slice(1))
           if ( result instanceof Promise ) {
             await result
@@ -105,6 +121,18 @@ export default function createEmitter () {
 
         for ( let i = 0, len = allCallbacks.length; i < len; i++ ) {
           const callback = allCallbacks[ i ]
+
+          if ( process.env.NODE_ENV === 'development' ) {
+            if ( callback.__plugin ) {
+              console.log(
+                '\n%cPlugin:' + callback.__plugin + '%c process ' + name + '%c\n',
+                'background-color: #ff76a8;color: #fff;padding: 2px 6px;',
+                'background-color: #da4590;color: #fff;padding: 2px 6px;',
+                ''
+              )
+            }
+          }
+
           const result = callback.apply(callback, args)
           if ( result instanceof Promise ) {
             await result
@@ -112,7 +140,7 @@ export default function createEmitter () {
         }
       }
 
-      return app
+      return this
     }
   }
 

@@ -17,11 +17,21 @@ export default async function applyPlugins( allPlugins, { env, app, api, events,
 
     const stubEvents = {
       ...events,
+      on( name, handler, once ) {
+        handler.__from = 'plugin'
+        handler.__plugin = plugin.localName
+        events.on.call( this, name, handler, once )
+        return this
+      },
+      once( name, handler ) {
+        this.on( name, handler, true )
+        return this
+      },
       pluginEmit( name, ...args ) {
         if ( name !== '*' ) {
           name = 'plugin:' + plugin.localName + ':' + name
         }
-        return events.emit( name, ...args )
+        return events.emit.call( this, name, ...args )
       },
     }
 
