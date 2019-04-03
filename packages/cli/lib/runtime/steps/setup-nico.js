@@ -2,7 +2,7 @@ import Router from 'unfancy-router'
 import routes from 'nut-auto-generated-routes'
 import createNico from '../core/router'
 
-export default function () {
+export default function ( ctx ) {
   const router = Router()
 
   const root = router.create( {
@@ -10,7 +10,7 @@ export default function () {
     path: '',
   } )
 
-  const nico = createNico( root, router )
+  const nico = createNico( root, router, '', ctx )
   nico.define( routes )
 
   return nico

@@ -1,8 +1,8 @@
 module.exports = {
-  zh: '某个不知名的系统!!!',
+  zh: '某个不知名的系统',
   en: 'PMP',
-  theme: 'sakura',
-  layout: 'saber',
+  theme: 'ocean',
+  layout: 'default',
   plugins: {
     login: {
       path: require.resolve( './plugins/login-netease-openid' ),

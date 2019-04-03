@@ -38,7 +38,7 @@ import api from './api'
   await applyPlugins( plugins, pluginOptions, context )
   await events.emit( 'system:after-apply-plugins', context )
 
-  const nico = await setupNico()
+  const nico = await setupNico( context )
   await setupNProgress( nico )
 
   nico.on( 'notfound', () => {

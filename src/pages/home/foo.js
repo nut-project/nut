@@ -22,4 +22,27 @@ const Page = Regular.extend( {
   }
 } )
 
-export default Page
+export default function ( ctx ) {
+  let instance
+
+  return {
+    beforeEnter( { next } ) {
+      next()
+    },
+
+    mount( node ) {
+      if ( !instance ) {
+        instance = new Page()
+      }
+      instance.$inject( node )
+    },
+
+    unmount( node ) {
+      if ( !instance ) {
+        return
+      }
+
+      instance.$inject( false )
+    },
+  }
+}

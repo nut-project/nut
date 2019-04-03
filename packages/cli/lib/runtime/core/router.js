@@ -2,7 +2,7 @@ import nutConfig from 'nut-auto-generated-nut-config'
 import layoutDefault from '../layouts/default'
 import layoutSaber from '../layouts/saber'
 
-export default function createNico( rootRouter, router, prefix = '' ) {
+export default function createNico( rootRouter, router, prefix = '', ctx ) {
   const layoutCaches = {}
   const nico = {
     getLayout( name ) {
@@ -48,9 +48,6 @@ export default function createNico( rootRouter, router, prefix = '' ) {
           ...routeConfig,
 
           beforeEnter( e ) {
-            const ctor = routeConfig.component
-            const self = this
-
             if ( process.env.NODE_ENV === 'development' ) {
               console.log(
                 '\n%cMatch%c' + routeConfig.filepath + '%c\n',
@@ -60,20 +57,16 @@ export default function createNico( rootRouter, router, prefix = '' ) {
               )
             }
 
-            if ( typeof ctor === 'function' ) {
-              let instance = this.$instance
-
-              if ( !( instance instanceof ctor ) ) {
-                instance = new ctor()
-              }
-
-              this.$ctor = ctor
-              this.$instance = instance
+            if ( !this.page ) {
+              this.page = routeConfig.component( ctx )
             }
+
+            const self = this
+            const page = this.page
 
             let nextCount = 0
 
-            if ( typeof ctor === 'function' && this.$instance.beforeEnter ) {
+            if ( page.beforeEnter ) {
               nextCount++
             }
 
@@ -102,7 +95,7 @@ export default function createNico( rootRouter, router, prefix = '' ) {
               if ( nextCount === 0 ) {
                 if ( fns.length > 0 ) {
                   e.next( function () {
-                    fns.forEach( fn => fn.call( self.$instance ) )
+                    fns.forEach( fn => fn() )
                   } )
                 } else {
                   e.next()
@@ -115,17 +108,17 @@ export default function createNico( rootRouter, router, prefix = '' ) {
               routeConfig.beforeEnter( evt )
             }
 
-            if ( this.$instance && typeof this.$instance.beforeEnter === 'function' ) {
-              this.$instance.beforeEnter( evt )
+            if ( page && typeof page.beforeEnter === 'function' ) {
+              page.beforeEnter( evt )
             }
           },
 
           beforeLeave( e ) {
-            const ctor = routeConfig.component
+            const page = this.page
 
             let nextCount = 0
 
-            if ( this.$instance && this.$instance.beforeLeave ) {
+            if ( page && page.beforeLeave ) {
               nextCount++
             }
 
@@ -156,32 +149,25 @@ export default function createNico( rootRouter, router, prefix = '' ) {
               routeConfig.beforeLeave( evt )
             }
 
-            if ( this.$instance && typeof this.$instance.beforeLeave === 'function' ) {
-              this.$instance.beforeLeave( evt )
+            if ( page && page.beforeLeave === 'function' ) {
+              page.beforeLeave( evt )
             }
           },
 
           update() {
             routeConfig.update && routeConfig.update()
 
-            if ( this.$instance && typeof this.$instance.update === 'function' ) {
-              this.$instance.update()
+            const page = this.page
+
+            if ( page && typeof page.update === 'function' ) {
+              page.update()
             }
           },
 
           enter( { from, to, params } ) {
-            const ctor = routeConfig.component
+            const page = this.page
 
-            if ( ctor ) {
-              let instance = this.$instance
-
-              if ( !( instance instanceof ctor ) ) {
-                instance = new ctor()
-              }
-
-              this.$ctor = ctor
-              this.$instance = instance
-
+            if ( page ) {
               const view = findView( this ) || self.mountNode
 
               const DEFAULT_LAYOUT = nutConfig.layout || 'default'
@@ -213,7 +199,6 @@ export default function createNico( rootRouter, router, prefix = '' ) {
                 layout.$inject( view )
               }
 
-              self.vm = instance
               self.layoutName = newLayout
               self.layout = layout
               self.router = this
@@ -226,35 +211,29 @@ export default function createNico( rootRouter, router, prefix = '' ) {
 
               layout.$update()
 
-              instance.data.$router = {
-                params,
-                // ...
-              }
-              instance.$update()
+              // TODO: pass params to instance
 
               // 检查 $$view 下挂载的 layout 是否是和自己匹配的，如果匹配则不用销毁，否则需要先销毁
               if ( layout.$refs.$$view ) {
-                instance.$inject( false )
-                instance.$inject( layout.$refs.$$view )
+                page.mount( layout.$refs.$$view )
               }
             }
 
             routeConfig.enter && routeConfig.enter.call( this )
 
-            if ( this.$instance && typeof this.$instance.enter === 'function' ) {
-              this.$instance.enter()
+            if ( page && typeof page.enter === 'function' ) {
+              page.enter()
             }
           },
 
           leave() {
-            if ( this.$instance ) {
-              this.$instance.$inject( false )
-            }
+            const page = this.page
+            page.unmount()
 
             routeConfig.leave && routeConfig.leave.call( this )
 
-            if ( this.$instance && typeof this.$instance.leave === 'function' ) {
-              this.$instance.leave()
+            if ( page && typeof page.leave === 'function' ) {
+              page.leave()
             }
           }
         } )
