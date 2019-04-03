@@ -7,7 +7,7 @@ module.exports = {
     login: {
       path: require.resolve( './plugins/login-netease-openid' ),
       enable: true,
-      env: [ 'development' ],
+      // env: [ 'development' ],
       // options: {}, // 需区分环境
     }
   },

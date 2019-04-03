@@ -42,7 +42,7 @@
 
 ```js
 exports.name = 'your-superb-plugin'
-exports.type = 'login' // 一些特殊类型的插件需要指定 type，大多数情况下你可以省略它
+exports.type = 'login' // 一些特殊类型的插件需要指定 type，大多数情况下你可以忽略它
 exports.apply = function ( ctx = {}, options = {} ) {
   const { api, events } = ctx
 

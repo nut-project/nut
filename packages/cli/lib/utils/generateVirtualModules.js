@@ -1,6 +1,7 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
 const tildify = require( 'tildify' )
+const globby = require( 'globby' )
 const {
   NodeJsInputFileSystem,
   CachedInputFileSystem,
@@ -18,14 +19,63 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const normalized = await normalizeConfig( config )
   const routes = await generateRoutes( normalized )
   const plugins = await generatePlugins( normalized, { env } )
-  const markdownThemeCSS =  await generateMarkdownThemeCSS( config )
+  const markdownThemeCSS = await generateMarkdownThemeCSS( config )
+  const extendContext = await generateExtendContext( config, { env } )
 
   return {
     'node_modules/nut-auto-generated-routes.js': routes,
     'node_modules/nut-auto-generated-plugins.js': plugins,
+    'node_modules/nut-auto-generated-extend-context.js': extendContext,
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
   }
+}
+
+async function generateExtendContext( config, { env = 'development' } = {} ) {
+  const root = path.join( __dirname, '../context' )
+  const files = await globby( [
+    '*.js'
+  ], {
+    cwd: root,
+    onlyFiles: true,
+    deep: 0,
+    absolute: true,
+  } )
+
+  const promises = files.map( async ( file, index ) => {
+    const fn = require( file )
+    const key = path.basename( file, path.extname( file ) )
+    const variable = 'context_' + index
+
+    const runtimePath = await fn( config, { env } )
+
+    if ( !runtimePath ) {
+      return
+    }
+
+    return {
+      statement: `import ${ variable } from '${ runtimePath }';`,
+      key,
+      variable,
+    }
+  } )
+
+  let _imports = await Promise.all( promises )
+
+  _imports = _imports.filter( Boolean )
+
+  const pairs = _imports.map( ( imp ) => {
+    return imp.key + ': ' + imp.variable + ','
+  } )
+
+  return `
+    ${ _imports.map( imp => imp.statement ).join( '' ) }
+    export default function () {
+      return {
+        ${ pairs.join( '' ) }
+      }
+    }
+  `
 }
 
 async function generatePlugins( config, { env = 'development' } = {} ) {

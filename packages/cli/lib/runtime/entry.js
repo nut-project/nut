@@ -7,6 +7,7 @@ import './css/override.less'
 
 import nutConfig from 'nut-auto-generated-nut-config'
 import plugins from 'nut-auto-generated-plugins'
+import extendContext from 'nut-auto-generated-extend-context'
 
 import installDirectives from './steps/install-directives'
 import applyPlugins from './steps/apply-plugins'
@@ -22,10 +23,10 @@ import api from './api'
 
 ;( async function () {
   const context = {
+    ...extendContext(),
     env: process.env.NODE_ENV,
     plugins: {},
     app: nutConfig,
-    config: {},
     api,
     events,
   }
