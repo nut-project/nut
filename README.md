@@ -42,7 +42,7 @@
 
 ```js
 exports.name = 'your-superb-plugin'
-exports.type = 'login' // 一些特殊类型的插件需要执行，大多数情况下你可以省略
+exports.type = 'login' // 一些特殊类型的插件需要指定 type，大多数情况下你可以省略它
 exports.apply = function ( ctx = {}, options = {} ) {
   const { api, events } = ctx
 
@@ -50,13 +50,13 @@ exports.apply = function ( ctx = {}, options = {} ) {
   api.expose( 'prop', 'value' )
 
   events.on( 'system:before-startup', async ctx => {
-    await api.axios() // ...do some request
-    await events.pluginEmit( 'some-event', data ) // emit some events
+    await api.axios() // do some request
+    await events.pluginEmit( 'some-event', data ) // emit plugin event out
   } )
 }
 ```
 
-你可以通过 插件 向 应用 暴露一些方法，也可以监听`系统事件`，以及抛出插件内部的事件
+你可以通过 插件 向 应用 暴露一些方法，也可以监听系统事件，以及抛出插件内部的事件
 
 #### 使用插件
 
@@ -81,12 +81,13 @@ superb 是插件在当前应用中使用的名字
 // plugin exposed
 ctx.plugins.superb.method_name()
 ctx.plugins.superb.prop
+
 // plugin events
 ctx.events.on( 'plugin:superb:some-event', async data => {} )
 ```
 
-完整的 api(开放接口) 请查看 [文档](./docs/api.md)
-完整的 events(系统事件) 请查看 [文档](./docs/events.md)
+- 查看完整的[开放接口](./docs/api.md)(api)
+- 查看完整的[系统事件](./docs/events.md)(events)
 
 
 ## 如何开始
