@@ -1,12 +1,11 @@
 ---
 title: 列表
-cacheable: false
 permission: [ 'admin' ]
 ---
 
 import Regular from 'regularjs'
 
-export default Regular.extend( {
+const Page = Regular.extend( {
   template: `
     列表页 { count }
   `,
@@ -22,3 +21,5 @@ export default Regular.extend( {
     }, 1000 )
   }
 } )
+
+export default Page
