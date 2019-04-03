@@ -1,7 +1,7 @@
 export default async function applyPlugins( allPlugins = [], allPluginOptions = {}, { env, app, api, events, plugins } = {} ) {
   for ( let i = 0, len = allPlugins.length; i < len; i++ ) {
     const plugin = allPlugins[ i ]
-    const pluginOptions = allPluginOptions[ plugin.localName ]
+    const pluginOptions = allPluginOptions[ plugin.localName ] || {}
 
     if ( !plugin.apply ) {
       return
