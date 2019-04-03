@@ -19,19 +19,21 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const normalized = await normalizeConfig( config )
   const routes = await generateRoutes( normalized )
   const plugins = await generatePlugins( normalized, { env } )
+  const pluginOptions = await generatePluginOptions( normalized, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
   const extendContext = await generateExtendContext( config, { env } )
 
   return {
     'node_modules/nut-auto-generated-routes.js': routes,
     'node_modules/nut-auto-generated-plugins.js': plugins,
+    'node_modules/nut-auto-generated-plugin-options.js': pluginOptions,
     'node_modules/nut-auto-generated-extend-context.js': extendContext,
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
   }
 }
 
-async function generateExtendContext( config, { env = 'development' } = {} ) {
+async function generateExtendContext( config, { env } = {} ) {
   const root = path.join( __dirname, '../context' )
   const files = await globby( [
     '*.js'
@@ -78,7 +80,38 @@ async function generateExtendContext( config, { env = 'development' } = {} ) {
   `
 }
 
-async function generatePlugins( config, { env = 'development' } = {} ) {
+async function getPluginOptionsFilePath( env ) {
+  const cwd = process.cwd()
+
+  const map = {
+    'development': 'dev',
+    'production': 'prod',
+  }
+
+  const file = 'config/plugin.' + map[ env ] + '.js'
+
+  const exists = await fse.pathExists( path.join( cwd, 'src/' + file ) )
+
+  if ( !exists ) {
+    return
+  }
+
+  return `@/${ file }`
+}
+
+async function generatePluginOptions( config, { env } = {} ) {
+  const filepath = await getPluginOptionsFilePath( env )
+
+  if ( filepath ) {
+    return `
+      export { default } from '${ filepath }'
+    `
+  }
+
+  return `export default {}`
+}
+
+async function generatePlugins( config, { env } = {} ) {
   const pluginsObj = config.plugins || {}
 
   let plugins = Object.keys( pluginsObj )
@@ -106,7 +139,7 @@ async function generatePlugins( config, { env = 'development' } = {} ) {
   const _exports = `export default [
     ${
       plugins
-        .map( ( plugin, index ) => `[ plugin_${ index }, ${ JSON.stringify( plugin.options ) } ]` )
+        .map( ( plugin, index ) => `plugin_${ index }` )
         .join( ',' )
     }
   ]`

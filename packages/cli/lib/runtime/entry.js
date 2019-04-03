@@ -7,6 +7,7 @@ import './css/override.less'
 
 import nutConfig from 'nut-auto-generated-nut-config'
 import plugins from 'nut-auto-generated-plugins'
+import pluginOptions from 'nut-auto-generated-plugin-options'
 import extendContext from 'nut-auto-generated-extend-context'
 
 import installDirectives from './steps/install-directives'
@@ -34,7 +35,7 @@ import api from './api'
   await installDirectives()
 
   await events.emit( 'system:before-apply-plugins', context )
-  await applyPlugins( plugins, context )
+  await applyPlugins( plugins, pluginOptions, context )
   await events.emit( 'system:after-apply-plugins', context )
 
   const nico = await setupNico()
