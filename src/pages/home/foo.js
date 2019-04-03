@@ -1,5 +1,7 @@
 ---
 title: 列表
+cacheable: false
+permission: [ 'admin' ]
 ---
 
 import Regular from 'regularjs'
