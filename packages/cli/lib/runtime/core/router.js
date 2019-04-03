@@ -174,35 +174,31 @@ export default function createNico( rootRouter, router, prefix = '', ctx ) {
               const oldLayout = from && from.options && from.layout || DEFAULT_LAYOUT
               const newLayout = to && to.options && to.layout || DEFAULT_LAYOUT
 
-              // layout 缓存
-              self.getLayout( newLayout )
-
-              let layout = null
+              const layouts = {
+                from: self.getLayout( oldLayout ),
+                to: self.getLayout( newLayout )
+              }
 
               if ( oldLayout !== newLayout ) {
-                // TODO: 这里的查找不严谨
-                if ( layoutCaches[ oldLayout ] ) {
-                  // 移除老的layout
-                  layoutCaches[ oldLayout ].$inject( false )
-                }
-
-                // 注入新的layout
-                layoutCaches[ newLayout ].$inject( view )
-
-                layout = layoutCaches[ newLayout ]
-              } else if ( from ) {
-                // TODO: 需保证 parentNode 相同(或者traces一致)
-                layout = layoutCaches[ oldLayout ]
-              } else {
-                self.getLayout( oldLayout )
-                layout = layoutCaches[ oldLayout ]
-                layout.$inject( view )
+                layouts.from.$inject( false )
               }
+
+              if ( ( oldLayout === newLayout ) && from ) {
+                // donot have to inject again
+              } else {
+                layouts.to.$inject( view )
+              }
+
+              let layout = layouts.to
+
+              this.layout = layout
 
               self.layoutName = newLayout
               self.layout = layout
+              self.layouts = layouts
               self.router = this
               self.params = params
+              self.page = page
 
               nico.emit( 'layout', {
                 layout,
@@ -228,7 +224,9 @@ export default function createNico( rootRouter, router, prefix = '', ctx ) {
 
           leave() {
             const page = this.page
-            page.unmount()
+            const view = this.layout.$refs.$$view
+
+            page.unmount( view )
 
             routeConfig.leave && routeConfig.leave.call( this )
 
@@ -284,11 +282,12 @@ function switchLayout( nico, name ) {
     const mountNode = nico.layout.parentNode
 
     if ( mountNode ) {
+      nico.page && nico.page.unmount( nico.layout.$refs.$$view )
       nico.layout.$inject( false )
 
       const newLayout = nico.getLayout( name )
 
-      // 动态的$refs，先尝试更新
+      // 动态的$refs，先update
       nico.emit( 'layout', {
         layout: newLayout,
         router: nico.router,
@@ -296,9 +295,8 @@ function switchLayout( nico, name ) {
       newLayout.$update()
 
       const $view = newLayout.$refs.$$view
-      if ( $view && nico.vm ) {
-        nico.vm.$inject( false )
-        nico.vm.$inject( $view )
+      if ( $view ) {
+        nico.page && nico.page.mount( $view )
       }
 
       nico.layout = newLayout
@@ -313,7 +311,7 @@ function findView( context ) {
   let parent = context.parent
   let view
   while ( true ) {
-    view = parent.$instance && parent.$instance.$refs && parent.$instance.$refs.$$view
+    view = parent.layout && parent.layout.$refs && parent.layout.$refs.$$view
 
     if ( view ) {
       break
@@ -337,13 +335,6 @@ const layouts = {
 function createLayout( name ) {
   const Layout = layouts[ name ] || layouts.default
   return new Layout()
-}
-
-function parseLayout( segment ) {
-  if ( !segment ) {
-    return ''
-  }
-  return segment.replace( /(^\/+|の.+)/g, '' )
 }
 
 function walk( routes = [], fn, parent ) {
