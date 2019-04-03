@@ -105,7 +105,7 @@ export default function createEmitter () {
           if ( process.env.NODE_ENV === 'development' ) {
             if ( callback.__plugin ) {
               console.log(
-                '\n%cPlugin:' + callback.__plugin + '%c process ' + name + '%c\n',
+                '\n  %c⇢ Plugin:' + callback.__plugin + '%c process ' + name + '%c\n',
                 'background-color: #ff76a8;color: #fff;padding: 2px 6px;',
                 'background-color: #da4590;color: #fff;padding: 2px 6px;',
                 ''
@@ -125,7 +125,7 @@ export default function createEmitter () {
           if ( process.env.NODE_ENV === 'development' ) {
             if ( callback.__plugin ) {
               console.log(
-                '\n%cPlugin:' + callback.__plugin + '%c process ' + name + '%c\n',
+                '\n  %c⇢Plugin:' + callback.__plugin + '%c process ' + name + '%c\n',
                 'background-color: #ff76a8;color: #fff;padding: 2px 6px;',
                 'background-color: #da4590;color: #fff;padding: 2px 6px;',
                 ''

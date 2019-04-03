@@ -2,8 +2,22 @@
 
 **开发中**
 
+layout / theme 热重载
+
 <img src="./media/hmr.gif" alt="hmr.gif" width="600px">
+
+markdown 主题 热重载
+
 <img src="./media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
+
+
+系统事件
+
+<img src="./media/system-events.jpg" alt="system-events.jpg" width="300px">
+
+路由匹配
+
+<img src="./media/route-match.jpg" alt="route-match.jpg" width="300px">
 
 ## 特性
 

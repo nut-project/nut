@@ -9,6 +9,10 @@ module.exports = {
       enable: true,
       // env: [ 'development' ],
       // options: {}, // 需区分环境
+    },
+    test: {
+      path: require.resolve( './plugins/test' ),
+      enable: true,
     }
   },
   markdown: {
