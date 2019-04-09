@@ -1,5 +1,5 @@
 module.exports = {
-  zh: '某个不知名的系统',
+  zh: '某个系统',
   en: 'PMP',
   theme: 'ocean',
   layout: 'default',
