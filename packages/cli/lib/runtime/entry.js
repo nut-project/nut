@@ -21,6 +21,7 @@ import switchTheme from './utils/switch-theme'
 import app from '@/app.js'
 import events from './events'
 import api from './api'
+import use from './use'
 
 ;( async function () {
   const context = {
@@ -30,6 +31,7 @@ import api from './api'
     app: nutConfig,
     api,
     events,
+    use,
   }
 
   await installDirectives()
