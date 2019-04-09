@@ -5,7 +5,7 @@ const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 
-const baseWebpackConfig = require( '../config/webpack.config.base' )
+const baseWebpackConfig = require( '../webpack/base.config' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
@@ -33,6 +33,10 @@ async function dev(){
   const webpackConfig = Object.assign( {}, baseWebpackConfig, {
     mode: 'development',
   } )
+
+  webpackConfig.plugins.push(
+    new webpack.HotModuleReplacementPlugin()
+  )
 
   const modules = await generateVirtualModules( config, {
     env: 'development'

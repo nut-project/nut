@@ -1,5 +1,5 @@
 ---
-title: 列表
+title: regular
 permission: [ 'admin' ]
 ---
 
@@ -7,7 +7,7 @@ import Regular from 'regularjs'
 
 const Page = Regular.extend( {
   template: `
-    列表页 { count }
+    page written by regular { count }
   `,
 
   config() {
@@ -34,6 +34,7 @@ export default function ( ctx ) {
       if ( !instance ) {
         instance = new Page()
       }
+
       instance.$inject( node )
     },
 

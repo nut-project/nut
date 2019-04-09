@@ -2,7 +2,9 @@ import nutConfig from 'nut-auto-generated-nut-config'
 import layoutDefault from '../layouts/default'
 import layoutSaber from '../layouts/saber'
 
-export default function createNico( rootRouter, router, prefix = '', ctx ) {
+export default function createNico( rootRouter, router, prefix = '', ctx = {} ) {
+  const { events } = ctx
+
   const layoutCaches = {}
   const nico = {
     getLayout( name ) {
@@ -186,7 +188,9 @@ export default function createNico( rootRouter, router, prefix = '', ctx ) {
               if ( ( oldLayout === newLayout ) && from ) {
                 // donot have to inject again
               } else {
+                events.emit( 'layout:before-mount', layouts.to )
                 layouts.to.$inject( view )
+                events.emit( 'layout:after-mount', layouts.to )
               }
 
               let layout = layouts.to

@@ -22,8 +22,8 @@ module.exports = {
       icon: 'sketch',
       title: '宝石',
       pages: [
-        'pages/home/foo',
-        'pages/home/bar',
+        'pages/home/home',
+        'pages/home/regular',
         'pages/home/vue',
         '!pages/home/demo/_id', // 隐藏页面（!）TODO: 将_id和另一个页面放一起
       ]

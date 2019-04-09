@@ -57,6 +57,13 @@ import api from './api'
     switchTheme( nutConfig && nutConfig.theme || 'ocean' )
   } )
 
+  if ( !location.hash ) {
+    const firstRoute = getFirstRoute( nutConfig )
+    if ( firstRoute ) {
+      location.replace( '#' + firstRoute )
+    }
+  }
+
   await events.emit( 'system:before-startup', context )
 
   await app( context )
@@ -64,13 +71,6 @@ import api from './api'
   nico.start( '#app' )
 
   events.emit( 'route:enabled', context )
-
-  if ( !location.hash ) {
-    const firstRoute = getFirstRoute( nutConfig )
-    if ( firstRoute ) {
-      location.href = '#' + firstRoute
-    }
-  }
 
   events.emit( 'system:after-startup', context )
 

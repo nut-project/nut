@@ -4,7 +4,7 @@ const chokidar = require( 'chokidar' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 
-const baseWebpackConfig = require( '../config/webpack.config.base' )
+const baseWebpackConfig = require( '../webpack/base.config' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )

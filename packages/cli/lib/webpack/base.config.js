@@ -1,5 +1,4 @@
 const path = require( 'path' )
-const webpack = require( 'webpack' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 
 const dirs = {
@@ -99,16 +98,26 @@ const webpackConfig = {
 
       {
         test: /\.js$/,
+        exclude: [ /node_modules/ ],
         use: [
-          // {
-          //   loader: 'babel-loader',
-          //   options: {
-          //     presets: [ '@babel/preset-env' ],
-          //     plugins: [
-          //       [ "@babel/plugin-transform-runtime", { "regenerator": true } ]
-          //     ]
-          //   }
-          // },
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                [
+                  require.resolve( '@babel/preset-env' ),
+                  {
+                    targets: {
+                      browsers: [ 'last 2 versions', 'safari >= 7' ]
+                    }
+                  }
+                ]
+              ],
+              plugins: [
+                [ require.resolve( '@babel/plugin-transform-runtime' ) ]
+              ]
+            }
+          },
           {
             loader: require.resolve( '../loader/strip-fm' ),
           },
@@ -142,9 +151,8 @@ const webpackConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin( {
-      template: path.join( dirs.cli, 'lib/index.ejs' ),
+      template: path.join( dirs.cli, 'lib/index.html' ),
     } ),
-    new webpack.HotModuleReplacementPlugin(),
   ],
 }
 

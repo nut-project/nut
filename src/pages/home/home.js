@@ -1,12 +1,12 @@
 ---
-title: 订阅
+title: home
 ---
 
 import Regular from 'regularjs'
 
 const Page = Regular.extend( {
   template: `
-    订阅页
+    home
   `
 } )
 
