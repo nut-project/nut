@@ -2,6 +2,7 @@ import nutConfig from 'nut-auto-generated-nut-config'
 import layoutDefault from '../layouts/default'
 import layoutSaber from '../layouts/saber'
 import layoutNone from '../layouts/none'
+import layoutNow from '../layouts/now'
 
 export default function createNico( rootRouter, router, prefix = '', ctx = {} ) {
   const { events, pages } = ctx
@@ -343,6 +344,7 @@ const layouts = {
   default: layoutDefault,
   saber: layoutSaber,
   none: layoutNone,
+  now: layoutNow,
 }
 
 function createLayout( name ) {
