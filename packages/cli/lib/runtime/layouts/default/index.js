@@ -9,12 +9,12 @@ const Sidebar = Regular.extend( {
         <ul class="${ styles.sidebar__items }">
           {#list menu as item}
             <li
-              class="${ styles.sidebar__item } { this.isActive( active, item.pages ) ? '${ styles.is_active }' : '' }"
+              class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }"
               title="{ item.title }"
               r-tippy="{ { placement: 'right', duration: 0 } }"
             >
               <a
-                href="#{ item.pages | shown | route }"
+                href="#{ item.route }"
                 class="${ styles.sidebar__link }"
               >
                 <i class="${ styles.sidebar__item_icon } iconfont icon-{ item.icon }"></i>
@@ -24,24 +24,6 @@ const Sidebar = Regular.extend( {
         </ul>
       {/if}
     </aside>
-  `,
-
-  isActive( activeName, pages = [] ) {
-    return !!pages.find( page => page.name === activeName )
-  },
-} )
-
-Sidebar.filter( 'shown', ( pages = [] ) => {
-  return pages.find( page => !page.hidden )
-} )
-
-Sidebar.filter( 'route', ( page = {} ) => {
-  return page.route
-} )
-
-const Main = Regular.extend( {
-  template: `
-    {#inc this.$body}
   `,
 } )
 
@@ -53,7 +35,7 @@ const Navbar = Regular.extend( {
           {#if !page.hidden}
             <a
               href="#{ page.route }"
-              class="${ styles.navbar__item } { active === page.name ? '${ styles.is_active }' : '' }"
+              class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
             >
               {#if page.attributes.title}
                 { page.attributes.title }
@@ -96,36 +78,31 @@ Header.filter( 't', function ( v ) {
 } )
 
 const Shell = Regular.extend( {
-  components: { Sidebar, Main, Header },
   template: `
     <nut-sidebar
       menu="{ ctx.app.sidebar }"
-      active="{ ctx.router.name }"
     ></nut-sidebar>
 
-    <nut-main>
-      <nut-header
-        title="{ ctx.app.zh || '未命名的应用' }"
-        user="{ ctx.user }"
-      ></nut-header>
+    <nut-header
+      title="{ ctx.app.zh || '' }"
+      user="{ ctx.user }"
+    ></nut-header>
 
-      <div class="${ styles.content }">
-        <div class="${ styles.progress_wrapper }">
-          <div class="${ styles.progress_container }" id="progress-container"></div>
-        </div>
-
-        {#if currentPages && currentPages.length > 0}
-        <nut-navbar
-          pages="{ currentPages }"
-          active="{ ctx.router.name }"
-        ></nut-navbar>
-        {/if}
-
-        <div class="${ styles.page_container }">
-          <div class="${ styles.page_content }" ref="$$view"></div>
-        </div>
+    <div class="${ styles.content }">
+      <div class="${ styles.progress_wrapper }">
+        <div class="${ styles.progress_container }" id="progress-container"></div>
       </div>
-    </nut-main>
+
+      {#if currentPages && currentPages.length > 0}
+      <nut-navbar
+        pages="{ currentPages }"
+      ></nut-navbar>
+      {/if}
+
+      <div class="${ styles.page_container }">
+        <div class="${ styles.page_content }" ref="$$view"></div>
+      </div>
+    </div>
   `,
 
   computed: {
@@ -140,14 +117,10 @@ const Shell = Regular.extend( {
     }
 
     const sidebar = this.data.ctx.app.sidebar
-    const activeName = this.data.ctx.router.name
-    const found = sidebar.find( s => {
-      const pages = s.pages
-      return pages.some( page => page.name === activeName )
-    } )
+    const found = sidebar.find( s => s.active )
 
     if ( !found ) {
-      return
+      return []
     }
 
     return found.pages || []
@@ -155,7 +128,6 @@ const Shell = Regular.extend( {
 } )
 
 Shell.component( 'nut-sidebar', Sidebar )
-Shell.component( 'nut-main', Main )
 Shell.component( 'nut-navbar', Navbar )
 Shell.component( 'nut-header', Header )
 

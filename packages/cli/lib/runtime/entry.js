@@ -48,11 +48,40 @@ import use from './use'
   } )
 
   nico.on( 'layout', function ( { layout, router } ) {
-    // TODO: 计算page和pages，以及添加nutconfig上的active属性
-    layout.data.ctx = {
-      ...context,
-      router,
-    }
+    events.emit( 'layout:update', layout )
+
+    const activeRouterName = router.name
+
+    context.app.sidebar.forEach( s => {
+      let isAnyPageActive = false
+      let route = {
+        found: false,
+        value: ''
+      }
+
+      s.pages.forEach( page => {
+        if ( !page.hidden && !route.found ) {
+          route.value = page.route
+          route.found = true
+        }
+        if ( page.name === activeRouterName ) {
+          isAnyPageActive = true
+          page.active = true
+        } else {
+          page.active = false
+        }
+      } )
+
+      if ( isAnyPageActive ) {
+        s.active = true
+      } else {
+        s.active = false
+      }
+
+      s.route = route.value
+    } )
+
+    layout.data.ctx = context
 
     layout.$update()
 

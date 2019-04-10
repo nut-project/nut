@@ -18,8 +18,8 @@ const Shell = Regular.extend( {
       <div class="${ styles.navbar }">
         <ul class="${ styles.navbar__items }">
           {#list ctx.app.sidebar as item}
-            <li class="${ styles.navbar__item } { this.isActive( ctx.router.name, item.pages ) ? '${ styles.is_active }' : '' }">
-              <a href="#{ item.pages | shown | route }">
+            <li class="${ styles.navbar__item } { item.active ? '${ styles.is_active }' : '' }">
+              <a href="#{ item.route }">
                 {#if item.icon}
                 <i class="iconfont icon-{ item.icon }"></i>
                 {/if}
@@ -51,24 +51,16 @@ const Shell = Regular.extend( {
     },
   },
 
-  isActive( activeName, pages = [] ) {
-    return !!pages.find( page => page.name === activeName )
-  },
-
   getCurrentPages() {
     if ( !this.data.ctx ) {
       return []
     }
 
     const sidebar = this.data.ctx.app.sidebar
-    const activeName = this.data.ctx.router.name
-    const found = sidebar.find( s => {
-      const pages = s.pages
-      return pages.some( page => page.name === activeName )
-    } )
+    const found = sidebar.find( s => s.active )
 
     if ( !found ) {
-      return
+      return []
     }
 
     return found.pages || []
@@ -77,14 +69,6 @@ const Shell = Regular.extend( {
   getShownPage( pages ) {
     return pages.find( page => !page.hidden )
   },
-} )
-
-Shell.filter( 'shown', ( pages = [] ) => {
-  return pages.find( page => !page.hidden )
-} )
-
-Shell.filter( 'route', ( page = {} ) => {
-  return page.route
 } )
 
 export default Shell
