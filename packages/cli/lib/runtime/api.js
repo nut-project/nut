@@ -1,12 +1,22 @@
 import axios from 'axios'
 
-let axiosInstance = axios.create( {
-  withCredentials: true,
-  crossDomain: true,
-} )
+export default function ( { pages } = {} ) {
+  let axiosInstance = axios.create( {
+    withCredentials: true,
+    crossDomain: true,
+  } )
 
-const api = {
-  axios: axiosInstance,
+  return {
+    axios: axiosInstance,
+    getPageLink( page, data ) {
+      // TODO: data, pathToRegexp.compile
+      const found = pages.find( p => p.page === page )
+
+      if ( !found ) {
+        return location.hash
+      }
+
+      return '/#' + found.route
+    },
+  }
 }
-
-export default api

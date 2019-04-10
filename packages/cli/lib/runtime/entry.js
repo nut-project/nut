@@ -21,7 +21,7 @@ import switchTheme from './utils/switch-theme'
 
 import app from '@/app.js'
 import events from './events'
-import api from './api'
+import createAPI from './api'
 import use from './use'
 
 ;( async function () {
@@ -30,7 +30,7 @@ import use from './use'
     env: process.env.NODE_ENV,
     plugins: {},
     app: nutConfig,
-    api,
+    api: createAPI( { pages } ),
     events,
     pages,
     use,

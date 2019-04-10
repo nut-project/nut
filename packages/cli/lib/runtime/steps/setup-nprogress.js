@@ -7,20 +7,12 @@ export default function ( nico ) {
     parent: '#' + PROGRESS_CONTAINER_ID
   } )
 
-  nico.beforeEach( () => {
-    if ( !getParent() ) {
-      return
-    }
-
-    NProgress.start()
-  } )
-
   nico.afterEach( () => {
     if ( !getParent() ) {
       return
     }
 
-    NProgress.done()
+    NProgress.done( true )
   } )
 
   function getParent() {

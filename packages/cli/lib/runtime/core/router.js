@@ -1,6 +1,7 @@
 import nutConfig from 'nut-auto-generated-nut-config'
 import layoutDefault from '../layouts/default'
 import layoutSaber from '../layouts/saber'
+import layoutNone from '../layouts/none'
 
 export default function createNico( rootRouter, router, prefix = '', ctx = {} ) {
   const { events } = ctx
@@ -173,8 +174,8 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {} ) 
               const view = findView( this ) || self.mountNode
 
               const DEFAULT_LAYOUT = nutConfig.layout || 'default'
-              const oldLayout = from && from.options && from.layout || DEFAULT_LAYOUT
-              const newLayout = to && to.options && to.layout || DEFAULT_LAYOUT
+              const oldLayout = from && from.options && from.options.layout || DEFAULT_LAYOUT
+              const newLayout = to && to.options && to.options.layout || DEFAULT_LAYOUT
 
               const layouts = {
                 from: self.getLayout( oldLayout ),
@@ -334,6 +335,7 @@ function findView( context ) {
 const layouts = {
   default: layoutDefault,
   saber: layoutSaber,
+  none: layoutNone,
 }
 
 function createLayout( name ) {

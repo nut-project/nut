@@ -15,13 +15,15 @@ const dirs = {
   project: process.cwd(),
 }
 
-
 async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const root = path.join( dirs.project, 'src' )
   const pages = await getPages( root )
+  const pluginPages = await getPluginPages( config.plugins )
+
+  pages.push( ...pluginPages )
 
   const normalized = await normalizeConfig( config, pages )
-  const routes = await generateRoutes( pages )
+  const routes = await generateRoutes( pages, config.layout )
   const plugins = await generatePlugins( normalized, { env } )
   const pluginOptions = await generatePluginOptions( normalized, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
@@ -203,7 +205,7 @@ async function normalizeConfig( config, allPages ) {
     const pages = s.pages
       .map( page => {
         const normalized = page.replace( /^(\/)/g, '' )
-        return allPages.find( page => page.path === normalized )
+        return allPages.find( page => page.page === normalized )
       } )
       .filter( Boolean )
 
@@ -233,7 +235,29 @@ async function readAttributes( filepath ) {
   return result.attributes || {}
 }
 
-async function getPages( root ) {
+async function getPluginPages( plugins = {} ) {
+  const pages = []
+
+  const promises = Object.keys( plugins ).map( async name => {
+    const plugin = plugins[ name ]
+    const root = path.dirname( plugin.path )
+
+    const pluginPages = await getPages( root, page => {
+      page.name = page.name + '_' + slugify( name, { separator: '$' } )
+      page.page = page.page + '@' + name
+      page.route = page.route + '@' + name
+      return page
+    } )
+
+    pages.push( ...pluginPages )
+  } )
+
+  await Promise.all( promises )
+
+  return pages.filter( Boolean )
+}
+
+async function getPages( root, processor = v => v ) {
   const files = await globby( [
     'pages/**/*.js',
     'pages/**/*.md',
@@ -253,32 +277,32 @@ async function getPages( root ) {
     const filepath = path.join( root, file )
     const page = path.join( dir, name )
 
-    return {
+    return processor( {
       name: ensureUnique(
         slugify( page, { separator: '$' } )
       ),
       filepath,
-      path: page,
+      page,
       route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
       attributes: await readAttributes( filepath ),
       type: types[ ext ] || '',
-    }
+    } )
   } )
 
   return await Promise.all( promises )
 }
 
-async function generateRoutes( pages ) {
+async function generateRoutes( pages, globalLayout ) {
   let output = ''
 
   output = output + pages
-    .map( page => `import ${ page.name } from '@/${ page.path }';` )
+    .map( page => `import ${ page.name } from '${ page.filepath }';` )
     .join( '\n' )
 
   output = output + 'const routes = [\n' + pages
     .map( page => `{
       name: '${ page.name }',
-      layout: '${ page.layout }',
+      layout: '${ page.attributes.layout || globalLayout || 'default' }',
       path: '${ page.route }',
       filepath: '${ tildify( page.filepath ) }',
       component: ${ page.name },

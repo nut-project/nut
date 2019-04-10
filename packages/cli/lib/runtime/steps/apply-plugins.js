@@ -13,6 +13,9 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
         plugins[ plugin.localName ] = plugins[ plugin.localName ] || {}
         plugins[ plugin.localName ][ prop ] = value
       },
+      getPluginPageLink( page, data ) {
+        return api.getPageLink( page + '@' + plugin.localName, data )
+      },
     }
 
     const stubEvents = {
