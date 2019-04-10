@@ -100,9 +100,9 @@ import use from './use'
 
   await events.emit( 'system:before-startup', context )
 
-  await app( context )
-
   nico.start( '#app' )
+
+  await app( context )
 
   events.emit( 'route:enabled', context )
 

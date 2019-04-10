@@ -4,7 +4,7 @@ import layoutSaber from '../layouts/saber'
 import layoutNone from '../layouts/none'
 
 export default function createNico( rootRouter, router, prefix = '', ctx = {} ) {
-  const { events } = ctx
+  const { events, pages } = ctx
 
   const layoutCaches = {}
   const nico = {
@@ -242,6 +242,13 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {} ) 
         } )
         parent = parent || root
         parent.append( current )
+
+        const page = pages.find( page => page.name === routeConfig.name )
+
+        if ( page ) {
+          page.router = current
+        }
+
         return current
       } )
     },

@@ -9,14 +9,17 @@ export default function ( { pages } = {} ) {
   return {
     axios: axiosInstance,
     getPageLink( page, data ) {
-      // TODO: data, pathToRegexp.compile
       const found = pages.find( p => p.page === page )
 
-      if ( !found ) {
-        return location.hash
+      if ( !found || !found.router ) {
+        return
       }
 
-      return '/#' + found.route
+      if ( !found.router.toPath ) {
+        throw new Error( 'router has not been started yet' )
+      }
+
+      return '/#' + found.router.toPath( data )
     },
   }
 }
