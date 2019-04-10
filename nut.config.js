@@ -6,13 +6,15 @@ module.exports = {
   plugins: {
     login: {
       path: require.resolve( './plugins/login-netease-openid' ),
-      enable: true,
+      // enable: true,
       // env: [ 'development' ],
     },
     test: {
       path: require.resolve( './plugins/test' ),
-      enable: true,
-    }
+    },
+    notfound: {
+      path: require.resolve( './plugins/notfound' ),
+    },
   },
   markdown: {
     theme: 'prism-okaidia',
@@ -25,7 +27,6 @@ module.exports = {
         'pages/home/home',
         'pages/home/regular',
         'pages/home/vue',
-        '!pages/home/demo/_id', // 隐藏页面（!）TODO: 将_id和另一个页面放一起
       ]
     },
     {

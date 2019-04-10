@@ -32,18 +32,16 @@ const Navbar = Regular.extend( {
     <div class="${ styles.navbar }">
       <div class="${ styles.navbar__scroller }">
         {#list pages as page}
-          {#if !page.hidden}
-            <a
-              href="#{ page.route }"
-              class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
-            >
-              {#if page.attributes.title}
-                { page.attributes.title }
-              {#else}
-                未命名
-              {/if}
-            </a>
-          {/if}
+          <a
+            href="#{ page.route }"
+            class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
+          >
+            {#if page.attributes.title}
+              { page.attributes.title }
+            {#else}
+              未命名
+            {/if}
+          </a>
         {/list}
       </div>
     </div>

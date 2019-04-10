@@ -47,7 +47,7 @@ const Shell = Regular.extend( {
   computed: {
     currentPage() {
       const currentPages = this.getCurrentPages()
-      return this.getShownPage( currentPages )
+      return currentPages[ 0 ]
     },
   },
 
@@ -64,10 +64,6 @@ const Shell = Regular.extend( {
     }
 
     return found.pages || []
-  },
-
-  getShownPage( pages ) {
-    return pages.find( page => !page.hidden )
   },
 } )
 

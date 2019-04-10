@@ -15,15 +15,20 @@ const dirs = {
   project: process.cwd(),
 }
 
+
 async function generateVirtualModules( config, { env = 'development' } = {} ) {
-  const normalized = await normalizeConfig( config )
-  const routes = await generateRoutes( normalized )
+  const root = path.join( dirs.project, 'src' )
+  const pages = await getPages( root )
+
+  const normalized = await normalizeConfig( config, pages )
+  const routes = await generateRoutes( pages )
   const plugins = await generatePlugins( normalized, { env } )
   const pluginOptions = await generatePluginOptions( normalized, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
   const extendContext = await generateExtendContext( config, { env } )
 
   return {
+    'node_modules/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
     'node_modules/nut-auto-generated-routes.js': routes,
     'node_modules/nut-auto-generated-plugins.js': plugins,
     'node_modules/nut-auto-generated-plugin-options.js': pluginOptions,
@@ -193,91 +198,90 @@ function resolve( request ) {
   } )
 }
 
-async function normalizeConfig( config ) {
-  const texts = new Set()
-  let index = 0
+async function normalizeConfig( config, allPages ) {
+  const sidebar = config.sidebar.map( s => {
+    const pages = s.pages
+      .map( page => {
+        const normalized = page.replace( /^(\/)/g, '' )
+        return allPages.find( page => page.path === normalized )
+      } )
+      .filter( Boolean )
 
-  function ensureUnique( text ) {
-    if ( !texts.has( text ) ) {
-      texts.add( text )
-      return text
-    }
-
-    index++
-    return text + index
-  }
-
-  const promises = config.sidebar.map( async s => {
-    const promises = s.pages.map( async page => {
-      let hidden = false
-      if ( page.startsWith( '!' ) ) {
-        hidden = true
-      }
-
-      const trimed = page.replace( /^(!|\/|^)/g, '' )
-
-      const filepath = await resolve( trimed )
-      const buffer = await fse.readFile( filepath )
-      const content = buffer.toString()
-      const result = fm( content )
-      const attributes = result.attributes || {}
-
-      const route = '/' + trimed.replace( /(\/_)(.+)/g, '/:$2' )
-      const extname = path.extname( filepath )
-      const types = {
-        '.js': 'js',
-        '.md': 'markdown',
-      }
-      const type = types[ extname ]
-
-      return {
-        name: ensureUnique(
-          slugify( trimed, { separator: '$' } )
-        ),
-        filepath,
-        path: trimed,
-        route,
-        hidden,
-        attributes,
-        type,
-      }
-    } )
-
-
-    return Object.assign( {}, s, {
-      pages: await Promise.all( promises ),
-    } )
+    return Object.assign( {}, s, { pages } )
   } )
 
-  return Object.assign( {}, config, {
-    sidebar: await Promise.all( promises )
-  } )
+  return Object.assign( {}, config, { sidebar } )
 }
 
-async function generateRoutes( config = {} ) {
-  const sidebar = config.sidebar || []
+const texts = new Set()
+let index = 0
 
-  const imports = []
+function ensureUnique( text ) {
+  if ( !texts.has( text ) ) {
+    texts.add( text )
+    return text
+  }
 
-  sidebar.map( s => {
-    s.pages.map( ( { name, path, filepath, route, hidden, attributes = {} } = {} ) => {
-      imports.push( { name, path, filepath, route, hidden, layout: attributes.layout } )
-    } )
+  index++
+  return text + index
+}
+
+async function readAttributes( filepath ) {
+  const buffer = await fse.readFile( filepath )
+  const content = buffer.toString()
+  const result = fm( content )
+  return result.attributes || {}
+}
+
+async function getPages( root ) {
+  const files = await globby( [
+    'pages/**/*.js',
+    'pages/**/*.md',
+  ], {
+    cwd: root,
+    deep: true,
+    onlyFiles: true,
   } )
 
+  const types = {
+    '.js': 'js',
+    '.md': 'markdown',
+  }
+
+  const promises = files.map( async file => {
+    const { dir, ext, name } = path.parse( file )
+    const filepath = path.join( root, file )
+    const page = path.join( dir, name )
+
+    return {
+      name: ensureUnique(
+        slugify( page, { separator: '$' } )
+      ),
+      filepath,
+      path: page,
+      route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
+      attributes: await readAttributes( filepath ),
+      type: types[ ext ] || '',
+    }
+  } )
+
+  return await Promise.all( promises )
+}
+
+async function generateRoutes( pages ) {
   let output = ''
 
-  output = output + imports
-    .map( imp => `import ${ imp.name } from '@/${ imp.path }';` )
+  output = output + pages
+    .map( page => `import ${ page.name } from '@/${ page.path }';` )
     .join( '\n' )
 
-  output = output + 'const routes = [\n' + imports
-    .map( imp => `{
-      name: '${ imp.name }',
-      layout: '${ imp.layout }',
-      path: '${ imp.route }',
-      filepath: '${ tildify( imp.filepath ) }',
-      component: ${ imp.name },
+  output = output + 'const routes = [\n' + pages
+    .map( page => `{
+      name: '${ page.name }',
+      layout: '${ page.layout }',
+      path: '${ page.route }',
+      filepath: '${ tildify( page.filepath ) }',
+      component: ${ page.name },
     }` ).join( ',\n' ) + '\n];' +
     `export default routes;`
 

@@ -6,14 +6,12 @@ export default function getFirstRoute( config ) {
   sidebar.some( s => {
     const pages = s.pages
 
-    return pages.some( page => {
-      if ( !page.hidden ) {
-        found = page
-        return true
-      }
+    if ( pages[ 0 ] ) {
+      found = pages[ 0 ]
+      return true
+    }
 
-      return false
-    } )
+    return false
   } )
 
   if ( !found ) {

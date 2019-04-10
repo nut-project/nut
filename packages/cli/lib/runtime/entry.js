@@ -7,6 +7,7 @@ import './css/override.less'
 
 import nutConfig from 'nut-auto-generated-nut-config'
 import plugins from 'nut-auto-generated-plugins'
+import pages from 'nut-auto-generated-pages'
 import pluginOptions from 'nut-auto-generated-plugin-options'
 import extendContext from 'nut-auto-generated-extend-context'
 
@@ -31,6 +32,7 @@ import use from './use'
     app: nutConfig,
     api,
     events,
+    pages,
     use,
   }
 
@@ -60,10 +62,11 @@ import use from './use'
       }
 
       s.pages.forEach( page => {
-        if ( !page.hidden && !route.found ) {
+        if ( !route.found ) {
           route.value = page.route
           route.found = true
         }
+
         if ( page.name === activeRouterName ) {
           isAnyPageActive = true
           page.active = true
