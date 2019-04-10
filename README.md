@@ -59,18 +59,21 @@ markdown 主题 热重载
 一个标准的 plugin 是这样子的
 
 ```js
-exports.name = 'your-superb-plugin'
-exports.type = 'login' // 一些特殊类型的插件需要指定 type，大多数情况下你可以忽略它
-exports.apply = function ( ctx = {}, options = {} ) {
-  const { api, events } = ctx
+export default {
+  name: 'your-superb-plugin',
+  // 一些特殊类型的插件需要指定 type，大多数情况下你可以忽略它
+  type: 'login',
+  apply( ctx = {}, options = {} ) {
+    const { api, events } = ctx
 
-  api.expose( 'method_name', () => {} )
-  api.expose( 'prop', 'value' )
+    api.expose( 'method_name', () => {} )
+    api.expose( 'prop', 'value' )
 
-  events.on( 'system:before-startup', async ctx => {
-    await api.axios() // do some request
-    await events.pluginEmit( 'some-event', data ) // emit plugin event out
-  } )
+    events.on( 'system:before-startup', async ctx => {
+      await api.axios() // do some request
+      await events.pluginEmit( 'some-event', data ) // emit plugin event out
+    } )
+  }
 }
 ```
 
