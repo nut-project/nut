@@ -34,17 +34,21 @@ markdown 主题 热重载
 
 ## 内置 layout
 
-### default
+#### default
 
 | ocean | sakura |
 | :---: | :---: |
 | ![ocean](./media/default-ocean.jpg) | ![sakura](./media/default-sakura.jpg) |
 
-### saber
+#### saber
 
 | ocean | sakura |
 | :---: | :---: |
 | ![ocean](./media/saber-ocean.jpg) | ![sakura](./media/saber-sakura.jpg) |
+
+#### now
+
+<img src="./media/now.jpg" alt="now" width="400px">
 
 ### 如何写一个 layout
 
