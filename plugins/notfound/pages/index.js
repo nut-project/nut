@@ -2,7 +2,8 @@
 layout: none
 ---
 
-export default function ( ctx ) {
+export default function ( ctx, options = {} ) {
+
   return {
     mount( node ) {
       node.innerText = '404'

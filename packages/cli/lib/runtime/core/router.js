@@ -4,7 +4,7 @@ import layoutSaber from '../layouts/saber'
 import layoutNone from '../layouts/none'
 import layoutNow from '../layouts/now'
 
-export default function createNico( rootRouter, router, prefix = '', ctx = {} ) {
+export default function createNico( rootRouter, router, prefix = '', ctx = {}, pluginOptions = {} ) {
   const { events, pages } = ctx
 
   const layoutCaches = {}
@@ -62,7 +62,11 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {} ) 
             }
 
             if ( !this.page ) {
-              this.page = routeConfig.component( ctx )
+              let options = {}
+              if ( routeConfig.provider === 'plugin' ) {
+                options = pluginOptions[ routeConfig.plugin ] || {}
+              }
+              this.page = routeConfig.component( ctx, options )
             }
 
             const self = this
@@ -215,7 +219,6 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {} ) 
 
               // TODO: pass params to instance
 
-              // 检查 $$view 下挂载的 layout 是否是和自己匹配的，如果匹配则不用销毁，否则需要先销毁
               if ( layout.$refs.$$view ) {
                 page.mount( layout.$refs.$$view )
               }

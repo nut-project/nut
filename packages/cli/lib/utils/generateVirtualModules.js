@@ -246,6 +246,8 @@ async function getPluginPages( plugins = {} ) {
       page.name = page.name + '_' + slugify( name, { separator: '$' } )
       page.page = page.page + '@' + name
       page.route = page.route + '@' + name
+      page.provider = 'plugin'
+      page.plugin = name
       return page
     } )
 
@@ -286,6 +288,8 @@ async function getPages( root, processor = v => v ) {
       route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
       attributes: await readAttributes( filepath ),
       type: types[ ext ] || '',
+      provider: '',
+      plugin: '',
     } )
   } )
 
@@ -306,6 +310,8 @@ async function generateRoutes( pages, globalLayout ) {
       path: '${ page.route }',
       filepath: '${ tildify( page.filepath ) }',
       component: ${ page.name },
+      provider: '${ page.provider }',
+      plugin: '${ page.plugin }',
     }` ).join( ',\n' ) + '\n];' +
     `export default routes;`
 

@@ -42,7 +42,7 @@ import use from './use'
   await applyPlugins( plugins, pluginOptions, context )
   await events.emit( 'system:after-apply-plugins', context )
 
-  const nico = await setupNico( context )
+  const nico = await setupNico( context, pluginOptions )
   await setupNProgress( nico )
 
   nico.on( 'notfound', () => {

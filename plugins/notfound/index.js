@@ -1,5 +1,5 @@
 export default {
-  name: 'notfound',
+  name: 'route-notfound',
 
   apply( { api, events }, options ) {
     events.on( 'route:notfound', () => {
