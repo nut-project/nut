@@ -1,6 +1,7 @@
 module.exports = {
   zh: 'nut project',
   en: 'nut project',
+  logo: 'https://i.loli.net/2019/04/12/5cb03f9e60abc.png',
   theme: 'ocean',
   layout: 'now',
   plugins: {
@@ -24,9 +25,10 @@ module.exports = {
 
     {
       icon: '',
-      title: 'API',
+      title: '文档',
       pages: [
-        'pages/api/context'
+        'pages/docs/cli',
+        'pages/docs/api',
       ]
     },
 

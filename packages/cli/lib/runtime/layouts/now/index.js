@@ -6,7 +6,11 @@ const Layout = Regular.extend( {
     <div class="${ styles.header }">
       <div class="${ styles.header__content }">
         <div class="${ styles.title }">
-          { ctx.app.zh | uppercase }
+          {#if ctx.app.logo}
+            <img class="${ styles.logo }" src="{ ctx.app.logo }" alt="" />
+          {/if}
+
+          <div>{ ctx.app.zh | uppercase }</div>
         </div>
         <div class="${ styles.sidebar }">
           {#list ctx.app.sidebar as item}
