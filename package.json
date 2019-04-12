@@ -8,7 +8,8 @@
     "dev": "node ./packages/cli/bin/index.js",
     "build": "node ./packages/cli/bin/index.js --prod",
     "dev:docs": "npm run dev --prefix ./website",
-    "build:docs": "npm run build --prefix ./website"
+    "build:docs": "npm run build --prefix ./website",
+    "deploy": "npm run build:docs && gh-pages -d ./website/dist"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,7 @@
   },
   "homepage": "https://github.com/fengzilong/nut#readme",
   "devDependencies": {
+    "gh-pages": "^2.0.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
