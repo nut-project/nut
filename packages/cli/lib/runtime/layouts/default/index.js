@@ -14,7 +14,10 @@ const Sidebar = Regular.extend( {
               r-tippy="{ { placement: 'right', duration: 0 } }"
             >
               <a
-                href="#{ item.route }"
+                href="{ item.route ? '#' + item.route : item.link }"
+                {#if item.link}
+                target="_blank"
+                {/if}
                 class="${ styles.sidebar__link }"
               >
                 <i class="${ styles.sidebar__item_icon } iconfont icon-{ item.icon }"></i>

@@ -11,7 +11,10 @@ const Layout = Regular.extend( {
         <div class="${ styles.sidebar }">
           {#list ctx.app.sidebar as item}
             <a
-              href="#{ item.route }"
+              href="{ item.route ? '#' + item.route : item.link }"
+              {#if item.link}
+              target="_blank"
+              {/if}
               class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }"
             >
               { item.title }

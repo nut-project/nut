@@ -1,0 +1,12 @@
+{
+  "name": "nut-docs",
+  "private": true,
+  "scripts": {
+    "dev": "node ../packages/cli/bin/index.js",
+    "build": "node ../packages/cli/bin/index.js --prod"
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}

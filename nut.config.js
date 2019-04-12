@@ -6,7 +6,7 @@ module.exports = {
   plugins: {
     login: {
       path: require.resolve( './plugins/login-netease-openid' ),
-      // enable: true,
+      enable: false,
       // env: [ 'development' ],
     },
     test: {

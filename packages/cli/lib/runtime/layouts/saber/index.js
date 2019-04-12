@@ -19,7 +19,12 @@ const Shell = Regular.extend( {
         <ul class="${ styles.navbar__items }">
           {#list ctx.app.sidebar as item}
             <li class="${ styles.navbar__item } { item.active ? '${ styles.is_active }' : '' }">
-              <a href="#{ item.route }">
+              <a
+                href="{ item.route ? '#' + item.route : item.link }"
+                {#if item.link}
+                target="_blank"
+                {/if}
+              >
                 {#if item.icon}
                 <i class="iconfont icon-{ item.icon }"></i>
                 {/if}

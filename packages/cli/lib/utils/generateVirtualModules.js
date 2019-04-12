@@ -202,6 +202,7 @@ function resolve( request ) {
 
 async function normalizeConfig( config, allPages ) {
   const sidebar = config.sidebar.map( s => {
+    s.pages = s.pages || []
     const pages = s.pages
       .map( page => {
         const normalized = page.replace( /^(\/)/g, '' )
