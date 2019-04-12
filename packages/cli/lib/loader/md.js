@@ -46,7 +46,7 @@ renderer.code = function ( code, infostring, escaped ) {
   }
 
   if (!lang) {
-    return '<pre class="language-unknown" data-lang="unknown"><code>'
+    return '<pre class="language-unknown"><code>'
       + (escaped ? code : escape(code, true))
       + '</code></pre>';
   }

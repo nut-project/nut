@@ -7,12 +7,12 @@ code[class*="language-"], pre[class*="language-"], code {
   font-family: 'Source Code Pro', monospace;
 }
 
-pre[class*='language-']::before {
+pre[data-lang]::before {
   position: absolute;
   top: 0px;
   right: 20px;
-  padding: 3px 10px;
   font-size: 12px;
+  padding: 3px 10px;
   text-align: right;
   color: #444;
   font-weight: 700;
@@ -20,7 +20,7 @@ pre[class*='language-']::before {
   text-transform: uppercase;
   border-radius: 0 0 5px 5px;
   background: #ddd;
-  content: attr(data-lang)
+  content: attr(data-lang);
 }
 
 pre[class='language-javascript']::before {

@@ -1,6 +1,6 @@
 module.exports = {
-  zh: 'nut-project',
-  en: 'nut-project',
+  zh: 'nut project',
+  en: 'nut project',
   theme: 'ocean',
   layout: 'now',
   plugins: {
@@ -17,8 +17,8 @@ module.exports = {
         'pages/guide/introduction',
         'pages/guide/installation',
         'pages/guide/get-started',
-        'pages/guide/plugin',
         'pages/guide/layout',
+        'pages/guide/plugin',
       ]
     },
 
