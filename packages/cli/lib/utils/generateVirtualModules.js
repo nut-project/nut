@@ -2,11 +2,6 @@ const path = require( 'path' )
 const fse = require( 'fs-extra' )
 const tildify = require( 'tildify' )
 const globby = require( 'globby' )
-const {
-  NodeJsInputFileSystem,
-  CachedInputFileSystem,
-  ResolverFactory
-} = require( 'enhanced-resolve' )
 
 const dirs = require( './dirs' )
 const getPages = require( './getPages' )
@@ -187,37 +182,19 @@ function normalizePlugin( plugin ) {
   return plugin
 }
 
-const resolver = ResolverFactory.createResolver( {
-  extensions: [ '.js', '.md', '.vue' ],
-  fileSystem: new CachedInputFileSystem( new NodeJsInputFileSystem(), 4000 )
-} )
-
 async function generateMarkdownThemeCSS( config ) {
   const lookupStartPath = path.join( dirs.cli, 'node_modules' )
-  const request = 'prismjs/themes/' + config.markdown.theme + '.css'
+  const theme = ( config.markdown && config.markdown.theme ) || 'prism-okaidia'
+  const root = path.dirname( require.resolve( 'prismjs/package.json' ) )
+  const request = 'themes/' + theme + '.css'
+  const cssPath = path.join( root, request )
 
-  return await new Promise( ( resolve, reject ) => {
-    resolver.resolve( {}, lookupStartPath, './' + request, {}, async ( err, filepath ) => {
-      if ( err ) {
-        return reject( err )
-      }
+  if ( await fse.pathExists( cssPath ) ) {
+    const buffer = await fse.readFile( cssPath, 'utf8' )
+    return buffer.toString()
+  }
 
-      const buffer = await fse.readFile( filepath, 'utf8' )
-      resolve( buffer.toString() )
-    } )
-  } )
-}
-
-function resolve( request ) {
-  const lookupStartPath = path.join( dirs.project, 'src' )
-  return new Promise( ( resolve, reject ) => {
-    resolver.resolve( {}, lookupStartPath, './' + request, {}, ( err, filepath ) => {
-      if ( err ) {
-        return reject( err )
-      }
-      resolve( filepath )
-    } )
-  } )
+  return ''
 }
 
 async function normalizeConfig( config, allPages ) {

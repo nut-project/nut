@@ -21,10 +21,6 @@ const dirs = {
   project: process.cwd(),
 }
 
-const explorer = cosmiconfig( 'nut', {
-  cache: false,
-} )
-
 async function dev(){
   let result = await loadConfig()
   let config = result.config || {}
@@ -67,7 +63,7 @@ async function dev(){
   chokidar.watch( [ result.filepath ] )
     .on( 'change', async () => {
       try {
-        result = await explorer.search()
+        result = await loadConfig()
         config = result.config
 
         const modules = await generateVirtualModules( config, {
