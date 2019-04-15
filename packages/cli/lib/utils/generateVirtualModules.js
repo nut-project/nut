@@ -7,23 +7,14 @@ const {
   CachedInputFileSystem,
   ResolverFactory
 } = require( 'enhanced-resolve' )
-const fm = require( 'front-matter' )
-const slugify = require( '@sindresorhus/slugify' )
 
-const dirs = {
-  cli: path.join( __dirname, '../../' ),
-  project: process.cwd(),
-}
+const dirs = require( './dirs' )
+const getPages = require( './getPages' )
 
 async function generateVirtualModules( config, { env = 'development' } = {} ) {
-  const root = path.join( dirs.project, 'src' )
-  const pages = await getPages( root )
-  const pluginPages = await getPluginPages( config.plugins )
-
-  pages.push( ...pluginPages )
-
+  const pages = await getPages( config )
   const normalized = await normalizeConfig( config, pages )
-  const routes = await generateRoutes( pages, config.layout )
+  const routes = await generateRoutes( pages )
   const plugins = await generatePlugins( normalized, { env } )
   const pluginOptions = await generatePluginOptions( normalized, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
@@ -197,7 +188,7 @@ function normalizePlugin( plugin ) {
 }
 
 const resolver = ResolverFactory.createResolver( {
-  extensions: [ '.js', '.md' ],
+  extensions: [ '.js', '.md', '.vue' ],
   fileSystem: new CachedInputFileSystem( new NodeJsInputFileSystem(), 4000 )
 } )
 
@@ -245,92 +236,7 @@ async function normalizeConfig( config, allPages ) {
   return Object.assign( {}, config, { sidebar } )
 }
 
-async function readAttributes( filepath ) {
-  const buffer = await fse.readFile( filepath, 'utf8' )
-  const content = buffer.toString()
-  const result = fm( content )
-  return result.attributes || {}
-}
-
-async function getPluginPages( plugins = {} ) {
-  const pages = []
-
-  const promises = Object.keys( plugins ).map( async name => {
-    const plugin = plugins[ name ]
-    const root = path.dirname( plugin.path )
-
-    const pluginPages = await getPages( root, page => {
-      page.name = page.name + '_' + slugify( name, { separator: '$' } )
-      page.page = page.page + '@' + name
-      page.route = page.route + '@' + name
-      page.provider = 'plugin'
-      page.plugin = name
-      return page
-    } )
-
-    pages.push( ...pluginPages )
-  } )
-
-  await Promise.all( promises )
-
-  return pages.filter( Boolean )
-}
-
-async function getPages( root, processor = v => v ) {
-  const files = await globby( [
-    'pages/**/*.js',
-    'pages/**/*.md',
-  ], {
-    cwd: root,
-    deep: true,
-    onlyFiles: true,
-  } )
-
-  const types = {
-    '.js': 'js',
-    '.md': 'markdown',
-  }
-
-  function postfix( text, index ) {
-    return text + index
-  }
-
-  const promises = files
-    .sort( ( a, b ) => {
-      if ( a < b ) {
-        return 1
-      }
-
-      if ( a > b ) {
-        return -1
-      }
-
-      return 0
-    } )
-    .map( async ( file, index ) => {
-      const { dir, ext, name } = path.parse( file )
-      const filepath = path.join( root, file )
-      const page = path.join( dir, name )
-
-      return processor( {
-        name: postfix(
-          slugify( page, { separator: '$' } ),
-          index
-        ),
-        filepath,
-        page,
-        route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
-        attributes: await readAttributes( filepath ),
-        type: types[ ext ] || '',
-        provider: '',
-        plugin: '',
-      } )
-    } )
-
-  return await Promise.all( promises )
-}
-
-async function generateRoutes( pages, globalLayout ) {
+async function generateRoutes( pages ) {
   let output = ''
 
   output = output + pages

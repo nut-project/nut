@@ -70,7 +70,7 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
               if ( routeConfig.provider === 'plugin' ) {
                 options = pluginOptions[ routeConfig.plugin ] || {}
               }
-              this.page = routeConfig.component( ctx, options )
+              this.page = routeConfig.component.$$nut( ctx, options )
             }
 
             const self = this

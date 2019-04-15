@@ -3,8 +3,7 @@ const webpack = require( 'webpack' )
 const chokidar = require( 'chokidar' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
-const baseWebpackConfig = require( '../webpack/base.config' )
+const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
@@ -25,7 +24,7 @@ async function prod(){
 
   ensureConfigDefaults( config )
 
-  const webpackConfig = Object.assign( {}, baseWebpackConfig, {
+  const webpackConfig = Object.assign( {}, createBaseWebpackConfig, {
     mode: 'production',
     devtool: false,
     output: {
@@ -41,13 +40,6 @@ async function prod(){
   const virtualModules = new VirtualModulesPlugin( modules )
 
   webpackConfig.plugins.push( virtualModules )
-  webpackConfig.plugins.push(
-    new HtmlWebpackPlugin( {
-      template: path.join( __dirname, '../webpack/template.html' ),
-      title: ( config.html && config.html.title ) || config.zh || config.en,
-      favicon: ( config.html && config.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
-    } ),
-  )
 
   const compiler = webpack( webpackConfig )
 

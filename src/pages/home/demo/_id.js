@@ -15,7 +15,7 @@ const Page = Regular.extend( {
   },
 } )
 
-export default function ( ctx ) {
+Page.$$nut = function ( ctx ) {
   let instance
 
   return {
@@ -31,3 +31,5 @@ export default function ( ctx ) {
     },
   }
 }
+
+export default Page

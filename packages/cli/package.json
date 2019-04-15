@@ -46,6 +46,8 @@
     "unfancy-router": "0.0.12",
     "url-loader": "^1.1.2",
     "vue": "^2.6.10",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.10",
     "webpack": "^4.29.6",
     "webpack-dev-server": "^3.2.1",
     "webpack-virtual-modules": "^0.1.10"

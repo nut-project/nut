@@ -22,7 +22,7 @@ const Page = {
   },
 }
 
-export default ctx => {
+Page.$$nut = ctx => {
   let instance
   let el
 
@@ -52,3 +52,5 @@ export default ctx => {
     },
   }
 }
+
+export default Page

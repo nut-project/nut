@@ -30,6 +30,7 @@ module.exports = {
         'pages/home/home',
         'pages/home/regular',
         'pages/home/vue',
+        'pages/home/index',
       ]
     },
     {

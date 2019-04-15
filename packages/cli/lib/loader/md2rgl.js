@@ -13,7 +13,7 @@ module.exports = function ( source ) {
       \`
     } )
 
-    export default ctx => {
+    Page.$$nut = ctx => {
       let instance
 
       return {
@@ -32,5 +32,7 @@ module.exports = function ( source ) {
         },
       }
     }
+
+    export default Page
   `
 }
