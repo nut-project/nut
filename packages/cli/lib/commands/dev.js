@@ -4,6 +4,7 @@ const cosmiconfig = require( 'cosmiconfig' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
 
 const baseWebpackConfig = require( '../webpack/base.config' )
@@ -41,6 +42,13 @@ async function dev(){
   )
   webpackConfig.plugins.push(
     new CaseSensitivePathsPlugin()
+  )
+  webpackConfig.plugins.push(
+    new HtmlWebpackPlugin( {
+      template: path.join( __dirname, '../webpack/template.html' ),
+      title: ( config.html && config.html.title ) || config.zh || config.en,
+      favicon: ( config.html && config.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
+    } ),
   )
 
   const modules = await generateVirtualModules( config, {

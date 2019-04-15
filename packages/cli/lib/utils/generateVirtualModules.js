@@ -28,6 +28,7 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const pluginOptions = await generatePluginOptions( normalized, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
   const extendContext = await generateExtendContext( config, { env } )
+  const appContent = await generateAppContent()
 
   return {
     'node_modules/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
@@ -37,7 +38,20 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
     'node_modules/nut-auto-generated-extend-context.js': extendContext,
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
+    'node_modules/nut-auto-generated-app.js': appContent,
   }
+}
+
+async function generateAppContent() {
+  const appFile = path.join( dirs.project, 'src/app.js' )
+  if ( await fse.pathExists( appFile ) ) {
+    const buffer = await fse.readFile( appFile, 'utf8' )
+    return buffer.toString()
+  }
+
+  return `
+    export default function () {}
+  `
 }
 
 async function generateExtendContext( config, { env } = {} ) {
@@ -182,7 +196,7 @@ async function generateMarkdownThemeCSS( config ) {
         return reject( err )
       }
 
-      const buffer = await fse.readFile( filepath )
+      const buffer = await fse.readFile( filepath, 'utf8' )
       resolve( buffer.toString() )
     } )
   } )
@@ -230,7 +244,7 @@ function ensureUnique( text ) {
 }
 
 async function readAttributes( filepath ) {
-  const buffer = await fse.readFile( filepath )
+  const buffer = await fse.readFile( filepath, 'utf8' )
   const content = buffer.toString()
   const result = fm( content )
   return result.attributes || {}

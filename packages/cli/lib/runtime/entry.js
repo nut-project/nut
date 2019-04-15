@@ -19,7 +19,7 @@ import setupNico from './steps/setup-nico'
 import getFirstRoute from './utils/get-first-route'
 import switchTheme from './utils/switch-theme'
 
-import app from '@/app.js'
+import app from 'nut-auto-generated-app'
 import events from './events'
 import createAPI from './api'
 import use from './use'

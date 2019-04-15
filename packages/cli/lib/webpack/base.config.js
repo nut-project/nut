@@ -1,5 +1,4 @@
 const path = require( 'path' )
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 
 const dirs = {
@@ -154,9 +153,6 @@ const webpackConfig = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin( {
-      template: path.join( __dirname, 'template.html' ),
-    } ),
     new CopyPlugin( [
       {
         from: {

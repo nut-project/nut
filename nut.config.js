@@ -1,6 +1,9 @@
 module.exports = {
   zh: 'nut',
   en: 'nut',
+  html: {
+    title: '文档标题',
+  },
   theme: 'ocean',
   layout: 'now',
   plugins: {

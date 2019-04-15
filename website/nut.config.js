@@ -1,6 +1,9 @@
 module.exports = {
   zh: 'nut project',
   en: 'nut project',
+  html: {
+    title: 'NUT 文档',
+  },
   logo: 'https://i.loli.net/2019/04/12/5cb03f9e60abc.png',
   theme: 'ocean',
   layout: 'now',
