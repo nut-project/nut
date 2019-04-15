@@ -4,7 +4,7 @@ module.exports = {
   html: {
     title: 'NUT 文档',
   },
-  logo: 'https://i.loli.net/2019/04/12/5cb03f9e60abc.png',
+  logo: './logo.png',
   theme: 'ocean',
   layout: 'now',
   plugins: {
