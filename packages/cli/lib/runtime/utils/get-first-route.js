@@ -4,10 +4,10 @@ export default function getFirstRoute( config ) {
   const sidebar = config.sidebar
 
   sidebar.some( s => {
-    const pages = s.pages
+    const children = s.children
 
-    if ( pages[ 0 ] ) {
-      found = pages[ 0 ]
+    if ( children[ 0 ] ) {
+      found = children[ 0 ]
       return true
     }
 

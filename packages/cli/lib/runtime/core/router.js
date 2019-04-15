@@ -41,6 +41,10 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
       return rootRouter.afterEach( hook )
     },
 
+    empty() {
+      rootRouter.children.forEach( child => child.delete() )
+    },
+
     define( routeConfigs, root = rootRouter ) {
       const self = this
 
@@ -317,6 +321,8 @@ function switchLayout( nico, name ) {
 
       nico.layout = newLayout
       nico.layoutName = name
+
+      nico.router.layout = newLayout
 
       newLayout.$inject( mountNode )
     }

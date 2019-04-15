@@ -77,7 +77,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    return found.pages || []
+    return found.children || []
   },
 } )
 

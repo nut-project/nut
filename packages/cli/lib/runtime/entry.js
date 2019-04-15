@@ -49,10 +49,12 @@ import use from './use'
     events.emit( 'route:notfound', context )
   } )
 
-  nico.on( 'layout', function ( { layout, router } ) {
+  nico.on( 'layout', function refreshLayout( { layout, router } ) {
     events.emit( 'layout:update', layout )
 
     const activeRouterName = router.name
+
+    context.app = nutConfig
 
     context.app.sidebar.forEach( s => {
       let isAnyPageActive = false
@@ -61,17 +63,17 @@ import use from './use'
         value: ''
       }
 
-      s.pages.forEach( page => {
+      s.children.forEach( child => {
         if ( !route.found ) {
-          route.value = page.route
+          route.value = child.route
           route.found = true
         }
 
-        if ( page.name === activeRouterName ) {
+        if ( child.name === activeRouterName ) {
           isAnyPageActive = true
-          page.active = true
+          child.active = true
         } else {
-          page.active = false
+          child.active = false
         }
       } )
 
@@ -87,8 +89,6 @@ import use from './use'
     layout.data.ctx = context
 
     layout.$update()
-
-    switchTheme( nutConfig && nutConfig.theme || 'ocean' )
   } )
 
   if ( !location.hash ) {
@@ -109,12 +109,13 @@ import use from './use'
   events.emit( 'system:after-startup', context )
 
   if ( module.hot ) {
-    module.hot.accept( 'nut-auto-generated-nut-config', () => {
-      if ( nico.layout ) {
-        nico.layout.data.ctx.app = nutConfig
-        nico.layout.$update()
-      }
+    module.hot.accept( 'nut-auto-generated-nut-config', function refreshTheme(  ) {
       switchTheme( nutConfig && nutConfig.theme || 'ocean' )
+    } )
+
+    module.hot.accept( 'nut-auto-generated-pages', () => {
+      context.pages = pages
+      context.api = createAPI( { pages } )
     } )
   }
 } )()

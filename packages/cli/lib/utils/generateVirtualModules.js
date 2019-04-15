@@ -30,7 +30,7 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const extendContext = await generateExtendContext( config, { env } )
   const appContent = await generateAppContent()
 
-  return {
+  return diff( {
     'node_modules/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
     'node_modules/nut-auto-generated-routes.js': routes,
     'node_modules/nut-auto-generated-plugins.js': plugins,
@@ -39,7 +39,22 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
     'node_modules/nut-auto-generated-app.js': appContent,
-  }
+  } )
+}
+
+const modulesHistory = {}
+
+function diff( modules ) {
+  return Object.keys( modules )
+    .filter( key => {
+      const isEqual = modules[ key ] !== modulesHistory[ key ]
+      modulesHistory[ key ] = modulesHistory[ key ]
+      return isEqual
+    } )
+    .reduce( ( total, key ) => {
+      total[ key ] = modules[ key ]
+      return total
+    }, {} )
 }
 
 async function generateAppContent() {
@@ -216,31 +231,18 @@ function resolve( request ) {
 
 async function normalizeConfig( config, allPages ) {
   const sidebar = config.sidebar.map( s => {
-    s.pages = s.pages || []
-    const pages = s.pages
-      .map( page => {
-        const normalized = page.replace( /^(\/)/g, '' )
-        return allPages.find( page => page.page === normalized )
+    s.children = s.children || []
+    const children = s.children
+      .map( child => {
+        const normalized = child.replace( /^(\/)/g, '' )
+        return allPages.find( child => child.page === normalized )
       } )
       .filter( Boolean )
 
-    return Object.assign( {}, s, { pages } )
+    return Object.assign( {}, s, { children } )
   } )
 
   return Object.assign( {}, config, { sidebar } )
-}
-
-const texts = new Set()
-let index = 0
-
-function ensureUnique( text ) {
-  if ( !texts.has( text ) ) {
-    texts.add( text )
-    return text
-  }
-
-  index++
-  return text + index
 }
 
 async function readAttributes( filepath ) {
@@ -289,24 +291,41 @@ async function getPages( root, processor = v => v ) {
     '.md': 'markdown',
   }
 
-  const promises = files.map( async file => {
-    const { dir, ext, name } = path.parse( file )
-    const filepath = path.join( root, file )
-    const page = path.join( dir, name )
+  function postfix( text, index ) {
+    return text + index
+  }
 
-    return processor( {
-      name: ensureUnique(
-        slugify( page, { separator: '$' } )
-      ),
-      filepath,
-      page,
-      route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
-      attributes: await readAttributes( filepath ),
-      type: types[ ext ] || '',
-      provider: '',
-      plugin: '',
+  const promises = files
+    .sort( ( a, b ) => {
+      if ( a < b ) {
+        return 1
+      }
+
+      if ( a > b ) {
+        return -1
+      }
+
+      return 0
     } )
-  } )
+    .map( async ( file, index ) => {
+      const { dir, ext, name } = path.parse( file )
+      const filepath = path.join( root, file )
+      const page = path.join( dir, name )
+
+      return processor( {
+        name: postfix(
+          slugify( page, { separator: '$' } ),
+          index
+        ),
+        filepath,
+        page,
+        route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
+        attributes: await readAttributes( filepath ),
+        type: types[ ext ] || '',
+        provider: '',
+        plugin: '',
+      } )
+    } )
 
   return await Promise.all( promises )
 }
@@ -321,7 +340,7 @@ async function generateRoutes( pages, globalLayout ) {
   output = output + 'const routes = [\n' + pages
     .map( page => `{
       name: '${ page.name }',
-      layout: '${ page.attributes.layout || globalLayout || 'default' }',
+      layout: ${ page.attributes.layout ? "'" + page.attributes.layout + "'" : null },
       path: '${ page.route }',
       filepath: '${ tildify( page.filepath ) }',
       component: ${ page.name },

@@ -30,7 +30,7 @@ const Shell = Regular.extend( {
       return []
     }
 
-    return found.pages || []
+    return found.children || []
   },
 } )
 

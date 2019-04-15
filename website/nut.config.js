@@ -17,7 +17,7 @@ module.exports = {
     {
       icon: '',
       title: '指南',
-      pages: [
+      children: [
         'pages/guide/introduction',
         'pages/guide/installation',
         'pages/guide/get-started',
@@ -29,7 +29,7 @@ module.exports = {
     {
       icon: '',
       title: '文档',
-      pages: [
+      children: [
         'pages/docs/cli',
         'pages/docs/api',
       ]

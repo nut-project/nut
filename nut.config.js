@@ -4,8 +4,8 @@ module.exports = {
   html: {
     title: '文档标题',
   },
+  layout: 'default',
   theme: 'ocean',
-  layout: 'now',
   plugins: {
     login: {
       path: require.resolve( './plugins/login-netease-openid' ),
@@ -26,7 +26,7 @@ module.exports = {
     {
       icon: 'sketch',
       title: '宝石',
-      pages: [
+      children: [
         'pages/home/home',
         'pages/home/regular',
         'pages/home/vue',
@@ -35,7 +35,7 @@ module.exports = {
     {
       icon: 'read',
       title: '文档',
-      pages: [
+      children: [
         'pages/documents/index',
         'pages/documents/reference',
       ],
