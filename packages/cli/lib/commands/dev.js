@@ -32,6 +32,7 @@ async function dev(){
 
   const webpackConfig = Object.assign( {}, baseWebpackConfig, {
     mode: 'development',
+    devtool: 'cheap-module-source-map',
   } )
 
   webpackConfig.plugins.push(

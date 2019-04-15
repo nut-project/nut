@@ -23,6 +23,7 @@
     "babel-loader": "^8.0.5",
     "cac": "^6.4.2",
     "chokidar": "^2.1.5",
+    "copy-webpack-plugin": "^5.0.2",
     "cosmiconfig": "^5.2.0",
     "css-loader": "^2.1.1",
     "enhanced-resolve": "^4.1.0",

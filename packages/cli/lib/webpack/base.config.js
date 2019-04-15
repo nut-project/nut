@@ -1,5 +1,6 @@
 const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
+const CopyPlugin = require( 'copy-webpack-plugin' )
 
 const dirs = {
   cli: path.join( __dirname, '../../' ),
@@ -8,6 +9,9 @@ const dirs = {
 
 const webpackConfig = {
   entry: path.join( dirs.cli, 'lib/runtime/entry.js' ),
+  performance: {
+    hints: false,
+  },
   resolve: {
     alias: {
       '@': path.join( dirs.project, 'src' )
@@ -151,8 +155,19 @@ const webpackConfig = {
   },
   plugins: [
     new HtmlWebpackPlugin( {
-      template: path.join( dirs.cli, 'lib/index.html' ),
+      template: path.join( __dirname, 'template.html' ),
     } ),
+    new CopyPlugin( [
+      {
+        from: {
+          glob: '**/*',
+          dot: true
+        },
+        context: path.join( dirs.project, 'src/public' ),
+        to: '.',
+        ignore: [ '.DS_Store' ]
+      }
+    ] )
   ],
 }
 

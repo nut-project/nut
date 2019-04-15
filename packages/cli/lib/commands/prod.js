@@ -27,6 +27,7 @@ async function prod(){
 
   const webpackConfig = Object.assign( {}, baseWebpackConfig, {
     mode: 'production',
+    devtool: false,
     output: {
       path: path.join( dirs.project, 'dist' ),
       filename: '[name].[hash].js',
