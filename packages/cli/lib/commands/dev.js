@@ -4,6 +4,7 @@ const cosmiconfig = require( 'cosmiconfig' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
 
 const baseWebpackConfig = require( '../webpack/base.config' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
@@ -37,6 +38,9 @@ async function dev(){
 
   webpackConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
+  )
+  webpackConfig.plugins.push(
+    new CaseSensitivePathsPlugin()
   )
 
   const modules = await generateVirtualModules( config, {
