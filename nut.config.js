@@ -41,8 +41,10 @@ module.exports = {
       ],
     },
   ],
+  // homepage 和 landing page 二选一
+  homepage: 'pages/index',
   landing: {
-    use: 'default',
+    template: 'default',
     options: {
       title: '某个不知名的系统',
       description: '哈哈哈',
