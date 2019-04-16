@@ -1,4 +1,5 @@
 module.exports = {
+  port: 7000,
   zh: 'nut',
   en: 'nut',
   html: {
