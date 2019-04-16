@@ -24,7 +24,7 @@ async function generateVirtualModules( config, { env = 'development' } = {} ) {
     'node_modules/nut-auto-generated-extend-context.js': extendContext,
     'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
-    'node_modules/nut-auto-generated-app.js': appContent,
+    'src/nut-auto-generated-app.js': appContent,
   } )
 }
 

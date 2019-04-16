@@ -20,7 +20,7 @@ const Sidebar = Regular.extend( {
                 {/if}
                 class="${ styles.sidebar__link }"
               >
-                <i class="${ styles.sidebar__item_icon } iconfont icon-{ item.icon }"></i>
+                <i class="${ styles.sidebar__item_icon } nut-icons nut-icon-{ item.icon }"></i>
               </a>
             </li>
           {/list}
@@ -62,7 +62,7 @@ const Header = Regular.extend( {
       <div class="${ styles.header__user }">
         {#if user && user.nickname}
         <span style="cursor: pointer;">
-          <i class="iconfont icon-user"></i>
+          <i class="nut-icons nut-icon-user"></i>
           { user.nickname }
         </span>
         {/if}

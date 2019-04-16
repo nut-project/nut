@@ -10,7 +10,7 @@ const Shell = Regular.extend( {
         </div>
         <div class="${ styles.header__user }">
           {#if ctx.user && ctx.user.nickname}
-          <i class="iconfont icon-user"></i>
+          <i class="nut-icons nut-icon-user"></i>
           { ctx.user.nickname }
           {/if}
         </div>
@@ -26,7 +26,7 @@ const Shell = Regular.extend( {
                 {/if}
               >
                 {#if item.icon}
-                <i class="iconfont icon-{ item.icon }"></i>
+                <i class="nut-icons nut-icon-{ item.icon }"></i>
                 {/if}
                 { item.title }
               </a>
