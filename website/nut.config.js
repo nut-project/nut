@@ -21,7 +21,12 @@ module.exports = {
         'pages/guide/introduction',
         'pages/guide/installation',
         'pages/guide/get-started',
+        'pages/guide/public',
+        'pages/guide/css-preprocessor',
+        'pages/guide/css-modules',
         'pages/guide/layout',
+        'pages/guide/theme',
+        'pages/guide/icon',
         'pages/guide/plugin',
       ]
     },
@@ -30,6 +35,7 @@ module.exports = {
       icon: '',
       title: '文档',
       children: [
+        'pages/docs/config',
         'pages/docs/cli',
         'pages/docs/api',
       ]

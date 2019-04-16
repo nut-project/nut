@@ -7,10 +7,12 @@ module.exports = function ( source ) {
         <div
           class="markdown-body"
           style="padding: 30px 40px;"
-        >
-          ${ source }
-        </div>
-      \`
+          r-html="{ source }"
+        ></div>
+      \`,
+      config() {
+        this.data.source = ${ JSON.stringify( source ) }
+      }
     } )
 
     Page.$$nut = ctx => {

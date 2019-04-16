@@ -188,7 +188,7 @@ function normalizePlugin( plugin ) {
 
 async function generateMarkdownThemeCSS( config ) {
   const lookupStartPath = path.join( dirs.cli, 'node_modules' )
-  const theme = ( config.markdown && config.markdown.theme ) || 'prism-okaidia'
+  const theme = ( config.markdown && config.markdown.theme ) || 'prism-tomorrow'
   const root = path.dirname( require.resolve( 'prismjs/package.json' ) )
   const request = 'themes/' + theme + '.css'
   const cssPath = path.join( root, request )
