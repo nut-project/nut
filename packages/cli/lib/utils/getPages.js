@@ -5,6 +5,7 @@ const fse = require( 'fs-extra' )
 const slugify = require( '@sindresorhus/slugify' )
 
 const dirs = require( './dirs' )
+const pathUtils = require( './pathUtils' )
 
 module.exports = async function getAllPages( config ) {
   const root = path.join( dirs.project, 'src' )
@@ -81,7 +82,7 @@ async function getPages( root, processor = v => v ) {
     .map( async ( file, index ) => {
       const { dir, ext, name } = path.parse( file )
       const filepath = path.join( root, file )
-      const page = path.join( dir, name )
+      const page = pathUtils.normalize( path.join( dir, name ) )
 
       return processor( {
         name: postfix(

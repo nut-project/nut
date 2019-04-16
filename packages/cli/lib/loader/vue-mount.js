@@ -1,5 +1,6 @@
 const loaderUtils = require( 'loader-utils' )
 const qs = require( 'querystring' )
+const pathUtils = require( '../utils/pathUtils' )
 
 module.exports = source => source
 
@@ -8,7 +9,7 @@ module.exports.pitch = function ( remainingRequest ) {
   const options = loaderUtils.getOptions( loaderContext ) || {}
   const query = qs.parse( this.resourceQuery.slice( 1 ) )
 
-  const nutifyPath = require.resolve( './runtime/vue-nutify' )
+  const nutifyPath = pathUtils.toRelative( require.resolve( './runtime/vue-nutify' ) )
 
   // only pitch for first time
   if ( typeof query.vue === 'undefined' ) {

@@ -5,6 +5,7 @@ const globby = require( 'globby' )
 
 const dirs = require( './dirs' )
 const getPages = require( './getPages' )
+const pathUtils = require( './pathUtils' )
 
 async function generateVirtualModules( config, { env = 'development' } = {} ) {
   const pages = await getPages( config )
@@ -217,7 +218,7 @@ async function generateRoutes( pages ) {
   let output = ''
 
   output = output + pages
-    .map( page => `import ${ page.name } from '${ page.filepath }';` )
+    .map( page => `import ${ page.name } from '${ pathUtils.toRelative( page.filepath ) }';` )
     .join( '\n' )
 
   output = output + 'const routes = [\n' + pages
