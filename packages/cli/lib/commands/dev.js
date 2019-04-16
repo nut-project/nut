@@ -83,8 +83,15 @@ async function dev(){
 
     read( {
       silent: true,
-    }, async ( input ) => {
-      await open( url )
+    }, async ( err, input ) => {
+      if ( err ) {
+        process.exit( 0 )
+        return
+      }
+
+      if ( input === '' ) {
+        await open( url )
+      }
     } )
   } )
 
