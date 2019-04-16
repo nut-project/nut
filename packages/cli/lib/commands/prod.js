@@ -24,7 +24,7 @@ async function prod(){
 
   ensureConfigDefaults( config )
 
-  const webpackConfig = Object.assign( {}, createBaseWebpackConfig, {
+  const webpackConfig = Object.assign( {}, createBaseWebpackConfig( config ), {
     mode: 'production',
     devtool: false,
     output: {
