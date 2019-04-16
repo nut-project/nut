@@ -146,13 +146,16 @@ async function generatePlugins( config, { env } = {} ) {
 
   // filter truthy
   plugins = plugins.filter( Boolean )
+  // filter valid .path / .package
+  plugins = plugins.filter( plugin => ( plugin.path || plugin.package ) )
   // filter enable
   plugins = plugins.filter( plugin => plugin.enable )
   // filter env
   plugins = plugins.filter( plugin => ~plugin.env.indexOf( env ) )
 
   const _imports = plugins.map( ( plugin, index ) => {
-    return `import plugin_${ index } from '${ plugin.path || plugin.package }';`
+    const importPath = plugin.path ? pathUtils.toRelative( plugin.path ) : plugin.package
+    return `import plugin_${ index } from '${ importPath }';`
   } ).join( '\n' )
 
   const _localnames = plugins.map( ( plugin, index ) => {
