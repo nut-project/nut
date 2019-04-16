@@ -38,11 +38,15 @@ async function dev(){
   const port = config.port || DEFAULT_PORT
   const url = 'http://' + host + ':' + port
 
-  const devServerOptions = {
+  let devServerOptions = {
     contentBase: './dist',
     host,
     hot: true,
     quiet: true,
+  }
+
+  if ( config.devServer ) {
+    devServerOptions = Object.assign( devServerOptions, config.devServer )
   }
 
   const webpackConfig = Object.assign( {}, createBaseWebpackConfig( config ), {

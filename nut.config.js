@@ -23,6 +23,11 @@ module.exports = {
   markdown: {
     theme: 'prism-okaidia',
   },
+  devServer: {
+    proxy: {
+      '/api': 'http://127.0.0.1:7000'
+    }
+  },
   sidebar: [
     {
       icon: 'sketch',

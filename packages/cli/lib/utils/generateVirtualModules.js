@@ -214,7 +214,11 @@ async function normalizeConfig( config, allPages ) {
     return Object.assign( {}, s, { children } )
   } )
 
-  return Object.assign( {}, config, { sidebar } )
+  const normalizedConfig = Object.assign( {}, config, { sidebar } )
+
+  delete normalizedConfig.devServer
+
+  return normalizedConfig
 }
 
 async function generateRoutes( pages ) {

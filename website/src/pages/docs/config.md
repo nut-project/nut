@@ -20,6 +20,7 @@ nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配�
 | theme          |           配色方案，可选值：ocean / sakura |     ocean      |
 | plugins        |                                       插件 |       []       |
 | sidebar        |                                   菜单管理 |       []       |
+| devServer               |                          webpack dev server 配置                  |       -         |
 
 ## 示例
 
