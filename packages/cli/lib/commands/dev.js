@@ -11,6 +11,9 @@ const generateVirtualModules = require( '../utils/generateVirtualModules' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 
+const DEFAULT_HOST = '127.0.0.1'
+const DEFAULT_PORT = 9000
+
 process
   .on('unhandledRejection', (reason, p) => {
     console.error(reason, 'Unhandled Rejection at Promise', p);
@@ -46,21 +49,26 @@ async function dev(){
 
   webpackConfig.plugins.push( virtualModules )
 
+  const host = config.host || DEFAULT_HOST
+  const port = config.port || DEFAULT_PORT
+
   const options = {
     contentBase: './dist',
     hot: true,
-    host: '127.0.0.1',
+    host,
   }
 
   WebpackDevServer.addDevServerEntrypoints( webpackConfig, options )
   const compiler = webpack( webpackConfig )
   const server = new WebpackDevServer( compiler, options )
 
-  server.listen( 8080, '127.0.0.1', () => {
-    console.log( 'Starting server on http://127.0.0.1:8080' )
+  server.listen( port, host, () => {
+    console.log( `Starting server on http://${ host }:${ port }` )
   } )
 
-  chokidar.watch( [ result.filepath ] )
+  const appFile = path.join( dirs.project, 'src/app.js' )
+
+  chokidar.watch( [ result.filepath, appFile ] )
     .on( 'change', async () => {
       try {
         result = await loadConfig()
