@@ -229,7 +229,7 @@ async function generateRoutes( pages ) {
       name: '${ page.name }',
       layout: ${ page.attributes.layout ? "'" + page.attributes.layout + "'" : null },
       path: '${ page.route }',
-      filepath: '${ tildify( page.filepath ) }',
+      filepath: ${ JSON.stringify( tildify( page.filepath ) ) },
       component: ${ page.name },
       provider: '${ page.provider }',
       plugin: '${ page.plugin }',
