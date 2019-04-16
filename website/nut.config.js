@@ -24,6 +24,7 @@ module.exports = {
         'pages/guide/public',
         'pages/guide/css-preprocessor',
         'pages/guide/css-modules',
+        'pages/guide/markdown',
         'pages/guide/layout',
         'pages/guide/theme',
         'pages/guide/icon',
