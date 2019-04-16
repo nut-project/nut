@@ -6,6 +6,8 @@ title: 介绍
 
 从广义的角度来说，nut 是一个静态站点生成工具。但是他本身提供的诸多特性，更专注于提供一套中后台系统的解决方案
 
+<img width="500px" src="./terminal.png" alt="terminal screenshot">
+
 # 提问环节
 
 <details>
