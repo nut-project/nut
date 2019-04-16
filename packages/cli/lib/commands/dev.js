@@ -1,5 +1,9 @@
 const path = require( 'path' )
 const chokidar = require( 'chokidar' )
+const boxen = require( 'boxen' )
+const chalk = require( 'chalk' )
+const read = require( 'read' )
+const open = require( 'open' )
 const cosmiconfig = require( 'cosmiconfig' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
@@ -30,6 +34,17 @@ async function dev(){
 
   ensureConfigDefaults( config )
 
+  const host = config.host || DEFAULT_HOST
+  const port = config.port || DEFAULT_PORT
+  const url = 'http://' + host + ':' + port
+
+  const devServerOptions = {
+    contentBase: './dist',
+    host,
+    hot: true,
+    quiet: true,
+  }
+
   const webpackConfig = Object.assign( {}, createBaseWebpackConfig( config ), {
     mode: 'development',
     devtool: 'cheap-module-source-map',
@@ -49,21 +64,28 @@ async function dev(){
 
   webpackConfig.plugins.push( virtualModules )
 
-  const host = config.host || DEFAULT_HOST
-  const port = config.port || DEFAULT_PORT
-
-  const options = {
-    contentBase: './dist',
-    hot: true,
-    host,
-  }
-
-  WebpackDevServer.addDevServerEntrypoints( webpackConfig, options )
+  WebpackDevServer.addDevServerEntrypoints( webpackConfig, devServerOptions )
   const compiler = webpack( webpackConfig )
-  const server = new WebpackDevServer( compiler, options )
+  const server = new WebpackDevServer( compiler, devServerOptions )
 
   server.listen( port, host, () => {
-    console.log( `Starting server on http://${ host }:${ port }` )
+    console.log(
+      boxen(
+        `You application is running at\n\n${ chalk.cyan( url ) }`,
+        {
+          padding: 1,
+          borderColor: 'gray'
+        }
+      )
+    )
+
+    console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open' ) )
+
+    read( {
+      silent: true,
+    }, async ( input ) => {
+      await open( url )
+    } )
   } )
 
   const appFile = path.join( dirs.project, 'src/app.js' )

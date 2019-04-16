@@ -21,8 +21,10 @@
     "@sindresorhus/slugify": "^0.9.0",
     "axios": "^0.18.0",
     "babel-loader": "^8.0.5",
+    "boxen": "^3.1.0",
     "cac": "^6.4.2",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
+    "chalk": "^2.4.2",
     "chokidar": "^2.1.5",
     "copy-webpack-plugin": "^5.0.2",
     "cosmiconfig": "^5.2.0",
@@ -37,7 +39,9 @@
     "loader-utils": "^1.2.3",
     "marked": "^0.6.1",
     "nprogress": "^0.2.0",
+    "open": "^6.1.0",
     "prismjs": "^1.16.0",
+    "read": "^1.0.7",
     "regularjs": "^0.6.2",
     "style-loader": "^0.23.1",
     "tildify": "^1.2.0",
@@ -49,6 +53,7 @@
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.29.6",
     "webpack-dev-server": "^3.2.1",
-    "webpack-virtual-modules": "^0.1.10"
+    "webpack-virtual-modules": "^0.1.10",
+    "webpackbar": "^3.1.5"
   }
 }

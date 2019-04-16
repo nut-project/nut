@@ -2,6 +2,7 @@ const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
+const WebpackBar = require( 'webpackbar' )
 
 const dirs = {
   cli: path.join( __dirname, '../../' ),
@@ -192,6 +193,7 @@ module.exports = function createBaseConfig( config ) {
         favicon: ( config.html && config.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
       } ),
       new VueLoaderPlugin(),
+      new WebpackBar(),
     ],
   }
 
