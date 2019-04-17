@@ -1,5 +1,6 @@
 ---
 title: vue
+cacheable: false
 ---
 
 import Vue from 'vue'
@@ -49,6 +50,16 @@ Page.$$nut = ctx => {
       }
 
       node.removeChild( instance.$el )
+    },
+
+    destroy() {
+      if ( !instance ) {
+        return
+      }
+
+      instance.$destroy()
+      instance = null
+      el = null
     },
   }
 }

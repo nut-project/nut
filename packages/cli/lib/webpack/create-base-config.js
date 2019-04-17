@@ -12,6 +12,15 @@ const dirs = {
 module.exports = function createBaseConfig( config ) {
   const webpackConfig = {
     entry: path.join( dirs.cli, 'lib/runtime/entry.js' ),
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        minChunks: 2,
+      },
+      runtimeChunk: {
+        name: 'runtime',
+      },
+    },
     performance: {
       hints: false,
     },
@@ -193,7 +202,9 @@ module.exports = function createBaseConfig( config ) {
         favicon: ( config.html && config.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
       } ),
       new VueLoaderPlugin(),
-      new WebpackBar(),
+      new WebpackBar( {
+        profile: true,
+      } ),
     ],
   }
 

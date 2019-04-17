@@ -29,6 +29,16 @@ export default function ( Page ) {
 
         node.removeChild( instance.$el )
       },
+
+      destroy() {
+        if ( !instance ) {
+          return
+        }
+
+        instance.$destroy()
+        instance = null
+        el = null
+      },
     }
   }
 

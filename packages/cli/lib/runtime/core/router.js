@@ -7,6 +7,10 @@ import layoutNow from '../layouts/now'
 export default function createNico( rootRouter, router, prefix = '', ctx = {}, pluginOptions = {} ) {
   const { events, pages } = ctx
 
+  function findPageByRouteConfig( pages, routeConfig ) {
+    return pages.find( page => page.name === routeConfig.name )
+  }
+
   const layoutCaches = {}
   const nico = {
     getLayout( name ) {
@@ -65,64 +69,89 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
               )
             }
 
-            if ( !this.page ) {
-              let options = {}
-              if ( routeConfig.provider === 'plugin' ) {
-                options = pluginOptions[ routeConfig.plugin ] || {}
-              }
-              this.page = routeConfig.component.$$nut( ctx, options )
+            if ( !this.resolvePage ) {
+              this.resolvePage = routeConfig.component()
             }
 
-            const self = this
-            const page = this.page
+            this.resolvePage
+              .then( page => {
+                let options = {}
+                if ( routeConfig.provider === 'plugin' ) {
+                  options = pluginOptions[ routeConfig.plugin ] || {}
+                }
 
-            let nextCount = 0
+                const { attributes = {} } = findPageByRouteConfig( pages, routeConfig ) || {}
 
-            if ( page.beforeEnter ) {
-              nextCount++
-            }
+                if (
+                  // cache by default unless your declare cacheable: false
+                  ( attributes.cacheable !== false ) &&
+                  this.page
+                ) {
+                  return this.page
+                }
 
-            if ( routeConfig.beforeEnter ) {
-              nextCount++
-            }
+                if ( this.page && this.page.destroy ) {
+                  this.page.destroy()
+                }
 
-            if ( nextCount === 0 ) {
-              e.next()
-            }
+                // $$nut may return promise
+                return page.default.$$nut( ctx, options )
+              } )
+              .then( page => {
+                this.page = page
+              } )
+              .then( () => {
+                const self = this
+                const page = this.page
 
-            const fns = []
+                let nextCount = 0
 
-            function next( v ) {
-              if ( v === false ) {
-                e.next( false )
-                return
-              }
+                if ( page.beforeEnter ) {
+                  nextCount++
+                }
 
-              if ( typeof v === 'function' ) {
-                fns.push( v )
-              }
+                if ( routeConfig.beforeEnter ) {
+                  nextCount++
+                }
 
-              nextCount--
-
-              if ( nextCount === 0 ) {
-                if ( fns.length > 0 ) {
-                  e.next( function () {
-                    fns.forEach( fn => fn() )
-                  } )
-                } else {
+                if ( nextCount === 0 ) {
                   e.next()
                 }
-              }
-            }
 
-            const evt = Object.assign( {}, e, { next, meta: routeConfig.meta || {} } )
-            if ( routeConfig.beforeEnter ) {
-              routeConfig.beforeEnter( evt )
-            }
+                const fns = []
 
-            if ( page && typeof page.beforeEnter === 'function' ) {
-              page.beforeEnter( evt )
-            }
+                function next( v ) {
+                  if ( v === false ) {
+                    e.next( false )
+                    return
+                  }
+
+                  if ( typeof v === 'function' ) {
+                    fns.push( v )
+                  }
+
+                  nextCount--
+
+                  if ( nextCount === 0 ) {
+                    if ( fns.length > 0 ) {
+                      e.next( function () {
+                        fns.forEach( fn => fn() )
+                      } )
+                    } else {
+                      e.next()
+                    }
+                  }
+                }
+
+                const evt = Object.assign( {}, e, { next, meta: routeConfig.meta || {} } )
+                if ( routeConfig.beforeEnter ) {
+                  routeConfig.beforeEnter( evt )
+                }
+
+                if ( page && typeof page.beforeEnter === 'function' ) {
+                  page.beforeEnter( evt )
+                }
+              } )
           },
 
           beforeLeave( e ) {
@@ -251,7 +280,7 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
         parent = parent || root
         parent.append( current )
 
-        const page = pages.find( page => page.name === routeConfig.name )
+        const page = findPageByRouteConfig( pages, routeConfig )
 
         if ( page ) {
           page.router = current

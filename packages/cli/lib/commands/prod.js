@@ -27,12 +27,12 @@ async function prod(){
   const webpackConfig = Object.assign( {}, createBaseWebpackConfig( config ), {
     mode: 'production',
     devtool: false,
-    output: {
-      path: path.join( dirs.project, 'dist' ),
-      filename: '[name].[hash].js',
-      publicPath: './'
-    },
   } )
+
+  webpackConfig.output = {
+    filename: '[name].[contenthash].js',
+    publicPath: './'
+  }
 
   const modules = await generateVirtualModules( config, {
     env: 'production'

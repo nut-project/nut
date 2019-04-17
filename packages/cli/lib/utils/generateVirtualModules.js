@@ -222,25 +222,17 @@ async function normalizeConfig( config, allPages ) {
 }
 
 async function generateRoutes( pages ) {
-  let output = ''
-
-  output = output + pages
-    .map( page => `import ${ page.name } from '${ pathUtils.toRelative( page.filepath ) }';` )
-    .join( '\n' )
-
-  output = output + 'const routes = [\n' + pages
+  return 'const routes = [\n' + pages
     .map( page => `{
       name: '${ page.name }',
       layout: ${ page.attributes.layout ? "'" + page.attributes.layout + "'" : null },
       path: '${ page.route }',
       filepath: ${ JSON.stringify( tildify( page.filepath ) ) },
-      component: ${ page.name },
+      component: () => import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' ),
       provider: '${ page.provider }',
       plugin: '${ page.plugin }',
     }` ).join( ',\n' ) + '\n];' +
     `export default routes;`
-
-  return output
 }
 
 module.exports = generateVirtualModules

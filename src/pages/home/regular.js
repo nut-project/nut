@@ -1,6 +1,7 @@
 ---
 title: regular
 permission: [ 'admin' ]
+cacheable: false
 ---
 
 import Regular from 'regularjs'
@@ -45,6 +46,15 @@ Page.$$nut = function ( ctx ) {
 
       instance.$inject( false )
     },
+
+    destroy() {
+      if ( !instance ) {
+        return
+      }
+
+      instance.destroy()
+      instance = null
+    }
   }
 }
 

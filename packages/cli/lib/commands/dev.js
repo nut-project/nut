@@ -54,6 +54,10 @@ async function dev(){
     devtool: 'cheap-module-source-map',
   } )
 
+  webpackConfig.output = {
+    filename: '[name].js',
+  }
+
   webpackConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
   )
