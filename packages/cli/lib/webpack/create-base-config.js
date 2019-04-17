@@ -1,6 +1,7 @@
 const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
+const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 
@@ -203,6 +204,9 @@ module.exports = function createBaseConfig( config ) {
       } ),
       new VueLoaderPlugin(),
       new WebpackBar(),
+      new FriendlyErrorsWebpackPlugin( {
+        clearConsole: false,
+      } ),
     ],
   }
 

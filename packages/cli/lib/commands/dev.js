@@ -42,7 +42,7 @@ async function dev(){
     contentBase: './dist',
     host,
     hot: true,
-    stats: 'errors-only',
+    quiet: true,
   }
 
   if ( config.devServer ) {
