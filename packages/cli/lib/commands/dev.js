@@ -42,7 +42,7 @@ async function dev(){
     contentBase: './dist',
     host,
     hot: true,
-    quiet: true,
+    stats: 'errors-only',
   }
 
   if ( config.devServer ) {
@@ -87,7 +87,7 @@ async function dev(){
       )
     )
 
-    console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open' ) )
+    console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open' ) + '\n' )
 
     read( {
       silent: true,

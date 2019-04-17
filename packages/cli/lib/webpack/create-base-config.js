@@ -202,9 +202,7 @@ module.exports = function createBaseConfig( config ) {
         favicon: ( config.html && config.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
       } ),
       new VueLoaderPlugin(),
-      new WebpackBar( {
-        profile: true,
-      } ),
+      new WebpackBar(),
     ],
   }
 
