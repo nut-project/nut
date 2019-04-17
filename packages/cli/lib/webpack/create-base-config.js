@@ -89,16 +89,16 @@ module.exports = function createBaseConfig( config ) {
           test: /\.md$/,
           use: [
             {
-              loader: require.resolve( '../loader/md2rgl' ),
+              loader: require.resolve( '../loader/mount-markdown' ),
             },
             {
-              loader: require.resolve( '../loader/md' ),
+              loader: require.resolve( '../loader/markdown' ),
               options: {
                 gfm: true,
               },
             },
             {
-              loader: require.resolve( '../loader/strip-fm' ),
+              loader: require.resolve( '../loader/strip-front-matter' ),
             },
           ]
         },
@@ -126,7 +126,7 @@ module.exports = function createBaseConfig( config ) {
               }
             },
             {
-              loader: require.resolve( '../loader/strip-fm' ),
+              loader: require.resolve( '../loader/strip-front-matter' ),
             },
           ]
         },
@@ -159,7 +159,7 @@ module.exports = function createBaseConfig( config ) {
           test: /\.vue$/,
           use: [
             {
-              loader: require.resolve( '../loader/vue-mount' ),
+              loader: require.resolve( '../loader/mount-vue' ),
               options: {
                 routes: [],
               },
@@ -169,7 +169,7 @@ module.exports = function createBaseConfig( config ) {
               options: {},
             },
             {
-              loader: require.resolve( '../loader/strip-fm' ),
+              loader: require.resolve( '../loader/strip-front-matter' ),
             },
           ]
         },

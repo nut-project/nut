@@ -94,14 +94,24 @@ const Shell = Regular.extend( {
         <div class="${ styles.progress_container }" id="progress-container"></div>
       </div>
 
-      {#if currentPages && currentPages.length > 0}
+      {#if currentPages.length > 0}
       <nut-navbar
         pages="{ currentPages }"
       ></nut-navbar>
       {/if}
 
       <div class="${ styles.page_container }">
-        <div class="${ styles.page_content }" ref="$$view"></div>
+        {#if currentPages[ 0 ] && currentPages[ 0 ].type === 'markdown'}
+          <div class="${ styles.page_content }">
+            <div
+              class="markdown-body"
+              style="padding: 30px 40px;"
+              ref="$$view"
+            ></div>
+          </div>
+        {#else}
+          <div class="${ styles.page_content }" ref="$$view"></div>
+        {/if}
       </div>
     </div>
   `,

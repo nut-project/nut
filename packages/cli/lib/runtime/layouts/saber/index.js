@@ -37,7 +37,7 @@ const Shell = Regular.extend( {
 
       {#if currentPage && currentPage.type === 'markdown'}
         <div class="${ styles.content }">
-          <div class="${ styles.markdown }" ref="$$view">
+          <div class="${ styles.markdown } markdown-body" ref="$$view">
           </div>
         </div>
       {#else}

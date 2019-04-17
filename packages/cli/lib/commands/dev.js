@@ -75,7 +75,7 @@ async function dev(){
   server.listen( port, host, () => {
     console.log(
       boxen(
-        `You application is running at\n\n${ chalk.cyan( url ) }`,
+        `Your application is running at\n\n${ chalk.cyan( url ) }`,
         {
           padding: 1,
           borderColor: 'gray'

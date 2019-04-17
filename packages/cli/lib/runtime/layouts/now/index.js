@@ -47,7 +47,7 @@ const Layout = Regular.extend( {
 
         {#if currentPages[ 0 ] && currentPages[ 0 ].type === 'markdown'}
           <div class="${ styles.content }">
-            <div class="${ styles.markdown }" ref="$$view">
+            <div class="${ styles.markdown } markdown-body" ref="$$view">
             </div>
           </div>
         {#else}
