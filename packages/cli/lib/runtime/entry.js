@@ -34,6 +34,7 @@ import use from './use'
     events,
     pages,
     use,
+    globals: NUT_GLOBALS || {},
   }
 
   await installDirectives()

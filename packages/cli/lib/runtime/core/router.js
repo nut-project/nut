@@ -1,3 +1,4 @@
+import quicklink from 'quicklink'
 import nutConfig from 'nut-auto-generated-nut-config'
 import layoutDefault from '../layouts/default'
 import layoutSaber from '../layouts/saber'
@@ -5,10 +6,84 @@ import layoutNone from '../layouts/none'
 import layoutNow from '../layouts/now'
 
 export default function createNico( rootRouter, router, prefix = '', ctx = {}, pluginOptions = {} ) {
-  const { events, pages } = ctx
+  const { events, pages, app, globals } = ctx
 
   function findPageByRouteConfig( pages, routeConfig ) {
     return pages.find( page => page.name === routeConfig.name )
+  }
+
+  function getSiblingPages( sidebar, pages, page ) {
+    let found = []
+
+    walkSidebar( sidebar, ( p, parent ) => {
+      if ( p.page === page ) {
+        found = parent
+      }
+    } )
+
+    return found
+  }
+
+  function getAssetUrls( keys ) {
+    return keys
+      .reduce( ( total, key ) => {
+        const chunks = globals.STATS_ASSETS_BY_CHUNKNAME || {}
+        let urls = chunks[ key ] || []
+        urls = urls.map( url => globals.PUBLIC_PATH + url )
+        total.push( ...urls )
+        return total
+      }, [] )
+      .filter( excludeSourcemap )
+  }
+
+  const quicklinkBlacklist = {}
+
+  function addToQuicklinkBlacklist( key ) {
+    quicklinkBlacklist[ key ] = true
+  }
+
+  function excludeQuicklinkBlacklist( page ) {
+    return !quicklinkBlacklist[ page.name ]
+  }
+
+  const sourceMapRegexp = /\.map$/
+  function excludeSourcemap( url ) {
+    return !sourceMapRegexp.test( url )
+  }
+
+  function quicklinkSiblingPages( routeConfig ) {
+    setTimeout( function () {
+      // blacklist current page itself
+      addToQuicklinkBlacklist( routeConfig.name )
+
+      const sidebar = app.sidebar || []
+      let siblings = getSiblingPages( sidebar, pages, routeConfig.page )
+
+      siblings = siblings.filter( excludeQuicklinkBlacklist )
+
+      const chunkUrls = getAssetUrls( siblings.map( s => s.name ) )
+      const vendorUrls = getAssetUrls(
+        Object.keys( globals.STATS_ASSETS_BY_CHUNKNAME || {} )
+          .filter( key => key.indexOf( 'vendors~' ) === 0 )
+      )
+
+      quicklink( {
+        urls: [
+          ...chunkUrls,
+          ...vendorUrls
+        ],
+      } )
+    }, 0 )
+  }
+
+  function walkSidebar( sidebar = [], callback ) {
+    sidebar.forEach( s => {
+      if ( typeof s === 'object' && s.children ) {
+        walkSidebar( s.children, callback )
+      } else {
+        callback( s, sidebar )
+      }
+    } )
   }
 
   const layoutCaches = {}
@@ -262,6 +337,9 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
             if ( page && typeof page.enter === 'function' ) {
               page.enter()
             }
+
+            // use quicklink
+            quicklinkSiblingPages( routeConfig )
           },
 
           leave() {

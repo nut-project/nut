@@ -5,7 +5,7 @@ module.exports = {
   html: {
     title: '文档标题',
   },
-  layout: 'now',
+  layout: 'saber',
   theme: 'ocean',
   plugins: {
     login: {

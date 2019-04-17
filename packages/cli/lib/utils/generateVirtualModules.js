@@ -202,6 +202,8 @@ async function generateMarkdownThemeCSS( config ) {
 }
 
 async function normalizeConfig( config, allPages ) {
+  config.sidebar = config.sidebar || []
+
   const sidebar = config.sidebar.map( s => {
     s.children = s.children || []
     const children = s.children
@@ -227,6 +229,7 @@ async function generateRoutes( pages ) {
       name: '${ page.name }',
       layout: ${ page.attributes.layout ? "'" + page.attributes.layout + "'" : null },
       path: '${ page.route }',
+      page: ${ JSON.stringify( page.page ) },
       filepath: ${ JSON.stringify( tildify( page.filepath ) ) },
       component: () => import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' ),
       provider: '${ page.provider }',

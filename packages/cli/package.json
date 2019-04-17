@@ -42,6 +42,7 @@
     "nprogress": "^0.2.0",
     "open": "^6.1.0",
     "prismjs": "^1.16.0",
+    "quicklink": "^1.0.0",
     "read": "^1.0.7",
     "regularjs": "^0.6.2",
     "style-loader": "^0.23.1",

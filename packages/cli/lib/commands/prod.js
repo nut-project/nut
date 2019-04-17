@@ -31,7 +31,7 @@ async function prod(){
 
   webpackConfig.output = {
     filename: '[name].[contenthash].js',
-    publicPath: './'
+    publicPath: './',
   }
 
   const modules = await generateVirtualModules( config, {

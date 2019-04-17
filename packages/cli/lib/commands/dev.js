@@ -56,6 +56,7 @@ async function dev(){
 
   webpackConfig.output = {
     filename: '[name].js',
+    publicPath: './',
   }
 
   webpackConfig.plugins.push(
