@@ -95,5 +95,7 @@ title: 介绍
   <p style="font-size: 15px;">会 markdown 语法就可以上手写文档！</p>
   <p style="font-size: 15px;">markdown 如何转 html，代码如何高亮等等，这些你都不需要关心</p>
 
+- **智能的 quicklink 支持**
+
 - **内置 500+ 的字体图标**
   <p style="font-size: 15px;">满足你的日常使用</p>
