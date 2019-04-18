@@ -24,11 +24,25 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
     return found
   }
 
+  const toString = Object.prototype.toString
+
+  function isArray( obj ) {
+    return toString.call( obj ) === '[object Array]'
+  }
+
+  function ensureArray( value ) {
+    if ( !isArray( value ) ) {
+      return [ value ]
+    }
+
+    return value
+  }
+
   function getAssetUrls( keys ) {
     return keys
       .reduce( ( total, key ) => {
         const chunks = globals.STATS_ASSETS_BY_CHUNKNAME || {}
-        let urls = chunks[ key ] || []
+        let urls = ensureArray( chunks[ key ] || [] )
         urls = urls.map( url => globals.PUBLIC_PATH + url )
         total.push( ...urls )
         return total
