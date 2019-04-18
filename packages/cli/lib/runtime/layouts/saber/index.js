@@ -52,7 +52,7 @@ const Shell = Regular.extend( {
   computed: {
     currentPage() {
       const currentPages = this.getCurrentPages()
-      return currentPages[ 0 ]
+      return currentPages.find( page => page.active ) || {}
     },
   },
 

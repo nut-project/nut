@@ -101,7 +101,7 @@ const Shell = Regular.extend( {
       {/if}
 
       <div class="${ styles.page_container }">
-        {#if currentPages[ 0 ] && currentPages[ 0 ].type === 'markdown'}
+        {#if this.getActivePage( currentPages ).type === 'markdown'}
           <div class="${ styles.page_content }">
             <div
               class="markdown-body"
@@ -120,6 +120,10 @@ const Shell = Regular.extend( {
     currentPages() {
       return this.getCurrentPages()
     },
+  },
+
+  getActivePage( pages ) {
+    return pages.find( page => page.active ) || {}
   },
 
   getCurrentPages() {

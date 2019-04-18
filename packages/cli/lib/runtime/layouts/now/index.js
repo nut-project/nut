@@ -45,10 +45,12 @@ const Layout = Regular.extend( {
           </div>
         </aside>
 
-        {#if currentPages[ 0 ] && currentPages[ 0 ].type === 'markdown'}
+        {#if this.getActivePage( currentPages ).type === 'markdown'}
           <div class="${ styles.content }">
-            <div class="${ styles.markdown } markdown-body" ref="$$view">
-            </div>
+            <div
+              class="${ styles.markdown } markdown-body"
+              ref="$$view"
+            ></div>
           </div>
         {#else}
           <div class="${ styles.content }">
@@ -63,6 +65,10 @@ const Layout = Regular.extend( {
     currentPages() {
       return this.getCurrentPages()
     },
+  },
+
+  getActivePage( pages ) {
+    return pages.find( page => page.active ) || {}
   },
 
   getCurrentPages() {
