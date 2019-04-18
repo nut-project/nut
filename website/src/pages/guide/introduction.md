@@ -8,6 +8,17 @@ title: 介绍
 
 <img width="500px" src="./terminal.png" alt="terminal screenshot">
 
+# 理念
+
+- 从 代码构建 到 应用构建
+- 弱化了路由和单页的概念，强化了组件即页面
+- 使用了框架无关的路由体系，支持各种类型的页面（markdown、vue、regular...）
+- 基于插件实现的 enhance
+- 集成 webpack 最佳实践
+- 内置的加载优化
+
+...
+
 # 提问环节
 
 <details>

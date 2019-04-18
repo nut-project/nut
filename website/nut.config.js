@@ -20,6 +20,7 @@ module.exports = {
       children: [
         'pages/guide/introduction',
         'pages/guide/installation',
+        'pages/guide/experience',
         'pages/guide/get-started',
         'pages/guide/public',
         'pages/guide/css-preprocessor',
