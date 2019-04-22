@@ -38,9 +38,11 @@ const Layout = Regular.extend( {
           >
             <i class="${ styles.sidebar__icon } nut-icons nut-icon-{ item.icon }"></i>
             <span>{ item.title }</span>
+            {#if !item.link}
             <div class="${ styles.sidebar__arrow_container }">
               <i class="${ styles.sidebar__arrow } nut-icons nut-icon-down { item.open ? '${ styles.is_open }' : '' }"></i>
             </div>
+            {/if}
           </a>
 
           {#if item.children && item.children.length > 0}
