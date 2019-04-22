@@ -1,37 +1,32 @@
-import Regular from 'regularjs'
+export default {
+  name: 'layout-none',
 
-const Shell = Regular.extend( {
-  template: `
-    {#if currentPage && currentPage.type === 'markdown'}
-      <div ref="$$view"></div>
-    {#else}
-      <div>
-        <div class="" ref="$$view"></div>
-      </div>
-    {/if}
-  `,
+  type: 'layout',
 
-  computed: {
-    currentPage() {
-      const currentPages = this.getCurrentPages()
-      return currentPages[ 0 ]
-    },
-  },
+  async apply( ctx ) {
+    let container
+    let content
 
-  getCurrentPages() {
-    if ( !this.data.ctx ) {
-      return []
-    }
+    await ctx.api.layout.register( {
+      name: 'none',
 
-    const sidebar = this.data.ctx.app.sidebar
-    const found = sidebar.find( s => s.active )
+      mount( node, { ctx } = {} ) {
+        container = document.createElement( 'div' )
+        content = document.createElement( 'div' )
+        container.appendChild( content )
 
-    if ( !found ) {
-      return []
-    }
+        node.appendChild( container )
+      },
 
-    return found.children || []
-  },
-} )
+      unmount( node ) {
+        if ( node && container ) {
+          node.removeChild( container )
+        }
+      },
 
-export default Shell
+      getMountNode() {
+        return content
+      },
+    } )
+  }
+}

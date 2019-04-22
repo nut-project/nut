@@ -1,7 +1,7 @@
 import Regular from 'regularjs'
 import styles from './index.module.less'
 
-const Shell = Regular.extend( {
+const Layout = Regular.extend( {
   template: `
     <div class="${ styles.shell }">
       <div class="${ styles.header }">
@@ -72,4 +72,45 @@ const Shell = Regular.extend( {
   },
 } )
 
-export default Shell
+export default {
+  name: 'layout-saber',
+
+  type: 'layout',
+
+  async apply( ctx ) {
+    let layout = null
+
+    await ctx.api.layout.register( {
+      name: 'saber',
+
+      mount( node ) {
+        if ( !layout ) {
+          layout = new Layout()
+        }
+
+        layout.$inject( node )
+      },
+
+      unmount( node ) {
+        if ( !layout ) {
+          return
+        }
+
+        layout.$inject( false )
+      },
+
+      update( data = {} ) {
+        if ( !layout ) {
+          return
+        }
+
+        layout.data.ctx = data.ctx
+        layout.$update()
+      },
+
+      getMountNode() {
+        return layout && layout.$refs.$$mount
+      },
+    } )
+  }
+}

@@ -78,7 +78,7 @@ Header.filter( 't', function ( v ) {
   return `<span class="${ styles.first_letter }">${ first }</span>${ rest }`
 } )
 
-const Shell = Regular.extend( {
+const Layout = Regular.extend( {
   template: `
     <nut-sidebar
       menu="{ ctx.app.sidebar }"
@@ -142,8 +142,49 @@ const Shell = Regular.extend( {
   },
 } )
 
-Shell.component( 'nut-sidebar', Sidebar )
-Shell.component( 'nut-navbar', Navbar )
-Shell.component( 'nut-header', Header )
+Layout.component( 'nut-sidebar', Sidebar )
+Layout.component( 'nut-navbar', Navbar )
+Layout.component( 'nut-header', Header )
 
-export default Shell
+export default {
+  name: 'layout-default',
+
+  type: 'layout',
+
+  async apply( ctx ) {
+    let layout = null
+
+    await ctx.api.layout.register( {
+      name: 'default',
+
+      mount( node ) {
+        if ( !layout ) {
+          layout = new Layout()
+        }
+
+        layout.$inject( node )
+      },
+
+      unmount( node ) {
+        if ( !layout ) {
+          return
+        }
+
+        layout.$inject( false )
+      },
+
+      update( data = {} ) {
+        if ( !layout ) {
+          return
+        }
+
+        layout.data.ctx = data.ctx
+        layout.$update()
+      },
+
+      getMountNode() {
+        return layout && layout.$refs.$$mount
+      },
+    } )
+  }
+}

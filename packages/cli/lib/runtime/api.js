@@ -1,4 +1,5 @@
 import axios from 'axios'
+import layout from './core/layout'
 
 export default function ( { pages } = {} ) {
   let axiosInstance = axios.create( {
@@ -8,6 +9,7 @@ export default function ( { pages } = {} ) {
 
   return {
     axios: axiosInstance,
+
     getPageLink( page, data ) {
       const found = pages.find( p => p.page === page )
 
@@ -21,5 +23,7 @@ export default function ( { pages } = {} ) {
 
       return '/#' + found.router.toPath( data )
     },
+
+    layout,
   }
 }

@@ -15,6 +15,7 @@ import installDirectives from './steps/install-directives'
 import applyPlugins from './steps/apply-plugins'
 import setupNProgress from './steps/setup-nprogress'
 import setupNico from './steps/setup-nico'
+import registerLayouts from './steps/register-layouts'
 
 import getFirstRoute from './utils/get-first-route'
 import switchTheme from './utils/switch-theme'
@@ -23,6 +24,7 @@ import app from '@/nut-auto-generated-app'
 import events from './events'
 import createAPI from './api'
 import use from './use'
+import router from './router'
 
 ;( async function () {
   const context = {
@@ -34,10 +36,13 @@ import use from './use'
     events,
     pages,
     use,
+    router,
     globals: NUT_GLOBALS || {},
   }
 
   await installDirectives()
+
+  await registerLayouts( context )
 
   await events.emit( 'system:before-apply-plugins', context )
   await applyPlugins( plugins, pluginOptions, context )
@@ -48,48 +53,6 @@ import use from './use'
 
   nico.on( 'notfound', () => {
     events.emit( 'route:notfound', context )
-  } )
-
-  nico.on( 'layout', function refreshLayout( { layout, router } ) {
-    events.emit( 'layout:update', layout )
-
-    const activeRouterName = router.name
-
-    context.app = nutConfig
-
-    context.app.sidebar.forEach( s => {
-      let isAnyPageActive = false
-      let route = {
-        found: false,
-        value: ''
-      }
-
-      s.children.forEach( child => {
-        if ( !route.found ) {
-          route.value = child.route
-          route.found = true
-        }
-
-        if ( child.name === activeRouterName ) {
-          isAnyPageActive = true
-          child.active = true
-        } else {
-          child.active = false
-        }
-      } )
-
-      if ( isAnyPageActive ) {
-        s.active = true
-      } else {
-        s.active = false
-      }
-
-      s.route = route.value
-    } )
-
-    layout.data.ctx = context
-
-    layout.$update()
   } )
 
   if ( !location.hash ) {

@@ -90,7 +90,7 @@ const Layout = Regular.extend( {
 Layout.filter( 'uppercase', v => v && v.toUpperCase() )
 
 export default {
-  name: 'layout-now',
+  name: 'layout-kaola',
 
   type: 'layout',
 
@@ -98,7 +98,7 @@ export default {
     let layout = null
 
     await ctx.api.layout.register( {
-      name: 'now',
+      name: 'kaola',
 
       mount( node ) {
         if ( !layout ) {

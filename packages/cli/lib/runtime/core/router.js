@@ -1,12 +1,8 @@
 import quicklink from 'quicklink'
 import nutConfig from 'nut-auto-generated-nut-config'
-import layoutDefault from '../layouts/default'
-import layoutSaber from '../layouts/saber'
-import layoutNone from '../layouts/none'
-import layoutNow from '../layouts/now'
 
-export default function createNico( rootRouter, router, prefix = '', ctx = {}, pluginOptions = {} ) {
-  const { events, pages, app, globals } = ctx
+export default function createNico( rootRouter, routerFactory, prefix = '', ctx = {}, pluginOptions = {} ) {
+  const { events, pages, app, globals, api } = ctx
 
   function findPageByRouteConfig( pages, routeConfig ) {
     return pages.find( page => page.name === routeConfig.name )
@@ -100,20 +96,7 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
     } )
   }
 
-  const layoutCaches = {}
   const nico = {
-    getLayout( name ) {
-      const cached = layoutCaches[ name ]
-      if ( cached ) {
-        return cached
-      }
-
-      const layout = createLayout( name )
-      layoutCaches[ name ] = layout
-
-      return layout
-    },
-
     on( ...args ) {
       return rootRouter.on( ...args )
     },
@@ -145,7 +128,7 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
       walk( routeConfigs, ( routeConfig, parent ) => {
         // TODO: ensure slash
         routeConfig.path = prefix + routeConfig.path
-        const current = router.create( {
+        const current = routerFactory.create( {
           ...routeConfig,
 
           beforeEnter( e ) {
@@ -294,56 +277,39 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
             }
           },
 
-          enter( { from, to, params } ) {
+          async enter( { from, to, params } ) {
             const page = this.page
 
             if ( page ) {
-              const view = findView( this ) || self.mountNode
-
               const DEFAULT_LAYOUT = nutConfig.layout || 'default'
               const oldLayout = from && from.options && from.options.layout || DEFAULT_LAYOUT
               const newLayout = to && to.options && to.options.layout || DEFAULT_LAYOUT
 
               const layouts = {
-                from: self.getLayout( oldLayout ),
-                to: self.getLayout( newLayout )
+                from: api.layout.getLayoutByName( oldLayout ),
+                to: api.layout.getLayoutByName( newLayout )
               }
 
+              let layout = layouts.to
+
               if ( oldLayout !== newLayout ) {
-                layouts.from.$inject( false )
+                api.layout.unmount( oldLayout )
               }
 
               if ( ( oldLayout === newLayout ) && from ) {
                 // donot have to inject again
               } else {
-                events.emit( 'layout:before-mount', layouts.to )
-                layouts.to.$inject( view )
-                events.emit( 'layout:after-mount', layouts.to )
+                await events.emit( 'layout:before-mount', layout )
+                api.layout.mount( newLayout, { ctx } )
+                await events.emit( 'layout:after-mount', layout )
               }
 
-              let layout = layouts.to
+              await refreshLayout( { layout, router: this } )
 
-              this.layout = layout
-
-              self.layoutName = newLayout
-              self.layout = layout
-              self.layouts = layouts
-              self.router = this
-              self.params = params
-              self.page = page
-
-              nico.emit( 'layout', {
-                layout,
-                router: this,
-              } )
-
-              layout.$update()
-
-              // TODO: pass params to instance
-
-              if ( layout.$refs.$$view ) {
-                page.mount( layout.$refs.$$view )
-              }
+              // TODO: pass params to page
+              await events.emit( 'page:before-mount', page )
+              api.layout.mountPage( page )
+              await events.emit( 'page:after-mount', page )
             }
 
             routeConfig.enter && routeConfig.enter.call( this )
@@ -352,15 +318,16 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
               page.enter()
             }
 
+            ctx.router.current = this
+
             // use quicklink
             quicklinkSiblingPages( routeConfig )
           },
 
           leave() {
             const page = this.page
-            const view = this.layout.$refs.$$view
 
-            page.unmount( view )
+            api.layout.unmountPage( page )
 
             routeConfig.leave && routeConfig.leave.call( this )
 
@@ -369,6 +336,7 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
             }
           }
         } )
+
         parent = parent || root
         parent.append( current )
 
@@ -389,8 +357,12 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
         } else {
           this.mountNode = mountNode
         }
+
+        api.layout.root = this.mountNode
+
         rootRouter.start()
-      } else { // 如果不是真正的根节点，只需要激活即可
+      } else {
+        // 如果不是真正的根节点，只需要激活即可
         rootRouter.recursive( ins => {
           ins.activate()
         } )
@@ -410,76 +382,76 @@ export default function createNico( rootRouter, router, prefix = '', ctx = {}, p
     module.hot.accept( 'nut-auto-generated-nut-config', () => {
       const newLayout = nutConfig && nutConfig.layout || 'default'
       if ( nico.layoutName !== newLayout ) {
-        switchLayout( nico, nutConfig && nutConfig.layout || 'default' )
+        switchLayout( ctx, nico, nutConfig && nutConfig.layout || 'default' )
       }
     } )
   }
 
-  return nico
-}
+  async function switchLayout( ctx, nico, name ) {
+    const { api } = ctx
+    const page = api.layout.currentPage
+    api.layout.unmountPage( page )
 
-function switchLayout( nico, name ) {
-  if ( nico.layout ) {
-    const mountNode = nico.layout.parentNode
+    const current = api.layout.current
+    if ( current ) {
+      api.layout.unmount( current.name )
+    }
 
-    if ( mountNode ) {
-      nico.page && nico.page.unmount( nico.layout.$refs.$$view )
-      nico.layout.$inject( false )
+    const newLayout = api.layout.getLayoutByName( name )
 
-      const newLayout = nico.getLayout( name )
+    api.layout.mount( newLayout.name, { ctx } )
 
-      // 动态的$refs，先update
-      nico.emit( 'layout', {
-        layout: newLayout,
-        router: nico.router,
-      } )
-      newLayout.$update()
+    await refreshLayout( {
+      layout: newLayout,
+      router: ctx.router.current,
+    } )
 
-      const $view = newLayout.$refs.$$view
-      if ( $view ) {
-        nico.page && nico.page.mount( $view )
+    api.layout.mountPage( page )
+  }
+
+  async function refreshLayout( { layout, router } ) {
+    await events.emit( 'layout:before-update', { layout, router: this } )
+
+    const activeRouterName = router.name
+
+    ctx.app = nutConfig
+
+    ctx.app.sidebar.forEach( s => {
+      let isAnyPageActive = false
+      let route = {
+        found: false,
+        value: ''
       }
 
-      nico.layout = newLayout
-      nico.layoutName = name
+      s.children.forEach( child => {
+        if ( !route.found ) {
+          route.value = child.route
+          route.found = true
+        }
 
-      nico.router.layout = newLayout
+        if ( child.name === activeRouterName ) {
+          isAnyPageActive = true
+          child.active = true
+        } else {
+          child.active = false
+        }
+      } )
 
-      newLayout.$inject( mountNode )
-    }
+      if ( isAnyPageActive ) {
+        s.active = true
+      } else {
+        s.active = false
+      }
+
+      s.route = route.value
+    } )
+
+    layout.update && layout.update( { ctx } )
+
+    await events.emit( 'layout:after-update', { layout, router: this } )
   }
-}
 
-function findView( context ) {
-  let parent = context.parent
-  let view
-  while ( true ) {
-    view = parent.layout && parent.layout.$refs && parent.layout.$refs.$$view
-
-    if ( view ) {
-      break
-    }
-
-    parent = parent.parent
-
-    if ( !parent ) {
-      break
-    }
-  }
-
-  return view
-}
-
-const layouts = {
-  default: layoutDefault,
-  saber: layoutSaber,
-  none: layoutNone,
-  now: layoutNow,
-}
-
-function createLayout( name ) {
-  const Layout = layouts[ name ] || layouts.default
-  return new Layout()
+  return nico
 }
 
 function walk( routes = [], fn, parent ) {
