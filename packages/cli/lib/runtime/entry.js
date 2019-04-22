@@ -11,7 +11,6 @@ import pages from 'nut-auto-generated-pages'
 import pluginOptions from 'nut-auto-generated-plugin-options'
 import extendContext from 'nut-auto-generated-extend-context'
 
-import installDirectives from './steps/install-directives'
 import applyPlugins from './steps/apply-plugins'
 import setupNProgress from './steps/setup-nprogress'
 import setupNico from './steps/setup-nico'
@@ -39,8 +38,6 @@ import router from './router'
     router,
     globals: NUT_GLOBALS || {},
   }
-
-  await installDirectives()
 
   await registerLayouts( context )
 

@@ -362,7 +362,6 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
         rootRouter.start()
       } else {
-        // 如果不是真正的根节点，只需要激活即可
         rootRouter.recursive( ins => {
           ins.activate()
         } )

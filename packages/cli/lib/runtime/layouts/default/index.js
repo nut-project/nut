@@ -1,4 +1,5 @@
 import Regular from 'regularjs'
+import Tippy from './tippy'
 import styles from './index.module.less'
 
 const Sidebar = Regular.extend( {
@@ -29,6 +30,8 @@ const Sidebar = Regular.extend( {
     </aside>
   `,
 } )
+
+Sidebar.use( Tippy )
 
 const Navbar = Regular.extend( {
   template: `
@@ -106,11 +109,11 @@ const Layout = Regular.extend( {
             <div
               class="markdown-body"
               style="padding: 30px 40px;"
-              ref="$$view"
+              ref="$$mount"
             ></div>
           </div>
         {#else}
-          <div class="${ styles.page_content }" ref="$$view"></div>
+          <div class="${ styles.page_content }" ref="$$mount"></div>
         {/if}
       </div>
     </div>

@@ -8,8 +8,10 @@ import applyPlugins from './apply-plugins'
 
 export default async function ( context ) {
   await applyPlugins( [
-    kaolaLayout,
+    defaultLayout,
+    saberLayout,
     nowLayout,
     noneLayout,
+    kaolaLayout,
   ], {}, context )
 }
