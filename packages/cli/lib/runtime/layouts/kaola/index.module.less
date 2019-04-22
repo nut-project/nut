@@ -1,114 +1,157 @@
-@kaola-navbar-width: 230px;
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 256px;
+  background-color: #00142a;
+  overflow: hidden;
+}
+
+.menu {
+  height: 100%;
+  overflow-y: auto;
+}
 
 .header {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 256px;
   right: 0;
-  width: 100%;
+  height: 64px;
   background-color: #fff;
-  border-bottom: solid 1px #eaeaea;
+  font-size: 16px;
+  box-shadow: 0 1px 4px rgba(0,21,41,0.08);
+  display: flex;
+  justify-content: space-between;
   padding: 0 20px;
-  font-size: 14px;
-  height: 60px;
-  z-index: 1;
-  font-size: 14px;
-
-  &__content {
-    max-width: 1024px;
-    height: 100%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
 }
 
-.title {
-  font-weight: bold;
+.actions {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
   display: flex;
   align-items: center;
   font-size: 14px;
+  color: rgba(0,0,0,0.65);
+}
+
+.action_user {
+
 }
 
 .logo {
-  max-height: 36px;
+  height: 22px;
   margin-right: 10px;
 }
 
-.sidebar {
-  font-size: 14px;
-
-  &__item {
-    display: inline-block;
-    color: #666;
-    text-decoration: none;
-    padding: 0 6px;
-    text-decoration: none;
-
-    &.is_active {
-      color: #000;
-    }
-
-    &:hover {
-      color: #000;
-    }
-  }
+.title {
+  height: 64px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #002140;
 }
 
 .main {
-  position: relative;
-  top: 60px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  padding: 0 20px;
-
-  &__content {
-    max-width: 1024px;
-    height: 100%;
-    margin: 0 auto;
-    display: flex;
-  }
+  margin-left: 256px;
+  padding: 20px;
+  padding-top: 84px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
 }
 
-.navbar {
-  position: fixed;
-  top: 60px;
-  bottom: 0;
-  padding: 40px 20px 40px 0;
-  width: @kaola-navbar-width;
-  border-right: solid 1px #eaeaea;
-  overflow: auto;
-  background-color: #fff;
-  font-size: 16px;
+.sidebar {
+  &__icon {
+    font-size: 16px;
+    line-height: 1;
+    margin-right: 8px;
+  }
 
-  &__scroller {
-    width: 100%;
+  &__title {
+    display: block;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    height: 56px;
+    line-height: 56px;
+    padding: 0 20px;
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+
+    &:hover {
+      background-color: #000c17;
+    }
+  }
+
+  &__items {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: height .2s ease;
   }
 
   &__item {
+    height: 50px;
+    line-height: 50px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+      background-color: #000c17;
+    }
+  }
+
+  &__item.is_active &__link {
+    color: #409eff;
+  }
+
+  &__link {
     display: block;
     width: 100%;
-    margin: 10px 0;
-    padding: 4px 10px 4px 0;
-    color: #000;
+    padding: 0 40px 0 40px;
+    color: rgba(255, 255, 255, 0.65);
     text-decoration: none;
+  }
 
-    &.is_active {
-      font-weight: 600;
+  &__arrow_container {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translate3d(0,-50%,0);
+    display: block;
+    font-size: 12px;
+  }
+
+  &__arrow {
+    display: block;
+    transition: transform .3s ease;
+    transform: rotate(0);
+    font-size: 12px;
+
+    &.is_open {
+      transform: rotate(180deg);
     }
   }
 }
 
-.content {
-  padding: 20px 0 20px 20px;
-  flex: 1;
-  overflow: auto;
-  margin-left: @kaola-navbar-width;
-}
-
 .markdown {
+  padding: 40px;
   background-color: #fff;
-  padding: 30px 40px;
+  border-radius: 5px;
+  overflow: hidden;
 }

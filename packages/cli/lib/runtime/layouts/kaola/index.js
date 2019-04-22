@@ -4,54 +4,73 @@ import styles from './index.module.less'
 const Layout = Regular.extend( {
   template: `
     <div class="${ styles.header }">
-      <div class="${ styles.header__content }">
-        <div class="${ styles.title }">
-          {#if ctx.app.logo}
-            <img class="${ styles.logo }" src="{ ctx.app.logo }" alt="" />
-          {/if}
+      <div></div>
+      <ul class="${ styles.actions }">
+        {#if ctx.user && ctx.user.nickname}
+        <li class="${ styles.action_user }">
+          <i style="margin-right: 2px;" class="nut-icons nut-icon-user"></i>
+          { ctx.user.nickname }
+        </li>
+        {/if}
+      </ul>
+    </div>
 
-          <div>{ ctx.app.zh | uppercase }</div>
-        </div>
-        <div class="${ styles.sidebar }">
-          {#list ctx.app.sidebar as item}
-            <a
-              href="{ item.route ? '#' + item.route : item.link }"
-              {#if item.link}
-              target="_blank"
-              {/if}
-              class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }"
-            >
-              { item.title }
-            </a>
-          {/list}
-        </div>
+    <div class="${ styles.sidebar }">
+      <div class="${ styles.title }">
+        {#if ctx.app.logo}
+          <img class="${ styles.logo }" src="{ ctx.app.logo }" alt="" />
+        {/if}
+
+        <div>{ ctx.app.zh }</div>
       </div>
+
+      <div class="${ styles.menu }">
+        {#list ctx.app.sidebar as item}
+          <a
+            {#if item.link}
+            href="{ item.link }"
+            target="_blank"
+            {#else}
+            href="javascript:;"
+            on-click="{ item.open = !item.open }"
+            {/if}
+            class="${ styles.sidebar__title } { item.active ? '${ styles.is_active }' : '' }"
+          >
+            <i class="${ styles.sidebar__icon } nut-icons nut-icon-{ item.icon }"></i>
+            <span>{ item.title }</span>
+            <div class="${ styles.sidebar__arrow_container }">
+              <i class="${ styles.sidebar__arrow } nut-icons nut-icon-down { item.open ? '${ styles.is_open }' : '' }"></i>
+            </div>
+          </a>
+
+          {#if item.children && item.children.length > 0}
+            <ul class="${ styles.sidebar__items }" r-style="{ { height: item.open ? item.children.length * 50 + 'px' : '0' } }">
+              {#list item.children as page}
+                {#if page.attributes.title}
+                  <li class="${ styles.sidebar__item } { page.active ? '${ styles.is_active }' : '' }">
+                    <a
+                      href="#{ page.route }"
+                      class="${ styles.sidebar__link }"
+                    >
+                      { page.attributes.title }
+                    </a>
+                  </li>
+                {/if}
+              {/list}
+            </ul>
+          {/if}
+        {/list}
+      </div>
+
     </div>
 
     <div class="${ styles.main }">
       <div class="${ styles.main__content }">
-        <aside class="${ styles.navbar }">
-          <div class="${ styles.navbar__scroller }">
-            {#list currentPages as page}
-              {#if page.attributes.title}
-                <a
-                  href="#{ page.route }"
-                  class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
-                >
-                  { page.attributes.title }
-                </a>
-              {/if}
-            {/list}
-          </div>
-        </aside>
-
         {#if this.getActivePage( currentPages ).type === 'markdown'}
-          <div class="${ styles.content }">
-            <div
-              class="${ styles.markdown } markdown-body"
-              ref="$$mount"
-            ></div>
-          </div>
+          <div
+            class="${ styles.markdown } markdown-body"
+            ref="$$mount"
+          ></div>
         {#else}
           <div class="${ styles.content }">
             <div ref="$$mount"></div>
@@ -87,8 +106,6 @@ const Layout = Regular.extend( {
   },
 } )
 
-Layout.filter( 'uppercase', v => v && v.toUpperCase() )
-
 export default {
   name: 'layout-kaola',
 
@@ -100,9 +117,13 @@ export default {
     await ctx.api.layout.register( {
       name: 'kaola',
 
-      mount( node ) {
+      mount( node, { ctx } ) {
         if ( !layout ) {
-          layout = new Layout()
+          ctx.app.sidebar.forEach( s => s.open = s.active )
+
+          layout = new Layout( {
+            data: { ctx }
+          } )
         }
 
         layout.$inject( node )

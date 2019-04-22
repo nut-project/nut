@@ -2,10 +2,11 @@ module.exports = {
   port: 9000,
   zh: 'nut',
   en: 'nut',
+  logo: '',
   html: {
     title: '文档标题',
   },
-  layout: 'saber',
+  layout: 'kaola',
   theme: 'ocean',
   plugins: {
     login: {

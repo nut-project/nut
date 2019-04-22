@@ -300,6 +300,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 // donot have to inject again
               } else {
                 await events.emit( 'layout:before-mount', layout )
+                markActive( ctx.app.sidebar, this.name )
                 api.layout.mount( newLayout, { ctx } )
                 await events.emit( 'layout:after-mount', layout )
               }
@@ -408,20 +409,15 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
     api.layout.mountPage( page )
   }
 
-  async function refreshLayout( { layout, router } ) {
-    await events.emit( 'layout:before-update', { layout, router: this } )
-
-    const activeRouterName = router.name
-
-    ctx.app = nutConfig
-
-    ctx.app.sidebar.forEach( s => {
+  function markActive( sidebar = [], activeRouterName = '' ) {
+    sidebar.forEach( s => {
       let isAnyPageActive = false
       let route = {
         found: false,
         value: ''
       }
 
+      // TODO: walk
       s.children.forEach( child => {
         if ( !route.found ) {
           route.value = child.route
@@ -444,6 +440,14 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
       s.route = route.value
     } )
+  }
+
+  async function refreshLayout( { layout, router } ) {
+    await events.emit( 'layout:before-update', { layout, router: this } )
+
+    ctx.app = nutConfig
+
+    markActive( ctx.app.sidebar, router.name )
 
     layout.update && layout.update( { ctx } )
 
