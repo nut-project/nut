@@ -100,16 +100,12 @@ superb 是插件在当前应用中使用的名字
 
 ```js
 // plugin exposed
-ctx.plugins.superb.method_name()
-ctx.plugins.superb.prop
+ctx.use( 'superb', 'method_name' )
+ctx.use( 'superb', 'prop' )
 
 // plugin events
 ctx.events.on( 'plugin:superb:some-event', async data => {} )
 ```
-
-- 查看完整的[开放接口](./docs/api.md)(api)
-- 查看完整的[系统事件](./docs/events.md)(events)
-
 
 ## 如何开始
 

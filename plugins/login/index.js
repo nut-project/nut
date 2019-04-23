@@ -1,7 +1,5 @@
 export default {
-  name: 'netease-openid',
-
-  // login 类型的插件只能存在一个
+  name: 'login',
   type: 'login',
 
   apply( ctx, options ) {
@@ -9,24 +7,21 @@ export default {
     const { api, events } = ctx
 
     async function getUser() {
-      const response = await api.axios.get( origin + '/api/openid/user' )
-      const json = response.data
+      const response = await api.axios.get( origin + '/__nut__/login/user' )
+      const json = response.data || {}
+      const { nickname, email } = json.body || {}
 
-      return {
-        nickname: json.body.fullname,
-        email: json.body.email,
-        username: json.body.nickname,
-      }
+      return { nickname, email }
     }
 
     async function isLogin() {
-      const response = await api.axios.get( origin + '/api/openid/is_login' )
+      const response = await api.axios.get( origin + '/__nut__/login/is_login' )
       const json = response.data
       return json.body
     }
 
     async function toLogin() {
-      location.href = origin + '/api/openid/to_login'
+      location.href = origin + '/__nut__/login/to_login'
     }
 
     async function logout() {
@@ -49,6 +44,5 @@ export default {
     } )
 
     events.on( 'layout:logout', logout )
-    events.on( 'permission:lost', () => {} )
   }
 }

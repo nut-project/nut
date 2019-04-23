@@ -19,9 +19,9 @@ const DEFAULT_HOST = '127.0.0.1'
 const DEFAULT_PORT = 9000
 
 process
-  .on('unhandledRejection', (reason, p) => {
-    console.error(reason, 'Unhandled Rejection at Promise', p);
-  })
+  .on( 'unhandledRejection', ( reason, p ) => {
+    console.error( reason, 'Unhandled Rejection at Promise', p )
+  } )
 
 const dirs = {
   cli: path.join( __dirname, '../../' ),
@@ -67,7 +67,7 @@ async function dev(){
   )
 
   const modules = await generateVirtualModules( config, {
-    env: 'development'
+    env: 'dev'
   } )
   const virtualModules = new VirtualModulesPlugin( modules )
 
@@ -113,7 +113,7 @@ async function dev(){
         config = result.config
 
         const modules = await generateVirtualModules( config, {
-          env: 'development'
+          env: 'dev'
         } )
 
         for ( let [ path, content ] of Object.entries( modules ) ) {

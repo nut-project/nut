@@ -7,7 +7,7 @@ const dirs = require( './dirs' )
 const getPages = require( './getPages' )
 const pathUtils = require( './pathUtils' )
 
-async function generateVirtualModules( config, { env = 'development' } = {} ) {
+async function generateVirtualModules( config, { env = 'dev' } = {} ) {
   const pages = await getPages( config )
   const normalized = await normalizeConfig( config, pages )
   const routes = await generateRoutes( pages )
@@ -106,12 +106,7 @@ async function generateExtendContext( config, { env } = {} ) {
 async function getPluginOptionsFilePath( env ) {
   const cwd = process.cwd()
 
-  const map = {
-    'development': 'dev',
-    'production': 'prod',
-  }
-
-  const file = 'config/plugin.' + map[ env ] + '.js'
+  const file = 'config/plugin.' + env + '.js'
 
   const exists = await fse.pathExists( path.join( cwd, 'src/' + file ) )
 
@@ -178,7 +173,7 @@ async function generatePlugins( config, { env } = {} ) {
 }
 
 function normalizePlugin( plugin ) {
-  plugin.env = plugin.env || [ 'development', 'production' ]
+  plugin.env = plugin.env || [ 'dev', 'prod' ]
   plugin.enable = typeof plugin.enable !== 'undefined' ?
     !!plugin.enable :
     true

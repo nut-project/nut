@@ -9,9 +9,9 @@ const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
 
 process
-  .on('unhandledRejection', (reason, p) => {
-    console.error(reason, 'Unhandled Rejection at Promise', p);
-  })
+  .on( 'unhandledRejection', ( reason, p ) => {
+    console.error( reason, 'Unhandled Rejection at Promise', p )
+  } )
 
 const dirs = {
   cli: path.join( __dirname, '../../' ),
@@ -35,7 +35,7 @@ async function prod(){
   }
 
   const modules = await generateVirtualModules( config, {
-    env: 'production'
+    env: 'prod'
   } )
   const virtualModules = new VirtualModulesPlugin( modules )
 
