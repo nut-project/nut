@@ -10,6 +10,10 @@ const Layout = Regular.extend( {
         <li class="${ styles.action_user }">
           <i style="margin-right: 2px;" class="nut-icons nut-icon-user"></i>
           { ctx.user.nickname }
+
+          <ul class="${ styles.user_menu }">
+            <li class="${ styles.user_menu__item }" on-click="{ this.onLogout() }">退出</li>
+          </ul>
         </li>
         {/if}
       </ul>
@@ -106,6 +110,10 @@ const Layout = Regular.extend( {
 
     return found.children || []
   },
+
+  onLogout() {
+    this.$emit( 'logout' )
+  },
 } )
 
 export default {
@@ -125,6 +133,10 @@ export default {
 
           layout = new Layout( {
             data: { ctx }
+          } )
+
+          layout.$on( 'logout', () => {
+            ctx.events.emit( 'layout:logout' )
           } )
         }
 

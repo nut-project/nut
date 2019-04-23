@@ -10,8 +10,8 @@ module.exports = {
   theme: 'ocean',
   plugins: {
     login: {
-      path: require.resolve( './plugins/login-netease-openid' ),
-      enable: false,
+      path: require.resolve( './plugins/login' ),
+      enable: true,
       // env: [ 'development' ],
     },
     test: {

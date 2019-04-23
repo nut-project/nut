@@ -52,14 +52,14 @@ import router from './router'
     events.emit( 'route:notfound', context )
   } )
 
+  await events.emit( 'system:before-startup', context )
+
   if ( !location.hash ) {
     const firstRoute = getFirstRoute( nutConfig )
     if ( firstRoute ) {
       location.replace( '#' + firstRoute )
     }
   }
-
-  await events.emit( 'system:before-startup', context )
 
   nico.start( '#app' )
 

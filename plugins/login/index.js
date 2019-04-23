@@ -7,7 +7,7 @@ export default {
     const { api, events } = ctx
 
     async function getUser() {
-      const response = await api.axios.get( origin + '/__nut__/login/user' )
+      const response = await api.axios.get( origin + '/nut/plugin/login/user' )
       const json = response.data || {}
       const { nickname, email } = json.body || {}
 
@@ -15,17 +15,19 @@ export default {
     }
 
     async function isLogin() {
-      const response = await api.axios.get( origin + '/__nut__/login/is_login' )
+      const response = await api.axios.get( origin + '/nut/plugin/login/is-login' )
       const json = response.data
       return json.body
     }
 
-    async function toLogin() {
-      location.href = origin + '/__nut__/login/to_login'
+    function toLogin() {
+      location.replace( origin + '/nut/plugin/login/to-login' )
     }
 
     async function logout() {
-      console.log( 'logout' )
+      const response = await api.axios.get( origin + '/nut/plugin/login/logout' )
+      const json = response.data
+      return json.code === 200
     }
 
     api.expose( 'getUser', getUser )
@@ -37,12 +39,25 @@ export default {
       const isLogined = await isLogin()
 
       if ( !isLogined ) {
-        return toLogin()
+        toLogin()
+        await delay( 1000 )
+        return
       }
 
       ctx.user = await getUser()
     } )
 
-    events.on( 'layout:logout', logout )
+    events.on( 'layout:logout', async () => {
+      await logout()
+      toLogin()
+    } )
   }
+}
+
+function delay( duration = 0 ) {
+  return new Promise( ( resolve ) => {
+    setTimeout( () => {
+      resolve()
+    }, duration )
+  } )
 }
