@@ -12,7 +12,7 @@ module.exports = {
     login: {
       package: '@nut-plugins/login',
       enable: true,
-      // env: [ 'development' ],
+      // env: [ 'dev' ],
     },
     test: {
       path: require.resolve( './plugins/test' ),
