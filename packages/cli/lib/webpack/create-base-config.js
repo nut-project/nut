@@ -106,6 +106,38 @@ module.exports = function createBaseConfig( config ) {
         },
 
         {
+          test: /\.module\.styl(us)?$/,
+          use: [ {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: "[local]___[hash:base64:5]",
+            },
+          }, {
+            loader: 'stylus-loader',
+            options: {
+              preferPathResolver: 'webpack',
+            }
+          } ]
+        },
+        {
+          test: /\.styl(us)?$/,
+          exclude: /\.module\.styl(us)?$/,
+          use: [ {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader'
+          }, {
+            loader: 'stylus-loader',
+            options: {
+              preferPathResolver: 'webpack',
+            }
+          } ]
+        },
+
+        {
           test: /\.module\.css$/,
           use: [ {
             loader: 'style-loader',

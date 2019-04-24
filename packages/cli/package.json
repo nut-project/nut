@@ -48,6 +48,8 @@
     "sass": "^1.19.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
     "tildify": "^1.2.0",
     "tippy.js": "^4.2.1",
     "unfancy-router": "0.0.12",

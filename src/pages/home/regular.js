@@ -1,14 +1,17 @@
 ---
 title: regular
 permission: [ 'admin' ]
-cacheable: false
+cacheable: true
 ---
 
 import Regular from 'regularjs'
+import './regular.styl'
 
 const Page = Regular.extend( {
   template: `
-    page written by regular { count }
+    <div class="stylus_test">
+      page written by regular { count }
+    </div>
   `,
 
   config() {
