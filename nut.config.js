@@ -10,8 +10,8 @@ module.exports = {
   theme: 'ocean',
   plugins: {
     login: {
-      path: require.resolve( './plugins/login' ),
-      enable: false,
+      package: '@nut-plugins/login',
+      enable: true,
       // env: [ 'development' ],
     },
     test: {

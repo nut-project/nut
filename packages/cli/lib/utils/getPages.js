@@ -27,7 +27,19 @@ async function getPluginPages( plugins = {} ) {
 
   const promises = Object.keys( plugins ).map( async name => {
     const plugin = plugins[ name ]
-    const root = path.dirname( plugin.path )
+    let root
+
+    if ( plugin.path ) {
+      root = path.dirname( plugin.path )
+    }
+
+    if ( plugin.package ) {
+      root = path.dirname( require.resolve( plugin.package + '/package.json' ) )
+    }
+
+    if ( !root ) {
+      return Promise.resolve()
+    }
 
     const pluginPages = await getPages( root, page => {
       page.name = page.name + '_' + slugify( name, { separator: '$' } )

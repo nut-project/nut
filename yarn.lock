@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@nut-plugins/login@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@nut-plugins/login/-/login-0.0.0.tgz#42ae9ce04426905b4c5e68f9311c971649508ef3"
+
 array-union@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"
