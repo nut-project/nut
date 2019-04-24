@@ -1,0 +1,22 @@
+{
+  "name": "@nut-plugins/login",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  },
+  "keywords": [],
+  "author": "fengzilong1992@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fengzilong/nut.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fengzilong/nut/issues"
+  },
+  "homepage": "https://github.com/fengzilong/nut#readme",
+  "license": "MIT"
+}

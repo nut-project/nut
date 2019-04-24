@@ -3,7 +3,6 @@
   "private": true,
   "description": "",
   "version": "0.0.0",
-  "main": "index.js",
   "scripts": {
     "dev": "node ./packages/cli/bin/index.js",
     "build": "node ./packages/cli/bin/index.js --prod",
