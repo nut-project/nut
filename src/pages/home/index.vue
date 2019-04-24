@@ -12,8 +12,10 @@ title: 测试
   export default {}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  $blue: #1875e7;
+
   .x {
-    color: blue;
+    color : $blue;
   }
 </style>

@@ -45,6 +45,8 @@
     "quicklink": "^1.0.0",
     "read": "^1.0.7",
     "regularjs": "^0.6.2",
+    "sass": "^1.19.0",
+    "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "tildify": "^1.2.0",
     "tippy.js": "^4.2.1",

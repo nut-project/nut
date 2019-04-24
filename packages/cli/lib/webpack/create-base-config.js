@@ -74,6 +74,38 @@ module.exports = function createBaseConfig( config ) {
         },
 
         {
+          test: /\.module\.scss$/,
+          use: [ {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: "[local]___[hash:base64:5]",
+            },
+          }, {
+            loader: 'sass-loader',
+            options: {
+              implementation: require( 'sass' )
+            }
+          } ]
+        },
+        {
+          test: /\.scss$/,
+          exclude: /\.module\.scss$/,
+          use: [ {
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader'
+          }, {
+            loader: 'sass-loader',
+            options: {
+              implementation: require( 'sass' )
+            }
+          } ]
+        },
+
+        {
           test: /\.module\.css$/,
           use: [ {
             loader: 'style-loader',

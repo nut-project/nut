@@ -3,10 +3,11 @@ title: home
 ---
 
 import Regular from 'regularjs'
+import styles from './home.module.scss'
 
 const Page = Regular.extend( {
   template: `
-    home
+    <div class="${ styles.home_scss_test }">home</div>
   `
 } )
 

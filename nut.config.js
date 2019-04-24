@@ -11,7 +11,7 @@ module.exports = {
   plugins: {
     login: {
       path: require.resolve( './plugins/login' ),
-      enable: true,
+      enable: false,
       // env: [ 'development' ],
     },
     test: {
