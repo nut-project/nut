@@ -3,7 +3,10 @@ const webpack = require( 'webpack' )
 const chokidar = require( 'chokidar' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+const TerserJSPlugin = require( 'terser-webpack-plugin' )
+const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
+const applyCSSRules = require( '../webpack/apply-css-rules' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
@@ -24,15 +27,22 @@ async function prod(){
 
   ensureConfigDefaults( config )
 
-  const webpackConfig = Object.assign( {}, createBaseWebpackConfig( config ), {
+  const webpackConfig = Object.assign( createBaseWebpackConfig( config ), {
     mode: 'production',
     devtool: false,
   } )
+
+  applyCSSRules( webpackConfig, 'prod' )
 
   webpackConfig.output = {
     filename: '[name].[contenthash].js',
     publicPath: './',
   }
+
+  webpackConfig.optimization.minimizer = [
+    new TerserJSPlugin( {} ),
+    new OptimizeCSSAssetsPlugin( {} ),
+  ]
 
   const modules = await generateVirtualModules( config, {
     env: 'prod'

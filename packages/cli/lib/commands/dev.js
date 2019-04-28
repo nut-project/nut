@@ -11,6 +11,7 @@ const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
 
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
+const applyCSSRules = require( '../webpack/apply-css-rules' )
 const generateVirtualModules = require( '../utils/generateVirtualModules' )
 const loadConfig = require( '../utils/loadConfig' )
 const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
@@ -49,10 +50,12 @@ async function dev(){
     devServerOptions = Object.assign( devServerOptions, config.devServer )
   }
 
-  const webpackConfig = Object.assign( {}, createBaseWebpackConfig( config ), {
+  const webpackConfig = Object.assign( createBaseWebpackConfig( config ), {
     mode: 'development',
     devtool: 'cheap-module-source-map',
   } )
+
+  applyCSSRules( webpackConfig, 'dev' )
 
   webpackConfig.output = {
     filename: '[name].js',

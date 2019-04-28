@@ -11,7 +11,7 @@ module.exports = {
   plugins: {
     login: {
       package: '@nut-plugins/login',
-      enable: true,
+      enable: false,
       // env: [ 'dev' ],
     },
     test: {
