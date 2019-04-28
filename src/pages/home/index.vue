@@ -3,7 +3,7 @@ title: 测试
 ---
 
 <template>
-  <div class="x">
+  <div :class="$style.x">
     vue test
   </div>
 </template>
@@ -12,7 +12,7 @@ title: 测试
   export default {}
 </script>
 
-<style scoped lang="scss">
+<style module lang="scss">
   $blue: #1875e7;
 
   .x {

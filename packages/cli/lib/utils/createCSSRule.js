@@ -1,12 +1,18 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
 
 module.exports = function ( test, loader, options, env ) {
+  const vueCSSModulesRule = createRule( loader, options, env, true )
+  const normalCSSModulesRule = createRule( loader, options, env, true )
+  const normalCSSRule = createRule( loader, options, env, false )
+
+  // for css from vue sfc
+  vueCSSModulesRule.resourceQuery = /module/
+  // for *.module.*
+  normalCSSModulesRule.test = /\.module\.\w+$/
+
   const rule = {
     test,
-    oneOf: [
-      createRule( loader, options, env, true ),
-      createRule( loader, options, env, false ),
-    ]
+    oneOf: [ vueCSSModulesRule, normalCSSModulesRule, normalCSSRule ]
   }
 
   return rule
@@ -51,10 +57,6 @@ function createRule( loader, options, env, modules ) {
         } :
         null
     ].filter( Boolean )
-  }
-
-  if ( modules ) {
-    rule.test = /\.module\.\w+$/
   }
 
   return rule
