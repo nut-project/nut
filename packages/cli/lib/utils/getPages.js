@@ -104,7 +104,6 @@ async function getPages( root, processor = v => v ) {
         filepath,
         page,
         route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
-        attributes: await readAttributes( filepath ),
         type: types[ ext ] || '',
         provider: '',
         plugin: '',
@@ -112,11 +111,4 @@ async function getPages( root, processor = v => v ) {
     } )
 
   return await Promise.all( promises )
-}
-
-async function readAttributes( filepath ) {
-  const buffer = await fse.readFile( filepath, 'utf8' )
-  const content = buffer.toString()
-  const result = fm( content )
-  return result.attributes || {}
 }

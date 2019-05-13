@@ -1,8 +1,3 @@
----
-title: vue
-cacheable: false
----
-
 import Vue from 'vue'
 
 const Page = {

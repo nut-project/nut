@@ -17,7 +17,7 @@ const Layout = Regular.extend( {
       </div>
       <div class="${ styles.navbar }">
         <ul class="${ styles.navbar__items }">
-          {#list ctx.app.sidebar as item}
+          {#list ctx.api.getSidebar() as item}
             <li class="${ styles.navbar__item } { item.active ? '${ styles.is_active }' : '' }">
               <a
                 href="{ item.route ? '#' + item.route : item.link }"
@@ -35,7 +35,7 @@ const Layout = Regular.extend( {
         </ul>
       </div>
 
-      {#if currentPage && currentPage.type === 'markdown'}
+      {#if currentPage && currentPage.page.type === 'markdown'}
         <div class="${ styles.content }">
           <div class="${ styles.markdown } markdown-body" ref="$$mount">
           </div>
@@ -61,7 +61,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.app.sidebar
+    const sidebar = this.data.ctx.api.getSidebar()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {
@@ -85,7 +85,9 @@ export default {
 
       mount( node ) {
         if ( !layout ) {
-          layout = new Layout()
+          layout = new Layout( {
+            data: { ctx },
+          } )
         }
 
         layout.$inject( node )

@@ -13,7 +13,7 @@ const Layout = Regular.extend( {
           <div>{ ctx.app.zh | uppercase }</div>
         </div>
         <div class="${ styles.sidebar }">
-          {#list ctx.app.sidebar as item}
+          {#list ctx.api.getSidebar() as item}
             <a
               href="{ item.route ? '#' + item.route : item.link }"
               {#if item.link}
@@ -33,19 +33,19 @@ const Layout = Regular.extend( {
         <aside class="${ styles.navbar }">
           <div class="${ styles.navbar__scroller }">
             {#list currentPages as page}
-              {#if page.attributes.title}
+              {#if page.title}
                 <a
-                  href="#{ page.route }"
+                  href="#{ page.page.route }"
                   class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
                 >
-                  { page.attributes.title }
+                  { page.title }
                 </a>
               {/if}
             {/list}
           </div>
         </aside>
 
-        {#if this.getActivePage( currentPages ).type === 'markdown'}
+        {#if this.getActivePage( currentPages ).page.type === 'markdown'}
           <div class="${ styles.content }">
             <div
               class="${ styles.markdown } markdown-body"
@@ -76,7 +76,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.app.sidebar
+    const sidebar = this.data.ctx.api.getSidebar()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {
@@ -102,7 +102,9 @@ export default {
 
       mount( node ) {
         if ( !layout ) {
-          layout = new Layout()
+          layout = new Layout( {
+            data: { ctx },
+          } )
         }
 
         layout.$inject( node )

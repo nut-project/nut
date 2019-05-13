@@ -8,11 +8,11 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
     return pages.find( page => page.name === routeConfig.name )
   }
 
-  function getSiblingPages( sidebar, pages, page ) {
+  function getSiblingPages( sidebar, page ) {
     let found = []
 
     walkSidebar( sidebar, ( p, parent ) => {
-      if ( p.page === page ) {
+      if ( p.page && ( p.page.page === page ) ) {
         found = parent
       }
     } )
@@ -66,12 +66,12 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
       // blacklist current page itself
       addToQuicklinkBlacklist( routeConfig.name )
 
-      const sidebar = app.sidebar || []
-      let siblings = getSiblingPages( sidebar, pages, routeConfig.page )
+      const sidebar = ctx.api.getSidebar() || []
+      let siblings = getSiblingPages( sidebar, routeConfig.page )
 
       siblings = siblings.filter( excludeQuicklinkBlacklist )
 
-      const chunkUrls = getAssetUrls( siblings.map( s => s.name ) )
+      const chunkUrls = getAssetUrls( siblings.map( s => s.page && s.page.name ).filter( Boolean ) )
       const vendorUrls = getAssetUrls(
         Object.keys( globals.STATS_ASSETS_BY_CHUNKNAME || {} )
           .filter( key => key.indexOf( 'vendors~' ) === 0 )
@@ -152,6 +152,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                   options = pluginOptions[ routeConfig.plugin ] || {}
                 }
 
+                // TODO: where to put attributes.cacheable
                 const { attributes = {} } = findPageByRouteConfig( pages, routeConfig ) || {}
 
                 if (
@@ -300,7 +301,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 // donot have to inject again
               } else {
                 await events.emit( 'layout:before-mount', layout )
-                markActive( ctx.app.sidebar, this.name )
+                markActive( ctx.api.getSidebar(), this.name )
                 api.layout.mount( newLayout, { ctx } )
                 await events.emit( 'layout:after-mount', layout )
               }
@@ -417,14 +418,18 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
         value: ''
       }
 
+      if ( !s.children ) {
+        return
+      }
+
       // TODO: walk
       s.children.forEach( child => {
         if ( !route.found ) {
-          route.value = child.route
+          route.value = child.page.route
           route.found = true
         }
 
-        if ( child.name === activeRouterName ) {
+        if ( child.page.name === activeRouterName ) {
           isAnyPageActive = true
           child.active = true
         } else {
@@ -447,7 +452,11 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
     ctx.app = nutConfig
 
-    markActive( ctx.app.sidebar, router.name )
+    if ( ctx.app.sidebar ) {
+      ctx.api.configureSidebar( ctx.app.sidebar )
+    }
+
+    markActive( ctx.api.getSidebar(), router.name )
 
     layout.update && layout.update( { ctx } )
 

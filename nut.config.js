@@ -8,7 +8,7 @@ module.exports = {
   html: {
     title: '文档标题',
   },
-  layout: 'kaola',
+  layout: 'saber',
   theme: 'ocean',
   plugins: {
     login: {
@@ -31,36 +31,12 @@ module.exports = {
       '/api': 'http://127.0.0.1:7000'
     }
   },
-  sidebar: [
-    {
-      icon: 'sketch',
-      title: '宝石',
-      children: [
-        'pages/home/home',
-        'pages/home/regular',
-        'pages/home/vue',
-        'pages/home/index',
-      ]
-    },
-    {
-      icon: 'read',
-      title: '文档',
-      children: [
-        'pages/documents/index',
-        'pages/documents/reference',
-      ],
-    },
-  ],
+  sidebar: null,
   // homepage 和 landing page 二选一
   homepage: 'pages/index',
   landing: {
     template: 'default',
-    options: {
-      title: '某个不知名的系统',
-      description: '哈哈哈',
-      preview: '',
-      buttonText: '',
-    },
+    options: {},
   },
   configureWebpack: {
     resolve: {

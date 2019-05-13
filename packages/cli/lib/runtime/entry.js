@@ -39,6 +39,12 @@ import router from './router'
     globals: NUT_GLOBALS || {},
   }
 
+  if ( nutConfig.sidebar ) {
+    context.api.configureSidebar( nutConfig.sidebar )
+  }
+
+  await app( context )
+
   await registerLayouts( context )
 
   await events.emit( 'system:before-apply-plugins', context )
@@ -55,15 +61,13 @@ import router from './router'
   await events.emit( 'system:before-startup', context )
 
   if ( !location.hash ) {
-    const firstRoute = getFirstRoute( nutConfig )
+    const firstRoute = getFirstRoute( context )
     if ( firstRoute ) {
       location.replace( '#' + firstRoute )
     }
   }
 
   nico.start( '#app' )
-
-  await app( context )
 
   events.emit( 'route:enabled', context )
 

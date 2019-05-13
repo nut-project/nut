@@ -35,7 +35,11 @@ module.exports = function createBaseConfig( config ) {
         path.join( dirs.cli, 'node_modules' ),
         'node_modules',
       ],
-      extensions: [ '.js', '.json', '.md', '.less', '.css' ]
+      extensions: [
+        '.js', '.json',
+        '.md',
+        '.scss', '.sass', '.less', '.styl', '.stylus', '.css',
+      ]
     },
     resolveLoader: {
       modules: [
@@ -58,9 +62,6 @@ module.exports = function createBaseConfig( config ) {
               options: {
                 gfm: true,
               },
-            },
-            {
-              loader: require.resolve( '../loader/strip-front-matter' ),
             },
           ]
         },
@@ -86,9 +87,6 @@ module.exports = function createBaseConfig( config ) {
                   [ require.resolve( '@babel/plugin-transform-runtime' ) ]
                 ]
               }
-            },
-            {
-              loader: require.resolve( '../loader/strip-front-matter' ),
             },
           ]
         },
@@ -129,9 +127,6 @@ module.exports = function createBaseConfig( config ) {
             {
               loader: 'vue-loader',
               options: {},
-            },
-            {
-              loader: require.resolve( '../loader/strip-front-matter' ),
             },
           ]
         },

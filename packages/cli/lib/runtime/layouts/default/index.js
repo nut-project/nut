@@ -39,11 +39,11 @@ const Navbar = Regular.extend( {
       <div class="${ styles.navbar__scroller }">
         {#list pages as page}
           <a
-            href="#{ page.route }"
+            href="#{ page.page.route }"
             class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
           >
-            {#if page.attributes.title}
-              { page.attributes.title }
+            {#if page.title}
+              { page.title }
             {#else}
               未命名
             {/if}
@@ -84,7 +84,7 @@ Header.filter( 't', function ( v ) {
 const Layout = Regular.extend( {
   template: `
     <nut-sidebar
-      menu="{ ctx.app.sidebar }"
+      menu="{ ctx.api.getSidebar() }"
     ></nut-sidebar>
 
     <nut-header
@@ -104,7 +104,7 @@ const Layout = Regular.extend( {
       {/if}
 
       <div class="${ styles.page_container }">
-        {#if this.getActivePage( currentPages ).type === 'markdown'}
+        {#if this.getActivePage( currentPages ).page.type === 'markdown'}
           <div class="${ styles.page_content }">
             <div
               class="markdown-body"
@@ -134,7 +134,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.app.sidebar
+    const sidebar = this.data.ctx.api.getSidebar()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {
@@ -162,7 +162,9 @@ export default {
 
       mount( node ) {
         if ( !layout ) {
-          layout = new Layout()
+          layout = new Layout( {
+            data: { ctx }
+          } )
         }
 
         layout.$inject( node )

@@ -9,11 +9,10 @@ const pathUtils = require( './pathUtils' )
 
 async function generateVirtualModules( config, { env = 'dev' } = {} ) {
   const pages = await getPages( config )
-  const normalized = await normalizeConfig( config, pages )
-  const nutConfig = await generateNutConfig( normalized )
+  const nutConfig = await generateNutConfig( config )
   const routes = await generateRoutes( pages )
-  const plugins = await generatePlugins( normalized, { env } )
-  const pluginOptions = await generatePluginOptions( normalized, { env } )
+  const plugins = await generatePlugins( config, { env } )
+  const pluginOptions = await generatePluginOptions( config, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
   const extendContext = await generateExtendContext( config, { env } )
   const appContent = await generateAppContent()
@@ -214,31 +213,10 @@ async function generateMarkdownThemeCSS( config ) {
   return ''
 }
 
-async function normalizeConfig( config, allPages ) {
-  config.sidebar = config.sidebar || []
-
-  const sidebar = config.sidebar.map( s => {
-    s.children = s.children || []
-    const children = s.children
-      .map( child => {
-        const normalized = child.replace( /^(\/)/g, '' )
-        return allPages.find( child => child.page === normalized )
-      } )
-      .filter( Boolean )
-
-    return Object.assign( {}, s, { children } )
-  } )
-
-  const normalizedConfig = Object.assign( {}, config, { sidebar } )
-
-  return normalizedConfig
-}
-
 async function generateRoutes( pages ) {
   return 'const routes = [\n' + pages
     .map( page => `{
       name: '${ page.name }',
-      layout: ${ page.attributes.layout ? "'" + page.attributes.layout + "'" : null },
       path: '${ page.route }',
       page: ${ JSON.stringify( page.page ) },
       filepath: ${ JSON.stringify( tildify( page.filepath ) ) },

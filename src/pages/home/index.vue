@@ -1,7 +1,3 @@
----
-title: 测试
----
-
 <template>
   <div :class="$style.x">
     vue test

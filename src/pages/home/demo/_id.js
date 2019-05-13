@@ -1,7 +1,3 @@
----
-title: 详情
----
-
 import Regular from 'regularjs'
 
 const Page = Regular.extend( {

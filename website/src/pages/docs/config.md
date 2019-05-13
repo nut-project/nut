@@ -1,7 +1,3 @@
----
-title: Config
----
-
 nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配置
 
 ## 配置

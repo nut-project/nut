@@ -1,7 +1,3 @@
----
-title: 图标
----
-
 nut 内置的图标库见[这里](https://www.iconfont.cn/collections/detail?cid=9402)
 
 想知道有哪些图标可以使用，可以戳上面 👆 的链接

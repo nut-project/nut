@@ -1,9 +1,3 @@
----
-title: regular
-permission: [ 'admin' ]
-cacheable: true
----
-
 import Regular from 'regularjs'
 import './regular.styl'
 

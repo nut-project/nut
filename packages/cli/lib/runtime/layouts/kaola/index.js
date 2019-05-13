@@ -29,7 +29,7 @@ const Layout = Regular.extend( {
       </div>
 
       <div class="${ styles.menu }">
-        {#list ctx.app.sidebar as item}
+        {#list ctx.api.getSidebar() as item}
           <a
             {#if item.link}
             href="{ item.link }"
@@ -52,13 +52,13 @@ const Layout = Regular.extend( {
           {#if item.children && item.children.length > 0}
             <ul class="${ styles.sidebar__items }" r-style="{ { height: item.open ? item.children.length * 50 + 'px' : '0' } }">
               {#list item.children as page}
-                {#if page.attributes.title}
+                {#if page.title}
                   <li class="${ styles.sidebar__item } { page.active ? '${ styles.is_active }' : '' }">
                     <a
-                      href="#{ page.route }"
+                      href="#{ page.page.route }"
                       class="${ styles.sidebar__link }"
                     >
-                      { page.attributes.title }
+                      { page.title }
                     </a>
                   </li>
                 {/if}
@@ -72,7 +72,7 @@ const Layout = Regular.extend( {
 
     <div class="${ styles.main }">
       <div class="${ styles.main__content }">
-        {#if this.getActivePage( currentPages ).type === 'markdown'}
+        {#if this.getActivePage( currentPages ).page.type === 'markdown'}
           <div
             class="${ styles.markdown } markdown-body"
             ref="$$mount"
@@ -101,7 +101,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.app.sidebar
+    const sidebar = this.data.ctx.api.getSidebar()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {
@@ -129,7 +129,9 @@ export default {
 
       mount( node, { ctx } ) {
         if ( !layout ) {
-          ctx.app.sidebar.forEach( s => s.open = s.active )
+          const sidebar = ctx.api.getSidebar()
+
+          sidebar.forEach( s => s.open = s.active )
 
           layout = new Layout( {
             data: { ctx }

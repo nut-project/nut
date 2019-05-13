@@ -1,7 +1,3 @@
----
-title: home
----
-
 import Regular from 'regularjs'
 import styles from './home.module.scss'
 
