@@ -10,6 +10,7 @@ const pathUtils = require( './pathUtils' )
 async function generateVirtualModules( config, { env = 'dev' } = {} ) {
   const pages = await getPages( config )
   const normalized = await normalizeConfig( config, pages )
+  const nutConfig = await generateNutConfig( normalized )
   const routes = await generateRoutes( pages )
   const plugins = await generatePlugins( normalized, { env } )
   const pluginOptions = await generatePluginOptions( normalized, { env } )
@@ -23,7 +24,7 @@ async function generateVirtualModules( config, { env = 'dev' } = {} ) {
     'node_modules/nut-auto-generated-plugins.js': plugins,
     'node_modules/nut-auto-generated-plugin-options.js': pluginOptions,
     'node_modules/nut-auto-generated-extend-context.js': extendContext,
-    'node_modules/nut-auto-generated-nut-config.js': `export default ${ JSON.stringify( normalized ) }`,
+    'node_modules/nut-auto-generated-nut-config.js': nutConfig,
     'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
     'src/nut-auto-generated-app.js': appContent,
   } )
@@ -42,6 +43,23 @@ function diff( modules ) {
       total[ key ] = modules[ key ]
       return total
     }, {} )
+}
+
+async function generateNutConfig( config ) {
+  const output = [
+    'zh',
+    'en',
+    'logo',
+    'sidebar',
+    'layout',
+    'theme',
+  ].map( key => {
+    return `"${ key }": ${ JSON.stringify( config[ key ] ) }`
+  } )
+
+  return `export default {
+    ${ output.join( ',\n' ) }
+  }`
 }
 
 async function generateAppContent() {
@@ -212,8 +230,6 @@ async function normalizeConfig( config, allPages ) {
   } )
 
   const normalizedConfig = Object.assign( {}, config, { sidebar } )
-
-  delete normalizedConfig.devServer
 
   return normalizedConfig
 }

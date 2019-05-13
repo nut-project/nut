@@ -1,3 +1,5 @@
+const path = require( 'path' )
+
 module.exports = {
   port: 9000,
   zh: 'nut',
@@ -60,4 +62,11 @@ module.exports = {
       buttonText: '',
     },
   },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '#alias': path.resolve( __dirname, 'src/alias' )
+      }
+    }
+  }
 }

@@ -5,6 +5,7 @@ const chalk = require( 'chalk' )
 const read = require( 'read' )
 const open = require( 'open' )
 const cosmiconfig = require( 'cosmiconfig' )
+const webpackMerge = require( 'webpack-merge' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
@@ -50,7 +51,7 @@ async function dev(){
     devServerOptions = Object.assign( devServerOptions, config.devServer )
   }
 
-  const webpackConfig = Object.assign( createBaseWebpackConfig( config ), {
+  let webpackConfig = Object.assign( createBaseWebpackConfig( config ), {
     mode: 'development',
     devtool: 'cheap-module-source-map',
   } )
@@ -75,6 +76,13 @@ async function dev(){
   const virtualModules = new VirtualModulesPlugin( modules )
 
   webpackConfig.plugins.push( virtualModules )
+
+  // webpack configuration is ready to go
+  if ( typeof config.configureWebpack === 'function' ) {
+    config.configureWebpack( webpackConfig )
+  } else if ( typeof config.configureWebpack === 'object' ) {
+    webpackConfig = webpackMerge.smart( webpackConfig, config.configureWebpack )
+  }
 
   WebpackDevServer.addDevServerEntrypoints( webpackConfig, devServerOptions )
   const compiler = webpack( webpackConfig )
