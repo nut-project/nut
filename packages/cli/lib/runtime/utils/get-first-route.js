@@ -1,7 +1,7 @@
 export default function getFirstRoute( context ) {
   let found
 
-  const sidebar = context.api.getSidebar()
+  const sidebar = context.api.sidebar.get()
 
   sidebar.some( s => {
     const children = s.children

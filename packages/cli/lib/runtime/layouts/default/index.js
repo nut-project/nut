@@ -84,7 +84,7 @@ Header.filter( 't', function ( v ) {
 const Layout = Regular.extend( {
   template: `
     <nut-sidebar
-      menu="{ ctx.api.getSidebar() }"
+      menu="{ ctx.api.sidebar.get() }"
     ></nut-sidebar>
 
     <nut-header
@@ -134,7 +134,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.api.getSidebar()
+    const sidebar = this.data.ctx.api.sidebar.get()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {

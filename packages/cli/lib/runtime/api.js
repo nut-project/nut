@@ -1,7 +1,8 @@
 import axios from 'axios'
 import layout from './core/layout'
+import createRouter from './router'
 
-export default function ( { pages } = {} ) {
+export default function ( { pages, router } = {} ) {
   let axiosInstance = axios.create( {
     withCredentials: true,
     crossDomain: true,
@@ -10,43 +11,33 @@ export default function ( { pages } = {} ) {
   return {
     axios: axiosInstance,
 
-    getPageLink( page, data ) {
-      const found = pages.find( p => p.page === page )
-
-      if ( !found || !found.router ) {
-        return
-      }
-
-      if ( !found.router.toPath ) {
-        throw new Error( 'router has not been started yet' )
-      }
-
-      return '/#' + found.router.toPath( data )
-    },
-
     layout,
 
-    _sidebar: null,
-    configureSidebar( sidebar = [] ) {
-      sidebar.forEach( s => {
-        if ( s.children ) {
-          walkChildren( s.children, s, ( child, index, parent ) => {
-            const normalized = child.path.replace( /^(\/)/g, '' )
-            const page = pages.find( child => child.page === normalized )
+    router: createRouter( pages, router ),
 
-            if ( page ) {
-              child.page = page
-            } else {
-              child.page = null
-            }
-          } )
-        }
-      } )
+    sidebar: {
+      _sidebar: null,
+      configure( sidebar = [] ) {
+        sidebar.forEach( s => {
+          if ( s.children ) {
+            walkChildren( s.children, s, ( child, index, parent ) => {
+              const normalized = child.path.replace( /^(\/)/g, '' )
+              const page = pages.find( child => child.page === normalized )
 
-      this._sidebar = sidebar
-    },
-    getSidebar() {
-      return this._sidebar || []
+              if ( page ) {
+                child.page = page
+              } else {
+                child.page = null
+              }
+            } )
+          }
+        } )
+
+        this._sidebar = sidebar
+      },
+      get() {
+        return this._sidebar || []
+      },
     }
   }
 }

@@ -13,7 +13,7 @@ const Layout = Regular.extend( {
           <div>{ ctx.app.zh | uppercase }</div>
         </div>
         <div class="${ styles.sidebar }">
-          {#list ctx.api.getSidebar() as item}
+          {#list ctx.api.sidebar.get() as item}
             <a
               href="{ item.route ? '#' + item.route : item.link }"
               {#if item.link}
@@ -76,7 +76,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.api.getSidebar()
+    const sidebar = this.data.ctx.api.sidebar.get()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {

@@ -21,6 +21,14 @@ Page.$$nut = function ( ctx ) {
     unmount( node ) {
       instance.$inject( false )
     },
+
+    // beforeLeave() {
+    //
+    // },
+
+    // enter() {
+    //
+    // },
   }
 }
 

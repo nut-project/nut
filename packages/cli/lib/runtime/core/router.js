@@ -66,7 +66,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
       // blacklist current page itself
       addToQuicklinkBlacklist( routeConfig.name )
 
-      const sidebar = ctx.api.getSidebar() || []
+      const sidebar = ctx.api.sidebar.get() || []
       let siblings = getSiblingPages( sidebar, routeConfig.page )
 
       siblings = siblings.filter( excludeQuicklinkBlacklist )
@@ -217,6 +217,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 }
 
                 const evt = Object.assign( {}, e, { next, meta: routeConfig.meta || {} } )
+
                 if ( routeConfig.beforeEnter ) {
                   routeConfig.beforeEnter( evt )
                 }
@@ -301,7 +302,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 // donot have to inject again
               } else {
                 await events.emit( 'layout:before-mount', layout )
-                markActive( ctx.api.getSidebar(), this.name )
+                markActive( ctx.api.sidebar.get(), this.name )
                 api.layout.mount( newLayout, { ctx } )
                 await events.emit( 'layout:after-mount', layout )
               }
@@ -320,7 +321,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
               page.enter()
             }
 
-            ctx.router.current = this
+            ctx.api.router.current = this
 
             // use quicklink
             quicklinkSiblingPages( routeConfig )
@@ -350,6 +351,8 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
         return current
       } )
+
+      rootRouter.prepare()
     },
 
     start( mountNode ) {
@@ -404,7 +407,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
     await refreshLayout( {
       layout: newLayout,
-      router: ctx.router.current,
+      router: ctx.api.router.current,
     } )
 
     api.layout.mountPage( page )
@@ -453,10 +456,10 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
     ctx.app = nutConfig
 
     if ( ctx.app.sidebar ) {
-      ctx.api.configureSidebar( ctx.app.sidebar )
+      ctx.api.sidebar.configure( ctx.app.sidebar )
     }
 
-    markActive( ctx.api.getSidebar(), router.name )
+    markActive( ctx.api.sidebar.get(), router.name )
 
     layout.update && layout.update( { ctx } )
 

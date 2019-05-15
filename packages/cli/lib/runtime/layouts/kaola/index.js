@@ -29,7 +29,7 @@ const Layout = Regular.extend( {
       </div>
 
       <div class="${ styles.menu }">
-        {#list ctx.api.getSidebar() as item}
+        {#list ctx.api.sidebar.get() as item}
           <a
             {#if item.link}
             href="{ item.link }"
@@ -101,7 +101,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.api.getSidebar()
+    const sidebar = this.data.ctx.api.sidebar.get()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {
@@ -129,7 +129,7 @@ export default {
 
       mount( node, { ctx } ) {
         if ( !layout ) {
-          const sidebar = ctx.api.getSidebar()
+          const sidebar = ctx.api.sidebar.get()
 
           sidebar.forEach( s => s.open = s.active )
 

@@ -1,3 +1,5 @@
+import Router from 'unfancy-router'
+
 import './css/reset.less'
 import './css/nprogress.less'
 import './css/markdown.less'
@@ -23,25 +25,32 @@ import app from '@/nut-auto-generated-app'
 import events from './events'
 import createAPI from './api'
 import use from './use'
-import router from './router'
 
 ;( async function () {
+  const router = Router()
+
+  const rootRouter = router.create( {
+    name: '_',
+    path: '',
+  } )
+
   const context = {
     ...extendContext(),
     env: process.env.NODE_ENV,
     plugins: {},
     app: nutConfig,
-    api: createAPI( { pages } ),
+    api: createAPI( { pages, router: rootRouter } ),
     events,
     pages,
     use,
-    router,
     globals: NUT_GLOBALS || {},
   }
 
   if ( nutConfig.sidebar ) {
-    context.api.configureSidebar( nutConfig.sidebar )
+    context.api.sidebar.configure( nutConfig.sidebar )
   }
+
+  const nico = await setupNico( context, pluginOptions, rootRouter, router )
 
   await app( context )
 
@@ -51,7 +60,6 @@ import router from './router'
   await applyPlugins( plugins, pluginOptions, context )
   await events.emit( 'system:after-apply-plugins', context )
 
-  const nico = await setupNico( context, pluginOptions )
   await setupNProgress( nico )
 
   nico.on( 'notfound', () => {
@@ -80,7 +88,7 @@ import router from './router'
 
     module.hot.accept( 'nut-auto-generated-pages', () => {
       context.pages = pages
-      context.api = createAPI( { pages } )
+      context.api = createAPI( { pages, router: rootRouter } )
     } )
   }
 } )()

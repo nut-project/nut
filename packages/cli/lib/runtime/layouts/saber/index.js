@@ -17,7 +17,7 @@ const Layout = Regular.extend( {
       </div>
       <div class="${ styles.navbar }">
         <ul class="${ styles.navbar__items }">
-          {#list ctx.api.getSidebar() as item}
+          {#list ctx.api.sidebar.get() as item}
             <li class="${ styles.navbar__item } { item.active ? '${ styles.is_active }' : '' }">
               <a
                 href="{ item.route ? '#' + item.route : item.link }"
@@ -61,7 +61,7 @@ const Layout = Regular.extend( {
       return []
     }
 
-    const sidebar = this.data.ctx.api.getSidebar()
+    const sidebar = this.data.ctx.api.sidebar.get()
     const found = sidebar.find( s => s.active )
 
     if ( !found ) {

@@ -1,18 +1,30 @@
 export default async function app( ctx ) {
   ctx.env // -> development / production
   ctx.pages
-  const link = ctx.api.getPageLink( 'pages/home/demo/_id', {
-    id: 123
+  const link = ctx.api.router.format( {
+    page: 'pages/home/demo/_id',
+    params: { id: 123 },
   } )
   console.log( 'link', link )
-  await ctx.use( 'login', 'getUser' ) // use plugin exposed method
+
+  ctx.api.router.beforeEach( ctx => {
+    console.log( 'hello before each' )
+  } )
+
+  ctx.api.router.push( {
+    page: 'pages/home/regular',
+    query: { a: 'b' },
+    // layout: 'saber'
+  } )
+
+  await ctx.use( 'login', 'getUser' ) // use exposed methods from plugin
   ctx.config // -> from ./config/config.{env}.js
   // ctx.use( 'layout', 'setUserMenu', [
   //   { text: '个人中心', click() {} },
   //   { role: 'logout' },
   // ] )
 
-  ctx.api.configureSidebar( [
+  ctx.api.sidebar.configure( [
     {
       icon: 'sketch',
       title: '宝石',

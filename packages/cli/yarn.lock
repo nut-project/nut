@@ -4561,7 +4561,7 @@ qs@6.5.2, qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
 
-query-string@^5.0.1:
+query-string@5, query-string@^5.0.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
   dependencies:
@@ -5510,9 +5510,9 @@ uglify-js@3.4.x:
     commander "~2.19.0"
     source-map "~0.6.1"
 
-unfancy-router@0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.0.12.tgz#0e2b3ab23a85c91df0ac0f9c5f08ca901d88ba0c"
+unfancy-router@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.0.14.tgz#75579c00d2f633c3a9666bb4f824157874ae0399"
   dependencies:
     dush "^3.0.5"
     fast-memoize "^2.2.8"

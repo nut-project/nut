@@ -1,7 +1,7 @@
 import '@/css/index.less'
 
 export default ( { api } ) => {
-  api.configureSidebar( [
+  api.sidebar.configure( [
     {
       icon: '',
       title: '指南',
