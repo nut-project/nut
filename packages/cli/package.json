@@ -58,7 +58,7 @@
     "terser-webpack-plugin": "^1.2.3",
     "tildify": "^1.2.0",
     "tippy.js": "^4.2.1",
-    "unfancy-router": "^0.0.17",
+    "unfancy-router": "^0.0.18",
     "url-loader": "^1.1.2",
     "vue": "^2.6.10",
     "vue-loader": "^15.7.0",

@@ -1,4 +1,4 @@
-import Router from 'unfancy-router'
+import Router from 'unfancy-router/src/index'
 
 import './css/reset.less'
 import './css/nprogress.less'
