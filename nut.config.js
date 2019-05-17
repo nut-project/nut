@@ -8,7 +8,7 @@ module.exports = {
   html: {
     title: '文档标题',
   },
-  layout: 'kaola',
+  layout: 'test',
   theme: 'ocean',
   plugins: {
     login: {
@@ -22,6 +22,9 @@ module.exports = {
     notfound: {
       path: require.resolve( './plugins/notfound' ),
     },
+    layoutTest: {
+      path: require.resolve( './plugins/layout-test' ),
+    }
   },
   markdown: {
     theme: 'prism-okaidia',
