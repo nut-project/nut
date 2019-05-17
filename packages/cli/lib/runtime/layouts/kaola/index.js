@@ -58,7 +58,8 @@ const Layout = Regular.extend( {
                 {#if page.title}
                   <li class="${ styles.sidebar__item } { page.active ? '${ styles.is_active }' : '' }">
                     <a
-                      href="#{ page.page.route }"
+                      href="javascript:;"
+                      on-click="{ this.onRoute( page.page ) }"
                       class="${ styles.sidebar__link }"
                     >
                       { page.title }
@@ -93,6 +94,17 @@ const Layout = Regular.extend( {
     currentPages() {
       return this.getCurrentPages()
     },
+  },
+
+  onRoute( item ) {
+    if ( item.route ) {
+      this.data.ctx.api.router.push( item.route )
+      return
+    }
+
+    if ( item.link ) {
+      window.open( item.link )
+    }
   },
 
   getActivePage( pages ) {

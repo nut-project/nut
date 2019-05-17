@@ -6,7 +6,7 @@
   layout#getMountNode
  */
 
-import events from '../events'
+import events from '../context/events'
 
 export default {
   _layouts: {},

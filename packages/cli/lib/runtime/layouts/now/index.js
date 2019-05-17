@@ -15,10 +15,8 @@ const Layout = Regular.extend( {
         <div class="${ styles.sidebar }">
           {#list ctx.api.sidebar.get() as item}
             <a
-              href="{ item.route ? '#' + item.route : item.link }"
-              {#if item.link}
-              target="_blank"
-              {/if}
+              href="javascript:;"
+              on-click="{ this.onRoute( item ) }"
               class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }"
             >
               { item.title }
@@ -35,7 +33,8 @@ const Layout = Regular.extend( {
             {#list currentPages as page}
               {#if page.title}
                 <a
-                  href="#{ page.page.route }"
+                  href="javascript:;"
+                  on-click="{ this.onRoute( page.page ) }"
                   class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
                 >
                   { page.title }
@@ -84,6 +83,17 @@ const Layout = Regular.extend( {
     }
 
     return found.children || []
+  },
+
+  onRoute( item ) {
+    if ( item.route ) {
+      this.data.ctx.api.router.push( item.route )
+      return
+    }
+
+    if ( item.link ) {
+      window.open( item.link )
+    }
   },
 } )
 

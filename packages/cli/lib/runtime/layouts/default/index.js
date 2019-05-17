@@ -4,21 +4,26 @@ import styles from './index.module.less'
 
 const Sidebar = Regular.extend( {
   template: `
+
+  `,
+} )
+
+// TODO: 最近浏览
+const Layout = Regular.extend( {
+  template: `
     <aside class="${ styles.sidebar }">
       <div class="${ styles.logo }"></div>
-      {#if menu}
+      {#if sidebar}
         <ul class="${ styles.sidebar__items }">
-          {#list menu as item}
+          {#list sidebar as item}
             <li
               class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }"
               title="{ item.title }"
               r-tippy="{ { placement: 'right', duration: 0 } }"
             >
               <a
-                href="{ item.route ? '#' + item.route : item.link }"
-                {#if item.link}
-                target="_blank"
-                {/if}
+                href="javascript:;"
+                on-click="{ this.onRoute( item ) }"
                 class="${ styles.sidebar__link }"
               >
                 <i class="${ styles.sidebar__item_icon } nut-icons nut-icon-{ item.icon }"></i>
@@ -28,69 +33,21 @@ const Sidebar = Regular.extend( {
         </ul>
       {/if}
     </aside>
-  `,
-} )
 
-Sidebar.use( Tippy )
-
-const Navbar = Regular.extend( {
-  template: `
-    <div class="${ styles.navbar }">
-      <div class="${ styles.navbar__scroller }">
-        {#list pages as page}
-          <a
-            href="#{ page.page.route }"
-            class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
-          >
-            {#if page.title}
-              { page.title }
-            {#else}
-              未命名
-            {/if}
-          </a>
-        {/list}
-      </div>
-    </div>
-  `
-} )
-
-// TODO: 最近浏览
-const Header = Regular.extend( {
-  template: `
     <div class="${ styles.header }">
       <div class="${ styles.header__actions }"></div>
       <div class="${ styles.header__menu }">
-        {#inc title | t }
+        {#inc ctx.app.zh | t }
       </div>
       <div class="${ styles.header__user }">
-        {#if user && user.nickname}
+        {#if ctx.user && ctx.user.nickname}
         <span style="cursor: pointer;">
           <i class="nut-icons nut-icon-user"></i>
-          { user.nickname }
+          { ctx.user.nickname }
         </span>
         {/if}
       </div>
     </div>
-  `,
-} )
-
-Header.filter( 't', function ( v ) {
-  v = String( v )
-  const first = v.substr( 0, 1 )
-  const rest = v.substr( 1 )
-  return `<span class="${ styles.first_letter }">${ first }</span>${ rest }`
-} )
-
-const Layout = Regular.extend( {
-  template: `
-    <nut-sidebar
-      menu="{ ctx.api.sidebar.get() }"
-    ></nut-sidebar>
-
-    <nut-header
-      title="{ ctx.app.zh || '' }"
-      user="{ ctx.user }"
-    ></nut-header>
 
     <div class="${ styles.content }">
       <div class="${ styles.progress_wrapper }">
@@ -98,9 +55,23 @@ const Layout = Regular.extend( {
       </div>
 
       {#if currentPages.length > 0}
-      <nut-navbar
-        pages="{ currentPages }"
-      ></nut-navbar>
+        <div class="${ styles.navbar }">
+          <div class="${ styles.navbar__scroller }">
+            {#list currentPages as page}
+              <a
+                href="javascript:;"
+                on-click="{ this.onRoute( page.page ) }"
+                class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
+              >
+                {#if page.title}
+                  { page.title }
+                {#else}
+                  未命名
+                {/if}
+              </a>
+            {/list}
+          </div>
+        </div>
       {/if}
 
       <div class="${ styles.page_container }">
@@ -123,6 +94,21 @@ const Layout = Regular.extend( {
     currentPages() {
       return this.getCurrentPages()
     },
+
+    sidebar() {
+      return this.data.ctx.api.sidebar.get()
+    }
+  },
+
+  onRoute( item ) {
+    if ( item.route ) {
+      this.data.ctx.api.router.push( item.route )
+      return
+    }
+
+    if ( item.link ) {
+      window.open( item.link )
+    }
   },
 
   getActivePage( pages ) {
@@ -145,9 +131,13 @@ const Layout = Regular.extend( {
   },
 } )
 
-Layout.component( 'nut-sidebar', Sidebar )
-Layout.component( 'nut-navbar', Navbar )
-Layout.component( 'nut-header', Header )
+Layout.use( Tippy )
+Layout.filter( 't', function ( v ) {
+  v = String( v )
+  const first = v.substr( 0, 1 )
+  const rest = v.substr( 1 )
+  return `<span class="${ styles.first_letter }">${ first }</span>${ rest }`
+} )
 
 export default {
   name: 'layout-default',

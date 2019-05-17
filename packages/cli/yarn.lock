@@ -5510,13 +5510,14 @@ uglify-js@3.4.x:
     commander "~2.19.0"
     source-map "~0.6.1"
 
-unfancy-router@^0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.0.14.tgz#75579c00d2f633c3a9666bb4f824157874ae0399"
+unfancy-router@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.0.17.tgz#92e9f6a6806f7938f94934da991a6bf488c6e518"
   dependencies:
     dush "^3.0.5"
     fast-memoize "^2.2.8"
     path-to-regexp "^1.7.0"
+    query-string "5"
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"

@@ -22,9 +22,9 @@ import getFirstRoute from './utils/get-first-route'
 import switchTheme from './utils/switch-theme'
 
 import app from '@/nut-auto-generated-app'
-import events from './events'
-import createAPI from './api'
-import use from './use'
+import createAPI from './context/api'
+import events from './context/events'
+import use from './context/use'
 
 ;( async function () {
   const router = Router()
@@ -71,12 +71,11 @@ import use from './use'
   if ( !location.hash ) {
     const firstRoute = getFirstRoute( context )
     if ( firstRoute ) {
-      location.replace( '#' + firstRoute )
+      location.hash = '#' + firstRoute
     }
   }
 
   nico.start( '#app' )
-
   events.emit( 'route:enabled', context )
 
   events.emit( 'system:after-startup', context )

@@ -44,4 +44,6 @@ export default async function app( ctx ) {
       ],
     },
   ] )
+
+  ctx.api.page( 'pages/home/index' ).set( 'cacheable', true )
 }

@@ -27,7 +27,9 @@ export default function ( Page ) {
           return
         }
 
-        node.removeChild( instance.$el )
+        if ( instance.$el && ( instance.$el.parentNode === node ) ) {
+          node.removeChild( instance.$el )
+        }
       },
 
       destroy() {
