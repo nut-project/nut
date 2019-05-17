@@ -6,6 +6,11 @@
 
 <script type="text/javascript">
   export default {
+    // 非核心属性，解耦，改用接口的方式
+    // attributes: {
+    //   layout: 'now',
+    // },
+
     beforeEnter( ctx ) {
       setTimeout( () => {
         ctx.next( function ( vm ) {
