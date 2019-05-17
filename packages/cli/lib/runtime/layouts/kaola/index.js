@@ -4,7 +4,10 @@ import styles from './index.module.less'
 const Layout = Regular.extend( {
   template: `
     <div class="${ styles.header }">
-      <div></div>
+      <div class="${ styles.collapse }">
+        <!-- <i class="nut-icons nut-icon-outdent"></i> -->
+      </div>
+
       <ul class="${ styles.actions }">
         {#if ctx.user && ctx.user.nickname}
         <li class="${ styles.action_user }">
@@ -113,6 +116,10 @@ const Layout = Regular.extend( {
 
   onLogout() {
     this.$emit( 'logout' )
+  },
+
+  config() {
+    this.data.collapsed = localStorage.getItem( '_nut_layout_kaola_collapsed' )
   },
 } )
 

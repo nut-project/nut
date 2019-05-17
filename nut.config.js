@@ -8,7 +8,7 @@ module.exports = {
   html: {
     title: '文档标题',
   },
-  layout: 'now',
+  layout: 'kaola',
   theme: 'ocean',
   plugins: {
     login: {
