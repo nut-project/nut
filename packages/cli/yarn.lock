@@ -5510,9 +5510,9 @@ uglify-js@3.4.x:
     commander "~2.19.0"
     source-map "~0.6.1"
 
-unfancy-router@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.0.18.tgz#228fcd8b375ef6f18db887bbe084289ed341def6"
+unfancy-router@^0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.0.19.tgz#4dfe45bc94ea239f143357791994e5f49dd6b376"
   dependencies:
     dush "^3.0.5"
     fast-memoize "^2.2.8"
