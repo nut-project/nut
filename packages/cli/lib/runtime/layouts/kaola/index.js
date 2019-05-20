@@ -3,9 +3,9 @@ import styles from './index.module.less'
 
 const Layout = Regular.extend( {
   template: `
-    <div class="${ styles.header }">
-      <div class="${ styles.collapse }">
-        <!-- <i class="nut-icons nut-icon-outdent"></i> -->
+    <div class="${ styles.header }" style="{ collapsed ? 'left: 0;' : '' }">
+      <div class="${ styles.collapse }" on-click="{ this.onToggleCollapse() }">
+        <i class="nut-icons nut-icon-{ collapsed ? 'indent' : 'outdent' }"></i>
       </div>
 
       <ul class="${ styles.actions }">
@@ -22,7 +22,7 @@ const Layout = Regular.extend( {
       </ul>
     </div>
 
-    <div class="${ styles.sidebar }">
+    <div class="${ styles.sidebar }" style="{ collapsed ? 'width: 0;' : '' }">
       <div class="${ styles.title }">
         {#if ctx.app.logo}
           <img class="${ styles.logo }" src="{ ctx.app.logo }" alt="" />
@@ -74,7 +74,7 @@ const Layout = Regular.extend( {
 
     </div>
 
-    <div class="${ styles.main }">
+    <div class="${ styles.main }" style="{ collapsed ? 'margin-left: 0;' : '' }">
       <div class="${ styles.main__content }">
         {#if this.getActivePage( currentPages ).page.type === 'markdown'}
           <div
@@ -94,6 +94,30 @@ const Layout = Regular.extend( {
     currentPages() {
       return this.getCurrentPages()
     },
+  },
+
+  config() {
+    const collapsed = localStorage.getItem( '_nut_layout_kaola_collapsed' )
+    this.data.collapsed = collapsed === '1' ? true : false
+  },
+
+  getCollapsed() {
+    return this.data.collapsed
+  },
+
+  setCollapsed( bool ) {
+    this.data.collapsed = bool
+
+    if ( bool ) {
+      localStorage.setItem( '_nut_layout_kaola_collapsed', '1' )
+    } else {
+      localStorage.setItem( '_nut_layout_kaola_collapsed', '0' )
+    }
+  },
+
+  onToggleCollapse() {
+    this.data.collapsed = !this.data.collapsed
+    this.setCollapsed( this.data.collapsed )
   },
 
   onRoute( item ) {
@@ -128,10 +152,6 @@ const Layout = Regular.extend( {
 
   onLogout() {
     this.$emit( 'logout' )
-  },
-
-  config() {
-    this.data.collapsed = localStorage.getItem( '_nut_layout_kaola_collapsed' )
   },
 } )
 
