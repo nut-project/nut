@@ -37,6 +37,7 @@ module.exports = function createBaseConfig( config ) {
       ],
       extensions: [
         '.js', '.json',
+        '.vue',
         '.md',
         '.scss', '.sass', '.less', '.styl', '.stylus', '.css',
       ]
@@ -53,15 +54,64 @@ module.exports = function createBaseConfig( config ) {
       rules: [
         {
           test: /\.md$/,
-          use: [
+          oneOf: [
+            // react
             {
-              loader: require.resolve( '../loader/mount-markdown' ),
+              test: /\.vue\.md$/,
+              use: [
+                {
+                  loader: require.resolve( '../loader/mount-vue' ),
+                  options: {
+                    routes: [],
+                  },
+                },
+
+                {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: [
+                      [
+                        require.resolve( '@babel/preset-env' ),
+                        {
+                          targets: {
+                            browsers: [ 'last 2 versions', 'safari >= 7' ]
+                          }
+                        }
+                      ],
+                      require.resolve( '@vue/babel-preset-jsx' ),
+                    ],
+                    plugins: [
+                      [ require.resolve( '@babel/plugin-transform-runtime' ) ]
+                    ]
+                  }
+                },
+
+                {
+                  loader: '@mdx-js/vue-loader',
+                  options: {},
+                },
+
+                {
+                  // fix layout
+                  loader: require.resolve( '../loader/provide-mdx-layout' ),
+                },
+              ],
+
             },
+
+            // normal markdown
             {
-              loader: require.resolve( '../loader/markdown' ),
-              options: {
-                gfm: true,
-              },
+              use: [
+                {
+                  loader: require.resolve( '../loader/mount-markdown' ),
+                },
+                {
+                  loader: require.resolve( '../loader/markdown' ),
+                  options: {
+                    gfm: true,
+                  },
+                },
+              ],
             },
           ]
         },

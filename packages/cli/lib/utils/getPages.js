@@ -69,9 +69,12 @@ async function getPages( root, processor = v => v ) {
     onlyFiles: true,
   } )
 
+  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue)$/
+
   const types = {
     '.js': 'js',
     '.md': 'markdown',
+    '.vue.md': 'markdown',
     '.vue': 'vue',
   }
 
@@ -92,7 +95,12 @@ async function getPages( root, processor = v => v ) {
       return 0
     } )
     .map( async ( file, index ) => {
-      const { dir, ext, name } = path.parse( file )
+      let { dir, ext, name } = path.parse( file )
+      const matches = extensionReg.exec( name + ext )
+
+      name = matches[ 0 ] ? ( name + ext ).replace( extensionReg, '' ) : name
+      ext = matches[ 0 ] ? matches[ 0 ] : ext
+
       const filepath = path.join( root, file )
       const page = pathUtils.normalize( path.join( dir, name ) )
 

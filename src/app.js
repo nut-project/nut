@@ -41,6 +41,7 @@ export default async function app( ctx ) {
       children: [
         { title: '如何使用', path: 'pages/documents/index' },
         { title: 'API 指南', path: 'pages/documents/reference' },
+        { title: 'demo', path: 'pages/documents/demo' },
       ],
     },
   ] )

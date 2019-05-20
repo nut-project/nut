@@ -8,9 +8,15 @@ export default function ( Page ) {
     const definition = {
       mount( node ) {
         if ( !instance ) {
+          Vue.config.devtools = process.env.NODE_ENV === 'development'
+
           instance = new Vue( {
             render: h => h( Page )
           } )
+
+          if ( window.__VUE_DEVTOOLS_GLOBAL_HOOK__ ) {
+            window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue = instance.constructor
+          }
         }
 
         if ( !el ) {
