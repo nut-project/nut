@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/cli",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "publishConfig": {
     "access": "public"
   },
@@ -9,6 +9,11 @@
   "bin": {
     "nut": "bin/index.js"
   },
+  "files": [
+    "bin",
+    "lib",
+    "yarn.lock"
+  ],
   "scripts": {},
   "keywords": [],
   "author": "",
