@@ -18,13 +18,13 @@ async function generateVirtualModules( config, { env = 'dev' } = {} ) {
   const appContent = await generateAppContent()
 
   return diff( {
-    'node_modules/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
-    'node_modules/nut-auto-generated-routes.js': routes,
-    'node_modules/nut-auto-generated-plugins.js': plugins,
-    'node_modules/nut-auto-generated-plugin-options.js': pluginOptions,
-    'node_modules/nut-auto-generated-extend-context.js': extendContext,
-    'node_modules/nut-auto-generated-nut-config.js': nutConfig,
-    'node_modules/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
+    'src/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
+    'src/nut-auto-generated-routes.js': routes,
+    'src/nut-auto-generated-plugins.js': plugins,
+    'src/nut-auto-generated-plugin-options.js': pluginOptions,
+    'src/nut-auto-generated-extend-context.js': extendContext,
+    'src/nut-auto-generated-nut-config.js': nutConfig,
+    'src/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
     'src/nut-auto-generated-app.js': appContent,
   } )
 }

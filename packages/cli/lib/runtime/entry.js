@@ -4,14 +4,14 @@ import './css/reset.less'
 import './css/nprogress.less'
 import './css/markdown.less'
 import './fonts/iconfont.css'
-import 'nut-auto-generated-markdown-theme'
+import '@/nut-auto-generated-markdown-theme'
 import './css/override.less'
 
-import nutConfig from 'nut-auto-generated-nut-config'
-import plugins from 'nut-auto-generated-plugins'
-import pages from 'nut-auto-generated-pages'
-import pluginOptions from 'nut-auto-generated-plugin-options'
-import extendContext from 'nut-auto-generated-extend-context'
+import nutConfig from '@/nut-auto-generated-nut-config'
+import plugins from '@/nut-auto-generated-plugins'
+import pages from '@/nut-auto-generated-pages'
+import pluginOptions from '@/nut-auto-generated-plugin-options'
+import extendContext from '@/nut-auto-generated-extend-context'
 
 import applyPlugins from './steps/apply-plugins'
 import setupNProgress from './steps/setup-nprogress'
@@ -81,11 +81,11 @@ import use from './context/use'
   events.emit( 'system:after-startup', context )
 
   if ( module.hot ) {
-    module.hot.accept( 'nut-auto-generated-nut-config', function refreshTheme(  ) {
+    module.hot.accept( '@/nut-auto-generated-nut-config', function refreshTheme(  ) {
       switchTheme( nutConfig && nutConfig.theme || 'ocean' )
     } )
 
-    module.hot.accept( 'nut-auto-generated-pages', () => {
+    module.hot.accept( '@/nut-auto-generated-pages', () => {
       context.pages = pages
       context.api = createAPI( { pages, router: rootRouter } )
     } )

@@ -11,7 +11,7 @@ const dirs = {
   project: process.cwd(),
 }
 
-module.exports = function createBaseConfig( nutConfig ) {
+module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
   config
@@ -42,17 +42,12 @@ module.exports = function createBaseConfig( nutConfig ) {
         .add( 'node_modules' )
         .end()
       .extensions
-        .clear()
-        .add( '.js' )
-        .add( '.json' )
-        .add( '.vue' )
-        .add( '.md' )
-        .add( '.scss' )
-        .add( '.sass' )
-        .add( '.less' )
-        .add( '.styl' )
-        .add( '.stylus' )
-        .add( '.css' )
+        .merge( [
+          '.js', '.json',
+          '.vue',
+          '.md', '.vue.md',
+          '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
+        ] )
         .end()
       .end()
     .resolveLoader
@@ -150,11 +145,54 @@ module.exports = function createBaseConfig( nutConfig ) {
               gfm: true,
             } )
 
+  const transpileModules = ( nutConfig.babel && nutConfig.babel.transpileModules ) || []
+  const internalTranspileModules = [
+    'unfancy-router',
+    require( '../../package.json' ).name,
+  ]
+  const allTranspileModules = []
+    .concat( transpileModules )
+    .concat( internalTranspileModules )
+
+  const jsIncludeCaches = {}
   config.module
     .rule( 'js' )
     .test( /\.js$/ )
-    .exclude
-      .add( /node_modules/ )
+    .include
+      // from egoist/poi
+      .add( filepath => {
+        filepath = filepath.replace( /\\/g, '/' )
+
+        // use cache
+        if ( typeof jsIncludeCaches[ filepath ] === 'boolean' ) {
+          return jsIncludeCaches[ filepath ]
+        }
+
+        if ( !filepath.includes( 'node_modules' ) ) {
+          jsIncludeCaches[ filepath ] = true
+          return true
+        }
+
+        if ( allTranspileModules ) {
+          const shouldTranspile = allTranspileModules.some( m => {
+            if ( typeof m === 'string' ) {
+              return filepath.includes( `/node_modules/${ m }/` )
+            }
+
+            if ( m && m.test ) {
+              return m.test( filepath )
+            }
+
+            return false
+          } )
+
+          jsIncludeCaches[ filepath ] = shouldTranspile
+          return shouldTranspile
+        }
+
+        jsIncludeCaches[ filepath ] = false
+        return false
+      } )
       .end()
     .use( 'babel' )
       .loader( 'babel-loader' )
@@ -170,7 +208,8 @@ module.exports = function createBaseConfig( nutConfig ) {
           ]
         ],
         plugins: [
-          [ require.resolve( '@babel/plugin-transform-runtime' ) ]
+          require.resolve( '@babel/plugin-transform-runtime' ),
+          require.resolve( '@babel/plugin-syntax-dynamic-import' ),
         ]
       } )
 

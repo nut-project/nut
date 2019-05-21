@@ -1,4 +1,4 @@
-import routes from 'nut-auto-generated-routes'
+import routes from '@/nut-auto-generated-routes'
 import createNico from '../core/nico'
 
 export default function ( ctx, pluginOptions, root, router ) {

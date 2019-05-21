@@ -1,5 +1,5 @@
 import quicklink from 'quicklink'
-import nutConfig from 'nut-auto-generated-nut-config'
+import nutConfig from '@/nut-auto-generated-nut-config'
 
 export default function createNico( rootRouter, routerFactory, prefix = '', ctx = {}, pluginOptions = {} ) {
   const { events, pages, app, globals, api } = ctx
@@ -383,7 +383,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
   }
 
   if ( module.hot ) {
-    module.hot.accept( 'nut-auto-generated-nut-config', () => {
+    module.hot.accept( '@/nut-auto-generated-nut-config', () => {
       const newLayout = nutConfig && nutConfig.layout || 'default'
       if ( nico.layoutName !== newLayout ) {
         switchLayout( ctx, nico, nutConfig && nutConfig.layout || 'default' )
