@@ -6,6 +6,12 @@ const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
 
+const threadLoader = require('thread-loader');
+
+threadLoader.warmup( {}, [
+  'babel-loader',
+] )
+
 const dirs = {
   cli: path.join( __dirname, '../../' ),
   project: process.cwd(),
@@ -194,24 +200,50 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         return false
       } )
       .end()
-    .use( 'babel' )
-      .loader( 'babel-loader' )
-      .options( {
-        presets: [
-          [
-            require.resolve( '@babel/preset-env' ),
-            {
-              targets: {
-                browsers: [ 'last 2 versions', 'safari >= 7' ]
+    .oneOf( 'normal' )
+      .resource( /nut-auto-generated/ )
+      .use( 'babel' )
+        .loader( 'babel-loader' )
+        .options( {
+          presets: [
+            [
+              require.resolve( '@babel/preset-env' ),
+              {
+                targets: {
+                  browsers: [ 'last 2 versions', 'safari >= 7' ]
+                }
               }
-            }
+            ]
+          ],
+          plugins: [
+            require.resolve( '@babel/plugin-transform-runtime' ),
+            require.resolve( '@babel/plugin-syntax-dynamic-import' ),
           ]
-        ],
-        plugins: [
-          require.resolve( '@babel/plugin-transform-runtime' ),
-          require.resolve( '@babel/plugin-syntax-dynamic-import' ),
-        ]
-      } )
+        } )
+        .end()
+      .end()
+    .oneOf( 'with-thread' )
+      .use( 'thread' )
+        .loader( 'thread-loader' )
+        .end()
+      .use( 'babel' )
+        .loader( 'babel-loader' )
+        .options( {
+          presets: [
+            [
+              require.resolve( '@babel/preset-env' ),
+              {
+                targets: {
+                  browsers: [ 'last 2 versions', 'safari >= 7' ]
+                }
+              }
+            ]
+          ],
+          plugins: [
+            require.resolve( '@babel/plugin-transform-runtime' ),
+            require.resolve( '@babel/plugin-syntax-dynamic-import' ),
+          ]
+        } )
 
   config.module
     .rule( 'image' )
@@ -231,9 +263,18 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           limit: 8192
         } )
 
+  const vueCacheOptions = {
+    cacheDirectory: path.join( process.cwd(), 'node_modules/.cache/vue-loader' ),
+    cacheIdentifier: require( '../utils/getVueCacheIdentifier' )()
+  }
+
   config.module
     .rule( 'vue' )
       .test( /\.vue$/ )
+      .use( 'cache' )
+        .loader( 'cache-loader' )
+        .options( vueCacheOptions )
+        .end()
       .use( 'mount-vue' )
         .loader( require.resolve( '../loader/mount-vue' ) )
         .end()

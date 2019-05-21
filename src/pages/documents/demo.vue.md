@@ -4,4 +4,4 @@ import Demo from '@/components/demo.vue'
 
 <Demo text="demo"></Demo>
 
-这个例子
+这个例子！
