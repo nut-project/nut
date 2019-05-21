@@ -2,6 +2,7 @@ const path = require( 'path' )
 const webpack = require( 'webpack' )
 const chokidar = require( 'chokidar' )
 const WebpackDevServer = require( 'webpack-dev-server' )
+const webpackMerge = require( 'webpack-merge' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const TerserJSPlugin = require( 'terser-webpack-plugin' )
 const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
@@ -27,31 +28,45 @@ async function prod(){
 
   ensureConfigDefaults( config )
 
-  const webpackConfig = Object.assign( createBaseWebpackConfig( config ), {
-    mode: 'production',
-    devtool: false,
-  } )
+  const webpackConfig = createBaseWebpackConfig( config )
+
+  webpackConfig.mode( 'production' )
+
+  webpackConfig.devtool( false )
+
+  webpackConfig.output
+    .filename( '[name].[contenthash].js' )
+    .publicPath( './' )
 
   applyCSSRules( webpackConfig, 'prod' )
 
-  webpackConfig.output = {
-    filename: '[name].[contenthash].js',
-    publicPath: './',
-  }
+  webpackConfig.optimization
+    .minimizer( 'js' )
+      .use( TerserJSPlugin )
 
-  webpackConfig.optimization.minimizer = [
-    new TerserJSPlugin( {} ),
-    new OptimizeCSSAssetsPlugin( {} ),
-  ]
+  webpackConfig.optimization
+    .minimizer( 'css' )
+      .use( OptimizeCSSAssetsPlugin )
 
   const modules = await generateVirtualModules( config, {
     env: 'prod'
   } )
-  const virtualModules = new VirtualModulesPlugin( modules )
 
-  webpackConfig.plugins.push( virtualModules )
+  webpackConfig.plugin( 'virtual-modules' )
+    .use( VirtualModulesPlugin, [ modules ] )
 
-  const compiler = webpack( webpackConfig )
+  let finalWebpackConfig = webpackConfig.toConfig()
+
+  if ( typeof config.configureWebpack === 'function' ) {
+    config.configureWebpack( finalWebpackConfig )
+  } else if ( typeof config.configureWebpack === 'object' ) {
+    finalWebpackConfig = webpackMerge.smart(
+      finalWebpackConfig,
+      config.configureWebpack
+    )
+  }
+
+  const compiler = webpack( finalWebpackConfig )
 
   compiler.run( ( err, stats ) => {
     if ( err ) {
