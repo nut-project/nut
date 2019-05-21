@@ -82,6 +82,10 @@ async function dev(){
 
   applyCSSRules( webpackConfig, 'dev' )
 
+  if ( typeof nutConfig.chainWebpack === 'function' ) {
+    nutConfig.chainWebpack( webpackConfig )
+  }
+
   let finalWebpackConfig = webpackConfig.toConfig()
 
   // webpack configuration is ready to go

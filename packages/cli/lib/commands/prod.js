@@ -55,6 +55,10 @@ async function prod(){
   webpackConfig.plugin( 'virtual-modules' )
     .use( VirtualModulesPlugin, [ modules ] )
 
+  if ( typeof nutConfig.chainWebpack === 'function' ) {
+    nutConfig.chainWebpack( webpackConfig )
+  }
+
   let finalWebpackConfig = webpackConfig.toConfig()
 
   if ( typeof config.configureWebpack === 'function' ) {
