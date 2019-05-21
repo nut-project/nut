@@ -4,7 +4,6 @@ const boxen = require( 'boxen' )
 const chalk = require( 'chalk' )
 const read = require( 'read' )
 const open = require( 'open' )
-const cosmiconfig = require( 'cosmiconfig' )
 const webpackMerge = require( 'webpack-merge' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
@@ -32,12 +31,12 @@ const dirs = {
 
 async function dev(){
   let result = await loadConfig()
-  let config = result.config || {}
+  let nutConfig = result.config || {}
 
-  ensureConfigDefaults( config )
+  ensureConfigDefaults( nutConfig )
 
-  const host = config.host || DEFAULT_HOST
-  const port = config.port || DEFAULT_PORT
+  const host = nutConfig.host || DEFAULT_HOST
+  const port = nutConfig.port || DEFAULT_PORT
   const url = 'http://' + host + ':' + port
 
   let devServerOptions = {
@@ -47,45 +46,60 @@ async function dev(){
     quiet: true,
   }
 
-  if ( config.devServer ) {
-    devServerOptions = Object.assign( devServerOptions, config.devServer )
+  if ( nutConfig.devServer ) {
+    devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
   }
 
-  let webpackConfig = Object.assign( createBaseWebpackConfig( config ), {
-    mode: 'development',
-    devtool: 'cheap-module-source-map',
+  const modules = await generateVirtualModules( nutConfig, {
+    env: 'dev'
   } )
+
+  let virtualModules
+
+  const webpackConfig = createBaseWebpackConfig( nutConfig )
+
+  webpackConfig.mode( 'development' )
+
+  webpackConfig.devtool( 'cheap-module-source-map' )
+
+  webpackConfig.output
+    .filename( '[name].js' )
+    .publicPath( './' )
+
+  webpackConfig
+    .plugin( 'hot' )
+      .use( webpack.HotModuleReplacementPlugin )
+
+  webpackConfig.plugin( 'case-sensitive-paths' )
+    .use( CaseSensitivePathsPlugin )
+
+  webpackConfig.plugin( 'virtual-modules' )
+    .init( ( Plugin, args ) => {
+      virtualModules = new Plugin( ...args )
+      return virtualModules
+    } )
+    .use( VirtualModulesPlugin, [ modules ] )
 
   applyCSSRules( webpackConfig, 'dev' )
 
-  webpackConfig.output = {
-    filename: '[name].js',
-    publicPath: './',
+  if ( typeof nutConfig.chainWebpack === 'function' ) {
+    nutConfig.chainWebpack( webpackConfig )
   }
 
-  webpackConfig.plugins.push(
-    new webpack.HotModuleReplacementPlugin()
-  )
-  webpackConfig.plugins.push(
-    new CaseSensitivePathsPlugin()
-  )
-
-  const modules = await generateVirtualModules( config, {
-    env: 'dev'
-  } )
-  const virtualModules = new VirtualModulesPlugin( modules )
-
-  webpackConfig.plugins.push( virtualModules )
+  let finalWebpackConfig = webpackConfig.toConfig()
 
   // webpack configuration is ready to go
-  if ( typeof config.configureWebpack === 'function' ) {
-    config.configureWebpack( webpackConfig )
-  } else if ( typeof config.configureWebpack === 'object' ) {
-    webpackConfig = webpackMerge.smart( webpackConfig, config.configureWebpack )
+  if ( typeof nutConfig.configureWebpack === 'function' ) {
+    nutConfig.configureWebpack( finalWebpackConfig )
+  } else if ( typeof nutConfig.configureWebpack === 'object' ) {
+    finalWebpackConfig = webpackMerge.smart(
+      finalWebpackConfig,
+      nutConfig.configureWebpack
+    )
   }
 
-  WebpackDevServer.addDevServerEntrypoints( webpackConfig, devServerOptions )
-  const compiler = webpack( webpackConfig )
+  WebpackDevServer.addDevServerEntrypoints( finalWebpackConfig, devServerOptions )
+  const compiler = webpack( finalWebpackConfig )
   const server = new WebpackDevServer( compiler, devServerOptions )
 
   server.listen( port, host, () => {
@@ -119,11 +133,15 @@ async function dev(){
 
   chokidar.watch( [ result.filepath, appFile ] )
     .on( 'change', async () => {
+      if ( !virtualModules ) {
+        return
+      }
+
       try {
         result = await loadConfig()
-        config = result.config
+        nutConfig = result.config
 
-        const modules = await generateVirtualModules( config, {
+        const modules = await generateVirtualModules( nutConfig, {
           env: 'dev'
         } )
 
