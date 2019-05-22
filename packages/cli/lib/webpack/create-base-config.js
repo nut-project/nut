@@ -22,7 +22,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
 
   config
     .entry( 'index' )
-      .add( path.join( dirs.cli, 'lib/runtime/entry.js' ) )
+      .add( path.join( dirs.cli, 'lib/runtime/entries/single.js' ) )
       .end()
     .optimization
       .splitChunks( {
