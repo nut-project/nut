@@ -3,6 +3,7 @@ const globby = require( 'globby' )
 const fm = require( 'front-matter' )
 const fse = require( 'fs-extra' )
 const slugify = require( '@sindresorhus/slugify' )
+const resolveFrom = require( 'resolve-from' )
 
 const dirs = require( './dirs' )
 const pathUtils = require( './pathUtils' )
@@ -34,7 +35,10 @@ async function getPluginPages( plugins = {} ) {
     }
 
     if ( plugin.package ) {
-      root = path.dirname( require.resolve( plugin.package + '/package.json' ) )
+      const packgePath = resolveFrom.silent( dirs.project, plugin.package + '/package.json' )
+      if ( packgePath ) {
+        root = path.dirname( packgePath )
+      }
     }
 
     if ( !root ) {
