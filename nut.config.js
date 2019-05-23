@@ -16,9 +16,9 @@ module.exports = {
       enable: false,
       // env: [ 'dev' ],
     },
-    test: {
-      path: require.resolve( './plugins/test' ),
-    },
+    // test: {
+    //   path: require.resolve( './plugins/test' ),
+    // },
     notfound: {
       path: require.resolve( './plugins/notfound' ),
     },
@@ -46,6 +46,16 @@ module.exports = {
       alias: {
         '#alias': path.resolve( __dirname, 'src/alias' )
       }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.vue$/,
+          use: [
+            { loader: 'eslint-loader' }
+          ]
+        }
+      ]
     }
   }
 }
