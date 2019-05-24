@@ -6,7 +6,7 @@ const slugify = require( '@sindresorhus/slugify' )
 const resolveFrom = require( 'resolve-from' )
 
 const dirs = require( './dirs' )
-const pathUtils = require( './pathUtils' )
+const pathUtils = require( './path-utils' )
 
 module.exports = async function getAllPages( config ) {
   const root = path.join( dirs.project, 'src' )

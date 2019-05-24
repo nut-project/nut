@@ -6,11 +6,15 @@ const webpackMerge = require( 'webpack-merge' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const TerserJSPlugin = require( 'terser-webpack-plugin' )
 const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
+const table = require( 'text-table' )
+const stringWidth = require( 'string-width' )
+const chalk = require( 'chalk' )
+const prettyBytes = require( 'pretty-bytes' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
-const loadConfig = require( '../utils/loadConfig' )
-const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
-const generateVirtualModules = require( '../utils/generateVirtualModules' )
+const loadConfig = require( '../utils/load-config' )
+const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
+const generateVirtualModules = require( '../utils/generate-virtual-modules' )
 
 process
   .on( 'unhandledRejection', ( reason, p ) => {
@@ -103,13 +107,53 @@ async function prod(){
       return
     }
 
+    const result = stats.toJson( {
+      assets: true,
+      // remove extra fields
+      chunks: false,
+      children: false,
+      chunkGroups: false,
+      chunkModules: false,
+      warnings: false,
+      modules: false,
+      source: false,
+      entrypoints: false,
+      performance: false,
+    } )
+
+    let output = [
+      [ ' File', 'Size' ].map( s => chalk.bold( s ) ),
+      [ ' ----', '----' ].map( s => chalk.dim( s ) )
+    ]
+
+    result.assets.sort( ( a, b ) => {
+      return b.size - a.size
+    } )
+
+    output = output.concat( result.assets.map( asset => [ chalk.green( ' ' + asset.name ), prettyBytes( asset.size ) ] ) )
+
+    output = table( output, {
+      stringLength: stringWidth,
+    } )
+
+    console.log( `\n${ output }\n` )
+
     console.log(
       stats.toString( {
+        assets: false,
+        children: false,
         chunks: false,
         colors: true,
         warnings: false,
+        errors: true,
+        errorDetails: true,
+        modules: false,
+        entrypoints: false,
+        performance: false,
       } )
     )
+
+    console.log( '\n' )
   } )
 }
 

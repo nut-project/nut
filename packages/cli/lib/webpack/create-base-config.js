@@ -2,6 +2,8 @@ const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
+const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
+const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
@@ -20,9 +22,37 @@ const dirs = {
 module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
+  let entry
+
+  switch ( nutConfig.type ) {
+    case 'host':
+      entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
+      break
+    case 'child':
+      entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
+      config.plugin( 'stats-write' )
+        .use( StatsWriterPlugin, [
+          {
+            filename: 'manifest.json',
+            transform( data, opts ) {
+              return JSON.stringify( {
+                publicPath: './',
+                files: {
+                  runtime: data.assetsByChunkName.runtime,
+                  index: data.assetsByChunkName.index,
+                },
+              }, 0, 2 )
+            }
+          }
+        ] )
+      break
+    default:
+      entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
+  }
+
   config
     .entry( 'index' )
-      .add( path.join( dirs.cli, 'lib/runtime/entry.js' ) )
+      .add( entry )
       .end()
     .optimization
       .splitChunks( {
@@ -265,7 +295,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
 
   const vueCacheOptions = {
     cacheDirectory: path.join( process.cwd(), 'node_modules/.cache/vue-loader' ),
-    cacheIdentifier: require( '../utils/getVueCacheIdentifier' )()
+    cacheIdentifier: require( '../utils/get-vue-cache-identifier' )()
   }
 
   config.module
@@ -280,6 +310,11 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .end()
       .use( 'vue' )
         .loader( 'vue-loader' )
+
+  if ( nutConfig.output && nutConfig.output.clean === true ) {
+    config.plugin( 'clean' )
+      .use( CleanWebpackPlugin )
+  }
 
   return config
 }

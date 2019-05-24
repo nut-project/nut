@@ -4,8 +4,8 @@ const tildify = require( 'tildify' )
 const globby = require( 'globby' )
 
 const dirs = require( './dirs' )
-const getPages = require( './getPages' )
-const pathUtils = require( './pathUtils' )
+const getPages = require( './get-pages' )
+const pathUtils = require( './path-utils' )
 
 async function generateVirtualModules( config, { env = 'dev' } = {} ) {
   const pages = await getPages( config )

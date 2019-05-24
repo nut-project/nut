@@ -1,7 +1,13 @@
 const path = require( 'path' )
 
 module.exports = {
-  port: 9000,
+  // type: 'child',
+
+  output: {
+    clean: true,
+  },
+
+  port: 9001,
   zh: 'nut',
   en: 'nut',
   logo: '',

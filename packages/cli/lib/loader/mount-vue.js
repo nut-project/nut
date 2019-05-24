@@ -1,5 +1,5 @@
 const qs = require( 'querystring' )
-const pathUtils = require( '../utils/pathUtils' )
+const pathUtils = require( '../utils/path-utils' )
 
 module.exports = source => source
 

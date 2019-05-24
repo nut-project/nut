@@ -1,9 +1,13 @@
-import Vue from 'vue';
+import Vue from 'vue'
 
 export default function ( Page ) {
   Page.$$nut = ctx => {
     let instance
     let el
+
+    if ( !Vue.prototype.$ctx ) {
+      Vue.prototype.$ctx = ctx
+    }
 
     const definition = {
       mount( node ) {
