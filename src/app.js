@@ -47,4 +47,6 @@ export default async function app( ctx ) {
   ] )
 
   ctx.api.page( 'pages/home/index' ).set( 'cacheable', true )
+  ctx.api.page( 'pages/home/vue' ).set( 'cacheable', false )
+  ctx.api.page( 'pages/home/index' ).set( 'layout', 'none' )
 }

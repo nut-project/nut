@@ -153,12 +153,11 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                   options = pluginOptions[ routeConfig.plugin ] || {}
                 }
 
-                // TODO: where to put attributes.cacheable
-                const { attributes = {} } = findPageByRouteConfig( pages, routeConfig ) || {}
+                const cacheable = api.page( routeConfig.page ).get( 'cacheable' )
 
                 if (
                   // cache by default unless your declare cacheable: false
-                  ( attributes.cacheable !== false ) &&
+                  ( cacheable !== false ) &&
                   this.page
                 ) {
                   return this.page
@@ -285,8 +284,17 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
             if ( page ) {
               const DEFAULT_LAYOUT = nutConfig.layout || 'default'
-              const oldLayout = from && from.options && from.options.layout || DEFAULT_LAYOUT
-              const newLayout = to && to.options && to.options.layout || DEFAULT_LAYOUT
+
+              let oldLayout = DEFAULT_LAYOUT
+              let newLayout = DEFAULT_LAYOUT
+
+              if ( from && from.options && from.options.page ) {
+                oldLayout = api.page( from.options.page ).get( 'layout' ) || DEFAULT_LAYOUT
+              }
+
+              if ( to && to.options && to.options.page ) {
+                newLayout = api.page( to.options.page ).get( 'layout' ) || DEFAULT_LAYOUT
+              }
 
               const layouts = {
                 from: api.layout.getLayoutByName( oldLayout ),
