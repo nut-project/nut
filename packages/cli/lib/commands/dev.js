@@ -12,9 +12,9 @@ const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' 
 
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
-const generateVirtualModules = require( '../utils/generateVirtualModules' )
-const loadConfig = require( '../utils/loadConfig' )
-const ensureConfigDefaults = require( '../utils/ensureConfigDefaults' )
+const generateVirtualModules = require( '../utils/generate-virtual-modules' )
+const loadConfig = require( '../utils/load-config' )
+const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000

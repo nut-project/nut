@@ -5,7 +5,7 @@ const fse = require( 'fs-extra' )
 const slugify = require( '@sindresorhus/slugify' )
 
 const dirs = require( './dirs' )
-const pathUtils = require( './pathUtils' )
+const pathUtils = require( './path-utils' )
 
 module.exports = async function getAllPages( config ) {
   const root = path.join( dirs.project, 'src' )

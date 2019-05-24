@@ -22,6 +22,10 @@
     enter() {
       console.log( 'enter vm', this )
     },
+
+    created() {
+      console.log( this.$ctx )
+    }
   }
 </script>
 

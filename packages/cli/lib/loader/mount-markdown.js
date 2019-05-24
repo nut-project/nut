@@ -1,4 +1,4 @@
-const pathUtils = require( '../utils/pathUtils' )
+const pathUtils = require( '../utils/path-utils' )
 
 module.exports = function ( source ) {
 
