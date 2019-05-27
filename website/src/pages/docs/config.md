@@ -17,7 +17,7 @@ nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配�
 | plugins                |                                                                                        插件 |       []       |
 | sidebar                |                                                                                    菜单管理 |       []       |
 | devServer              |                                                                     webpack dev server 配置 |       -        |
-| configureWebpack       | 配置 webpack，内部使用 [webpack-merge](https://github.com/survivejs/webpack-merge) 进行合并 |       -        |
+| configureWebpack       | 配置 webpack，内部使用 [webpack-merge](https://github.com/survivejs/webpack-merge) 合并 |       -        |
 | chainWebpack           |     精细配置 webpack，语法参考 [webpack-chain](https://github.com/neutrinojs/webpack-chain) |       -        |
 | babel.transpileModules |                                                      node_modules 中需要被 babel 编译的模块 |       []       |
 
