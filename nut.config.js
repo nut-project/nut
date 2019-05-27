@@ -41,8 +41,6 @@ module.exports = {
     }
   },
   sidebar: null,
-  // homepage 和 landing page 二选一
-  homepage: 'pages/index',
   landing: {
     template: 'default',
     options: {},

@@ -2,6 +2,7 @@ import axios from 'axios'
 import layout from '../core/layout'
 import page from '../core/page'
 import createRouter from '../core/router'
+import homepage from '../core/homepage'
 
 export default function ( { pages, router } = {} ) {
   let axiosInstance = axios.create( {
@@ -15,6 +16,8 @@ export default function ( { pages, router } = {} ) {
     layout,
 
     page,
+
+    homepage,
 
     router: createRouter( pages, router ),
 

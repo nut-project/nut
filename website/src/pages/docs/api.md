@@ -21,6 +21,14 @@ await ctx.api.layout.register( {
 } )
 ```
 
+#### homepage.set
+
+配置首页，可以认为是设置 `/` 的别名路由
+
+```js
+ctx.api.homepage.set( 'pages/home' )
+```
+
 #### page
 
 配置页面的基本属性，常见的比如 cacheable、layout

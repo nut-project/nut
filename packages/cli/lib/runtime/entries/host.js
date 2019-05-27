@@ -1,7 +1,6 @@
 import Router from 'unfancy-router/src/index'
 
 import '../css/reset.less'
-import '../css/nprogress.less'
 import '../css/markdown.less'
 import '../fonts/iconfont.css'
 import '@/nut-auto-generated-markdown-theme'
@@ -13,7 +12,6 @@ import pluginOptions from '@/nut-auto-generated-plugin-options'
 import extendContext from '@/nut-auto-generated-extend-context'
 
 import applyPlugins from '../steps/apply-plugins'
-import setupNProgress from '../steps/setup-nprogress'
 import setupNico from '../steps/setup-nico'
 import registerLayouts from '../steps/register-layouts'
 
@@ -57,8 +55,6 @@ import use from '../context/use'
   await events.emit( 'system:before-apply-plugins', context )
   await applyPlugins( plugins, pluginOptions, context )
   await events.emit( 'system:after-apply-plugins', context )
-
-  await setupNProgress( nico )
 
   nico.on( 'notfound', () => {
     events.emit( 'route:notfound', context )
