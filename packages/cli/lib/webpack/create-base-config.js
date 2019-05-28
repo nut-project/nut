@@ -7,6 +7,7 @@ const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
+const hashsum = require( 'hash-sum' )
 
 const threadLoader = require('thread-loader');
 
@@ -19,6 +20,8 @@ const dirs = {
   project: process.cwd(),
 }
 
+const pkg = require( dirs.project + '/package.json' )
+
 module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
@@ -30,17 +33,26 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       break
     case 'child':
       entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
+      const suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
+      config.output.jsonpFunction( 'webpackJsonp_' + suffix )
       config.plugin( 'stats-write' )
         .use( StatsWriterPlugin, [
           {
             filename: 'manifest.json',
             transform( data, opts ) {
+              const files = []
+
+              const index = data.assetsByChunkName.index
+              if ( Array.isArray( index ) ) {
+                const jsfiles = index.filter( file => file.endsWith( '.js' ) )
+                files.push( ...jsfiles )
+              } else if ( typeof index === 'string' ) {
+                if ( index.endsWith( '.js' ) ) {
+                  files.push( index )
+                }
+              }
               return JSON.stringify( {
-                publicPath: './',
-                files: {
-                  runtime: data.assetsByChunkName.runtime,
-                  index: data.assetsByChunkName.index,
-                },
+                files,
               }, 0, 2 )
             }
           }
@@ -48,6 +60,13 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       break
     default:
       entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
+  }
+
+  if ( nutConfig.type === 'single' ) {
+    config.optimization
+      .runtimeChunk( {
+        name: 'runtime',
+      } )
   }
 
   config
@@ -58,9 +77,6 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       .splitChunks( {
         chunks: 'all',
         minChunks: 2,
-      } )
-      .runtimeChunk( {
-        name: 'runtime',
       } )
       .end()
     .performance
@@ -314,6 +330,12 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
   if ( nutConfig.output && nutConfig.output.clean === true ) {
     config.plugin( 'clean' )
       .use( CleanWebpackPlugin )
+  }
+
+  if ( nutConfig.output && nutConfig.output.publicPath ) {
+    config.output.publicPath( nutConfig.output.publicPath )
+  } else {
+    config.output.publicPath( './' )
   }
 
   return config

@@ -1,6 +1,7 @@
-/dist
+dist
 /website/dist
-/examples
+/examples/egg-openid-server
+/examples/openid-server
 /plugins/test
 
 # Logs

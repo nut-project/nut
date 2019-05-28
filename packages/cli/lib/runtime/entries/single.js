@@ -9,6 +9,7 @@ import '../css/override.less'
 import nutConfig from '@/nut-auto-generated-nut-config'
 import plugins from '@/nut-auto-generated-plugins'
 import pages from '@/nut-auto-generated-pages'
+import routes from '@/nut-auto-generated-routes'
 import pluginOptions from '@/nut-auto-generated-plugin-options'
 import extendContext from '@/nut-auto-generated-extend-context'
 
@@ -48,7 +49,7 @@ import use from '../context/use'
     context.api.sidebar.configure( nutConfig.sidebar )
   }
 
-  const nico = await setupNico( context, pluginOptions, rootRouter, router )
+  const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
 
   await app( context )
 

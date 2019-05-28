@@ -22,7 +22,109 @@ import createAPI from '../context/api'
 import events from '../context/events'
 import use from '../context/use'
 
+import axios from 'axios'
+
 ;( async function () {
+  const compose = nutConfig.compose
+  const collection = []
+
+  if ( compose ) {
+    function filterJs( files ) {
+      return files.filter( file => file.endsWith( '.js' ) )
+    }
+
+    const jobs = Object.keys( compose ).map( name => {
+      return axios.get( compose[ name ].service + '/manifest.json' )
+        .then( response => {
+          return response.data
+        } )
+        .then( json => {
+          return {
+            name: name,
+            base: compose[ name ].service,
+            prefix: compose[ name ].prefix,
+            files: json.files,
+          }
+        } )
+    } )
+
+    function loadJs( url ) {
+      return new Promise( ( resolve, reject ) => {
+        const script = document.createElement( 'script' )
+        script.charset = 'utf-8'
+        script.src = url
+        script.onload = function () {
+          script.onload = null
+          script.onerror = null
+          document.body.removeChild( script )
+          resolve()
+        }
+        script.onerror = function () {
+          reject()
+        }
+
+        document.body.appendChild( script )
+      } )
+    }
+
+    function loadChild( child ) {
+      const name = child.name
+      const prefix = child.prefix
+
+      return child.files.reduce( ( total, file, index ) => {
+        return total.then( () => {
+          window.nutJsonp = function ( { pages, config, routes } = {} ) {
+            collection.push( {
+              name,
+              prefix,
+              pages,
+              config,
+              routes
+            } )
+          }
+
+          return loadJs( child.base + '/' + file )
+        } )
+      }, Promise.resolve() )
+    }
+
+    await Promise.all( jobs )
+      .then( children => {
+        return children.reduce( ( total, child ) => {
+          return total.then( () => loadChild( child ) )
+        }, Promise.resolve() )
+      } )
+  }
+
+  const { pages, routes } = collection.reduce( ( total, c ) => {
+    const prefix = c.prefix
+    const name = c.name
+
+    const pages = c.pages.map( page => {
+      return Object.assign( {}, page, {
+        name: name + '$' + page.name,
+        page: name + '/' + page.page,
+        route: prefix + page.route,
+      } )
+    } )
+
+    const routes = c.routes.map( route => {
+      return Object.assign( {}, route, {
+        name: name + '$' + route.name,
+        page: name + '/' + route.page,
+        path: prefix + route.path,
+      } )
+    } )
+
+    total.pages.push( ...pages )
+    total.routes.push( ...routes )
+
+    return total
+  }, {
+    pages: [],
+    routes: [],
+  } )
+
   const router = Router()
 
   const rootRouter = router.create( {
@@ -33,11 +135,11 @@ import use from '../context/use'
   const context = {
     ...extendContext(),
     env: process.env.NODE_ENV,
-    plugins: {},
+    plugins,
     app: nutConfig,
-    api: {}, // createAPI( { pages, router: rootRouter } ),
+    api: createAPI( { pages, router: rootRouter } ),
     events,
-    pages: [],
+    pages,
     use,
     globals: window.NUT_GLOBALS || {},
   }
@@ -46,7 +148,7 @@ import use from '../context/use'
     context.api.sidebar.configure( nutConfig.sidebar )
   }
 
-  const nico = await setupNico( context, pluginOptions, rootRouter, router )
+  const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
 
   await app( context )
 
@@ -63,8 +165,6 @@ import use from '../context/use'
   await events.emit( 'system:before-startup', context )
 
   nico.start( '#app' )
-
-  nico.beforeEach(  )
 
   events.emit( 'route:enabled', context )
 
