@@ -44,6 +44,9 @@ async function dev(){
     host,
     hot: true,
     quiet: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    }
   }
 
   if ( nutConfig.devServer ) {
@@ -64,7 +67,6 @@ async function dev(){
 
   webpackConfig.output
     .filename( '[name].js' )
-    .publicPath( './' )
 
   webpackConfig
     .plugin( 'hot' )

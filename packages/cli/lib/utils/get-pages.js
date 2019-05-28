@@ -63,15 +63,21 @@ async function getPluginPages( plugins = {} ) {
 }
 
 async function getPages( root, processor = v => v ) {
-  const files = await globby( [
-    'pages/**/*.js',
-    'pages/**/*.md',
-    'pages/**/*.vue',
-  ], {
-    cwd: root,
-    deep: true,
-    onlyFiles: true,
-  } )
+  let files = []
+
+  try {
+    files = await globby( [
+      'pages/**/*.js',
+      'pages/**/*.md',
+      'pages/**/*.vue',
+    ], {
+      cwd: root,
+      deep: true,
+      onlyFiles: true,
+    } )
+  } catch ( e ) {
+    // console.log( e )
+  }
 
   const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue)$/
 

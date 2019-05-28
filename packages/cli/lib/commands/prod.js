@@ -40,7 +40,6 @@ async function prod(){
 
   webpackConfig.output
     .filename( '[name].[contenthash].js' )
-    .publicPath( './' )
 
   applyCSSRules( webpackConfig, 'prod' )
 
