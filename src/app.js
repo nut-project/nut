@@ -12,11 +12,11 @@ export default async function app( ctx ) {
     ctx.next()
   } )
 
-  ctx.api.router.push( {
-    page: 'pages/home/regular',
-    query: { a: 'b' },
-    // layout: 'saber'
-  } )
+  // ctx.api.router.push( {
+  //   page: 'pages/home/regular',
+  //   query: { a: 'b' },
+  //   // layout: 'saber'
+  // } )
 
   await ctx.use( 'login', 'getUser' ) // use exposed methods from plugin
   ctx.config // -> from ./config/config.{env}.js

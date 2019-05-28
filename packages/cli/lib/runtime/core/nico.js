@@ -269,17 +269,17 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
             }
           },
 
-          update() {
+          update( ...args ) {
             routeConfig.update && routeConfig.update()
 
             const page = this.page
 
             if ( page && typeof page.update === 'function' ) {
-              page.update()
+              page.update( ...args )
             }
           },
 
-          async enter( { from, to, params } ) {
+          async enter( { from, to, params, query } = {} ) {
             const page = this.page
 
             if ( page ) {
@@ -308,7 +308,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
               }
 
               if ( ( oldLayout === newLayout ) && from ) {
-                // donot have to inject again
+                // no need to inject again
               } else {
                 await events.emit( 'layout:before-mount', layout )
                 markActive( ctx.api.sidebar.get(), this.name )
@@ -327,7 +327,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
             routeConfig.enter && routeConfig.enter.call( this )
 
             if ( page && typeof page.enter === 'function' ) {
-              page.enter()
+              page.enter( { from, to, params, query } )
             }
 
             ctx.api.router.current = this
@@ -336,7 +336,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
             quicklinkSiblingPages( routeConfig )
           },
 
-          leave() {
+          leave( ...args ) {
             const page = this.page
 
             api.layout.unmountPage( page )
@@ -344,7 +344,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
             routeConfig.leave && routeConfig.leave.call( this )
 
             if ( page && typeof page.leave === 'function' ) {
-              page.leave()
+              page.leave( ...args )
             }
           }
         } )

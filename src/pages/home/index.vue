@@ -19,8 +19,8 @@
       }, 2000 )
     },
 
-    enter() {
-      console.log( 'enter vm', this )
+    enter( ctx ) {
+      console.log( 'enter vm', ctx, this )
     },
 
     created() {
