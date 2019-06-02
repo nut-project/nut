@@ -201,7 +201,18 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
   const internalTranspileModules = [
     'unfancy-router',
     require( '../../package.json' ).name,
+    /@nut-plugins/i,
   ]
+
+  if ( nutConfig.plugins ) {
+    const plugins = nutConfig.plugins
+    Object.keys( plugins ).forEach( name => {
+      if ( plugins[ name ].package ) {
+        internalTranspileModules.push( plugins[ name ].package )
+      }
+    } )
+  }
+
   const allTranspileModules = []
     .concat( transpileModules )
     .concat( internalTranspileModules )
