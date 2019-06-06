@@ -46,7 +46,8 @@ async function dev(){
     quiet: true,
     headers: {
       'Access-Control-Allow-Origin': '*',
-    }
+    },
+    historyApiFallback: true,
   }
 
   if ( nutConfig.devServer ) {
