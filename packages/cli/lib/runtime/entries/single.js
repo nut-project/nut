@@ -101,11 +101,12 @@ import use from '../context/use'
   const matched = rootRouter.match()
 
   // TODO: match /, not by homepage, if exists push( '/' )
-  if ( !matched || matched === rootRouter ) {
+  if ( !matched || ( matched.router === rootRouter ) ) {
     if ( homepage ) {
       rootRouter.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
+      console.log( firstRoute )
       if ( firstRoute ) {
         rootRouter.push( firstRoute )
       }
