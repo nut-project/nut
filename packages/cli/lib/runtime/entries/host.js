@@ -125,7 +125,8 @@ import axios from 'axios'
     routes: [],
   } )
 
-  const router = Router()
+  const routerOptions = nutConfig.router || {}
+  const router = Router( routerOptions )
 
   const rootRouter = router.create( {
     name: '_',
@@ -165,8 +166,20 @@ import axios from 'axios'
   await events.emit( 'system:before-startup', context )
 
   nico.start( '#app' )
-
   events.emit( 'route:enabled', context )
+
+  const matched = rootRouter.match()
+
+  if ( !matched || matched === rootRouter ) {
+    if ( homepage ) {
+      rootRouter.push( '/' )
+    } else {
+      const firstRoute = getFirstRoute( context )
+      if ( firstRoute ) {
+        rootRouter.push( firstRoute )
+      }
+    }
+  }
 
   events.emit( 'system:after-startup', context )
 

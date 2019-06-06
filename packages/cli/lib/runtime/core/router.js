@@ -16,6 +16,17 @@ export default function ( pages, rootRouter ) {
       return rootRouter.find( ...args )
     },
 
+    alias( page, aliasPath ) {
+      const found = rootRouter.find( r => r.options.page === page )
+
+      if ( !found ) {
+        console.warn( '[api.router.alias] No router found for ' + page )
+        return
+      }
+
+      found.alias( aliasPath )
+    },
+
     beforeEach( hook ) {
       return rootRouter.beforeEach( hook )
     },
