@@ -346,7 +346,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
   if ( nutConfig.output && nutConfig.output.publicPath ) {
     config.output.publicPath( nutConfig.output.publicPath )
   } else {
-    config.output.publicPath( './' )
+    config.output.publicPath( '/' )
   }
 
   return config

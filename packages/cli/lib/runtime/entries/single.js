@@ -26,7 +26,8 @@ import events from '../context/events'
 import use from '../context/use'
 
 ;( async function () {
-  const router = Router()
+  const routerOptions = nutConfig.router || {}
+  const router = Router( routerOptions )
 
   const rootRouter = router.create( {
     name: '_',
@@ -72,19 +73,21 @@ import use from '../context/use'
     router.alias( '/' )
   }
 
-  if ( !location.hash ) {
+  nico.start( '#app' )
+  events.emit( 'route:enabled', context )
+
+  const matched = rootRouter.match()
+
+  if ( !matched || matched === rootRouter ) {
     if ( homepage ) {
-      location.hash = '#/'
+      rootRouter.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
       if ( firstRoute ) {
-        location.hash = '#' + firstRoute
+        rootRouter.push( firstRoute )
       }
     }
   }
-
-  nico.start( '#app' )
-  events.emit( 'route:enabled', context )
 
   events.emit( 'system:after-startup', context )
 

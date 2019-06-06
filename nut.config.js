@@ -3,6 +3,10 @@ const path = require( 'path' )
 module.exports = {
   // type: 'child',
 
+  router: {
+    mode: 'history',
+  },
+
   output: {
     clean: true,
   },
