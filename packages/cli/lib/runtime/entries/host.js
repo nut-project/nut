@@ -149,6 +149,17 @@ import axios from 'axios'
     context.api.sidebar.configure( nutConfig.sidebar )
   }
 
+  if ( typeof nutConfig.homepage === 'string' ) {
+    ctx.api.homepage.set( nutConfig.homepage )
+  }
+
+  if ( routerOptions.cacheable ) {
+    Object.keys( routerOptions.cacheable )
+      .forEach( page => {
+        context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )
+      } )
+  }
+
   const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
 
   await app( context )
@@ -165,11 +176,30 @@ import axios from 'axios'
 
   await events.emit( 'system:before-startup', context )
 
+  const homepage = context.api.homepage.get()
+
+  if ( homepage ) {
+    const router = rootRouter.find( r => r.options.page === homepage )
+    if ( router ) {
+      router.alias( '/' )
+    }
+  }
+
+  if ( routerOptions.alias ) {
+    Object.keys( routerOptions.alias ).forEach( page => {
+      const found = rootRouter.find( r => r.options.page === page )
+      if ( found ) {
+        found.alias( String( routerOptions.alias[ page ] ) )
+      }
+    } )
+  }
+
   nico.start( '#app' )
   events.emit( 'route:enabled', context )
 
   const matched = rootRouter.match()
 
+  // TODO: match /, not by homepage, if exists push( '/' )
   if ( !matched || matched === rootRouter ) {
     if ( homepage ) {
       rootRouter.push( '/' )

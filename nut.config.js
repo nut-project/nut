@@ -5,6 +5,12 @@ module.exports = {
 
   router: {
     mode: 'history',
+    alias: {
+      'pages/documents/reference': '/'
+    },
+    cacheable: {
+      'pages/home/vue': false,
+    },
   },
 
   output: {

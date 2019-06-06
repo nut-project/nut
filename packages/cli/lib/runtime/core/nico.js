@@ -468,7 +468,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
       ctx.api.sidebar.configure( ctx.app.sidebar )
     }
 
-    markActive( ctx.api.sidebar.get(), router.name )
+    markActive( ctx.api.sidebar.get(), router && router.name )
 
     layout.update && layout.update( { ctx } )
 

@@ -54,6 +54,7 @@ async function generateNutConfig( config ) {
     'theme',
     'compose',
     'router',
+    'homepage',
   ].map( key => {
     return `"${ key }": ${ JSON.stringify( config[ key ] ) }`
   } )

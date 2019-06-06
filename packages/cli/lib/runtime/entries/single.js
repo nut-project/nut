@@ -50,6 +50,17 @@ import use from '../context/use'
     context.api.sidebar.configure( nutConfig.sidebar )
   }
 
+  if ( nutConfig.homepage && ( typeof nutConfig.homepage === 'string' ) ) {
+    context.api.homepage.set( nutConfig.homepage )
+  }
+
+  if ( routerOptions.cacheable ) {
+    Object.keys( routerOptions.cacheable )
+      .forEach( page => {
+        context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )
+      } )
+  }
+
   const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
 
   await app( context )
@@ -70,7 +81,18 @@ import use from '../context/use'
 
   if ( homepage ) {
     const router = rootRouter.find( r => r.options.page === homepage )
-    router.alias( '/' )
+    if ( router ) {
+      router.alias( '/' )
+    }
+  }
+
+  if ( routerOptions.alias ) {
+    Object.keys( routerOptions.alias ).forEach( page => {
+      const found = rootRouter.find( r => r.options.page === page )
+      if ( found ) {
+        found.alias( String( routerOptions.alias[ page ] ) )
+      }
+    } )
   }
 
   nico.start( '#app' )
@@ -78,6 +100,7 @@ import use from '../context/use'
 
   const matched = rootRouter.match()
 
+  // TODO: match /, not by homepage, if exists push( '/' )
   if ( !matched || matched === rootRouter ) {
     if ( homepage ) {
       rootRouter.push( '/' )
