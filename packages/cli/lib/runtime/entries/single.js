@@ -106,7 +106,6 @@ import use from '../context/use'
       rootRouter.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
-      console.log( firstRoute )
       if ( firstRoute ) {
         rootRouter.push( firstRoute )
       }

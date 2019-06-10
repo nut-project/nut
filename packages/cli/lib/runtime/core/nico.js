@@ -189,6 +189,15 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
                 if ( nextCount === 0 ) {
                   e.next()
+                  if ( process.env.NODE_ENV === 'development' ) {
+                    console.log(
+                      '\n%cRouterGuard%c' + 'beforeEnter passed' + '%c\n',
+                      'background-color: #0089ff;color: #fff;padding: 2px 6px;',
+                      'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
+                      ''
+                    )
+                  }
+                  return
                 }
 
                 const fns = []
@@ -212,6 +221,15 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                       } )
                     } else {
                       e.next()
+                    }
+
+                    if ( process.env.NODE_ENV === 'development' ) {
+                      console.log(
+                        '\n%cRouterGuard%c' + 'beforeEnter passed' + '%c\n',
+                        'background-color: #0089ff;color: #fff;padding: 2px 6px;',
+                        'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
+                        ''
+                      )
                     }
                   }
                 }
@@ -243,6 +261,15 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
             if ( nextCount === 0 ) {
               e.next()
+              if ( process.env.NODE_ENV === 'development' ) {
+                console.log(
+                  '\n%cRouterGuard%c' + 'beforeLeave passed' + '%c\n',
+                  'background-color: #0089ff;color: #fff;padding: 2px 6px;',
+                  'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
+                  ''
+                )
+              }
+              return
             }
 
             function next( v ) {
@@ -255,6 +282,15 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
               if ( nextCount === 0 ) {
                 e.next()
+
+                if ( process.env.NODE_ENV === 'development' ) {
+                  console.log(
+                    '\n%cRouterGuard%c' + 'beforeLeave passed' + '%c\n',
+                    'background-color: #0089ff;color: #fff;padding: 2px 6px;',
+                    'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
+                    ''
+                  )
+                }
               }
             }
 
@@ -307,7 +343,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 api.layout.unmount( oldLayout )
               }
 
-              if ( ( oldLayout === newLayout ) && from ) {
+              if ( ( oldLayout === newLayout ) && from && ctx.api.layout.current ) {
                 // no need to inject again
               } else {
                 await events.emit( 'layout:before-mount', layout )
