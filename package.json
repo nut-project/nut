@@ -10,6 +10,11 @@
     "build:docs": "npm run build --prefix ./website",
     "deploy": "npm run build:docs && gh-pages -d ./website/dist"
   },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fengzilong/nut.git"
