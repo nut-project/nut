@@ -1,5 +1,7 @@
 nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配置
 
+你可以使用 `process.env.NODE_ENV` 来判断当前的环境
+
 ## 配置
 
 | 字段                   |                                                                                    说明 |              默认值              |
@@ -23,7 +25,8 @@ nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配�
 | router.mode            |                                                        路由模式，可选值：hash / history |               hash               |
 | router.alias           |                                                  格式：{ 'pages/foo/bar': 'new-alias' } |                -                 |
 | router.cacheable       |                                                                    控制页面实例是否缓存 | 格式：{ 'pages/foo/bar': false } |
-| homepage               | 指定首页，比如'pages/foo/bar'，等价于ctx.api.homepage.set(  )                                                                                        |                -                  |
+| homepage               |                           指定首页，比如'pages/foo/bar'，等价于ctx.api.homepage.set(  ) |                -                 |
+| output.publicPath      | 修改 publicPath                                                                                        |                 '/'                 |
 
 ## 示例
 
@@ -36,7 +39,7 @@ module.exports = {
   },
   logo: './logo.png',
   theme: 'ocean',
-  layout: 'now',
+  layout: process.env.NODE_ENV === 'development' ? 'default' : 'now',
   plugins: {
     foo: {
       path: require.resolve( 'path/to/plugin' ),
@@ -73,6 +76,9 @@ module.exports = {
   chainWebpack( config ) {
     // https://github.com/neutrinojs/webpack-chain
     config.resolve.alias.set( 'key', 'value' )
+    if ( process.env.NODE_ENV === 'development' ) {
+      // ...
+    }
   },
   babel: {
     transpileModules: [ 'vue-echarts', 'resize-detector' ]
