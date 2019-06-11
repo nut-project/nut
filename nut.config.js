@@ -6,7 +6,7 @@ module.exports = {
   router: {
     mode: 'history',
     alias: {
-      'pages/documents/reference': '/'
+      'pages/documents/reference': '/xyz'
     },
     cacheable: {
       'pages/home/vue': false,

@@ -3,7 +3,9 @@ export default {
 
   apply( { api, events }, options ) {
     events.on( 'route:notfound', () => {
-      location.replace( api.getPluginPageLink( 'pages/index' ) )
+      api.router.replace( {
+        page: 'pages/index'
+      } )
     } )
   }
 }

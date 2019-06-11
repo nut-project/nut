@@ -13,9 +13,19 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
         plugins[ plugin.localName ] = plugins[ plugin.localName ] || {}
         plugins[ plugin.localName ][ prop ] = value
       },
-      getPluginPageLink( page, data ) {
-        return api.getPageLink( page + '@' + plugin.localName, data )
-      },
+      router: {
+        ...api.router,
+        format( route ) {
+          if ( typeof route === 'string' ) {
+            console.warn( '[router.format] cannot format string as route in plugin' )
+            return
+          }
+
+          route.page = route.page + '@' + plugin.localName
+
+          return api.router.format( route )
+        }
+      }
     }
 
     const stubEvents = {

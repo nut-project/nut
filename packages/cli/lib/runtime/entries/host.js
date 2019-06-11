@@ -162,6 +162,16 @@ import axios from 'axios'
 
   const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
 
+  if ( routerOptions.alias ) {
+    Object.keys( routerOptions.alias ).forEach( page => {
+      const found = rootRouter.find( r => r.options.page === page )
+      const alias = routerOptions.alias[ page ]
+      if ( found && alias ) {
+        found.alias( alias )
+      }
+    } )
+  }
+
   await app( context )
 
   await registerLayouts( context )
@@ -185,23 +195,17 @@ import axios from 'axios'
     }
   }
 
-  if ( routerOptions.alias ) {
-    Object.keys( routerOptions.alias ).forEach( page => {
-      const found = rootRouter.find( r => r.options.page === page )
-      if ( found ) {
-        found.alias( String( routerOptions.alias[ page ] ) )
-      }
-    } )
-  }
-
   nico.start( '#app' )
   events.emit( 'route:enabled', context )
 
   const matched = rootRouter.match()
-
-  // TODO: match /, not by homepage, if exists push( '/' )
   if ( !matched || ( matched.router === rootRouter ) ) {
-    if ( homepage ) {
+    const homeMatched = rootRouter.match( '/' )
+
+    if (
+      homeMatched &&
+      ( homeMatched.router !== rootRouter )
+    ) {
       rootRouter.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
