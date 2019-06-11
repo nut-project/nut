@@ -1,3 +1,7 @@
+---
+title: 标题测试
+---
+
 import Demo from '@/components/demo'
 import object from '@/components/object'
 

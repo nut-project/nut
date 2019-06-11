@@ -191,11 +191,6 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           .use( 'mount-markdown' )
             .loader( require.resolve( '../loader/mount-markdown' ) )
             .end()
-          .use( 'markdown' )
-            .loader( require.resolve( '../loader/markdown' ) )
-            .options( {
-              gfm: true,
-            } )
 
   const transpileModules = ( nutConfig.babel && nutConfig.babel.transpileModules ) || []
   const internalTranspileModules = [

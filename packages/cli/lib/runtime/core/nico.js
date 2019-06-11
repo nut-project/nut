@@ -171,6 +171,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 return page.default.$$nut( ctx, options )
               } )
               .then( page => {
+                page.attributes = page.attributes || {}
                 this.page = page
               } )
               .then( () => {

@@ -12,6 +12,10 @@ export default async function app( ctx ) {
     ctx.next()
   } )
 
+  ctx.events.on( 'page:after-mount', ( page ) => {
+    document.title = page.attributes.title || '未命名'
+  } )
+
   // ctx.api.router.push( {
   //   page: 'pages/home/regular',
   //   query: { a: 'b' },

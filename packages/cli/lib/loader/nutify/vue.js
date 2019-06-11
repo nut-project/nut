@@ -1,6 +1,9 @@
 import Vue from 'vue'
 
-export default function ( Page ) {
+export default function ( all = {} ) {
+  const Page = all.default || {}
+  const attributes = all.attributes || {}
+
   Page.$$nut = ctx => {
     let instance
     let el
@@ -10,6 +13,8 @@ export default function ( Page ) {
     }
 
     const definition = {
+      attributes,
+
       mount( node ) {
         if ( !instance ) {
           Vue.config.devtools = process.env.NODE_ENV === 'development'
