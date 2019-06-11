@@ -27,6 +27,8 @@ const dirs = {
 }
 
 async function prod(){
+  process.env.NODE_ENV = 'production'
+
   let result = await loadConfig()
   let config = result.config || {}
 

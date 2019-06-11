@@ -30,6 +30,8 @@ const dirs = {
 }
 
 async function dev(){
+  process.env.NODE_ENV = 'development'
+
   let result = await loadConfig()
   let nutConfig = result.config || {}
 
