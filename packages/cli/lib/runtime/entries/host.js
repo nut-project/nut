@@ -153,7 +153,7 @@ import axios from 'axios'
     ctx.api.homepage.set( nutConfig.homepage )
   }
 
-  if ( routerOptions.cacheable ) {
+  if ( routerOptions.cacheable && ( typeof routerOptions.cacheable === 'object' ) ) {
     Object.keys( routerOptions.cacheable )
       .forEach( page => {
         context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )

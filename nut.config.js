@@ -9,7 +9,7 @@ module.exports = {
       'pages/documents/reference': '/xyz'
     },
     cacheable: {
-      'pages/home/vue': false,
+      'pages/home/vue': true,
     },
   },
 
