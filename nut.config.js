@@ -8,6 +8,7 @@ module.exports = {
     alias: {
       'pages/documents/reference': '/xyz'
     },
+    defaultCacheable: false,
     cacheable: {
       'pages/home/vue': true,
     },

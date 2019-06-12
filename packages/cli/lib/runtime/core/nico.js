@@ -4,11 +4,11 @@ import nutConfig from '@/nut-auto-generated-nut-config'
 export default function createNico( rootRouter, routerFactory, prefix = '', ctx = {}, pluginOptions = {} ) {
   const { events, pages, app, globals, api } = ctx
 
-  let globalCacheable = ctx.app && ctx.app.router && ctx.app.router.cacheable
+  let defaultCacheable = ctx.app && ctx.app.router && ctx.app.router.defaultCacheable
 
   // cacheable by default unless user specified `cacheable: false`
-  if ( typeof globalCacheable !== 'boolean' ) {
-    globalCacheable = true
+  if ( typeof defaultCacheable !== 'boolean' ) {
+    defaultCacheable = true
   }
 
   function findPageByRouteConfig( pages, routeConfig ) {
@@ -163,7 +163,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 let cacheable = api.page( routeConfig.page ).get( 'cacheable' )
 
                 if ( typeof cacheable !== 'boolean' ) {
-                  cacheable = globalCacheable
+                  cacheable = defaultCacheable
                 }
 
                 if (
