@@ -3,6 +3,7 @@ dist
 /examples/egg-openid-server
 /examples/openid-server
 /plugins/test
+.DS_Store
 
 # Logs
 logs

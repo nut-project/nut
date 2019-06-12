@@ -23,6 +23,7 @@ module.exports = {
   logo: '',
   html: {
     title: '文档标题',
+    // template: path.join( __dirname, 'template.ejs' )
   },
   layout: 'kaola',
   theme: 'ocean',
@@ -63,6 +64,12 @@ module.exports = {
     },
     module: {
       rules: [
+        {
+          test: /\.html$/,
+          use: [
+            { loader: 'html-loader' },
+          ],
+        },
         {
           test: /\.vue$/,
           use: [
