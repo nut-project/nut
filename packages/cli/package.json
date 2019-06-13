@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/cli",
-  "version": "0.2.5-16",
+  "version": "0.2.5-17",
   "publishConfig": {
     "access": "public"
   },
