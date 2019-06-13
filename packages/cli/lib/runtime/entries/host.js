@@ -15,6 +15,7 @@ import applyPlugins from '../steps/apply-plugins'
 import setupNico from '../steps/setup-nico'
 import registerLayouts from '../steps/register-layouts'
 
+import getFirstRoute from '../utils/get-first-route'
 import switchTheme from '../utils/switch-theme'
 
 import app from '@/nut-auto-generated-app'
