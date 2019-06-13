@@ -22,6 +22,9 @@ const dirs = {
 
 const pkg = require( dirs.project + '/package.json' )
 
+const browserslist = pkg.browserslist ||
+  [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
+
 module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
@@ -96,7 +99,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       .extensions
         .merge( [
           '.js', '.json',
-          '.vue',
+          '.vue', '.jsx',
           '.md', '.vue.md',
           '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
         ] )
@@ -168,7 +171,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
                 require.resolve( '@babel/preset-env' ),
                 {
                   targets: {
-                    browsers: [ 'last 2 versions', 'safari >= 7' ]
+                    browsers: browserslist
                   }
                 }
               ],
@@ -213,46 +216,50 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .concat( internalTranspileModules )
 
   const jsIncludeCaches = {}
+
+  // from egoist/poi
+  function filterInclude( filepath ) {
+    filepath = filepath.replace( /\\/g, '/' )
+
+    // use cache
+    if ( typeof jsIncludeCaches[ filepath ] === 'boolean' ) {
+      return jsIncludeCaches[ filepath ]
+    }
+
+    if ( !filepath.includes( 'node_modules' ) ) {
+      jsIncludeCaches[ filepath ] = true
+      return true
+    }
+
+    if ( allTranspileModules ) {
+      const shouldTranspile = allTranspileModules.some( m => {
+        if ( typeof m === 'string' ) {
+          return filepath.includes( `/node_modules/${ m }/` )
+        }
+
+        if ( m && m.test ) {
+          return m.test( filepath )
+        }
+
+        return false
+      } )
+
+      jsIncludeCaches[ filepath ] = shouldTranspile
+      return shouldTranspile
+    }
+
+    jsIncludeCaches[ filepath ] = false
+    return false
+  }
+
   config.module
     .rule( 'js' )
     .test( /\.js$/ )
     .include
-      // from egoist/poi
-      .add( filepath => {
-        filepath = filepath.replace( /\\/g, '/' )
-
-        // use cache
-        if ( typeof jsIncludeCaches[ filepath ] === 'boolean' ) {
-          return jsIncludeCaches[ filepath ]
-        }
-
-        if ( !filepath.includes( 'node_modules' ) ) {
-          jsIncludeCaches[ filepath ] = true
-          return true
-        }
-
-        if ( allTranspileModules ) {
-          const shouldTranspile = allTranspileModules.some( m => {
-            if ( typeof m === 'string' ) {
-              return filepath.includes( `/node_modules/${ m }/` )
-            }
-
-            if ( m && m.test ) {
-              return m.test( filepath )
-            }
-
-            return false
-          } )
-
-          jsIncludeCaches[ filepath ] = shouldTranspile
-          return shouldTranspile
-        }
-
-        jsIncludeCaches[ filepath ] = false
-        return false
-      } )
+      .add( filterInclude )
       .end()
     .oneOf( 'normal' )
+      // cannot apply thread-loader to virtual modules
       .resource( /nut-auto-generated/ )
       .use( 'babel' )
         .loader( 'babel-loader' )
@@ -262,7 +269,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
               require.resolve( '@babel/preset-env' ),
               {
                 targets: {
-                  browsers: [ 'last 2 versions', 'safari >= 7' ]
+                  browsers: browserslist
                 }
               }
             ]
@@ -286,7 +293,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
               require.resolve( '@babel/preset-env' ),
               {
                 targets: {
-                  browsers: [ 'last 2 versions', 'safari >= 7' ]
+                  browsers: browserslist
                 }
               }
             ]
@@ -296,6 +303,41 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
             require.resolve( '@babel/plugin-syntax-dynamic-import' ),
           ]
         } )
+
+  config.module
+    .rule( 'jsx' )
+      .test( /\.jsx$/i )
+      .include
+        .add( filterInclude )
+        .end()
+      .use( 'mount-react' )
+        .loader( require.resolve( '../loader/mount-react' ) )
+        .end()
+      .use( 'babel' )
+        .loader( 'babel-loader' )
+        .options( {
+          presets: [
+            [
+              require.resolve( '@babel/preset-env' ),
+              {
+                targets: {
+                  browsers: browserslist
+                }
+              }
+            ],
+            [
+              require.resolve( '@babel/preset-react' ),
+              {
+                development: process.env.NODE_ENV === 'development',
+              }
+            ]
+          ],
+          plugins: [
+            require.resolve( '@babel/plugin-transform-runtime' ),
+            require.resolve( '@babel/plugin-syntax-dynamic-import' ),
+          ]
+        } )
+        .end()
 
   config.module
     .rule( 'image' )

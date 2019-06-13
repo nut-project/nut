@@ -70,6 +70,7 @@ async function getPages( root, processor = v => v ) {
       'pages/**/*.js',
       'pages/**/*.md',
       'pages/**/*.vue',
+      'pages/**/*.jsx',
     ], {
       cwd: root,
       deep: true,
@@ -79,7 +80,7 @@ async function getPages( root, processor = v => v ) {
     // console.log( e )
   }
 
-  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue)$/
+  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue|\.jsx)$/
 
   const types = {
     '.js': 'js',
