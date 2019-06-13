@@ -117,6 +117,7 @@ import use from '../context/use'
   if ( module.hot ) {
     module.hot.accept( '@/nut-auto-generated-nut-config', function refreshTheme(  ) {
       switchTheme( nutConfig && nutConfig.theme || 'ocean' )
+      rootRouter.switchMode(nutConfig && nutConfig.router && nutConfig.router.mode || 'history')
     } )
 
     module.hot.accept( '@/nut-auto-generated-pages', () => {
