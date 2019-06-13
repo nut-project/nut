@@ -7,6 +7,10 @@ import object from '@/components/object'
 
 ## 标题
 
+```html
+<Demo text={ object.hello }></Demo>
+```
+
 <Demo text={ object.hello }></Demo>
 
 这个例子！

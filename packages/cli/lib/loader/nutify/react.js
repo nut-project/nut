@@ -5,8 +5,6 @@ export default function ( all = {} ) {
   const Page = all.default || {}
   const attributes = all.attributes || {}
 
-  console.log( Page )
-
   Page.$$nut = ctx => {
     let el
     let instance
