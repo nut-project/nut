@@ -1,23 +1,20 @@
-# nut-project
+<p align="center">
+  <img width="100px" src="./media/logo.png" alt="nut logo">
+</p>
 
-**开发中**
+<h1 align="center">NUT Project</h1>
 
-layout / theme 热重载
-
-<img src="./media/hmr.gif" alt="hmr.gif" width="600px">
-
-markdown 主题 热重载
-
-<img src="./media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
-
-
-系统事件
-
-<img src="./media/system-events.jpg" alt="system-events.jpg" width="300px">
-
-路由匹配
-
-<img src="./media/route-match.jpg" alt="route-match.jpg" width="300px">
+<p align="center">
+  <a href="https://www.npmjs.com/package/@nut-project/cli">
+    <img src="https://flat.badgen.net/npm/v/@nut-project/cli" alt="npm version">
+  </a>
+  <a href="https://www.npmjs.com/package/@nut-project/cli">
+    <img src="https://flat.badgen.net/npm/dm/@nut-project/cli" alt="npm downloads">
+  </a>
+  <a href="https://github.com/nut-project/nut/blob/master/LICENSE">
+    <img src="https://flat.badgen.net/npm/license/@nut-project/cli" alt="license">
+  </a>
+</p>
 
 ## 特性
 
@@ -31,6 +28,24 @@ markdown 主题 热重载
 - 配置管理
 - 热重载
 - 插件化
+
+## layout / theme 热重载
+
+<img src="./media/hmr.gif" alt="hmr.gif" width="600px">
+
+## markdown 主题 热重载
+
+<img src="./media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
+
+
+## 系统事件
+
+<img src="./media/system-events.jpg" alt="system-events.jpg" width="300px">
+
+## 路由匹配
+
+<img src="./media/route-match.jpg" alt="route-match.jpg" width="300px">
+
 
 ## 内置 layout
 
