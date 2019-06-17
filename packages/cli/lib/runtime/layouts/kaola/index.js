@@ -110,8 +110,10 @@ const Layout = Regular.extend( {
 
     if ( bool ) {
       localStorage.setItem( '_nut_layout_kaola_collapsed', '1' )
+      this.$emit( 'collapse' )
     } else {
       localStorage.setItem( '_nut_layout_kaola_collapsed', '0' )
+      this.$emit( 'uncollapse' )
     }
   },
 
@@ -178,6 +180,14 @@ export default {
 
           layout.$on( 'logout', () => {
             ctx.events.emit( 'layout:logout' )
+          } )
+
+          layout.$on( 'collapse', () => {
+            ctx.events.emit( 'layout:collapse' )
+          } )
+
+          layout.$on( 'uncollapse', () => {
+            ctx.events.emit( 'layout:uncollapse' )
           } )
         }
 
