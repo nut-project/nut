@@ -5,12 +5,32 @@ title: 标题测试
 import Demo from '@/components/demo'
 import object from '@/components/object'
 
-## 标题
+## Demo
+
+### Basic
 
 ```html
-<Demo text={ object.hello }></Demo>
+<Demo>{ object.hello}</Demo>
 ```
 
-<Demo text={ object.hello }></Demo>
+\n
 
-这个例子！
+<Demo>{ object.hello }</Demo>
+
+### Square
+
+```html
+<Demo square>{ object.hello}</Demo>
+```
+
+\n
+
+<Demo square>{ object.hello }</Demo>
+
+## API
+
+| 水果     |   价格 |  数量  |
+| -------- | ------:|:------:|
+| 香蕉     |     $1 |   5    |
+| 苹果     |     $1 |   6    |
+| 草莓     |     $1 |   7    |

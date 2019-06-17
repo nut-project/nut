@@ -184,6 +184,14 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           .end()
         .use( 'mdx-vue' )
           .loader( '@mdx-js/vue-loader' )
+          .options( {
+            rehypePlugins: [
+              require( '@mapbox/rehype-prism' ),
+            ],
+            compilers: [
+              require( './mdx-vue-jsx-compiler' ),
+            ]
+          } )
           .end()
         .use( 'mdx-layout' )
           .loader( require.resolve( '../loader/provide-mdx-layout' ) )
