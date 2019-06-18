@@ -15,12 +15,16 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
     "linters": {
-      "packages/**/*.js": [ "eslint --fix", "git add" ]
+      "packages/**/*.js": [
+        "eslint --fix",
+        "git add"
+      ]
     }
   },
   "workspaces": {
@@ -41,6 +45,8 @@
   },
   "homepage": "https://github.com/fengzilong/nut#readme",
   "devDependencies": {
+    "@commitlint/cli": "^8.0.0",
+    "@commitlint/config-conventional": "^8.0.0",
     "eslint": "^5.16.0",
     "eslint-config-mo": "^0.5.2",
     "gh-pages": "^2.0.1",
