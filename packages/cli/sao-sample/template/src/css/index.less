@@ -1,0 +1,51 @@
+@tip-color: #61adff;
+@warning-color: #fdd94e;
+@danger-color: #fd5068;
+@bg-color: #f8f8f8;
+
+p.tip, p.warning, p.danger {
+  position: relative;
+  padding: 20px 10px 20px 17px;
+  background-color: @bg-color;
+  margin: 30px 0;
+  font-size: 15px;
+
+  &::before {
+    content: '!';
+    font-size: 16px;
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    color: #fff;
+    transform: translate3d(0,-50%,0);
+  }
+}
+
+p.tip {
+  border-left: solid 5px @tip-color;
+
+  &::before {
+    background-color: @tip-color;
+  }
+}
+
+p.warning {
+  border-left: solid 5px @warning-color;
+
+  &::before {
+    background-color: @warning-color;
+  }
+}
+
+p.danger {
+  border-left: solid 5px @danger-color;
+
+  &::before {
+    background-color: @danger-color;
+  }
+}

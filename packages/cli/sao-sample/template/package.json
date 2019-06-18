@@ -5,6 +5,8 @@
     "dev": "node ../packages/cli/bin/index.js",
     "build": "node ../packages/cli/bin/index.js --prod"
   },
-  "devDependencies": {},
-  "dependencies": {}
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
 }

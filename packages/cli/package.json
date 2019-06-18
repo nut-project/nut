@@ -64,6 +64,7 @@
     "read": "^1.0.7",
     "regularjs": "^0.6.2",
     "resolve-from": "^5.0.0",
+    "sao": "^1.6.1",
     "sass": "^1.19.0",
     "sass-loader": "^7.1.0",
     "string-width": "^4.1.0",
@@ -88,5 +89,6 @@
     "webpack-stats-plugin": "^0.2.1",
     "webpack-virtual-modules": "^0.1.10",
     "webpackbar": "^3.1.5"
-  }
+  },
+  "devDependencies": {}
 }
