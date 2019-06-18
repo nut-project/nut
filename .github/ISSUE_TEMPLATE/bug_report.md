@@ -1,6 +1,5 @@
 ---
 title: "🐞 Bug report"
-labels: bug
 about: Something is not working
 ---
 
