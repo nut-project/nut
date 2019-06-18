@@ -8,7 +8,18 @@
     "build": "npm run build --prefix ./examples/simple",
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",
-    "deploy": "npm run build:docs && gh-pages -d ./website/dist"
+    "deploy": "npm run build:docs && gh-pages -d ./website/dist",
+    "lint": "eslint packages --quiet"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "packages/**/*.js": [ "eslint --fix", "git add" ]
+    }
   },
   "workspaces": {
     "packages": [
@@ -28,7 +39,11 @@
   },
   "homepage": "https://github.com/fengzilong/nut#readme",
   "devDependencies": {
-    "gh-pages": "^2.0.1"
+    "eslint": "^5.16.0",
+    "eslint-config-mo": "^0.5.2",
+    "gh-pages": "^2.0.1",
+    "husky": "^2.4.1",
+    "lint-staged": "^8.2.1"
   },
   "dependencies": {}
 }
