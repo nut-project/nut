@@ -3,7 +3,7 @@ export default function ( all = {} ) {
   const attributes = all.attributes || {}
 
   return {
-    $$nut( ctx ) {
+    $$nut() {
       return {
         attributes,
 

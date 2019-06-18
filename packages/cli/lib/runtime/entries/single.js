@@ -1,4 +1,6 @@
-import Router from 'unfancy-router/src/index'
+/* global window */
+
+import createRouter from 'unfancy-router/src/index'
 
 import '../css/reset.less'
 import '../css/markdown.less'
@@ -27,7 +29,7 @@ import use from '../context/use'
 
 ;( async function () {
   const routerOptions = nutConfig.router || {}
-  const router = Router( routerOptions )
+  const router = createRouter( routerOptions )
 
   const rootRouter = router.create( {
     name: '_',
@@ -57,7 +59,10 @@ import use from '../context/use'
   if ( routerOptions.cacheable && ( typeof routerOptions.cacheable === 'object' ) ) {
     Object.keys( routerOptions.cacheable )
       .forEach( page => {
-        context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )
+        context.api.page( page ).set(
+          'cacheable',
+          Boolean( routerOptions.cacheable[ page ] )
+        )
       } )
   }
 
@@ -119,10 +124,15 @@ import use from '../context/use'
   events.emit( 'system:after-startup', context )
 
   if ( module.hot ) {
-    module.hot.accept( '@/nut-auto-generated-nut-config', function refreshTheme(  ) {
-      switchTheme( nutConfig && nutConfig.theme || 'ocean' )
-      rootRouter.switchMode( nutConfig && nutConfig.router && nutConfig.router.mode || 'hash' )
-    } )
+    module.hot.accept(
+      '@/nut-auto-generated-nut-config',
+      function refreshTheme() {
+        switchTheme( ( nutConfig && nutConfig.theme ) || 'ocean' )
+        const mode = ( nutConfig && nutConfig.router && nutConfig.router.mode ) ||
+          'hash'
+        rootRouter.switchMode( mode )
+      }
+    )
 
     module.hot.accept( '@/nut-auto-generated-pages', () => {
       context.pages = pages

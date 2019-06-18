@@ -1,8 +1,9 @@
+/* global document */
 import quicklink from 'quicklink'
 import nutConfig from '@/nut-auto-generated-nut-config'
 
 export default function createNico( rootRouter, routerFactory, prefix = '', ctx = {}, pluginOptions = {} ) {
-  const { events, pages, app, globals, api } = ctx
+  const { events, pages, globals, api } = ctx
 
   let defaultCacheable = ctx.app && ctx.app.router && ctx.app.router.defaultCacheable
 
@@ -130,8 +131,6 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
     },
 
     define( routeConfigs, root = rootRouter ) {
-      const self = this
-
       // build
       walk( routeConfigs, ( routeConfig, parent ) => {
         // TODO: ensure slash
@@ -186,7 +185,6 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 this.page = page
               } )
               .then( () => {
-                const self = this
                 const page = this.page
 
                 let nextCount = 0
@@ -203,7 +201,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                   e.next()
                   if ( process.env.NODE_ENV === 'development' ) {
                     console.log(
-                      '\n%cRouterGuard%c' + 'beforeEnter passed' + '%c\n',
+                      '\n%cRouterGuard%cbeforeEnter passed%c\n',
                       'background-color: #0089ff;color: #fff;padding: 2px 6px;',
                       'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
                       ''
@@ -237,7 +235,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
                     if ( process.env.NODE_ENV === 'development' ) {
                       console.log(
-                        '\n%cRouterGuard%c' + 'beforeEnter passed' + '%c\n',
+                        '\n%cRouterGuard%cbeforeEnter passed%c\n',
                         'background-color: #0089ff;color: #fff;padding: 2px 6px;',
                         'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
                         ''
@@ -275,7 +273,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
               e.next()
               if ( process.env.NODE_ENV === 'development' ) {
                 console.log(
-                  '\n%cRouterGuard%c' + 'beforeLeave passed' + '%c\n',
+                  '\n%cRouterGuard%cbeforeLeave passed%c\n',
                   'background-color: #0089ff;color: #fff;padding: 2px 6px;',
                   'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
                   ''
@@ -297,7 +295,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
                 if ( process.env.NODE_ENV === 'development' ) {
                   console.log(
-                    '\n%cRouterGuard%c' + 'beforeLeave passed' + '%c\n',
+                    '\n%cRouterGuard%cbeforeLeave passed%c\n',
                     'background-color: #0089ff;color: #fff;padding: 2px 6px;',
                     'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
                     ''
@@ -318,7 +316,9 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
           },
 
           update( ...args ) {
-            routeConfig.update && routeConfig.update()
+            if ( routeConfig.update ) {
+              routeConfig.update()
+            }
 
             const page = this.page
 
@@ -349,7 +349,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                 to: api.layout.getLayoutByName( newLayout )
               }
 
-              let layout = layouts.to
+              const layout = layouts.to
 
               if ( oldLayout !== newLayout ) {
                 api.layout.unmount( oldLayout )
@@ -372,7 +372,9 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
               await events.emit( 'page:after-mount', page )
             }
 
-            routeConfig.enter && routeConfig.enter.call( this )
+            if ( routeConfig.enter ) {
+              routeConfig.enter.call( this )
+            }
 
             if ( page && typeof page.enter === 'function' ) {
               page.enter( { from, to, params, query } )
@@ -389,7 +391,9 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
             api.layout.unmountPage( page )
 
-            routeConfig.leave && routeConfig.leave.call( this )
+            if ( routeConfig.leave ) {
+              routeConfig.leave.call( this )
+            }
 
             if ( page && typeof page.leave === 'function' ) {
               page.leave( ...args )
@@ -441,9 +445,9 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
   if ( module.hot ) {
     module.hot.accept( '@/nut-auto-generated-nut-config', () => {
-      const newLayout = nutConfig && nutConfig.layout || 'default'
+      const newLayout = ( nutConfig && nutConfig.layout ) || 'default'
       if ( nico.layoutName !== newLayout ) {
-        switchLayout( ctx, nico, nutConfig && nutConfig.layout || 'default' )
+        switchLayout( ctx, nico, newLayout )
       }
     } )
   }
@@ -473,7 +477,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
   function markActive( sidebar = [], activeRouterName = '' ) {
     sidebar.forEach( s => {
       let isAnyPageActive = false
-      let route = {
+      const route = {
         found: false,
         value: ''
       }
@@ -518,7 +522,9 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
 
     markActive( ctx.api.sidebar.get(), router && router.name )
 
-    layout.update && layout.update( { ctx } )
+    if ( layout.update ) {
+      layout.update( { ctx } )
+    }
 
     await events.emit( 'layout:after-update', { layout, router: this } )
   }

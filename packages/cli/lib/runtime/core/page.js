@@ -1,4 +1,4 @@
-let accessors = {}
+const accessors = {}
 
 export default function ( page ) {
   if ( accessors[ page ] ) {

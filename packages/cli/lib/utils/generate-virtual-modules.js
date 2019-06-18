@@ -35,7 +35,7 @@ function diff( modules ) {
   return Object.keys( modules )
     .filter( key => {
       const isEqual = modules[ key ] !== modulesHistory[ key ]
-      modulesHistory[ key ] = modulesHistory[ key ]
+      modulesHistory[ key ] = modules[ key ]
       return isEqual
     } )
     .reduce( ( total, key ) => {
@@ -109,7 +109,7 @@ async function generateExtendContext( config, { env } = {} ) {
 
   _imports = _imports.filter( Boolean )
 
-  const pairs = _imports.map( ( imp ) => {
+  const pairs = _imports.map( imp => {
     return imp.key + ': ' + imp.variable + ','
   } )
 
@@ -178,11 +178,7 @@ async function generatePlugins( config, { env } = {} ) {
   } ).join( '\n' )
 
   const _exports = `export default [
-    ${
-      plugins
-        .map( ( plugin, index ) => `plugin_${ index }` )
-        .join( ',' )
-    }
+    ${ plugins.map( ( plugin, index ) => `plugin_${ index }` ).join( ',' ) }
   ]`
 
   return `
@@ -194,15 +190,15 @@ async function generatePlugins( config, { env } = {} ) {
 
 function normalizePlugin( plugin ) {
   plugin.env = plugin.env || [ 'dev', 'prod' ]
+  // eslint-disable-next-line
   plugin.enable = typeof plugin.enable !== 'undefined' ?
-    !!plugin.enable :
+    Boolean( plugin.enable ) :
     true
 
   return plugin
 }
 
 async function generateMarkdownThemeCSS( config ) {
-  const lookupStartPath = path.join( dirs.cli, 'node_modules' )
   const theme = ( config.markdown && config.markdown.theme ) || 'prism-tomorrow'
   const root = path.dirname( require.resolve( 'prismjs/package.json' ) )
   const request = 'themes/' + theme + '.css'

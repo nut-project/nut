@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const cli = require('cac')()
+const cli = require( 'cac' )()
 const app = require( '../lib' )
 
 cli.option( '--prod', 'build in production mode' )

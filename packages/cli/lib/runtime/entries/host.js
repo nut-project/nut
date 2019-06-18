@@ -1,4 +1,6 @@
-import Router from 'unfancy-router/src/index'
+/* global window, document */
+
+import createRouter from 'unfancy-router/src/index'
 
 import '../css/reset.less'
 import '../css/markdown.less'
@@ -25,15 +27,51 @@ import use from '../context/use'
 
 import axios from 'axios'
 
-;( async function () {
+function loadJs( url ) {
+  return new Promise( ( resolve, reject ) => {
+    const script = document.createElement( 'script' )
+    script.charset = 'utf-8'
+    script.src = url
+    script.onload = function () {
+      script.onload = null
+      script.onerror = null
+      document.body.removeChild( script )
+      resolve()
+    }
+    script.onerror = function () {
+      reject()
+    }
+
+    document.body.appendChild( script )
+  } )
+}
+
+function loadChild( child, collection ) {
+  const name = child.name
+  const prefix = child.prefix
+
+  return child.files.reduce( ( total, file ) => {
+    return total.then( () => {
+      window.nutJsonp = function ( { pages, config, routes } = {} ) {
+        collection.push( {
+          name,
+          prefix,
+          pages,
+          config,
+          routes
+        } )
+      }
+
+      return loadJs( child.base + '/' + file )
+    } )
+  }, Promise.resolve() )
+}
+
+( async function () {
   const compose = nutConfig.compose
   const collection = []
 
   if ( compose ) {
-    function filterJs( files ) {
-      return files.filter( file => file.endsWith( '.js' ) )
-    }
-
     const jobs = Object.keys( compose ).map( name => {
       return axios.get( compose[ name ].service + '/manifest.json' )
         .then( response => {
@@ -41,7 +79,7 @@ import axios from 'axios'
         } )
         .then( json => {
           return {
-            name: name,
+            name,
             base: compose[ name ].service,
             prefix: compose[ name ].prefix,
             files: json.files,
@@ -49,50 +87,10 @@ import axios from 'axios'
         } )
     } )
 
-    function loadJs( url ) {
-      return new Promise( ( resolve, reject ) => {
-        const script = document.createElement( 'script' )
-        script.charset = 'utf-8'
-        script.src = url
-        script.onload = function () {
-          script.onload = null
-          script.onerror = null
-          document.body.removeChild( script )
-          resolve()
-        }
-        script.onerror = function () {
-          reject()
-        }
-
-        document.body.appendChild( script )
-      } )
-    }
-
-    function loadChild( child ) {
-      const name = child.name
-      const prefix = child.prefix
-
-      return child.files.reduce( ( total, file, index ) => {
-        return total.then( () => {
-          window.nutJsonp = function ( { pages, config, routes } = {} ) {
-            collection.push( {
-              name,
-              prefix,
-              pages,
-              config,
-              routes
-            } )
-          }
-
-          return loadJs( child.base + '/' + file )
-        } )
-      }, Promise.resolve() )
-    }
-
     await Promise.all( jobs )
       .then( children => {
         return children.reduce( ( total, child ) => {
-          return total.then( () => loadChild( child ) )
+          return total.then( () => loadChild( child, collection ) )
         }, Promise.resolve() )
       } )
   }
@@ -127,7 +125,7 @@ import axios from 'axios'
   } )
 
   const routerOptions = nutConfig.router || {}
-  const router = Router( routerOptions )
+  const router = createRouter( routerOptions )
 
   const rootRouter = router.create( {
     name: '_',
@@ -151,13 +149,16 @@ import axios from 'axios'
   }
 
   if ( typeof nutConfig.homepage === 'string' ) {
-    ctx.api.homepage.set( nutConfig.homepage )
+    context.api.homepage.set( nutConfig.homepage )
   }
 
   if ( routerOptions.cacheable && ( typeof routerOptions.cacheable === 'object' ) ) {
     Object.keys( routerOptions.cacheable )
       .forEach( page => {
-        context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )
+        context.api.page( page ).set(
+          'cacheable',
+          Boolean( routerOptions.cacheable[ page ] )
+        )
       } )
   }
 
@@ -219,8 +220,11 @@ import axios from 'axios'
   events.emit( 'system:after-startup', context )
 
   if ( module.hot ) {
-    module.hot.accept( '@/nut-auto-generated-nut-config', function refreshTheme(  ) {
-      switchTheme( nutConfig && nutConfig.theme || 'ocean' )
-    } )
+    module.hot.accept(
+      '@/nut-auto-generated-nut-config',
+      function refreshTheme() {
+        switchTheme( ( nutConfig && nutConfig.theme ) || 'ocean' )
+      }
+    )
   }
 } )()

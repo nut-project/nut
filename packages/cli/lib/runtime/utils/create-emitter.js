@@ -32,23 +32,23 @@
  * @api public
  */
 
-export default function createEmitter () {
-  let _allEvents = Object.create(null)
+export default function createEmitter() {
+  const _allEvents = Object.create( null )
   const app = {
     _allEvents,
 
-    use (plugin, options) {
-      const ret = plugin(app, options)
+    use( plugin, options ) {
+      const ret = plugin( app, options )
       return ret || this
     },
 
-    on (name, handler, once) {
-      let e = app._allEvents[name] || (app._allEvents[name] = [])
+    on( name, handler, once ) {
+      const e = app._allEvents[ name ] || ( app._allEvents[ name ] = [] )
 
-      function func () {
-        if (!func.called) {
-          app.off(name, func)
-          handler.apply(handler, arguments)
+      function func() {
+        if ( !func.called ) {
+          app.off( name, func )
+          handler.apply( handler, arguments )
           func.called = true
         }
       }
@@ -57,35 +57,35 @@ export default function createEmitter () {
         func.__plugin = handler.__plugin
       }
 
-      var fn = once ? func : handler
+      const fn = once ? func : handler
       fn.__sourceString = handler.toString()
 
-      e.push(fn)
+      e.push( fn )
       return this
     },
 
-    once (name, handler) {
-      app.on(name, handler, true)
+    once( name, handler ) {
+      app.on( name, handler, true )
       return this
     },
 
-    off (name, handler) {
-      if (handler && app._allEvents[name]) {
+    off( name, handler ) {
+      if ( handler && app._allEvents[ name ] ) {
         const fnStr = handler.toString()
-        app._allEvents[name] = app._allEvents[name].filter(
-          (func) => func.__sourceString !== fnStr
+        app._allEvents[ name ] = app._allEvents[ name ].filter(
+          func => func.__sourceString !== fnStr
         )
-      } else if (name) {
-        app._allEvents[name] = []
+      } else if ( name ) {
+        app._allEvents[ name ] = []
       } else {
-        app._allEvents = Object.create(null)
+        app._allEvents = Object.create( null )
       }
 
       return this
     },
 
-    async emit (name) {
-      if (name !== '*') {
+    async emit( name ) {
+      if ( name !== '*' ) {
         if ( process.env.NODE_ENV === 'development' ) {
           console.log(
             '\n%cEvent%c' + name + '%c\n',
@@ -95,9 +95,9 @@ export default function createEmitter () {
           )
         }
 
-        var args = [].slice.call(arguments);
-        var callbacks = app._allEvents[name] || []
-        var allCallbacks = app._allEvents['*'] || []
+        const args = [].slice.call( arguments )
+        const callbacks = app._allEvents[ name ] || []
+        const allCallbacks = app._allEvents[ '*' ] || []
 
         for ( let i = 0, len = callbacks.length; i < len; i++ ) {
           const callback = callbacks[ i ]
@@ -113,7 +113,7 @@ export default function createEmitter () {
             }
           }
 
-          const result = callback.apply(callback, args.slice(1))
+          const result = callback.apply( callback, args.slice( 1 ) )
           if ( result instanceof Promise ) {
             await result
           }
@@ -133,7 +133,7 @@ export default function createEmitter () {
             }
           }
 
-          const result = callback.apply(callback, args)
+          const result = callback.apply( callback, args )
           if ( result instanceof Promise ) {
             await result
           }

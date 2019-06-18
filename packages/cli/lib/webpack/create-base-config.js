@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+
 const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
@@ -9,7 +11,7 @@ const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
 const hashsum = require( 'hash-sum' )
 
-const threadLoader = require('thread-loader');
+const threadLoader = require( 'thread-loader' )
 
 threadLoader.warmup( {}, [
   'babel-loader',
@@ -29,40 +31,41 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
   let entry
+  let suffix
 
   switch ( nutConfig.type ) {
-    case 'host':
-      entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
-      break
-    case 'child':
-      entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
-      const suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
-      config.output.jsonpFunction( 'webpackJsonp_' + suffix )
-      config.plugin( 'stats-write' )
-        .use( StatsWriterPlugin, [
-          {
-            filename: 'manifest.json',
-            transform( data, opts ) {
-              const files = []
+  case 'host':
+    entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
+    break
+  case 'child':
+    entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
+    suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
+    config.output.jsonpFunction( 'webpackJsonp_' + suffix )
+    config.plugin( 'stats-write' )
+      .use( StatsWriterPlugin, [
+        {
+          filename: 'manifest.json',
+          transform( data ) {
+            const files = []
 
-              const index = data.assetsByChunkName.index
-              if ( Array.isArray( index ) ) {
-                const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-                files.push( ...jsfiles )
-              } else if ( typeof index === 'string' ) {
-                if ( index.endsWith( '.js' ) ) {
-                  files.push( index )
-                }
+            const index = data.assetsByChunkName.index
+            if ( Array.isArray( index ) ) {
+              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
+              files.push( ...jsfiles )
+            } else if ( typeof index === 'string' ) {
+              if ( index.endsWith( '.js' ) ) {
+                files.push( index )
               }
-              return JSON.stringify( {
-                files,
-              }, 0, 2 )
             }
+            return JSON.stringify( {
+              files,
+            }, 0, 2 )
           }
-        ] )
-      break
-    default:
-      entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
+        }
+      ] )
+    break
+  default:
+    entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
   }
 
   if ( nutConfig.type === 'single' ) {
@@ -155,7 +158,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       ] )
       .end()
 
-  const markdownRule = config.module
+  config.module
     .rule( 'markdown' )
       .test( /\.md$/ )
       .oneOf( 'vue' )
@@ -203,7 +206,9 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
             .loader( require.resolve( '../loader/mount-markdown' ) )
             .end()
 
-  const transpileModules = ( nutConfig.babel && nutConfig.babel.transpileModules ) || []
+  const transpileModules = (
+    nutConfig.babel && nutConfig.babel.transpileModules
+  ) || []
   const internalTranspileModules = [
     'unfancy-router',
     require( '../../package.json' ).name,
@@ -366,7 +371,10 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         } )
 
   const vueCacheOptions = {
-    cacheDirectory: path.join( process.cwd(), 'node_modules/.cache/vue-loader' ),
+    cacheDirectory: path.join(
+      process.cwd(),
+      'node_modules/.cache/vue-loader'
+    ),
     cacheIdentifier: require( '../utils/get-vue-cache-identifier' )()
   }
 

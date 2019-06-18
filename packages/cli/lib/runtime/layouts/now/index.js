@@ -1,3 +1,5 @@
+/* global window */
+
 import Regular from 'regularjs'
 import styles from './index.module.less'
 
@@ -120,7 +122,7 @@ export default {
         layout.$inject( node )
       },
 
-      unmount( node ) {
+      unmount() {
         if ( !layout ) {
           return
         }

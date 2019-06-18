@@ -1,3 +1,5 @@
+/* global document */
+
 /*
   layout#name
   layout#mount

@@ -1,5 +1,4 @@
 const fm = require( 'front-matter' )
-const loaderUtils = require( 'loader-utils' )
 const pathUtils = require( '../utils/path-utils' )
 const marked = require( '../utils/marked' )
 

@@ -1,3 +1,5 @@
+/* global document */
+
 export default {
   name: 'layout-none',
 
@@ -10,7 +12,7 @@ export default {
     await ctx.api.layout.register( {
       name: 'none',
 
-      mount( node, { ctx } = {} ) {
+      mount( node ) {
         container = document.createElement( 'div' )
         content = document.createElement( 'div' )
         container.appendChild( content )

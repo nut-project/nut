@@ -1,3 +1,5 @@
+/* global document */
+
 import ReactDOM from 'react-dom'
 import React from 'react'
 
@@ -5,7 +7,7 @@ export default function ( all = {} ) {
   const Page = all.default || {}
   const attributes = all.attributes || {}
 
-  Page.$$nut = ctx => {
+  Page.$$nut = () => {
     let el
     let instance
     let mounted = false
@@ -14,7 +16,9 @@ export default function ( all = {} ) {
       attributes,
 
       mount( node ) {
-        if ( !el ) {
+        if ( el ) {
+          node.appendChild( el )
+        } else {
           el = document.createElement( 'div' )
           node.appendChild( el )
 
@@ -22,8 +26,6 @@ export default function ( all = {} ) {
             instance = ReactDOM.render( React.createElement( Page ), el )
             mounted = true
           }
-        } else {
-          node.appendChild( el )
         }
       },
 
@@ -48,7 +50,7 @@ export default function ( all = {} ) {
     }
 
     if ( Page.beforeEnter ) {
-      definition.beforeEnter = ( ctx ) => {
+      definition.beforeEnter = ctx => {
         const oldnext = ctx.next
 
         ctx.next = function ( v ) {

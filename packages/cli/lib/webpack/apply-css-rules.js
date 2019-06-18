@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
 
 module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev' ) {
@@ -61,7 +63,7 @@ function applyOneOfRule( rule, lang, loader, options, env, modules ) {
     .loader( 'css-loader' )
       .options( {
         modules,
-        localIdentName: "[local]___[hash:base64:5]",
+        localIdentName: '[local]___[hash:base64:5]',
         importLoaders: loader ? 2 : 1,
       } )
 

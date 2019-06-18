@@ -5,7 +5,7 @@ import createRouter from '../core/router'
 import homepage from '../core/homepage'
 
 export default function ( { pages, router } = {} ) {
-  let axiosInstance = axios.create( {
+  const axiosInstance = axios.create( {
     withCredentials: true,
     crossDomain: true,
   } )
@@ -26,7 +26,7 @@ export default function ( { pages, router } = {} ) {
       configure( sidebar = [] ) {
         sidebar.forEach( s => {
           if ( s.children ) {
-            walkChildren( s.children, s, ( child, index, parent ) => {
+            walkChildren( s.children, s, child => {
               const normalized = child.path.replace( /^(\/)/g, '' )
               const page = pages.find( child => child.page === normalized )
 

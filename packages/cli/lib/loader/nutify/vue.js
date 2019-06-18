@@ -1,3 +1,5 @@
+/* global window, document */
+
 import Vue from 'vue'
 
 export default function ( all = {} ) {
@@ -26,12 +28,12 @@ export default function ( all = {} ) {
           }
         }
 
-        if ( !el ) {
+        if ( el ) {
+          node.appendChild( instance.$el )
+        } else {
           el = document.createElement( 'div' )
           node.appendChild( el )
           instance.$mount( el )
-        } else {
-          node.appendChild( instance.$el )
         }
       },
 
@@ -57,7 +59,7 @@ export default function ( all = {} ) {
     }
 
     if ( Page.beforeEnter ) {
-      definition.beforeEnter = ( ctx ) => {
+      definition.beforeEnter = ctx => {
         const oldnext = ctx.next
 
         ctx.next = function ( v ) {

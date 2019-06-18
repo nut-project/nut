@@ -1,3 +1,5 @@
+/* global window, localStorage */
+
 import Regular from 'regularjs'
 import styles from './index.module.less'
 
@@ -98,7 +100,7 @@ const Layout = Regular.extend( {
 
   config() {
     const collapsed = localStorage.getItem( '_nut_layout_kaola_collapsed' )
-    this.data.collapsed = collapsed === '1' ? true : false
+    this.data.collapsed = collapsed === '1'
   },
 
   getCollapsed() {
@@ -172,7 +174,9 @@ export default {
         if ( !layout ) {
           const sidebar = ctx.api.sidebar.get()
 
-          sidebar.forEach( s => s.open = s.active )
+          sidebar.forEach( s => {
+            s.open = s.active
+          } )
 
           layout = new Layout( {
             data: { ctx }
@@ -194,7 +198,7 @@ export default {
         layout.$inject( node )
       },
 
-      unmount( node ) {
+      unmount() {
         if ( !layout ) {
           return
         }
