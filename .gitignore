@@ -1,8 +1,5 @@
 dist
-/website/dist
-/examples/egg-openid-server
-/examples/openid-server
-/plugins/test
+/server
 .DS_Store
 
 # Logs

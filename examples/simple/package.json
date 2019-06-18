@@ -1,0 +1,19 @@
+{
+  "name": "simple",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "node ../../packages/cli/bin/index.js",
+    "build": "node ../../packages/cli/bin/index.js --prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nut-plugins/login": "^0.0.0",
+    "eslint": "^5.16.0",
+    "eslint-loader": "^2.1.2",
+    "eslint-plugin-vue": "^5.2.2"
+  }
+}

@@ -4,15 +4,16 @@
   "description": "",
   "version": "0.0.0",
   "scripts": {
-    "dev": "node ./packages/cli/bin/index.js",
-    "build": "node ./packages/cli/bin/index.js --prod",
+    "dev": "npm run dev --prefix ./examples/simple",
+    "build": "npm run build --prefix ./examples/simple",
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",
     "deploy": "npm run build:docs && gh-pages -d ./website/dist"
   },
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "examples/*"
     ]
   },
   "repository": {
@@ -27,10 +28,6 @@
   },
   "homepage": "https://github.com/fengzilong/nut#readme",
   "devDependencies": {
-    "@nut-plugins/login": "^0.0.0",
-    "eslint": "^5.16.0",
-    "eslint-loader": "^2.1.2",
-    "eslint-plugin-vue": "^5.2.2",
     "gh-pages": "^2.0.1"
   },
   "dependencies": {}
