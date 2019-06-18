@@ -138,6 +138,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .plugin( 'html' )
       .use( HtmlWebpackPlugin, [
         {
+          ...( nutConfig.html || {} ),
           template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
           title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
           favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
