@@ -8,6 +8,9 @@
   <a href="https://www.npmjs.com/package/@nut-project/cli">
     <img src="https://flat.badgen.net/npm/v/@nut-project/cli" alt="npm version">
   </a>
+  <a href="https://circleci.com/gh/nut-project/nut">
+    <img src="https://flat.badgen.net/circleci/github/nut-project/nut" alt="build status">
+  </a>
   <a href="https://www.npmjs.com/package/@nut-project/cli">
     <img src="https://flat.badgen.net/npm/dm/@nut-project/cli" alt="npm downloads">
   </a>
