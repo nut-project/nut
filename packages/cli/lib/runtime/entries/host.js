@@ -25,12 +25,15 @@ import createAPI from '../context/api'
 import events from '../context/events'
 import use from '../context/use'
 
-import axios from 'axios'
-
-function loadJs( url ) {
+function loadJs( url, dataset ) {
   return new Promise( ( resolve, reject ) => {
     const script = document.createElement( 'script' )
     script.charset = 'utf-8'
+    if ( dataset ) {
+      Object.keys( dataset ).forEach( k => {
+        script.dataset[ k ] = dataset[ k ]
+      } )
+    }
     script.src = url
     script.onload = function () {
       script.onload = null
@@ -46,23 +49,16 @@ function loadJs( url ) {
   } )
 }
 
-function loadChild( child, collection ) {
-  const name = child.name
-  const prefix = child.prefix
+function loadChild( manifest ) {
+  const name = manifest.name
+  const prefix = manifest.prefix
 
-  return child.files.reduce( ( total, file ) => {
+  return manifest.files.reduce( ( total, file ) => {
     return total.then( () => {
-      window.nutJsonp = function ( { pages, config, routes } = {} ) {
-        collection.push( {
-          name,
-          prefix,
-          pages,
-          config,
-          routes
-        } )
-      }
-
-      return loadJs( child.base + '/' + file )
+      return loadJs( manifest.base + '/' + file, {
+        name,
+        prefix,
+      } )
     } )
   }, Promise.resolve() )
 }
@@ -70,28 +66,42 @@ function loadChild( child, collection ) {
 ( async function () {
   const compose = nutConfig.compose
   const collection = []
+  const manifests = []
 
   if ( compose ) {
+    window.nutJsonp = function ( { pages, config, routes } = {}, dataset = {} ) {
+      const { name, prefix } = dataset
+
+      collection.push( {
+        name,
+        prefix,
+        pages,
+        config,
+        routes
+      } )
+    }
+
+    window.nutManifestJSONP = function ( { files = [] } = {}, dataset = {} ) {
+      const { name } = dataset
+      manifests.push( {
+        name,
+        base: compose[ name ].service,
+        prefix: compose[ name ].prefix,
+        files,
+      } )
+    }
+
     const jobs = Object.keys( compose ).map( name => {
-      return axios.get( compose[ name ].service + '/manifest.json' )
-        .then( response => {
-          return response.data
-        } )
-        .then( json => {
-          return {
-            name,
-            base: compose[ name ].service,
-            prefix: compose[ name ].prefix,
-            files: json.files,
-          }
-        } )
+      return loadJs( compose[ name ].service + '/manifest.js?t=' + new Date().getTime(), {
+        name,
+      } )
     } )
 
     await Promise.all( jobs )
-      .then( children => {
-        return children.reduce( ( total, child ) => {
-          return total.then( () => loadChild( child, collection ) )
-        }, Promise.resolve() )
+      .then( () => {
+        return Promise.all(
+          manifests.map( manifest => loadChild( manifest, collection ) )
+        )
       } )
   }
 

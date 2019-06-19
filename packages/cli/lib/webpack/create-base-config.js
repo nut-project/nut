@@ -63,6 +63,40 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           }
         }
       ] )
+    // use jsonp to fix cors issue
+    config.plugin( 'stats-write-js' )
+      .use( StatsWriterPlugin, [
+        {
+          filename: 'manifest.js',
+          transform( data ) {
+            const files = []
+
+            const index = data.assetsByChunkName.index
+            if ( Array.isArray( index ) ) {
+              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
+              files.push( ...jsfiles )
+            } else if ( typeof index === 'string' ) {
+              if ( index.endsWith( '.js' ) ) {
+                files.push( index )
+              }
+            }
+
+            const json = JSON.stringify( {
+              files,
+            }, 0, 2 )
+
+            return `
+( function () {
+  if ( window.nutManifestJSONP ) {
+    var currentScript = document.currentScript
+    var dataset = currentScript ? currentScript.dataset : {}
+    window.nutManifestJSONP( ${ json }, dataset )
+  }
+} )()
+`.trim()
+          }
+        }
+      ] )
     break
   default:
     entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
