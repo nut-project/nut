@@ -1,8 +1,26 @@
-**NUT，中后台系统的前端解决方案**。
+<img width="100%" src="./social-media-preview.png" alt="social media preview">
 
-从广义的角度来说，nut 是一个静态站点生成工具。但是他本身提供的诸多特性，更专注于提供一套中后台系统的解决方案
+<p align="center" style="margin-top: -60px;margin-bottom: 110px;">
+  <a href="https://www.npmjs.com/package/@nut-project/cli">
+    <img src="https://flat.badgen.net/npm/v/@nut-project/cli" alt="npm version">
+  </a>
+  <a href="https://circleci.com/gh/nut-project/nut">
+    <img src="https://flat.badgen.net/circleci/github/nut-project/nut" alt="build status">
+  </a>
+  <a href="https://www.npmjs.com/package/@nut-project/cli">
+    <img src="https://flat.badgen.net/npm/dm/@nut-project/cli" alt="npm downloads">
+  </a>
+  <a href="https://github.com/nut-project/nut/blob/master/LICENSE">
+    <img src="https://flat.badgen.net/npm/license/@nut-project/cli" alt="license">
+  </a>
+</p>
 
-<img width="500px" src="./terminal.png" alt="terminal screenshot">
+**中后台系统的前端解决方案，微前端框架**
+
+从广义的角度来说，NUT 是一个静态站点生成工具。但是他本身提供的诸多特性，更专注于提供一套中后台系统的解决方案，另一方面 NUT 的设计一开始就是为了微前端而生，它也是一个微前端框架。
+
+<br>
+<br>
 
 # 理念
 
@@ -12,8 +30,11 @@
 - 基于插件实现的 enhance
 - 集成 webpack 最佳实践
 - 内置的加载优化
+- ...
 
-...
+<img width="500px" src="./terminal.png" alt="terminal screenshot">
+
+<br>
 
 # 提问环节
 
@@ -73,6 +94,8 @@
 
 <br>
 ...
+<br>
+<br>
 
 # 特性 / 优点
 
@@ -104,5 +127,5 @@
 
 - **智能的 quicklink 支持**
 
-- **内置 500+ 的字体图标**
-  <p style="font-size: 15px;">满足你的日常使用</p>
+- **内置 500+ 图标**
+  <p style="font-size: 15px;">基本满足日常使用</p>
