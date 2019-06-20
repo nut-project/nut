@@ -68,6 +68,7 @@ async function getPages( root, processor = v => v ) {
       'pages/**/*.md',
       'pages/**/*.vue',
       'pages/**/*.jsx',
+      'pages/**/*.ts',
     ], {
       cwd: root,
       deep: true,
@@ -77,13 +78,15 @@ async function getPages( root, processor = v => v ) {
     // console.log( e )
   }
 
-  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue|\.jsx)$/
+  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue|\.jsx|\.ts)$/
 
   const types = {
     '.js': 'js',
     '.md': 'markdown',
     '.vue.md': 'markdown',
     '.vue': 'vue',
+    '.jsx': 'js',
+    '.ts': 'js',
   }
 
   function postfix( text, index ) {

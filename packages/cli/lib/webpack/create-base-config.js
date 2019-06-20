@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 
 const path = require( 'path' )
+const fse = require( 'fs-extra' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
@@ -137,6 +138,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .merge( [
           '.js', '.json',
           '.vue', '.jsx',
+          'ts', 'tsx',
           '.md', '.vue.md',
           '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
         ] )
@@ -385,6 +387,29 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
             require.resolve( '@babel/plugin-syntax-dynamic-import' ),
           ]
         } )
+        .end()
+
+  // TODO: support .tsx later
+  const tsLoaderOptions = {
+    appendTsSuffixTo: [ /\.vue$/ ]
+  }
+
+  if (
+    !fse.pathExistsSync( path.join( dirs.project, 'tsconfig.json' ) )
+  ) {
+    tsLoaderOptions.context = dirs.project
+    tsLoaderOptions.configFile = path.join( __dirname, 'tsconfig.json' )
+  }
+
+  config.module
+    .rule( 'ts' )
+      .test( /\.ts$/i )
+      .include
+        .add( filterInclude )
+        .end()
+      .use( 'ts' )
+        .loader( 'ts-loader' )
+        .options( tsLoaderOptions )
         .end()
 
   config.module

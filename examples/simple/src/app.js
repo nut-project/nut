@@ -39,6 +39,7 @@ export default async function app( ctx ) {
         { title: 'vue', path: 'pages/home/vue' },
         { title: 'vue sfc', path: 'pages/home/index' },
         { title: 'react', path: 'pages/home/react' },
+        { title: 'typescript', path: 'pages/home/typescript' },
       ]
     },
     {

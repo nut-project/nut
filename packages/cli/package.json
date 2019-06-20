@@ -79,6 +79,8 @@
     "thread-loader": "^2.1.2",
     "tildify": "^1.2.0",
     "tippy.js": "^4.2.1",
+    "ts-loader": "^6.0.3",
+    "typescript": "^3.5.2",
     "unfancy-router": "^0.1.5-4",
     "url-loader": "^1.1.2",
     "v8-compile-cache": "^2.0.3",
