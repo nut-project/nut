@@ -1,17 +1,15 @@
 module.exports = {
   port: 9000,
   zh: 'nut project',
-  en: 'nut project',
   html: {
     title: 'NUT 文档',
   },
   logo: './logo.png',
   theme: 'ocean',
   layout: 'now',
-  plugins: {
-
-  },
+  plugins: {},
   markdown: {
     theme: 'prism-tomorrow',
   },
+  homepage: 'pages/home',
 }

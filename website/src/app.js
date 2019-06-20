@@ -37,4 +37,6 @@ export default ( { api } ) => {
       link: 'https://github.com/fengzilong/nut'
     },
   ] )
+
+  api.page( 'pages/home' ).set( 'layout', 'none' )
 }

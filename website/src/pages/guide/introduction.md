@@ -1,20 +1,3 @@
-<img width="100%" src="./social-media-preview.png" alt="social media preview">
-
-<p align="center" style="margin-top: -60px;margin-bottom: 110px;">
-  <a href="https://www.npmjs.com/package/@nut-project/cli">
-    <img src="https://flat.badgen.net/npm/v/@nut-project/cli" alt="npm version">
-  </a>
-  <a href="https://circleci.com/gh/nut-project/nut">
-    <img src="https://flat.badgen.net/circleci/github/nut-project/nut/master" alt="build status">
-  </a>
-  <a href="https://www.npmjs.com/package/@nut-project/cli">
-    <img src="https://flat.badgen.net/npm/dm/@nut-project/cli" alt="npm downloads">
-  </a>
-  <a href="https://github.com/nut-project/nut/blob/master/LICENSE">
-    <img src="https://flat.badgen.net/npm/license/@nut-project/cli" alt="license">
-  </a>
-</p>
-
 **中后台系统前端解决方案 & 微前端框架**
 
 从广义的角度来说，NUT 是一个静态站点生成工具。但是他本身提供的诸多特性，更专注于提供一套中后台系统的解决方案，另一方面 NUT 的设计一开始就是为了微前端而生，它也是一个微前端框架。
