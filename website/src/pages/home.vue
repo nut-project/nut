@@ -22,8 +22,18 @@
       <img width="750px" height="375px" src="/social-media-preview.png" alt="social media preview">
 
       <div class="buttons">
-        <a href="javascript:;" @click="onRoute( { route: 'pages/guide/introduction' } )" class="button is-primary" style="margin-right: 15px;">Get Started</a>
-        <a target="_blank" href="https://github.com/nut-project/nut" class="button">
+        <a
+          href="javascript:;"
+          @click="onRoute( { route: 'pages/guide/introduction' } )"
+          class="button"
+          style="margin-right: 15px;"
+        >🏇Get Started</a>
+
+        <a
+          target="_blank"
+          href="https://github.com/nut-project/nut"
+          class="button is-primary"
+        >
           <i style="margin-right: 5px;font-size: 15px;" class="nut-icons nut-icon-github-fill"></i>
           GitHub
         </a>
@@ -115,7 +125,7 @@ export default {
 }
 
 .content {
-  padding-top: 90px;
+  padding-top: 100px;
   display: flex;
   align-items: center;
   flex-direction: column;
