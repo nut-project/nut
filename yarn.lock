@@ -780,11 +780,7 @@
     "@mdx-js/vue" "^1.0.20"
     loader-utils "^1.1.0"
 
-"@mdx-js/vue@1.0.0-alpha.13":
-  version "1.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@mdx-js/vue/-/vue-1.0.0-alpha.13.tgz#19e0d7fe08cbb8224b5af66242a04169a77713bd"
-
-"@mdx-js/vue@^1.0.20":
+"@mdx-js/vue@1.0.20", "@mdx-js/vue@^1.0.20":
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/@mdx-js/vue/-/vue-1.0.20.tgz#08929c60d4e74c0e95158fcf84e2d8d8782f9251"
 
