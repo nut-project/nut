@@ -1,5 +1,8 @@
 module.exports = {
   port: 9000,
+  router: {
+    mode: 'history',
+  },
   zh: 'nut project',
   html: {
     title: 'NUT 文档',
