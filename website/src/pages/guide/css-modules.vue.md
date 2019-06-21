@@ -15,4 +15,4 @@ nut 默认支持 CSS Modules
 
 ## 相关资料
 
-[CSS Modules](https://github.com/css-modules/css-modules)
+<zi-link href="https://github.com/css-modules/css-modules" more>CSS Modules</zi-link>

@@ -49,3 +49,42 @@ p.danger {
     background-color: @danger-color;
   }
 }
+
+.markdown-body {
+  .zi-link {
+    font-size: 14px;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .zi-card {
+    padding: 16px 27px;
+  }
+
+  .icon-preview {
+    ul, li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .icon_lists {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .dib {
+      margin-right: 8px;
+
+      .name, .code-name {
+        display: none;
+      }
+    }
+
+    .nut-icons {
+      font-size: 22px;
+    }
+  }
+}
