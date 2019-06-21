@@ -45,13 +45,13 @@
   },
   "homepage": "https://github.com/fengzilong/nut#readme",
   "devDependencies": {
-    "@commitlint/cli": "^8.0.0",
-    "@commitlint/config-conventional": "^8.0.0",
-    "eslint": "^5.16.0",
-    "eslint-config-mo": "^0.5.2",
-    "gh-pages": "^2.0.1",
-    "husky": "^2.4.1",
-    "lint-staged": "^8.2.1"
+    "@commitlint/cli": "8.0.0",
+    "@commitlint/config-conventional": "8.0.0",
+    "eslint": "5.16.0",
+    "eslint-config-mo": "0.5.2",
+    "gh-pages": "2.0.1",
+    "husky": "2.4.1",
+    "lint-staged": "8.2.1"
   },
   "dependencies": {}
 }

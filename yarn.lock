@@ -621,7 +621,7 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@commitlint/cli@^8.0.0":
+"@commitlint/cli@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-8.0.0.tgz#1be7aa14fecbcf71317a8187fbb5210760d4ca61"
   dependencies:
@@ -637,7 +637,7 @@
     resolve-from "5.0.0"
     resolve-global "1.0.0"
 
-"@commitlint/config-conventional@^8.0.0":
+"@commitlint/config-conventional@8.0.0":
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-8.0.0.tgz#f45349cab9dcfc08a30fbcf2b6317506e17bc8e6"
 
@@ -780,11 +780,7 @@
     "@mdx-js/vue" "^1.0.20"
     loader-utils "^1.1.0"
 
-"@mdx-js/vue@1.0.0-alpha.13":
-  version "1.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@mdx-js/vue/-/vue-1.0.0-alpha.13.tgz#19e0d7fe08cbb8224b5af66242a04169a77713bd"
-
-"@mdx-js/vue@^1.0.20":
+"@mdx-js/vue@1.0.20", "@mdx-js/vue@^1.0.20":
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/@mdx-js/vue/-/vue-1.0.20.tgz#08929c60d4e74c0e95158fcf84e2d8d8782f9251"
 
@@ -2779,7 +2775,7 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.4, escape-string-regexp@^
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-eslint-config-mo@^0.5.2:
+eslint-config-mo@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/eslint-config-mo/-/eslint-config-mo-0.5.2.tgz#bbd901a05e78e7c027ead28d1675c4da3117f6ca"
 
@@ -2814,7 +2810,7 @@ eslint-visitor-keys@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
 
-eslint@^5.16.0:
+eslint@5.16.0, eslint@^5.16.0:
   version "5.16.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.16.0.tgz#a1e3ac1aae4a3fbd8296fcf8f7ab7314cbb6abea"
   dependencies:
@@ -3391,7 +3387,7 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-gh-pages@^2.0.1:
+gh-pages@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/gh-pages/-/gh-pages-2.0.1.tgz#aefe47a43b8d9d2aa3130576b33fe95641e29a2f"
   dependencies:
@@ -3804,7 +3800,7 @@ humanize-url@^1.0.0:
     normalize-url "^1.0.0"
     strip-url-auth "^1.0.0"
 
-husky@^2.4.1:
+husky@2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/husky/-/husky-2.4.1.tgz#dd00f9646f8693b93f7b3a12ba4be00be0eff7ab"
   dependencies:
@@ -4447,7 +4443,7 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lint-staged@^8.2.1:
+lint-staged@8.2.1:
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-8.2.1.tgz#752fcf222d9d28f323a3b80f1e668f3654ff221f"
   dependencies:
@@ -4890,12 +4886,12 @@ mimic-fn@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"
 
-mini-css-extract-plugin@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-0.6.0.tgz#a3f13372d6fcde912f3ee4cd039665704801e3b9"
+mini-css-extract-plugin@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-0.7.0.tgz#5ba8290fbb4179a43dd27cca444ba150bee743a0"
   dependencies:
     loader-utils "^1.1.0"
-    normalize-url "^2.0.1"
+    normalize-url "1.9.1"
     schema-utils "^1.0.0"
     webpack-sources "^1.1.0"
 
@@ -5147,7 +5143,7 @@ normalize-range@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
 
-normalize-url@^1.0.0:
+normalize-url@1.9.1, normalize-url@^1.0.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-1.9.1.tgz#2cc0d66b31ea23036458436e3620d85954c66c3c"
   dependencies:
@@ -5155,14 +5151,6 @@ normalize-url@^1.0.0:
     prepend-http "^1.0.0"
     query-string "^4.1.0"
     sort-keys "^1.0.0"
-
-normalize-url@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-2.0.1.tgz#835a9da1551fa26f70e92329069a23aa6574d7e6"
-  dependencies:
-    prepend-http "^2.0.0"
-    query-string "^5.0.1"
-    sort-keys "^2.0.0"
 
 normalize-url@^3.0.0:
   version "3.3.0"
@@ -5948,10 +5936,6 @@ prepend-http@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
 
-prepend-http@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
-
 prettier@1.16.3:
   version "1.16.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.16.3.tgz#8c62168453badef702f34b45b6ee899574a6a65d"
@@ -6097,7 +6081,7 @@ qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
 
-query-string@5, query-string@^5.0.1:
+query-string@5:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
   dependencies:
@@ -6827,12 +6811,6 @@ sockjs@0.3.19:
 sort-keys@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-1.1.2.tgz#441b6d4d346798f1b4e49e8920adfba0e543f9ad"
-  dependencies:
-    is-plain-obj "^1.0.0"
-
-sort-keys@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/sort-keys/-/sort-keys-2.0.0.tgz#658535584861ec97d730d6cf41822e1f56684128"
   dependencies:
     is-plain-obj "^1.0.0"
 
