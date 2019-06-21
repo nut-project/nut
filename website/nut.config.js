@@ -7,7 +7,7 @@ module.exports = {
   html: {
     title: 'NUT 文档',
   },
-  logo: './logo.png',
+  logo: '/logo.png',
   theme: 'ocean',
   layout: 'now',
   plugins: {},
