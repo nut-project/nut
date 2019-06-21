@@ -81,17 +81,17 @@ MDXContent.isMDXComponent = true`
       delete node.properties.className
     }
 
+    if ( lang ) {
+      node.properties[ 'data-lang' ] = lang
+    }
+
     if ( Object.keys( node.properties ).length > 0 ) {
       props = JSON.stringify( node.properties )
     }
 
-    return `<${ node.tagName } name="${ node.tagName }"${
+    return `<MDXTag name="${ node.tagName }" components={ components }${
       parentNode.tagName ? ` parentName="${ parentNode.tagName }"` : ''
-    }${
-      node.properties.class ? ` class="${ node.properties.class }"` : ''
-    }${
-      lang ? ` data-lang="${ lang }"` : ''
-    }>${ children }</${ node.tagName }>`
+    }${ props ? ` cprops={${ props }}` : '' }>${ children }</MDXTag>`
   }
 
   // Wraps all text nodes except new lines inside template string

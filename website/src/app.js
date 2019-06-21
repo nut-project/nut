@@ -1,6 +1,10 @@
 import '@/css/index.less'
+import Files from '@zeit-ui/vue/packages/files'
+import Vue from 'vue'
 
 export default ( { api } ) => {
+  Files.install( Vue )
+
   api.sidebar.configure( [
     {
       icon: '',

@@ -1,8 +1,10 @@
-nut 内置的 CSS 预处理器如下
+nut 目前内置的 CSS 预处理器如下
 
-- less
-- scss
-- sass
-- stylus
+| 预处理器 |            后缀 |
+| -------- | ---------------:|
+| less     |           .less |
+| scss     |           .scss |
+| sass     |           .sass |
+| stylus   | .styl / .stylus |
 
-后面会新增其他的 CSS 预处理器，也 [欢迎提 issue](https://github.com/fengzilong/nut/issues/new) 描述你的需求
+如果需要支持新的 css 预处理器，[欢迎提 issue 描述需求](https://github.com/nut-project/nut/issues/new?template=feature_request.md)

@@ -15,4 +15,7 @@ module.exports = {
     theme: 'prism-tomorrow',
   },
   homepage: 'pages/home',
+  babel: {
+    transpileModules: [ '@zeit-ui/vue' ]
+  }
 }

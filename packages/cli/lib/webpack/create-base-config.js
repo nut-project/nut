@@ -223,13 +223,13 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           } )
           .end()
         .use( 'mdx-vue' )
-          .loader( '@mdx-js/vue-loader' )
+          .loader( require.resolve( './mdx/vue-loader' ) )
           .options( {
             rehypePlugins: [
               require( '@mapbox/rehype-prism' ),
             ],
             compilers: [
-              require( './mdx-vue-jsx-compiler' ),
+              require( './mdx/vue-jsx-compiler' ),
             ]
           } )
           .end()
@@ -450,6 +450,25 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .end()
       .use( 'vue' )
         .loader( 'vue-loader' )
+
+  config.module
+    .rule( 'pug' )
+      .test( /\.pug$/ )
+      .oneOf( 'vue' )
+        .resourceQuery( /^\?vue/ )
+        .use( 'pug' )
+          .loader( 'pug-plain-loader' )
+          .end()
+        .end()
+      .oneOf( 'plain' )
+        .use( 'raw' )
+          .loader( 'raw-loader' )
+          .end()
+        .end()
+        .use( 'pug' )
+          .loader( 'pug-plain-loader' )
+          .end()
+        .end()
 
   if ( nutConfig.output && nutConfig.output.clean === true ) {
     config.plugin( 'clean' )

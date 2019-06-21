@@ -1,8 +1,18 @@
-nut 内置了 [CSS Modules](https://github.com/css-modules/css-modules) 的支持
+nut 默认支持 CSS Modules
 
-你只要新建一个 `.module.[ext]` 文件，就可以使用 CSS Modules 相关的特性了
+使用 `.module.[ext]` 后缀，即可开启 CSS Modules 特性
 
-- index.module.css
-- index.module.less
+## 举例
 
-  ...
+| 后缀    | css modules 后缀 |
+| ------- | ----------------:|
+| .css    |      .module.css |
+| .less   |     .module.less |
+| .scss   |     .module.scss |
+| .sass   |     .module.sass |
+| .styl   |     .module.styl |
+| .stylus |   .module.stylus |
+
+## 相关资料
+
+[CSS Modules](https://github.com/css-modules/css-modules)
