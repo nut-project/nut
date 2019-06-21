@@ -327,7 +327,8 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           plugins: [
             require.resolve( '@babel/plugin-transform-runtime' ),
             require.resolve( '@babel/plugin-syntax-dynamic-import' ),
-          ]
+          ],
+          sourceType: 'unambiguous',
         } )
         .end()
       .end()
@@ -351,7 +352,8 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           plugins: [
             require.resolve( '@babel/plugin-transform-runtime' ),
             require.resolve( '@babel/plugin-syntax-dynamic-import' ),
-          ]
+          ],
+          sourceType: 'unambiguous',
         } )
 
   config.module

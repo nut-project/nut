@@ -30,7 +30,8 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/*"
+      "examples/*",
+      "website"
     ]
   },
   "repository": {
