@@ -15,7 +15,7 @@
 - 内置的加载优化
 - ...
 
-<img width="500px" src="./terminal.png" alt="terminal screenshot">
+<img width="500px" src="/terminal.png" alt="terminal screenshot">
 
 <br>
 

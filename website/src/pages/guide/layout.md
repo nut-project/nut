@@ -5,22 +5,24 @@ nut 内置了以下几套布局
 - default
 - saber
 - now
+- kaola
 - none
+
+## 全局布局
+
+你可以在 `nut.config.js` 中通过 `layout` 声明全局布局，如果页面未声明自己的 layout，就会降级到 全局主题
 
 ## 页面布局
 
 如何定制某个页面的布局呢？
 
-很简单，在页面文件中
+很简单，在 `src/app.js` 中
 
+```js
+export default ctx => {
+  ctx.api.page( 'pages/path', 'layout-name' )
+}
 ```
----
-title: 页面名称
-layout: now
----
-```
-
-这样该页面就会使用 `now` 布局了
 
 每个页面的布局都可以不同，当然大部分情况下你不想这么花里胡哨
 
@@ -28,10 +30,20 @@ layout: now
   比较常用的是 none 这个特殊布局，none 布局几乎没有任何内容，相当于一个“空的画板”，你可以在这个基础上定制你的页面内容
 </p>
 
-## 全局布局
+## 如何实现新布局
 
-你可以在 `nut.config.js` 中声明全局布局，如果页面未声明自己的 layout，就会降级到 该全局主题
+在 nut 中，你可以通过写一个插件来注册一个新的布局（插件的基本写法请参见插件章节）
 
-<p class="tip">
-  后面会允许用户配置自己的布局，敬请期待 💙
-</p>
+涉及的 API：`ctx.api.layout.register`
+
+```js
+ctx.api.layout.register( {
+  name: 'your-layout-name', // 布局名称，用户使用该布局时需要用到
+  mount( node ) {}, // 挂载时调用
+  unmount( node ) {}, // 卸载时调用
+  update( data ) {}, // 热重载时调用
+  getMountNode() {}, // 页面挂载点，需返回一个 DOM 节点的引用
+} )
+```
+
+如果是通用的布局，你可以将该布局插件发布到 npm 上和组内的成员进行共享
