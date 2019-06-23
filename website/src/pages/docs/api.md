@@ -1,11 +1,11 @@
 #### axios
 
 ```js
-ctx.axios.get( ... )
-ctx.axios.post( ... )
+ctx.axios.get
+ctx.axios.post
 ```
 
-参考 [axios](https://github.com/axios/axios)
+更多用法请参考 [axios](https://github.com/axios/axios)
 
 #### layout.register
 

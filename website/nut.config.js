@@ -12,7 +12,7 @@ module.exports = {
   layout: 'now',
   plugins: {},
   markdown: {
-    theme: 'prism',
+    theme: 'prism-duotone-light',
   },
   homepage: 'pages/home',
   babel: {

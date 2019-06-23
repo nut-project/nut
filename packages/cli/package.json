@@ -60,6 +60,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "postcss-loader": "^3.0.0",
     "pretty-bytes": "^5.2.0",
+    "prism-themes": "^1.1.0",
     "prismjs": "^1.16.0",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",

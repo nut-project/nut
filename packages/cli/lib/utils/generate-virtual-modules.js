@@ -199,17 +199,40 @@ function normalizePlugin( plugin ) {
 }
 
 async function generateMarkdownThemeCSS( config ) {
-  const theme = ( config.markdown && config.markdown.theme ) || 'prism-tomorrow'
-  const root = path.dirname( require.resolve( 'prismjs/package.json' ) )
-  const request = 'themes/' + theme + '.css'
-  const cssPath = path.join( root, request )
+  const DEFAULT_THEME = 'prism-tomorrow'
+  const theme = ( config.markdown && config.markdown.theme ) || DEFAULT_THEME
 
-  if ( await fse.pathExists( cssPath ) ) {
-    const buffer = await fse.readFile( cssPath, 'utf8' )
-    return buffer.toString()
+  // prefer internal themes
+  const themePath = path.join( __dirname, `../markdown/themes/${ theme }.css` )
+  if ( await fse.pathExists( themePath ) ) {
+    return await readFile( themePath )
+  }
+
+  // fallback to theme packages
+  const themePackages = [ 'prismjs', 'prism-themes' ]
+  const themePaths = themePackages.map( pkgName => getPrismThemePath( pkgName, theme ) )
+
+  for ( const p of themePaths ) {
+    if ( await fse.pathExists( p ) ) {
+      return await readFile( p )
+    }
   }
 
   return ''
+}
+
+async function readFile( filepath ) {
+  const buffer = await fse.readFile( filepath, 'utf8' )
+  return buffer.toString()
+}
+
+function getPrismThemePath( pkg, theme ) {
+  const root = getPackageRoot( pkg )
+  return path.join( root, `themes/${ theme }.css` )
+}
+
+function getPackageRoot( pkg ) {
+  return path.dirname( require.resolve( `${ pkg }/package.json` ) )
 }
 
 async function generateRoutes( pages ) {
