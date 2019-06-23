@@ -19,7 +19,7 @@
     </div>
 
     <section class="content">
-      <img width="750px" height="375px" src="/social-media-preview.png" alt="social media preview">
+      <img width="750px" height="375px" src="/social-media-preview-750.png" alt="social media preview">
 
       <div class="buttons">
         <a
