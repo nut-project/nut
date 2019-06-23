@@ -26,7 +26,8 @@ export default {
   name: 'Mdx',
   render(vueCreateElement) {
     h = mdx.bind({vueCreateElement})
-    return MDXContent({})
+    // maybe refers to this in vue.md
+    return MDXContent.call(this, {})
   }
 }
    `
