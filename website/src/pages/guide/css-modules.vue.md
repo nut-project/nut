@@ -1,6 +1,6 @@
 nut 默认支持 CSS Modules
 
-使用 `.module.[ext]` 后缀，即可开启 CSS Modules 特性
+使用 `.module.[extension]` 后缀，即可开启 CSS Modules 特性
 
 ## 举例
 
