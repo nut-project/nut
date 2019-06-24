@@ -19,16 +19,15 @@
   </a>
 </p>
 
-## 特性
+## Features
 
 - Flexible layout mechanism
 - File-based router system
 - Customizable layouts and themes
-- 500+ icons
 - Builtin markdown support
 - System events
-- Config management
-- Convenient hot reload
+- Configuration management
+- Convenient hot reload during development
 - Plugin system
 
 ## layout / theme HMR
