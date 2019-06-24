@@ -3,8 +3,9 @@ import layout from '../core/layout'
 import page from '../core/page'
 import createRouter from '../core/router'
 import homepage from '../core/homepage'
+import createQuicklink from '../core/quicklink'
 
-export default function ( { pages, router } = {} ) {
+export default function ( { pages, router, globals } = {} ) {
   const axiosInstance = axios.create( {
     withCredentials: true,
     crossDomain: true,
@@ -12,6 +13,11 @@ export default function ( { pages, router } = {} ) {
 
   return {
     axios: axiosInstance,
+
+    quicklink: createQuicklink( {
+      globals,
+      pages,
+    } ),
 
     layout,
 

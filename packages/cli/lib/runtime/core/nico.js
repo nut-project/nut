@@ -46,7 +46,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
     return keys
       .reduce( ( total, key ) => {
         const chunks = globals.STATS_ASSETS_BY_CHUNKNAME || {}
-        const publicPath = globals.PUBLIC_PATH || './'
+        const publicPath = globals.PUBLIC_PATH || '/'
         let urls = ensureArray( chunks[ key ] || [] )
         urls = urls.map( url => publicPath + url )
         total.push( ...urls )

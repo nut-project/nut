@@ -50,6 +50,13 @@ export default {
     },
   },
 
+  created() {
+    this.$ctx.api.quicklink.prefetch( [
+      'pages/guide/introduction',
+      'pages/docs/config',
+    ] )
+  },
+
   methods: {
     onRoute( item ) {
       if ( item.route ) {

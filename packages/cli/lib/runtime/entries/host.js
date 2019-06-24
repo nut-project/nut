@@ -142,16 +142,18 @@ function loadChild( manifest ) {
     path: '',
   } )
 
+  const globals = window.NUT_GLOBALS || {}
+
   const context = {
     ...extendContext(),
     env: process.env.NODE_ENV,
     plugins,
     app: nutConfig,
-    api: createAPI( { pages, router: rootRouter } ),
+    api: createAPI( { pages, router: rootRouter, globals } ),
     events,
     pages,
     use,
-    globals: window.NUT_GLOBALS || {},
+    globals,
   }
 
   if ( nutConfig.sidebar ) {
