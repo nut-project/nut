@@ -34,16 +34,16 @@ function toVueJSX(node, parentNode = {}, options = {}) { // eslint-disable-line
     <MDXLayout
       {...props}
       components={components}>
-${ jsxNodes.map( childNode => toVueJSX( childNode, node ) ).join( '' ) }
+${ jsxNodes.map( childNode => toVueJSX( childNode, node, options ) ).join( '' ) }
     </MDXLayout>
   )
 }
 MDXContent.isMDXComponent = true`
 
     return (
-      importNodes.map( childNode => toVueJSX( childNode, node ) ).join( '\n' ) +
+      importNodes.map( childNode => toVueJSX( childNode, node, options ) ).join( '\n' ) +
       '\n' +
-      exportNodes.map( childNode => toVueJSX( childNode, node ) ).join( '\n' ) +
+      exportNodes.map( childNode => toVueJSX( childNode, node, options ) ).join( '\n' ) +
       '\n' +
       mdxLayout +
       '\n' +
@@ -55,8 +55,12 @@ MDXContent.isMDXComponent = true`
 
   // Recursively walk through children
   if ( node.children ) {
+    const childOptions = {
+      preserveNewlines: options.preserveNewlines || ( node.tagName === 'pre' )
+    }
+
     children = node.children
-      .map( childNode => toVueJSX( childNode, node ) )
+      .map( childNode => toVueJSX( childNode, node, childOptions ) )
       .join( '' )
   }
 
@@ -96,9 +100,10 @@ MDXContent.isMDXComponent = true`
 
   // Wraps all text nodes except new lines inside template string
   // so that we don't run into escaping issues.
+  // https://github.com/mdx-js/mdx/blob/master/packages/mdx/mdx-hast-to-jsx.js#L250
   if ( node.type === 'text' ) {
     return node.value === '\n' ?
-      node.value :
+      ( options.preserveNewlines ? '{`\n`}' : '' ) :
       '{`' + node.value.replace( /`/g, '\\`' ).replace( /\$/g, '\\$' ) + '`}'
   }
 
