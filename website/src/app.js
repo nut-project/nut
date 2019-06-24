@@ -24,6 +24,7 @@ export default ( { api } ) => {
         { title: '安装', path: 'pages/guide/installation' },
         { title: '体验', path: 'pages/guide/experience' },
         // { title: '如何开始', path: 'pages/guide/get-started' },
+        { title: 'quicklink', path: 'pages/guide/quicklink' },
         { title: '静态资源', path: 'pages/guide/public' },
         { title: 'CSS 预处理器', path: 'pages/guide/css-preprocessor' },
         { title: 'CSS Modules', path: 'pages/guide/css-modules' },
