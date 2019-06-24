@@ -21,36 +21,34 @@
 
 ## 特性
 
-- 灵活的 layout 机制
-- 基于文件系统的路由
-- 支持自定义主题
-- 500+ 的内置图标
-- 内置的 markdown 支持
-- 内置的许多指令
-- 事件系统
-- 配置管理
-- 热重载
-- 插件化
+- Flexible layout mechanism
+- File-based router system
+- Customizable layouts and themes
+- 500+ icons
+- Builtin markdown support
+- System events
+- Config management
+- Convenient hot reload
+- Plugin system
 
-## layout / theme 热重载
+## layout / theme HMR
 
 <img src="./media/hmr.gif" alt="hmr.gif" width="600px">
 
-## markdown 主题 热重载
+## markdown theme HMR
 
 <img src="./media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
 
 
-## 系统事件
+## System events
 
 <img src="./media/system-events.jpg" alt="system-events.jpg" width="300px">
 
-## 路由匹配
+## Route matching
 
 <img src="./media/route-match.jpg" alt="route-match.jpg" width="300px">
 
-
-## 内置 layout
+## Builtin layouts
 
 #### default
 
@@ -68,18 +66,18 @@
 
 <img src="./media/now.jpg" alt="now" width="400px">
 
-### 如何写一个 layout
+### How to write a layout
 
 ...
 
-### 如何写一个 plugin
+### How to write a plugin
 
-一个标准的 plugin 是这样子的
+A standard plugin looks like
 
 ```js
 export default {
   name: 'your-superb-plugin',
-  // 一些特殊类型的插件需要指定 type，大多数情况下你可以忽略它
+  // some special plugin need specify type，but you can ignore this in most cases
   type: 'login',
   apply( ctx = {}, options = {} ) {
     const { api, events } = ctx
@@ -95,9 +93,9 @@ export default {
 }
 ```
 
-你可以通过 插件 向 应用 暴露一些方法，也可以监听系统事件，以及抛出插件内部的事件
+You can expose some methods or props to application, or listen for system events, emit out some event in plugin
 
-#### 使用插件
+#### Using plugin
 
 nut.config.js
 
@@ -112,9 +110,9 @@ module.exports = {
 }
 ```
 
-superb 是插件在当前应用中使用的名字
+superb is the name in current application
 
-以上面的插件代码为例
+Use above plugin for example
 
 ```js
 // plugin exposed
@@ -125,7 +123,7 @@ ctx.use( 'superb', 'prop' )
 ctx.events.on( 'plugin:superb:some-event', async data => {} )
 ```
 
-## 如何开始
+## Get started
 
 ```bash
 yarn global add @nut-project/cli
