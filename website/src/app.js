@@ -2,15 +2,18 @@ import Vue from 'vue'
 import * as Files from '@zeit-ui/vue/lib/files.common'
 import * as Link from '@zeit-ui/vue/lib/link.common'
 import * as Card from '@zeit-ui/vue/lib/card.common'
+import * as Note from '@zeit-ui/vue/lib/note.common'
 import '@zeit-ui/vue/lib/files.css'
 import '@zeit-ui/vue/lib/link.css'
 import '@zeit-ui/vue/lib/card.css'
+import '@zeit-ui/vue/lib/note.css'
 import '@/css/index.less'
 
 export default ( { api } ) => {
   Files.install( Vue )
   Link.install( Vue )
   Card.install( Vue )
+  Note.install( Vue )
 
   api.sidebar.configure( [
     {
