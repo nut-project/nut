@@ -210,7 +210,9 @@ async function generateMarkdownThemeCSS( config ) {
 
   // fallback to theme packages
   const themePackages = [ 'prismjs', 'prism-themes' ]
-  const themePaths = themePackages.map( pkgName => getPrismThemePath( pkgName, theme ) )
+  const themePaths = themePackages
+    .map( pkgName => getPrismThemePath( pkgName, theme ) )
+    .filter( Boolean )
 
   for ( const p of themePaths ) {
     if ( await fse.pathExists( p ) ) {
@@ -227,8 +229,12 @@ async function readFile( filepath ) {
 }
 
 function getPrismThemePath( pkg, theme ) {
-  const root = getPackageRoot( pkg )
-  return path.join( root, `themes/${ theme }.css` )
+  try {
+    const root = getPackageRoot( pkg )
+    return path.join( root, `themes/${ theme }.css` )
+  } catch ( e ) {
+    return ''
+  }
 }
 
 function getPackageRoot( pkg ) {

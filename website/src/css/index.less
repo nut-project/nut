@@ -88,3 +88,34 @@ p.danger {
     }
   }
 }
+
+.markdown-body code {
+  color: #bd10e0;
+  white-space: pre-wrap;
+  background-color: transparent;
+
+  &::before {
+    content: '`';
+  }
+
+  &::after {
+    content: '`';
+  }
+}
+
+.markdown-body pre code {
+  color: #24292e;
+
+  &::before {
+    content: '';
+  }
+
+  &::after {
+    content: '';
+  }
+}
+
+code[class*="language-"], pre[class*="language-"] {
+  background-color: #fff;
+  border: solid 1px #eaeaea;
+}
