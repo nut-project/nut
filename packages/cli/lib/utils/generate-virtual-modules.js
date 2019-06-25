@@ -15,7 +15,7 @@ async function generateVirtualModules( config, { env = 'dev' } = {} ) {
   const pluginOptions = await generatePluginOptions( config, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
   const extendContext = await generateExtendContext( config, { env } )
-  const appContent = await generateAppContent()
+  const app = await generateAppContent()
 
   return diff( {
     'src/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
@@ -25,7 +25,7 @@ async function generateVirtualModules( config, { env = 'dev' } = {} ) {
     'src/nut-auto-generated-extend-context.js': extendContext,
     'src/nut-auto-generated-nut-config.js': nutConfig,
     'src/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
-    'src/nut-auto-generated-app.js': appContent,
+    [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
   } )
 }
 
@@ -65,15 +65,24 @@ async function generateNutConfig( config ) {
 }
 
 async function generateAppContent() {
-  const appFile = path.join( dirs.project, 'src/app.js' )
-  if ( await fse.pathExists( appFile ) ) {
-    const buffer = await fse.readFile( appFile, 'utf8' )
-    return buffer.toString()
+  const appFiles = [
+    path.join( dirs.project, 'src/app.js' ),
+    path.join( dirs.project, 'src/app.ts' ),
+  ]
+
+  for ( const file of appFiles ) {
+    if ( await fse.pathExists( file ) ) {
+      return {
+        extension: path.extname( file ),
+        content: await readFile( file )
+      }
+    }
   }
 
-  return `
-    export default function () {}
-  `
+  return {
+    extension: '.js',
+    content: `export default function () {}`
+  }
 }
 
 async function generateExtendContext( config, { env } = {} ) {

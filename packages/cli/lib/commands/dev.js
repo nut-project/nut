@@ -129,9 +129,12 @@ async function dev() {
     } )
   } )
 
-  const appFile = path.join( dirs.project, 'src/app.js' )
+  const appFiles = [
+    path.join( dirs.project, 'src/app.js' ),
+    path.join( dirs.project, 'src/app.ts' ),
+  ]
 
-  chokidar.watch( [ result.filepath, appFile ] )
+  chokidar.watch( [ result.filepath, ...appFiles ] )
     .on( 'change', async () => {
       if ( !virtualModules ) {
         return

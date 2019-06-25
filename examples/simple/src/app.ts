@@ -1,4 +1,7 @@
 export default async function app( ctx ) {
+  let world: string = 'world'
+  console.log( world )
+  
   ctx.env // -> development / production
   ctx.pages
   const link = ctx.api.router.format( {
@@ -12,7 +15,7 @@ export default async function app( ctx ) {
     ctx.next()
   } )
 
-  ctx.events.on( 'page:after-mount', ( page ) => {
+  ctx.events.on( 'page:after-mount', page => {
     document.title = page.attributes.title || '未命名'
   } )
 

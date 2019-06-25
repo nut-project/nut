@@ -137,7 +137,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .merge( [
           '.js', '.json',
           '.vue', '.jsx',
-          'ts', 'tsx',
+          '.ts', '.tsx',
           '.md', '.vue.md',
           '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
         ] )
