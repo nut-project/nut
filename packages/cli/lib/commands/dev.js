@@ -129,35 +129,48 @@ async function dev() {
     } )
   } )
 
+  const onFileChange = async () => {
+    if ( !virtualModules ) {
+      return
+    }
+
+    try {
+      result = await loadConfig()
+      nutConfig = result.config
+
+      const modules = await generateVirtualModules( nutConfig, {
+        env: 'dev'
+      } )
+
+      for ( const [ path, content ] of Object.entries( modules ) ) {
+        virtualModules.writeModule(
+          path,
+          content
+        )
+      }
+    } catch ( e ) {
+      console.log( e )
+    }
+  }
+
   const appFiles = [
     path.join( dirs.project, 'src/app.js' ),
     path.join( dirs.project, 'src/app.ts' ),
   ]
 
-  chokidar.watch( [ result.filepath, ...appFiles ] )
-    .on( 'change', async () => {
-      if ( !virtualModules ) {
-        return
-      }
+  chokidar
+    .watch( [
+      result.filepath,
+      ...appFiles,
+    ] )
+    .on( 'change', onFileChange )
 
-      try {
-        result = await loadConfig()
-        nutConfig = result.config
-
-        const modules = await generateVirtualModules( nutConfig, {
-          env: 'dev'
-        } )
-
-        for ( const [ path, content ] of Object.entries( modules ) ) {
-          virtualModules.writeModule(
-            path,
-            content
-          )
-        }
-      } catch ( e ) {
-        console.log( e )
-      }
-    } )
+  chokidar
+    .watch( [
+      path.join( dirs.project, 'src/pages' ),
+    ] )
+    .on( 'add', onFileChange )
+    .on( 'unlink', onFileChange )
 }
 
 module.exports = dev
