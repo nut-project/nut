@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npm run dev --prefix ./examples/simple",
     "build": "npm run build --prefix ./examples/simple",
+    "c": "node ./packages/cli/bin/index.js create demo",
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",
     "deploy": "npm run build:docs && gh-pages -d ./website/dist",

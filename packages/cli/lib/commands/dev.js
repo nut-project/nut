@@ -19,11 +19,6 @@ const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
 
-process
-  .on( 'unhandledRejection', ( reason, p ) => {
-    console.error( reason, 'Unhandled Rejection at Promise', p )
-  } )
-
 const dirs = {
   cli: path.join( __dirname, '../../' ),
   project: process.cwd(),

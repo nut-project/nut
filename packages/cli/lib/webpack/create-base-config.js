@@ -11,12 +11,7 @@ const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
 const hashsum = require( 'hash-sum' )
-
 const threadLoader = require( 'thread-loader' )
-
-threadLoader.warmup( {}, [
-  'babel-loader',
-] )
 
 const dirs = {
   cli: path.join( __dirname, '../../' ),
@@ -29,6 +24,10 @@ const browserslist = pkg.browserslist ||
   [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
 
 module.exports = function createBaseConfig( nutConfig = {} ) {
+  threadLoader.warmup( {}, [
+    'babel-loader',
+  ] )
+
   const config = new Config()
 
   let entry

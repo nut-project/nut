@@ -15,11 +15,6 @@ const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const generateVirtualModules = require( '../utils/generate-virtual-modules' )
 
-process
-  .on( 'unhandledRejection', ( reason, p ) => {
-    console.error( reason, 'Unhandled Rejection at Promise', p )
-  } )
-
 async function prod() {
   process.env.NODE_ENV = 'production'
 
