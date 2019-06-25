@@ -11,7 +11,7 @@
   padding: 0 20px;
   font-size: 14px;
   height: 60px;
-  z-index: 1;
+  z-index: 15;
   font-size: 14px;
 
   &__content {
@@ -29,6 +29,7 @@
   display: flex;
   align-items: center;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .logo {
@@ -95,6 +96,10 @@
     color: #000;
     text-decoration: none;
     cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+    }
 
     &.is_active {
       font-weight: 600;

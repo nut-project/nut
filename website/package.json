@@ -1,10 +1,13 @@
 {
   "name": "nut-docs",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "node ../packages/cli/bin/index.js",
     "build": "node ../packages/cli/bin/index.js --prod"
   },
   "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "@zeit-ui/vue": "^1.2.0"
+  }
 }

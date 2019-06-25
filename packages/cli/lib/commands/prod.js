@@ -1,7 +1,6 @@
-const path = require( 'path' )
+/* eslint-disable indent */
+
 const webpack = require( 'webpack' )
-const chokidar = require( 'chokidar' )
-const WebpackDevServer = require( 'webpack-dev-server' )
 const webpackMerge = require( 'webpack-merge' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const TerserJSPlugin = require( 'terser-webpack-plugin' )
@@ -21,16 +20,11 @@ process
     console.error( reason, 'Unhandled Rejection at Promise', p )
   } )
 
-const dirs = {
-  cli: path.join( __dirname, '../../' ),
-  project: process.cwd(),
-}
-
-async function prod(){
+async function prod() {
   process.env.NODE_ENV = 'production'
 
-  let result = await loadConfig()
-  let config = result.config || {}
+  const result = await loadConfig()
+  const config = result.config || {}
 
   ensureConfigDefaults( config )
 
@@ -68,6 +62,7 @@ async function prod(){
             output: {
               ecma: 5,
               comments: false,
+              // eslint-disable-next-line
               ascii_only: true
             }
           }
@@ -104,7 +99,7 @@ async function prod(){
 
   compiler.run( ( err, stats ) => {
     if ( err ) {
-      console.error(err)
+      console.error( err )
       return
     }
 

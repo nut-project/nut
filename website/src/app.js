@@ -1,6 +1,20 @@
+import Vue from 'vue'
+import * as Files from '@zeit-ui/vue/lib/files.common'
+import * as Link from '@zeit-ui/vue/lib/link.common'
+import * as Card from '@zeit-ui/vue/lib/card.common'
+import * as Note from '@zeit-ui/vue/lib/note.common'
+import '@zeit-ui/vue/lib/files.css'
+import '@zeit-ui/vue/lib/link.css'
+import '@zeit-ui/vue/lib/card.css'
+import '@zeit-ui/vue/lib/note.css'
 import '@/css/index.less'
 
 export default ( { api } ) => {
+  Files.install( Vue )
+  Link.install( Vue )
+  Card.install( Vue )
+  Note.install( Vue )
+
   api.sidebar.configure( [
     {
       icon: '',
@@ -9,7 +23,8 @@ export default ( { api } ) => {
         { title: '介绍', path: 'pages/guide/introduction' },
         { title: '安装', path: 'pages/guide/installation' },
         { title: '体验', path: 'pages/guide/experience' },
-        { title: '如何开始', path: 'pages/guide/get-started' },
+        // { title: '如何开始', path: 'pages/guide/get-started' },
+        { title: 'quicklink', path: 'pages/guide/quicklink' },
         { title: '静态资源', path: 'pages/guide/public' },
         { title: 'CSS 预处理器', path: 'pages/guide/css-preprocessor' },
         { title: 'CSS Modules', path: 'pages/guide/css-modules' },
@@ -18,6 +33,7 @@ export default ( { api } ) => {
         { title: '主题', path: 'pages/guide/theme' },
         { title: '图标', path: 'pages/guide/icon' },
         { title: '插件', path: 'pages/guide/plugin' },
+        { title: '微前端', path: 'pages/guide/microfrontends' },
       ]
     },
 
@@ -37,4 +53,6 @@ export default ( { api } ) => {
       link: 'https://github.com/fengzilong/nut'
     },
   ] )
+
+  api.page( 'pages/home' ).set( 'layout', 'none' )
 }

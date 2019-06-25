@@ -1,4 +1,6 @@
-import Router from 'unfancy-router/src/index'
+/* global window, document */
+
+import createRouter from 'unfancy-router/src/index'
 
 import '../css/reset.less'
 import '../css/markdown.less'
@@ -15,6 +17,7 @@ import applyPlugins from '../steps/apply-plugins'
 import setupNico from '../steps/setup-nico'
 import registerLayouts from '../steps/register-layouts'
 
+import getFirstRoute from '../utils/get-first-route'
 import switchTheme from '../utils/switch-theme'
 
 import app from '@/nut-auto-generated-app'
@@ -22,77 +25,83 @@ import createAPI from '../context/api'
 import events from '../context/events'
 import use from '../context/use'
 
-import axios from 'axios'
-
-;( async function () {
-  const compose = nutConfig.compose
-  const collection = []
-
-  if ( compose ) {
-    function filterJs( files ) {
-      return files.filter( file => file.endsWith( '.js' ) )
+function loadJs( url, dataset ) {
+  return new Promise( ( resolve, reject ) => {
+    const script = document.createElement( 'script' )
+    script.charset = 'utf-8'
+    if ( dataset ) {
+      Object.keys( dataset ).forEach( k => {
+        script.dataset[ k ] = dataset[ k ]
+      } )
+    }
+    script.src = url
+    script.onload = function () {
+      script.onload = null
+      script.onerror = null
+      document.body.removeChild( script )
+      resolve()
+    }
+    script.onerror = function () {
+      reject()
     }
 
-    const jobs = Object.keys( compose ).map( name => {
-      return axios.get( compose[ name ].service + '/manifest.json' )
-        .then( response => {
-          return response.data
-        } )
-        .then( json => {
-          return {
-            name: name,
-            base: compose[ name ].service,
-            prefix: compose[ name ].prefix,
-            files: json.files,
-          }
-        } )
+    document.body.appendChild( script )
+  } )
+}
+
+function loadChild( manifest ) {
+  const name = manifest.name
+  const prefix = manifest.prefix
+
+  return manifest.files.reduce( ( total, file ) => {
+    return total.then( () => {
+      return loadJs( manifest.base + '/' + file, {
+        name,
+        prefix,
+      } )
     } )
+  }, Promise.resolve() )
+}
 
-    function loadJs( url ) {
-      return new Promise( ( resolve, reject ) => {
-        const script = document.createElement( 'script' )
-        script.charset = 'utf-8'
-        script.src = url
-        script.onload = function () {
-          script.onload = null
-          script.onerror = null
-          document.body.removeChild( script )
-          resolve()
-        }
-        script.onerror = function () {
-          reject()
-        }
+( async function () {
+  const compose = nutConfig.compose
+  const collection = []
+  const manifests = []
 
-        document.body.appendChild( script )
+  if ( compose ) {
+    window.nutJsonp = function ( { pages, config, routes } = {}, dataset = {} ) {
+      const { name, prefix } = dataset
+
+      collection.push( {
+        name,
+        prefix,
+        pages,
+        config,
+        routes
       } )
     }
 
-    function loadChild( child ) {
-      const name = child.name
-      const prefix = child.prefix
-
-      return child.files.reduce( ( total, file, index ) => {
-        return total.then( () => {
-          window.nutJsonp = function ( { pages, config, routes } = {} ) {
-            collection.push( {
-              name,
-              prefix,
-              pages,
-              config,
-              routes
-            } )
-          }
-
-          return loadJs( child.base + '/' + file )
-        } )
-      }, Promise.resolve() )
+    window.nutManifestJSONP = function ( { files = [] } = {}, dataset = {} ) {
+      const { name } = dataset
+      manifests.push( {
+        name,
+        base: compose[ name ].service,
+        prefix: compose[ name ].prefix,
+        files,
+      } )
     }
 
+    const jobs = Object.keys( compose ).map( name => {
+      return loadJs( compose[ name ].service + '/manifest.js?t=' + new Date().getTime(), {
+        name,
+      } )
+    } )
+
     await Promise.all( jobs )
-      .then( children => {
-        return children.reduce( ( total, child ) => {
-          return total.then( () => loadChild( child ) )
-        }, Promise.resolve() )
+      .then( () => {
+        return Promise.all(
+          manifests.map( manifest => loadChild( manifest, collection ) )
+        )
       } )
   }
 
@@ -126,23 +135,25 @@ import axios from 'axios'
   } )
 
   const routerOptions = nutConfig.router || {}
-  const router = Router( routerOptions )
+  const router = createRouter( routerOptions )
 
   const rootRouter = router.create( {
     name: '_',
     path: '',
   } )
 
+  const globals = window.NUT_GLOBALS || {}
+
   const context = {
     ...extendContext(),
     env: process.env.NODE_ENV,
     plugins,
     app: nutConfig,
-    api: createAPI( { pages, router: rootRouter } ),
+    api: createAPI( { pages, router: rootRouter, globals } ),
     events,
     pages,
     use,
-    globals: window.NUT_GLOBALS || {},
+    globals,
   }
 
   if ( nutConfig.sidebar ) {
@@ -150,17 +161,30 @@ import axios from 'axios'
   }
 
   if ( typeof nutConfig.homepage === 'string' ) {
-    ctx.api.homepage.set( nutConfig.homepage )
+    context.api.homepage.set( nutConfig.homepage )
   }
 
-  if ( routerOptions.cacheable ) {
+  if ( routerOptions.cacheable && ( typeof routerOptions.cacheable === 'object' ) ) {
     Object.keys( routerOptions.cacheable )
       .forEach( page => {
-        context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )
+        context.api.page( page ).set(
+          'cacheable',
+          Boolean( routerOptions.cacheable[ page ] )
+        )
       } )
   }
 
   const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
+
+  if ( routerOptions.alias ) {
+    Object.keys( routerOptions.alias ).forEach( page => {
+      const found = rootRouter.find( r => r.options.page === page )
+      const alias = routerOptions.alias[ page ]
+      if ( found && alias ) {
+        found.alias( alias )
+      }
+    } )
+  }
 
   await app( context )
 
@@ -185,23 +209,17 @@ import axios from 'axios'
     }
   }
 
-  if ( routerOptions.alias ) {
-    Object.keys( routerOptions.alias ).forEach( page => {
-      const found = rootRouter.find( r => r.options.page === page )
-      if ( found ) {
-        found.alias( String( routerOptions.alias[ page ] ) )
-      }
-    } )
-  }
-
   nico.start( '#app' )
   events.emit( 'route:enabled', context )
 
   const matched = rootRouter.match()
-
-  // TODO: match /, not by homepage, if exists push( '/' )
   if ( !matched || ( matched.router === rootRouter ) ) {
-    if ( homepage ) {
+    const homeMatched = rootRouter.match( '/' )
+
+    if (
+      homeMatched &&
+      ( homeMatched.router !== rootRouter )
+    ) {
       rootRouter.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
@@ -214,8 +232,11 @@ import axios from 'axios'
   events.emit( 'system:after-startup', context )
 
   if ( module.hot ) {
-    module.hot.accept( '@/nut-auto-generated-nut-config', function refreshTheme(  ) {
-      switchTheme( nutConfig && nutConfig.theme || 'ocean' )
-    } )
+    module.hot.accept(
+      '@/nut-auto-generated-nut-config',
+      function refreshTheme() {
+        switchTheme( ( nutConfig && nutConfig.theme ) || 'ocean' )
+      }
+    )
   }
 } )()

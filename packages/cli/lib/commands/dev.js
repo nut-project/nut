@@ -29,7 +29,7 @@ const dirs = {
   project: process.cwd(),
 }
 
-async function dev(){
+async function dev() {
   process.env.NODE_ENV = 'development'
 
   let result = await loadConfig()
@@ -73,7 +73,7 @@ async function dev(){
 
   webpackConfig
     .plugin( 'hot' )
-      .use( webpack.HotModuleReplacementPlugin )
+      .use( webpack.HotModuleReplacementPlugin ) // eslint-disable-line
 
   webpackConfig.plugin( 'case-sensitive-paths' )
     .use( CaseSensitivePathsPlugin )
@@ -150,13 +150,13 @@ async function dev(){
           env: 'dev'
         } )
 
-        for ( let [ path, content ] of Object.entries( modules ) ) {
+        for ( const [ path, content ] of Object.entries( modules ) ) {
           virtualModules.writeModule(
             path,
             content
           )
         }
-      } catch (e) {
+      } catch ( e ) {
         console.log( e )
       }
     } )

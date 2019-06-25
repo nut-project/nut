@@ -11,9 +11,11 @@ module.exports.pitch = function ( remainingRequest ) {
   // only pitch for first time
   if ( typeof query.vue === 'undefined' ) {
     return `
-      import Page from ${ JSON.stringify( '-!' + remainingRequest ) };
+      import * as all from ${ JSON.stringify( '-!' + remainingRequest ) };
       import nutify from '${ nutifyPath }'
-      export default nutify( Page )
+
+      // all: default + attributes
+      export default nutify( all )
     `
   }
 }

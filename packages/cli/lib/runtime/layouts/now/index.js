@@ -1,3 +1,5 @@
+/* global window */
+
 import Regular from 'regularjs'
 import styles from './index.module.less'
 
@@ -5,7 +7,7 @@ const Layout = Regular.extend( {
   template: `
     <div class="${ styles.header }">
       <div class="${ styles.header__content }">
-        <div class="${ styles.title }">
+        <div class="${ styles.title }" on-click="{ this.onHome() }">
           {#if ctx.app.logo}
             <img class="${ styles.logo }" src="{ ctx.app.logo }" alt="" />
           {/if}
@@ -85,6 +87,10 @@ const Layout = Regular.extend( {
     return found.children || []
   },
 
+  onHome() {
+    this.data.ctx.api.router.push( '/' )
+  },
+
   onRoute( item ) {
     if ( item.route ) {
       this.data.ctx.api.router.push( item.route )
@@ -120,7 +126,7 @@ export default {
         layout.$inject( node )
       },
 
-      unmount( node ) {
+      unmount() {
         if ( !layout ) {
           return
         }

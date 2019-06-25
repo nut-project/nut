@@ -1,3 +1,5 @@
+/* global window, localStorage */
+
 import Regular from 'regularjs'
 import styles from './index.module.less'
 
@@ -98,7 +100,7 @@ const Layout = Regular.extend( {
 
   config() {
     const collapsed = localStorage.getItem( '_nut_layout_kaola_collapsed' )
-    this.data.collapsed = collapsed === '1' ? true : false
+    this.data.collapsed = collapsed === '1'
   },
 
   getCollapsed() {
@@ -110,8 +112,10 @@ const Layout = Regular.extend( {
 
     if ( bool ) {
       localStorage.setItem( '_nut_layout_kaola_collapsed', '1' )
+      this.$emit( 'collapse' )
     } else {
       localStorage.setItem( '_nut_layout_kaola_collapsed', '0' )
+      this.$emit( 'uncollapse' )
     }
   },
 
@@ -170,7 +174,9 @@ export default {
         if ( !layout ) {
           const sidebar = ctx.api.sidebar.get()
 
-          sidebar.forEach( s => s.open = s.active )
+          sidebar.forEach( s => {
+            s.open = s.active
+          } )
 
           layout = new Layout( {
             data: { ctx }
@@ -179,12 +185,20 @@ export default {
           layout.$on( 'logout', () => {
             ctx.events.emit( 'layout:logout' )
           } )
+
+          layout.$on( 'collapse', () => {
+            ctx.events.emit( 'layout:collapse' )
+          } )
+
+          layout.$on( 'uncollapse', () => {
+            ctx.events.emit( 'layout:uncollapse' )
+          } )
         }
 
         layout.$inject( node )
       },
 
-      unmount( node ) {
+      unmount() {
         if ( !layout ) {
           return
         }

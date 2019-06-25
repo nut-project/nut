@@ -1,4 +1,7 @@
+/* eslint-disable indent */
+
 const path = require( 'path' )
+const fse = require( 'fs-extra' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
@@ -9,7 +12,7 @@ const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
 const hashsum = require( 'hash-sum' )
 
-const threadLoader = require('thread-loader');
+const threadLoader = require( 'thread-loader' )
 
 threadLoader.warmup( {}, [
   'babel-loader',
@@ -22,44 +25,82 @@ const dirs = {
 
 const pkg = require( dirs.project + '/package.json' )
 
+const browserslist = pkg.browserslist ||
+  [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
+
 module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
   let entry
+  let suffix
 
   switch ( nutConfig.type ) {
-    case 'host':
-      entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
-      break
-    case 'child':
-      entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
-      const suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
-      config.output.jsonpFunction( 'webpackJsonp_' + suffix )
-      config.plugin( 'stats-write' )
-        .use( StatsWriterPlugin, [
-          {
-            filename: 'manifest.json',
-            transform( data, opts ) {
-              const files = []
+  case 'host':
+    entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
+    break
+  case 'child':
+    entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
+    suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
+    config.output.jsonpFunction( 'webpackJsonp_' + suffix )
+    config.plugin( 'stats-write' )
+      .use( StatsWriterPlugin, [
+        {
+          filename: 'manifest.json',
+          transform( data ) {
+            const files = []
 
-              const index = data.assetsByChunkName.index
-              if ( Array.isArray( index ) ) {
-                const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-                files.push( ...jsfiles )
-              } else if ( typeof index === 'string' ) {
-                if ( index.endsWith( '.js' ) ) {
-                  files.push( index )
-                }
+            const index = data.assetsByChunkName.index
+            if ( Array.isArray( index ) ) {
+              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
+              files.push( ...jsfiles )
+            } else if ( typeof index === 'string' ) {
+              if ( index.endsWith( '.js' ) ) {
+                files.push( index )
               }
-              return JSON.stringify( {
-                files,
-              }, 0, 2 )
             }
+            return JSON.stringify( {
+              files,
+            }, 0, 2 )
           }
-        ] )
-      break
-    default:
-      entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
+        }
+      ] )
+    // use jsonp to fix cors issue
+    config.plugin( 'stats-write-js' )
+      .use( StatsWriterPlugin, [
+        {
+          filename: 'manifest.js',
+          transform( data ) {
+            const files = []
+
+            const index = data.assetsByChunkName.index
+            if ( Array.isArray( index ) ) {
+              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
+              files.push( ...jsfiles )
+            } else if ( typeof index === 'string' ) {
+              if ( index.endsWith( '.js' ) ) {
+                files.push( index )
+              }
+            }
+
+            const json = JSON.stringify( {
+              files,
+            }, 0, 2 )
+
+            return `
+( function () {
+  if ( window.nutManifestJSONP ) {
+    var currentScript = document.currentScript
+    var dataset = currentScript ? currentScript.dataset : {}
+    window.nutManifestJSONP( ${ json }, dataset )
+  }
+} )()
+`.trim()
+          }
+        }
+      ] )
+    break
+  default:
+    entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
   }
 
   if ( nutConfig.type === 'single' ) {
@@ -96,7 +137,8 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       .extensions
         .merge( [
           '.js', '.json',
-          '.vue',
+          '.vue', '.jsx',
+          'ts', 'tsx',
           '.md', '.vue.md',
           '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
         ] )
@@ -132,7 +174,8 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .plugin( 'html' )
       .use( HtmlWebpackPlugin, [
         {
-          template: path.join( __dirname, './template.html' ),
+          ...( nutConfig.html || {} ),
+          template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
           title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
           favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
         }
@@ -152,7 +195,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       ] )
       .end()
 
-  const markdownRule = config.module
+  config.module
     .rule( 'markdown' )
       .test( /\.md$/ )
       .oneOf( 'vue' )
@@ -168,7 +211,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
                 require.resolve( '@babel/preset-env' ),
                 {
                   targets: {
-                    browsers: [ 'last 2 versions', 'safari >= 7' ]
+                    browsers: browserslist
                   }
                 }
               ],
@@ -180,7 +223,15 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           } )
           .end()
         .use( 'mdx-vue' )
-          .loader( '@mdx-js/vue-loader' )
+          .loader( require.resolve( './mdx/vue-loader' ) )
+          .options( {
+            rehypePlugins: [
+              require( '@mapbox/rehype-prism' ),
+            ],
+            compilers: [
+              require( './mdx/vue-jsx-compiler' ),
+            ]
+          } )
           .end()
         .use( 'mdx-layout' )
           .loader( require.resolve( '../loader/provide-mdx-layout' ) )
@@ -191,13 +242,10 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           .use( 'mount-markdown' )
             .loader( require.resolve( '../loader/mount-markdown' ) )
             .end()
-          .use( 'markdown' )
-            .loader( require.resolve( '../loader/markdown' ) )
-            .options( {
-              gfm: true,
-            } )
 
-  const transpileModules = ( nutConfig.babel && nutConfig.babel.transpileModules ) || []
+  const transpileModules = (
+    nutConfig.babel && nutConfig.babel.transpileModules
+  ) || []
   const internalTranspileModules = [
     'unfancy-router',
     require( '../../package.json' ).name,
@@ -218,46 +266,50 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .concat( internalTranspileModules )
 
   const jsIncludeCaches = {}
+
+  // from egoist/poi
+  function filterInclude( filepath ) {
+    filepath = filepath.replace( /\\/g, '/' )
+
+    // use cache
+    if ( typeof jsIncludeCaches[ filepath ] === 'boolean' ) {
+      return jsIncludeCaches[ filepath ]
+    }
+
+    if ( !filepath.includes( 'node_modules' ) ) {
+      jsIncludeCaches[ filepath ] = true
+      return true
+    }
+
+    if ( allTranspileModules ) {
+      const shouldTranspile = allTranspileModules.some( m => {
+        if ( typeof m === 'string' ) {
+          return filepath.includes( `/node_modules/${ m }/` )
+        }
+
+        if ( m && m.test ) {
+          return m.test( filepath )
+        }
+
+        return false
+      } )
+
+      jsIncludeCaches[ filepath ] = shouldTranspile
+      return shouldTranspile
+    }
+
+    jsIncludeCaches[ filepath ] = false
+    return false
+  }
+
   config.module
     .rule( 'js' )
     .test( /\.js$/ )
     .include
-      // from egoist/poi
-      .add( filepath => {
-        filepath = filepath.replace( /\\/g, '/' )
-
-        // use cache
-        if ( typeof jsIncludeCaches[ filepath ] === 'boolean' ) {
-          return jsIncludeCaches[ filepath ]
-        }
-
-        if ( !filepath.includes( 'node_modules' ) ) {
-          jsIncludeCaches[ filepath ] = true
-          return true
-        }
-
-        if ( allTranspileModules ) {
-          const shouldTranspile = allTranspileModules.some( m => {
-            if ( typeof m === 'string' ) {
-              return filepath.includes( `/node_modules/${ m }/` )
-            }
-
-            if ( m && m.test ) {
-              return m.test( filepath )
-            }
-
-            return false
-          } )
-
-          jsIncludeCaches[ filepath ] = shouldTranspile
-          return shouldTranspile
-        }
-
-        jsIncludeCaches[ filepath ] = false
-        return false
-      } )
+      .add( filterInclude )
       .end()
     .oneOf( 'normal' )
+      // cannot apply thread-loader to virtual modules
       .resource( /nut-auto-generated/ )
       .use( 'babel' )
         .loader( 'babel-loader' )
@@ -267,7 +319,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
               require.resolve( '@babel/preset-env' ),
               {
                 targets: {
-                  browsers: [ 'last 2 versions', 'safari >= 7' ]
+                  browsers: browserslist
                 }
               }
             ]
@@ -275,7 +327,8 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           plugins: [
             require.resolve( '@babel/plugin-transform-runtime' ),
             require.resolve( '@babel/plugin-syntax-dynamic-import' ),
-          ]
+          ],
+          sourceType: 'unambiguous',
         } )
         .end()
       .end()
@@ -291,8 +344,43 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
               require.resolve( '@babel/preset-env' ),
               {
                 targets: {
-                  browsers: [ 'last 2 versions', 'safari >= 7' ]
+                  browsers: browserslist
                 }
+              }
+            ]
+          ],
+          plugins: [
+            require.resolve( '@babel/plugin-transform-runtime' ),
+            require.resolve( '@babel/plugin-syntax-dynamic-import' ),
+          ],
+          sourceType: 'unambiguous',
+        } )
+
+  config.module
+    .rule( 'jsx' )
+      .test( /\.jsx$/i )
+      .include
+        .add( filterInclude )
+        .end()
+      .use( 'mount-react' )
+        .loader( require.resolve( '../loader/mount-react' ) )
+        .end()
+      .use( 'babel' )
+        .loader( 'babel-loader' )
+        .options( {
+          presets: [
+            [
+              require.resolve( '@babel/preset-env' ),
+              {
+                targets: {
+                  browsers: browserslist
+                }
+              }
+            ],
+            [
+              require.resolve( '@babel/preset-react' ),
+              {
+                development: process.env.NODE_ENV === 'development',
               }
             ]
           ],
@@ -301,6 +389,30 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
             require.resolve( '@babel/plugin-syntax-dynamic-import' ),
           ]
         } )
+        .end()
+
+  // TODO: support .tsx later
+  const tsLoaderOptions = {
+    appendTsSuffixTo: [ /\.vue$/ ]
+  }
+
+  if (
+    !fse.pathExistsSync( path.join( dirs.project, 'tsconfig.json' ) )
+  ) {
+    tsLoaderOptions.context = dirs.project
+    tsLoaderOptions.configFile = path.join( __dirname, 'tsconfig.json' )
+  }
+
+  config.module
+    .rule( 'ts' )
+      .test( /\.ts$/i )
+      .include
+        .add( filterInclude )
+        .end()
+      .use( 'ts' )
+        .loader( 'ts-loader' )
+        .options( tsLoaderOptions )
+        .end()
 
   config.module
     .rule( 'image' )
@@ -321,7 +433,10 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         } )
 
   const vueCacheOptions = {
-    cacheDirectory: path.join( process.cwd(), 'node_modules/.cache/vue-loader' ),
+    cacheDirectory: path.join(
+      process.cwd(),
+      'node_modules/.cache/vue-loader'
+    ),
     cacheIdentifier: require( '../utils/get-vue-cache-identifier' )()
   }
 
@@ -337,6 +452,25 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .end()
       .use( 'vue' )
         .loader( 'vue-loader' )
+
+  config.module
+    .rule( 'pug' )
+      .test( /\.pug$/ )
+      .oneOf( 'vue' )
+        .resourceQuery( /^\?vue/ )
+        .use( 'pug' )
+          .loader( 'pug-plain-loader' )
+          .end()
+        .end()
+      .oneOf( 'plain' )
+        .use( 'raw' )
+          .loader( 'raw-loader' )
+          .end()
+        .end()
+        .use( 'pug' )
+          .loader( 'pug-plain-loader' )
+          .end()
+        .end()
 
   if ( nutConfig.output && nutConfig.output.clean === true ) {
     config.plugin( 'clean' )

@@ -49,3 +49,71 @@ p.danger {
     background-color: @danger-color;
   }
 }
+
+.markdown-body {
+  .zi-link {
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .zi-card {
+    padding: 16px 27px;
+  }
+
+  .icon-preview {
+    ul, li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .icon_lists {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .dib {
+      margin-right: 8px;
+
+      .name, .code-name {
+        display: none;
+      }
+    }
+
+    .nut-icons {
+      font-size: 22px;
+    }
+  }
+}
+
+.markdown-body code {
+  color: #bd10e0;
+  white-space: pre-wrap;
+  background-color: transparent;
+
+  &::before {
+    content: '`';
+  }
+
+  &::after {
+    content: '`';
+  }
+}
+
+.markdown-body pre code {
+  color: #24292e;
+
+  &::before {
+    content: '';
+  }
+
+  &::after {
+    content: '';
+  }
+}
+
+code[class*="language-"], pre[class*="language-"] {
+  background-color: #fff;
+  border: solid 1px #eaeaea;
+}

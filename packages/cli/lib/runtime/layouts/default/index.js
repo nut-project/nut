@@ -1,12 +1,8 @@
+/* global window */
+
 import Regular from 'regularjs'
 import Tippy from './tippy'
 import styles from './index.module.less'
-
-const Sidebar = Regular.extend( {
-  template: `
-
-  `,
-} )
 
 // TODO: 最近浏览
 const Layout = Regular.extend( {
@@ -160,7 +156,7 @@ export default {
         layout.$inject( node )
       },
 
-      unmount( node ) {
+      unmount() {
         if ( !layout ) {
           return
         }

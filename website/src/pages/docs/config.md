@@ -11,6 +11,7 @@ nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配�
 | zh                     |                                                                              应用中文名 |                -                 |
 | en                     |                                                                              应用英文名 |                -                 |
 | logo                   |                                                                               应用 logo |                -                 |
+| html.template          |                                                                               html模板，参考 [template.ejs](https://github.com/nut-project/nut/blob/master/packages/cli/lib/webpack/template.ejs) 的写法 |                [webpack/template.ejs](https://github.com/nut-project/nut/blob/master/packages/cli/lib/webpack/template.ejs)                 |
 | html.title             |                                                                                文档标题 |               `zh`               |
 | html.favicon           |                                                                                 favicon |             nut logo             |
 | markdown.theme         |                                                                   markdown 代码高亮主题 |          prism-tomorrow          |
@@ -23,10 +24,10 @@ nut 的配置文件位于 `nut.config.js`，你可以在这里自定义 nut 配�
 | chainWebpack           | 精细配置 webpack，语法参考 [webpack-chain](https://github.com/neutrinojs/webpack-chain) |                -                 |
 | babel.transpileModules |                                                  node_modules 中需要被 babel 编译的模块 |                []                |
 | router.mode            |                                                        路由模式，可选值：hash / history |               hash               |
-| router.alias           |                                                  格式：{ 'pages/foo/bar': 'new-alias' } |                -                 |
-| router.cacheable       |                                                                    控制页面实例是否缓存 | 格式：{ 'pages/foo/bar': false } |
+| router.alias           |                                                  路由别名，格式：{ 'pages/foo/bar': 'new-alias' } |                -                 |
+| router.cacheable       |                                                                    控制页面实例是否缓存，格式：{ 'pages/foo/bar': false } | - |
 | homepage               |                           指定首页，比如'pages/foo/bar'，等价于ctx.api.homepage.set(  ) |                -                 |
-| output.publicPath      | 修改 publicPath                                                                                        |                 '/'                 |
+| output.publicPath      |                                                                         修改 publicPath |               '/'                |
 
 ## 示例
 

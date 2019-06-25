@@ -1,7 +1,5 @@
 const path = require( 'path' )
 const globby = require( 'globby' )
-const fm = require( 'front-matter' )
-const fse = require( 'fs-extra' )
 const slugify = require( '@sindresorhus/slugify' )
 const resolveFrom = require( 'resolve-from' )
 
@@ -15,8 +13,7 @@ module.exports = async function getAllPages( config ) {
 
   pages.push( ...pluginPages )
 
-  return pages
-    .filter( page => removeComponents )
+  return pages.filter( removeComponents )
 }
 
 function removeComponents( page ) {
@@ -70,6 +67,8 @@ async function getPages( root, processor = v => v ) {
       'pages/**/*.js',
       'pages/**/*.md',
       'pages/**/*.vue',
+      'pages/**/*.jsx',
+      'pages/**/*.ts',
     ], {
       cwd: root,
       deep: true,
@@ -79,13 +78,15 @@ async function getPages( root, processor = v => v ) {
     // console.log( e )
   }
 
-  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue)$/
+  const extensionReg = /(\.js|(?:\.vue)?\.md|\.vue|\.jsx|\.ts)$/
 
   const types = {
     '.js': 'js',
     '.md': 'markdown',
     '.vue.md': 'markdown',
     '.vue': 'vue',
+    '.jsx': 'js',
+    '.ts': 'js',
   }
 
   function postfix( text, index ) {
@@ -105,7 +106,7 @@ async function getPages( root, processor = v => v ) {
       return 0
     } )
     .map( async ( file, index ) => {
-      let { dir, ext, name } = path.parse( file )
+      let { dir, ext, name } = path.parse( file ) // eslint-disable-line
       const matches = extensionReg.exec( name + ext )
 
       name = matches[ 0 ] ? ( name + ext ).replace( extensionReg, '' ) : name

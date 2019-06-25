@@ -1,4 +1,6 @@
-import Router from 'unfancy-router/src/index'
+/* global window */
+
+import createRouter from 'unfancy-router/src/index'
 
 import '../css/reset.less'
 import '../css/markdown.less'
@@ -27,23 +29,25 @@ import use from '../context/use'
 
 ;( async function () {
   const routerOptions = nutConfig.router || {}
-  const router = Router( routerOptions )
+  const router = createRouter( routerOptions )
 
   const rootRouter = router.create( {
     name: '_',
     path: '',
   } )
 
+  const globals = window.NUT_GLOBALS || {}
+
   const context = {
     ...extendContext(),
     env: process.env.NODE_ENV,
     plugins: {},
     app: nutConfig,
-    api: createAPI( { pages, router: rootRouter } ),
+    api: createAPI( { pages, router: rootRouter, globals } ),
     events,
     pages,
     use,
-    globals: window.NUT_GLOBALS || {},
+    globals,
   }
 
   if ( nutConfig.sidebar ) {
@@ -54,14 +58,27 @@ import use from '../context/use'
     context.api.homepage.set( nutConfig.homepage )
   }
 
-  if ( routerOptions.cacheable ) {
+  if ( routerOptions.cacheable && ( typeof routerOptions.cacheable === 'object' ) ) {
     Object.keys( routerOptions.cacheable )
       .forEach( page => {
-        context.api.page( page ).set( 'cacheable', !!routerOptions.cacheable[ page ] )
+        context.api.page( page ).set(
+          'cacheable',
+          Boolean( routerOptions.cacheable[ page ] )
+        )
       } )
   }
 
   const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
+
+  if ( routerOptions.alias ) {
+    Object.keys( routerOptions.alias ).forEach( page => {
+      const found = rootRouter.find( r => r.options.page === page )
+      const alias = routerOptions.alias[ page ]
+      if ( found && alias ) {
+        found.alias( alias )
+      }
+    } )
+  }
 
   await app( context )
 
@@ -86,23 +103,17 @@ import use from '../context/use'
     }
   }
 
-  if ( routerOptions.alias ) {
-    Object.keys( routerOptions.alias ).forEach( page => {
-      const found = rootRouter.find( r => r.options.page === page )
-      if ( found ) {
-        found.alias( String( routerOptions.alias[ page ] ) )
-      }
-    } )
-  }
-
   nico.start( '#app' )
   events.emit( 'route:enabled', context )
 
   const matched = rootRouter.match()
-
-  // TODO: match /, not by homepage, if exists push( '/' )
   if ( !matched || ( matched.router === rootRouter ) ) {
-    if ( homepage ) {
+    const homeMatched = rootRouter.match( '/' )
+
+    if (
+      homeMatched &&
+      ( homeMatched.router !== rootRouter )
+    ) {
       rootRouter.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
@@ -115,10 +126,15 @@ import use from '../context/use'
   events.emit( 'system:after-startup', context )
 
   if ( module.hot ) {
-    module.hot.accept( '@/nut-auto-generated-nut-config', function refreshTheme(  ) {
-      switchTheme( nutConfig && nutConfig.theme || 'ocean' )
-      rootRouter.switchMode( nutConfig && nutConfig.router && nutConfig.router.mode || 'hash' )
-    } )
+    module.hot.accept(
+      '@/nut-auto-generated-nut-config',
+      function refreshTheme() {
+        switchTheme( ( nutConfig && nutConfig.theme ) || 'ocean' )
+        const mode = ( nutConfig && nutConfig.router && nutConfig.router.mode ) ||
+          'hash'
+        rootRouter.switchMode( mode )
+      }
+    )
 
     module.hot.accept( '@/nut-auto-generated-pages', () => {
       context.pages = pages

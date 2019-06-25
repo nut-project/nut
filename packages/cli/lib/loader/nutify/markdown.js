@@ -1,7 +1,12 @@
-export default function ( source ) {
+export default function ( all = {} ) {
+  const source = all.default || ''
+  const attributes = all.attributes || {}
+
   return {
-    $$nut( ctx ) {
+    $$nut() {
       return {
+        attributes,
+
         mount( node ) {
           node.innerHTML = source
         },

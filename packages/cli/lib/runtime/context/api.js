@@ -3,15 +3,21 @@ import layout from '../core/layout'
 import page from '../core/page'
 import createRouter from '../core/router'
 import homepage from '../core/homepage'
+import createQuicklink from '../core/quicklink'
 
-export default function ( { pages, router } = {} ) {
-  let axiosInstance = axios.create( {
+export default function ( { pages, router, globals } = {} ) {
+  const axiosInstance = axios.create( {
     withCredentials: true,
     crossDomain: true,
   } )
 
   return {
     axios: axiosInstance,
+
+    quicklink: createQuicklink( {
+      globals,
+      pages,
+    } ),
 
     layout,
 
@@ -26,7 +32,7 @@ export default function ( { pages, router } = {} ) {
       configure( sidebar = [] ) {
         sidebar.forEach( s => {
           if ( s.children ) {
-            walkChildren( s.children, s, ( child, index, parent ) => {
+            walkChildren( s.children, s, child => {
               const normalized = child.path.replace( /^(\/)/g, '' )
               const page = pages.find( child => child.page === normalized )
 
