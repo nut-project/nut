@@ -1,5 +1,6 @@
 dist
 /server
+/demo
 .DS_Store
 
 # Logs
