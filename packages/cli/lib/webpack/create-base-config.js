@@ -70,15 +70,22 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( StatsWriterPlugin, [
         {
           filename: 'manifest.json',
-          transform( data ) {
+          transform( data, opts ) {
             const files = [
               ...getFilesFromChunk( data.assetsByChunkName.vendors ),
               ...getFilesFromChunk( data.assetsByChunkName.child ),
             ]
 
+            let publicPath = '/'
+
+            try {
+              publicPath = opts.compiler.options.output.publicPath
+            } catch ( e ) {}
+
             return JSON.stringify( {
               files,
               id: appId,
+              publicPath,
             }, 0, 2 )
           }
         }
@@ -88,15 +95,22 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( StatsWriterPlugin, [
         {
           filename: 'manifest.js',
-          transform( data ) {
+          transform( data, opts ) {
             const files = [
               ...getFilesFromChunk( data.assetsByChunkName.vendors ),
               ...getFilesFromChunk( data.assetsByChunkName.child ),
             ]
 
+            let publicPath = '/'
+
+            try {
+              publicPath = opts.compiler.options.output.publicPath
+            } catch ( e ) {}
+
             const json = JSON.stringify( {
               files,
               id: appId,
+              publicPath,
             } )
 
             return `
@@ -500,11 +514,8 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( CleanWebpackPlugin )
   }
 
-  if ( nutConfig.output && nutConfig.output.publicPath ) {
-    config.output.publicPath( nutConfig.output.publicPath )
-  } else {
-    config.output.publicPath( '/' )
-  }
+  const publicPath = ( nutConfig.output && nutConfig.output.publicPath ) || '/'
+  config.output.publicPath( publicPath )
 
   return config
 }

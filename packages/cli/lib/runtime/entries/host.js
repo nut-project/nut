@@ -53,6 +53,7 @@ function loadChild( manifest ) {
   const name = manifest.name
   const prefix = manifest.prefix
   const id = manifest.id
+  const publicPath = manifest.publicPath
 
   // TODO: webpack 对先后顺序的要求
   return manifest.files.reduce( ( total, file ) => {
@@ -61,6 +62,7 @@ function loadChild( manifest ) {
         id,
         name,
         prefix,
+        publicPath,
       } )
     } )
   }, Promise.resolve() )
@@ -68,31 +70,33 @@ function loadChild( manifest ) {
 
 ( async function () {
   const compose = nutConfig.compose
-  const collection = []
+  const collections = []
   const manifests = []
 
   if ( compose ) {
     window.nutJsonp = function ( { pages, config, routes } = {}, dataset = {} ) {
-      const { id, name, prefix } = dataset
+      const { id, name, prefix, publicPath } = dataset
 
-      collection.push( {
+      collections.push( {
         id,
         name,
         prefix,
+        publicPath,
         pages,
         config,
         routes
       } )
     }
 
-    window.nutManifestJSONP = function ( { files = [], id } = {}, dataset = {} ) {
+    window.nutManifestJSONP = function ( { files = [], id, publicPath = '/' } = {}, dataset = {} ) {
       const { name } = dataset
       manifests.push( {
         name,
         base: compose[ name ].service,
         prefix: compose[ name ].prefix,
         files,
-        id
+        id,
+        publicPath,
       } )
     }
 
@@ -105,19 +109,20 @@ function loadChild( manifest ) {
     await Promise.all( jobs )
       .then( () => {
         return Promise.all(
-          manifests.map( manifest => loadChild( manifest, collection ) )
+          manifests.map( manifest => loadChild( manifest, collections ) )
         )
       } )
   }
 
-  const { pages, routes } = collection.reduce( ( total, c ) => {
+  const { pages, routes } = collections.reduce( ( total, c ) => {
     const prefix = c.prefix
     const name = c.name
     const id = c.id
+    const publicPath = c.publicPath
 
     const pages = c.pages.map( page => {
       return Object.assign( {}, page, {
-        compose: { id, name },
+        compose: { id, name, publicPath },
         name: name + '$' + page.name,
         page: name + '/' + page.page,
         route: prefix + page.route,
@@ -126,7 +131,7 @@ function loadChild( manifest ) {
 
     const routes = c.routes.map( route => {
       return Object.assign( {}, route, {
-        compose: { id, name },
+        compose: { id, name, publicPath },
         name: name + '$' + route.name,
         page: name + '/' + route.page,
         path: prefix + route.path,

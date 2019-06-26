@@ -214,16 +214,28 @@ export default function createNico(
                   }
 
                   // remove all un-related css
-                  const composeId = routeConfig.compose &&
-                    routeConfig.compose.id
-                  if ( composeId ) {
-                    const head = document.head
+                  const compose = routeConfig.compose || {}
+                  const head = document.head
+
+                  if ( compose.id ) {
                     const linkTags = head.getElementsByTagName( 'link' )
                     ;[].forEach.call( linkTags, function ( tag ) {
-                      if ( tag.dataset.appid && tag.dataset.appid !== composeId ) {
+                      if ( tag.dataset.appid && tag.dataset.appid !== compose.id ) {
                         tag.parentNode.removeChild( tag )
                       }
                     } )
+                  }
+
+                  if ( compose.publicPath ) {
+                    let baseTag = head.getElementsByTagName( 'base' )[ 0 ]
+
+                    if ( baseTag && baseTag.hasAttribute( 'href' ) ) {
+                      baseTag.href = compose.publicPath
+                    } else {
+                      baseTag = document.createElement( 'base' )
+                      baseTag.href = compose.publicPath
+                      head.appendChild( baseTag )
+                    }
                   }
 
                   return
