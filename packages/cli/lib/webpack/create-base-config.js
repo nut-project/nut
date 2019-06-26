@@ -346,10 +346,10 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .end()
     .oneOf( 'with-thread' )
       .use( 'thread' )
-        .loader( 'thread-loader' )
+        .loader( require.resolve( 'thread-loader' ) )
         .end()
       .use( 'babel' )
-        .loader( 'babel-loader' )
+        .loader( require.resolve( 'babel-loader' ) )
         .options( {
           presets: [
             [
@@ -467,8 +467,6 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( 'vue' )
         .loader( require.resolve( 'vue-loader' ) )
         .options( {
-          // use require.resolve to fix thread-loader issue
-          compiler: require( require.resolve( 'vue-template-compiler' ) )
         } )
 
   config.module
