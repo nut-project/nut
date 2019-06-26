@@ -246,7 +246,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
           } )
           .end()
         .use( 'mdx-layout' )
-          .loader( require.resolve( '../loader/provide-mdx-layout' ) )
+          .loader( require.resolve( '../loader/mdx-arrtibutes' ) )
           .end()
         .end()
       .oneOf( 'normal' )
