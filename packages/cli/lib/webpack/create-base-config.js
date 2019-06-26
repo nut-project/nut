@@ -432,6 +432,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( 'url' )
         .loader( require.resolve( 'url-loader' ) )
         .options( {
+          fallback: require.resolve( 'file-loader' ),
           limit: 8192
         } )
 
@@ -441,6 +442,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( 'url' )
         .loader( require.resolve( 'url-loader' ) )
         .options( {
+          fallback: require.resolve( 'file-loader' ),
           limit: 8192
         } )
 
@@ -465,7 +467,8 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( 'vue' )
         .loader( require.resolve( 'vue-loader' ) )
         .options( {
-          compiler: require( 'vue-template-compiler' )
+          // use require.resolve to fix thread-loader issue
+          compiler: require( require.resolve( 'vue-template-compiler' ) )
         } )
 
   config.module
