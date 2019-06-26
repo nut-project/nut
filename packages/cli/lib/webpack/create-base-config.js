@@ -464,6 +464,9 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .end()
       .use( 'vue' )
         .loader( require.resolve( 'vue-loader' ) )
+        .options( {
+          compiler: require( 'vue-template-compiler' )
+        } )
 
   config.module
     .rule( 'pug' )
