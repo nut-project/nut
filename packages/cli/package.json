@@ -44,7 +44,7 @@
     "copy-webpack-plugin": "^5.0.2",
     "core-js": "^3.1.4",
     "cosmiconfig": "^5.2.0",
-    "css-loader": "^2.1.1",
+    "css-loader": "^3.0.0",
     "file-loader": "^4.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "front-matter": "^3.0.1",
