@@ -66,7 +66,7 @@ async function dev() {
   webpackConfig.devtool( 'cheap-module-source-map' )
 
   webpackConfig.output
-    .filename( '[name].js' )
+    .filename( '[name].[hash:16].js' )
 
   webpackConfig
     .plugin( 'hot' )
