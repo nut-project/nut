@@ -9,6 +9,7 @@ const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
 const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
+const PnpWebpackPlugin = require( 'pnp-webpack-plugin' )
 const Config = require( 'webpack-chain' )
 const threadLoader = require( 'thread-loader' )
 
@@ -143,15 +144,21 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
           '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
         ] )
         .end()
+      .plugin( 'pnp' )
+        .use( PnpWebpackPlugin )
+        .end()
       .end()
     .resolveLoader
       .modules
-      .clear()
-      .add( path.join( dirs.project, 'node_modules' ) )
-      .add( path.join( dirs.cli, '../../' ) )
-      .add( path.join( dirs.cli, 'node_modules' ) )
-      .add( 'node_modules' )
-      .end()
+        .clear()
+        .add( path.join( dirs.project, 'node_modules' ) )
+        .add( path.join( dirs.cli, '../../' ) )
+        .add( path.join( dirs.cli, 'node_modules' ) )
+        .add( 'node_modules' )
+        .end()
+      .plugin( 'pnp' )
+        .use( PnpWebpackPlugin.moduleLoader( module ) )
+        .end()
 
   config
     .plugin( 'copy' )
@@ -410,15 +417,15 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .add( filterInclude )
         .end()
       .use( 'ts' )
-        .loader( 'ts-loader' )
-        .options( tsLoaderOptions )
+        .loader( require.resolve( 'ts-loader' ) )
+        .options( PnpWebpackPlugin.tsLoaderOptions( tsLoaderOptions ) )
         .end()
 
   config.module
     .rule( 'image' )
       .test( /\.(png|jpg|gif)$/i )
       .use( 'url' )
-        .loader( 'url-loader' )
+        .loader( require.resolve( 'url-loader' ) )
         .options( {
           limit: 8192
         } )
@@ -427,7 +434,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     .rule( 'font' )
       .test( /\.(ttf|eot|woff|woff2|svg)(\?t=\d+)?$/i )
       .use( 'url' )
-        .loader( 'url-loader' )
+        .loader( require.resolve( 'url-loader' ) )
         .options( {
           limit: 8192
         } )
@@ -444,14 +451,14 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     .rule( 'vue' )
       .test( /\.vue$/ )
       .use( 'cache' )
-        .loader( 'cache-loader' )
+        .loader( require.resolve( 'cache-loader' ) )
         .options( vueCacheOptions )
         .end()
       .use( 'mount-vue' )
         .loader( require.resolve( '../loader/mount-vue' ) )
         .end()
       .use( 'vue' )
-        .loader( 'vue-loader' )
+        .loader( require.resolve( 'vue-loader' ) )
 
   config.module
     .rule( 'pug' )
