@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
   port: 9000,
   router: {
     mode: 'history',
@@ -17,5 +17,13 @@ module.exports = {
   homepage: 'pages/home',
   babel: {
     transpileModules: [ '@zeit-ui/vue' ]
+  },
+}
+
+if ( process.env.NODE_ENV === 'production' ) {
+  config.output = {
+    publicPath: 'https://nut.js.org/'
   }
 }
+
+module.exports = config
