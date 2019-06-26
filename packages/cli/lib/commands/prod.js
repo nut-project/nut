@@ -14,6 +14,7 @@ const applyCSSRules = require( '../webpack/apply-css-rules' )
 const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const generateVirtualModules = require( '../utils/generate-virtual-modules' )
+const getAppId = require( '../utils/get-app-id' )
 
 async function prod() {
   process.env.NODE_ENV = 'production'
@@ -23,7 +24,9 @@ async function prod() {
 
   ensureConfigDefaults( config )
 
-  const webpackConfig = createBaseWebpackConfig( config )
+  const appId = getAppId( config )
+
+  const webpackConfig = createBaseWebpackConfig( config, appId )
 
   webpackConfig.mode( 'production' )
 
@@ -32,7 +35,7 @@ async function prod() {
   webpackConfig.output
     .filename( '[name].[contenthash].js' )
 
-  applyCSSRules( webpackConfig, 'prod' )
+  applyCSSRules( webpackConfig, 'prod', appId )
 
   webpackConfig.optimization
     .minimizer( 'js' )

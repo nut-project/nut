@@ -1,8 +1,9 @@
 /* eslint-disable indent */
 
-const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
+// https://github.com/webpack-contrib/mini-css-extract-plugin/issues/413
+const MiniCssExtractPlugin = require( './mini-css-extract-plugin' )
 
-module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev' ) {
+module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev', appId ) {
   applyCSSRule( webpackConfig, 'less', /\.less$/, 'less-loader', {}, env )
 
   applyCSSRule( webpackConfig, 'scss', /\.scss$/, 'sass-loader', {
@@ -22,7 +23,11 @@ module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev' ) {
 
   webpackConfig.plugin( 'mini-css-extract' )
     .use( MiniCssExtractPlugin, [ {
-      filename: '[name].[contenthash].css',
+      attrs: {
+        'data-appid': appId
+      },
+      filename: `[name].[contenthash].css`,
+      chunkFilename: `[name].[contenthash].css`,
     } ] )
 }
 
@@ -71,7 +76,7 @@ function applyOneOfRule( rule, lang, loader, options, env, modules ) {
     .loader( 'postcss-loader' )
     .options( {
       plugins: [
-        require( 'autoprefixer' )
+        require( 'autoprefixer' )()
       ],
     } )
 

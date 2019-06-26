@@ -10,7 +10,6 @@ const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const Config = require( 'webpack-chain' )
-const hashsum = require( 'hash-sum' )
 const threadLoader = require( 'thread-loader' )
 
 const dirs = {
@@ -18,12 +17,15 @@ const dirs = {
   project: process.cwd(),
 }
 
-const pkg = require( dirs.project + '/package.json' )
+let pkg = {}
+try {
+  pkg = require( dirs.project + '/package.json' )
+} catch ( e ) {}
 
 const browserslist = pkg.browserslist ||
   [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
 
-module.exports = function createBaseConfig( nutConfig = {} ) {
+module.exports = function createBaseConfig( nutConfig = {}, appId ) {
   threadLoader.warmup( {}, [
     'babel-loader',
   ] )
@@ -31,7 +33,6 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
   const config = new Config()
 
   let entry
-  let suffix
 
   switch ( nutConfig.type ) {
   case 'host':
@@ -39,8 +40,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     break
   case 'child':
     entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
-    suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
-    config.output.jsonpFunction( 'webpackJsonp_' + suffix )
+    config.output.jsonpFunction( 'webpackJsonp_' + appId )
     config.plugin( 'stats-write' )
       .use( StatsWriterPlugin, [
         {
@@ -83,6 +83,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
 
             const json = JSON.stringify( {
               files,
+              id: appId,
             }, 0, 2 )
 
             return `

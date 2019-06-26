@@ -15,6 +15,7 @@ const applyCSSRules = require( '../webpack/apply-css-rules' )
 const generateVirtualModules = require( '../utils/generate-virtual-modules' )
 const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
+const getAppId = require( '../utils/get-app-id' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -57,7 +58,8 @@ async function dev() {
 
   let virtualModules
 
-  const webpackConfig = createBaseWebpackConfig( nutConfig )
+  const appId = getAppId()
+  const webpackConfig = createBaseWebpackConfig( nutConfig, appId )
 
   webpackConfig.mode( 'development' )
 
@@ -80,7 +82,7 @@ async function dev() {
     } )
     .use( VirtualModulesPlugin, [ modules ] )
 
-  applyCSSRules( webpackConfig, 'dev' )
+  applyCSSRules( webpackConfig, 'dev', appId )
 
   if ( typeof nutConfig.chainWebpack === 'function' ) {
     nutConfig.chainWebpack( webpackConfig )

@@ -2,7 +2,13 @@
 import quicklink from 'quicklink'
 import nutConfig from '@/nut-auto-generated-nut-config'
 
-export default function createNico( rootRouter, routerFactory, prefix = '', ctx = {}, pluginOptions = {} ) {
+export default function createNico(
+  rootRouter,
+  routerFactory,
+  prefix = '',
+  ctx = {},
+  pluginOptions = {}
+) {
   const { events, pages, globals, api } = ctx
 
   let defaultCacheable = ctx.app && ctx.app.router && ctx.app.router.defaultCacheable
@@ -148,9 +154,8 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
               )
             }
 
-            if ( !this.resolvePage ) {
-              this.resolvePage = routeConfig.component()
-            }
+            // re-fetch
+            this.resolvePage = routeConfig.component()
 
             this.resolvePage
               .then( page => {
@@ -207,6 +212,20 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                       ''
                     )
                   }
+
+                  // remove all un-related css
+                  const composeId = routeConfig.compose &&
+                    routeConfig.compose.id
+                  if ( composeId ) {
+                    const head = document.head
+                    const linkTags = head.getElementsByTagName( 'link' )
+                    ;[].forEach.call( linkTags, function ( tag ) {
+                      if ( tag.dataset.appid && tag.dataset.appid !== composeId ) {
+                        tag.parentNode.removeChild( tag )
+                      }
+                    } )
+                  }
+
                   return
                 }
 

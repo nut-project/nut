@@ -52,10 +52,12 @@ function loadJs( url, dataset ) {
 function loadChild( manifest ) {
   const name = manifest.name
   const prefix = manifest.prefix
+  const id = manifest.id
 
   return manifest.files.reduce( ( total, file ) => {
     return total.then( () => {
       return loadJs( manifest.base + '/' + file, {
+        id,
         name,
         prefix,
       } )
@@ -70,9 +72,10 @@ function loadChild( manifest ) {
 
   if ( compose ) {
     window.nutJsonp = function ( { pages, config, routes } = {}, dataset = {} ) {
-      const { name, prefix } = dataset
+      const { id, name, prefix } = dataset
 
       collection.push( {
+        id,
         name,
         prefix,
         pages,
@@ -81,13 +84,14 @@ function loadChild( manifest ) {
       } )
     }
 
-    window.nutManifestJSONP = function ( { files = [] } = {}, dataset = {} ) {
+    window.nutManifestJSONP = function ( { files = [], id } = {}, dataset = {} ) {
       const { name } = dataset
       manifests.push( {
         name,
         base: compose[ name ].service,
         prefix: compose[ name ].prefix,
         files,
+        id
       } )
     }
 
@@ -108,9 +112,11 @@ function loadChild( manifest ) {
   const { pages, routes } = collection.reduce( ( total, c ) => {
     const prefix = c.prefix
     const name = c.name
+    const id = c.id
 
     const pages = c.pages.map( page => {
       return Object.assign( {}, page, {
+        compose: { id, name },
         name: name + '$' + page.name,
         page: name + '/' + page.page,
         route: prefix + page.route,
@@ -119,6 +125,7 @@ function loadChild( manifest ) {
 
     const routes = c.routes.map( route => {
       return Object.assign( {}, route, {
+        compose: { id, name },
         name: name + '$' + route.name,
         page: name + '/' + route.page,
         path: prefix + route.path,
@@ -174,7 +181,13 @@ function loadChild( manifest ) {
       } )
   }
 
-  const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
+  const nico = await setupNico(
+    context,
+    pluginOptions,
+    routes,
+    rootRouter,
+    router
+  )
 
   if ( routerOptions.alias ) {
     Object.keys( routerOptions.alias ).forEach( page => {
