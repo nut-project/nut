@@ -54,6 +54,7 @@ function loadChild( manifest ) {
   const prefix = manifest.prefix
   const id = manifest.id
 
+  // TODO: webpack 对先后顺序的要求
   return manifest.files.reduce( ( total, file ) => {
     return total.then( () => {
       return loadJs( manifest.base + '/' + file, {

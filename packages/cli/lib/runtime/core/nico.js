@@ -89,7 +89,7 @@ export default function createNico(
       const chunkUrls = getAssetUrls( siblings.map( s => s.page && s.page.name ).filter( Boolean ) )
       const vendorUrls = getAssetUrls(
         Object.keys( globals.STATS_ASSETS_BY_CHUNKNAME || {} )
-          .filter( key => key.indexOf( 'vendors~' ) === 0 )
+          .filter( key => key.indexOf( 'vendors' ) === 0 )
       )
 
       quicklink( {

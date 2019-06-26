@@ -33,33 +33,52 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
 
   const config = new Config()
 
-  let entry
-
-  switch ( nutConfig.type ) {
-  case 'host':
-    entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
-    break
-  case 'child':
-    entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
+  if ( appId ) {
     config.output.jsonpFunction( 'webpackJsonp_' + appId )
+  }
+
+  function getFilesFromChunk( chunk ) {
+    const files = []
+
+    if ( Array.isArray( chunk ) ) {
+      const jsfiles = chunk.filter( file => file.endsWith( '.js' ) )
+      files.push( ...jsfiles )
+    } else if ( typeof chunk === 'string' ) {
+      if ( chunk.endsWith( '.js' ) ) {
+        files.push( chunk )
+      }
+    }
+
+    return files
+  }
+
+  if ( nutConfig.type === 'host' ) {
+    config
+      .entry( 'index' )
+        .add( path.join( dirs.cli, 'lib/runtime/entries/host.js' ) )
+        .end()
+  } else {
+    config
+      .entry( 'index' )
+        .add( path.join( dirs.cli, 'lib/runtime/entries/single.js' ) )
+        .end()
+    config
+      .entry( 'child' )
+        .add( path.join( dirs.cli, 'lib/runtime/entries/child.js' ) )
+        .end()
     config.plugin( 'stats-write' )
       .use( StatsWriterPlugin, [
         {
           filename: 'manifest.json',
           transform( data ) {
-            const files = []
+            const files = [
+              ...getFilesFromChunk( data.assetsByChunkName.vendors ),
+              ...getFilesFromChunk( data.assetsByChunkName.child ),
+            ]
 
-            const index = data.assetsByChunkName.index
-            if ( Array.isArray( index ) ) {
-              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-              files.push( ...jsfiles )
-            } else if ( typeof index === 'string' ) {
-              if ( index.endsWith( '.js' ) ) {
-                files.push( index )
-              }
-            }
             return JSON.stringify( {
               files,
+              id: appId,
             }, 0, 2 )
           }
         }
@@ -70,22 +89,15 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         {
           filename: 'manifest.js',
           transform( data ) {
-            const files = []
-
-            const index = data.assetsByChunkName.index
-            if ( Array.isArray( index ) ) {
-              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-              files.push( ...jsfiles )
-            } else if ( typeof index === 'string' ) {
-              if ( index.endsWith( '.js' ) ) {
-                files.push( index )
-              }
-            }
+            const files = [
+              ...getFilesFromChunk( data.assetsByChunkName.vendors ),
+              ...getFilesFromChunk( data.assetsByChunkName.child ),
+            ]
 
             const json = JSON.stringify( {
               files,
               id: appId,
-            }, 0, 2 )
+            } )
 
             return `
 ( function () {
@@ -99,26 +111,20 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
           }
         }
       ] )
-    break
-  default:
-    entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
-  }
-
-  if ( nutConfig.type === 'single' ) {
-    config.optimization
-      .runtimeChunk( {
-        name: 'runtime',
-      } )
   }
 
   config
-    .entry( 'index' )
-      .add( entry )
-      .end()
     .optimization
       .splitChunks( {
         chunks: 'all',
         minChunks: 2,
+        cacheGroups: {
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          }
+        },
       } )
       .end()
     .performance
@@ -190,6 +196,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
           template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
           title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
           favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
+          excludeChunks: [ 'child' ],
         }
       ] )
       .end()
