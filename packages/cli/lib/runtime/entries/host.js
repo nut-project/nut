@@ -49,25 +49,6 @@ function loadJs( url, dataset ) {
   } )
 }
 
-function loadChild( manifest ) {
-  const name = manifest.name
-  const prefix = manifest.prefix
-  const id = manifest.id
-  const publicPath = manifest.publicPath
-
-  // TODO: webpack 对先后顺序的要求
-  return manifest.files.reduce( ( total, file ) => {
-    return total.then( () => {
-      return loadJs( manifest.base + '/' + file, {
-        id,
-        name,
-        prefix,
-        publicPath,
-      } )
-    } )
-  }, Promise.resolve() )
-}
-
 ( async function () {
   const compose = nutConfig.compose
   const collections = []
@@ -75,20 +56,29 @@ function loadChild( manifest ) {
 
   if ( compose ) {
     window.nutJsonp = function ( { pages, config, routes } = {}, dataset = {} ) {
-      const { id, name, prefix, publicPath } = dataset
+      const { name: composeName } = dataset
 
-      collections.push( {
-        id,
-        name,
-        prefix,
-        publicPath,
-        pages,
-        config,
-        routes
+      const manifest = manifests.find( m => {
+        return m.name === composeName
       } )
+
+      if ( manifest ) {
+        const { id, name, prefix, publicPath } = manifest
+
+        collections.push( {
+          id,
+          name,
+          prefix,
+          publicPath,
+          pages,
+          config,
+          routes
+        } )
+      }
     }
 
     window.nutManifestJSONP = function ( { files = [], id, publicPath = '/' } = {}, dataset = {} ) {
+      // name -> manifest
       const { name } = dataset
       manifests.push( {
         name,
@@ -107,11 +97,6 @@ function loadChild( manifest ) {
     } )
 
     await Promise.all( jobs )
-      .then( () => {
-        return Promise.all(
-          manifests.map( manifest => loadChild( manifest, collections ) )
-        )
-      } )
   }
 
   const { pages, routes } = collections.reduce( ( total, c ) => {

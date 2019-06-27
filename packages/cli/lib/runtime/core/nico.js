@@ -524,7 +524,7 @@ export default function createNico(
           route.found = true
         }
 
-        if ( child.page.name === activeRouterName ) {
+        if ( child.page && ( child.page.name === activeRouterName ) ) {
           isAnyPageActive = true
           child.active = true
         } else {

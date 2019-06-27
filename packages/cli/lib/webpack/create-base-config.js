@@ -2,10 +2,7 @@
 
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
-const CopyPlugin = require( 'copy-webpack-plugin' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
-const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
 const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
@@ -37,106 +34,25 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     config.output.jsonpFunction( 'webpackJsonp_' + appId )
   }
 
-  function getFilesFromChunk( chunk ) {
-    const files = []
-
-    if ( Array.isArray( chunk ) ) {
-      const jsfiles = chunk.filter( file => file.endsWith( '.js' ) )
-      files.push( ...jsfiles )
-    } else if ( typeof chunk === 'string' ) {
-      if ( chunk.endsWith( '.js' ) ) {
-        files.push( chunk )
-      }
-    }
-
-    return files
-  }
-
-  if ( nutConfig.type === 'host' ) {
-    config
-      .entry( 'index' )
-        .add( path.join( dirs.cli, 'lib/runtime/entries/host.js' ) )
-        .end()
-  } else {
-    config
-      .entry( 'index' )
-        .add( path.join( dirs.cli, 'lib/runtime/entries/single.js' ) )
-        .end()
-    config
-      .entry( 'child' )
-        .add( path.join( dirs.cli, 'lib/runtime/entries/child.js' ) )
-        .end()
-    config.plugin( 'stats-write' )
-      .use( StatsWriterPlugin, [
-        {
-          filename: 'manifest.json',
-          transform( data, opts ) {
-            const files = [
-              ...getFilesFromChunk( data.assetsByChunkName.vendors ),
-              ...getFilesFromChunk( data.assetsByChunkName.child ),
-            ]
-
-            let publicPath = '/'
-
-            try {
-              publicPath = opts.compiler.options.output.publicPath
-            } catch ( e ) {}
-
-            return JSON.stringify( {
-              files,
-              id: appId,
-              publicPath,
-            }, 0, 2 )
-          }
-        }
-      ] )
-    // use jsonp to fix cors issue
-    config.plugin( 'stats-write-js' )
-      .use( StatsWriterPlugin, [
-        {
-          filename: 'manifest.js',
-          transform( data, opts ) {
-            const files = [
-              ...getFilesFromChunk( data.assetsByChunkName.vendors ),
-              ...getFilesFromChunk( data.assetsByChunkName.child ),
-            ]
-
-            let publicPath = '/'
-
-            try {
-              publicPath = opts.compiler.options.output.publicPath
-            } catch ( e ) {}
-
-            const json = JSON.stringify( {
-              files,
-              id: appId,
-              publicPath,
-            } )
-
-            return `
-( function () {
-  if ( window.nutManifestJSONP ) {
-    var currentScript = document.currentScript
-    var dataset = currentScript ? currentScript.dataset : {}
-    window.nutManifestJSONP( ${ json }, dataset )
-  }
-} )()
-`.trim()
-          }
-        }
-      ] )
-  }
-
   config
     .optimization
       .splitChunks( {
-        chunks: 'all',
-        minChunks: 2,
         cacheGroups: {
           vendors: {
-            test: /[\\/]node_modules[\\/]/,
+            test( mod, chunks ) {
+              if ( !mod.context.includes( 'node_modules' ) ) {
+                 return false
+               }
+
+              if ( chunks.find( chunk => chunk.name === 'child' ) ) {
+                return false
+              }
+
+              return true
+            },
             name: 'vendors',
-            chunks: 'all',
+            chunks: 'initial',
+            minChunks: 2,
           }
         },
       } )
@@ -186,34 +102,6 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .end()
 
   config
-    .plugin( 'copy' )
-      .use( CopyPlugin, [
-        [
-          {
-            from: {
-              glob: '**/*',
-              dot: true
-            },
-            to: '.',
-            ignore: [ '.DS_Store' ]
-          }
-        ],
-        {
-          context: path.join( dirs.project, 'src/public' )
-        }
-      ] )
-      .end()
-    .plugin( 'html' )
-      .use( HtmlWebpackPlugin, [
-        {
-          ...( nutConfig.html || {} ),
-          template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
-          title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
-          favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
-          excludeChunks: [ 'child' ],
-        }
-      ] )
-      .end()
     .plugin( 'vue-loader' )
       .use( VueLoaderPlugin )
       .end()
