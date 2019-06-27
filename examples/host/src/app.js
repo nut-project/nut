@@ -5,6 +5,7 @@ export default ctx => {
       children: [
         { title: 'a', path: 'docs/pages/a' },
         { title: 'c', path: 'demo/pages/c' },
+        { title: 'haha', path: 'nut/pages/guide/introduction' },
       ]
     },
     {

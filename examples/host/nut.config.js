@@ -2,6 +2,8 @@ module.exports = {
   type: 'host',
 
   layout: 'now',
+  
+  zh: 'nut docs',
 
   compose: {
     docs: {
@@ -12,6 +14,10 @@ module.exports = {
       service: 'http://127.0.0.1:9002',
       prefix: '/demo',
     },
+    nut: {
+      service: 'https://nut.js.org',
+      prefix: '/nut'
+    }
   },
 
   // 合并策略
