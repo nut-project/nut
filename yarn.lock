@@ -8319,10 +8319,10 @@ unbzip2-stream@^1.0.9:
     buffer "^5.2.1"
     through "^2.3.8"
 
-unfancy-router@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.npmjs.org/unfancy-router/-/unfancy-router-0.1.5.tgz#6512218a968b4ef40d0711538792cefdcab2a60d"
-  integrity sha512-8nRhE/BYAUIypeDlbW4yXlnOBeB4zGsKTdaPTbZmLY7oUlVeis9hIWyVUeSbsx1bhoxSlKwsmJkkndBOulKisg==
+unfancy-router@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.1.6.tgz#32985ecfbbeca0b28a54a9383966f58c762f9c1e"
+  integrity sha512-1BJFpkX1omtr5YeNixDY0NirDH5mcTGgsuWpr3RRQki2KGZvfrOhOE15yPULIo6j78rpkGLQ+KxdOC2jH3W1Cg==
   dependencies:
     dush "^3.0.5"
     fast-memoize "^2.2.8"

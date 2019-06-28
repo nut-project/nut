@@ -93,7 +93,7 @@
     "tippy.js": "^4.2.1",
     "ts-loader": "^6.0.3",
     "typescript": "^3.5.2",
-    "unfancy-router": "^0.1.5",
+    "unfancy-router": "^0.1.6",
     "url-loader": "^1.1.2",
     "v8-compile-cache": "^2.0.3",
     "vue": "^2.6.10",

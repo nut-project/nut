@@ -16,7 +16,8 @@ module.exports = {
         'revert',
         'style',
         'test',
-        'release'
+        'release',
+        'dependency',
       ]
     ]
   }
