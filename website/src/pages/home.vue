@@ -1,5 +1,9 @@
 <template>
   <article class="homepage">
+    <div class="progress_container">
+      <div class="progress_container__inner" id="nut-now-layout-progress"></div>
+    </div>
+
     <div class="header">
       <div class="header__content">
         <div class="title">
@@ -73,6 +77,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.progress_container {
+  position: fixed;
+  width: 100%;
+  height: 2px;
+  z-index: 16;
+  
+  &__inner {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .header {
   position: fixed;
   top: 0;
