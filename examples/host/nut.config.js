@@ -2,7 +2,7 @@ module.exports = {
   type: 'host',
 
   layout: 'now',
-  
+
   zh: 'nut docs',
 
   compose: {
