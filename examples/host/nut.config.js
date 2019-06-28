@@ -15,6 +15,7 @@ module.exports = {
       prefix: '/todomvc'
     }
   },
+  homepage: 'nut/pages/home',
 
   // 合并策略
   // composeStrategy: null, // 'default' / 'independent'
