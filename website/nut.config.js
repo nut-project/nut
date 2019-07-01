@@ -1,3 +1,5 @@
+const path = require( 'path' )
+
 const config = {
   port: 9000,
   router: {
@@ -18,6 +20,11 @@ const config = {
   babel: {
     transpileModules: [ '@zeit-ui/vue' ]
   },
+  plugins: {
+    nowCustom: {
+      path: path.join( __dirname, './src/plugins/now-custom/index.js' ),
+    }
+  }
 }
 
 if ( process.env.NODE_ENV === 'production' ) {
