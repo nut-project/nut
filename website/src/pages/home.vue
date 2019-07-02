@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import demo from './components/demo.vue'
-
 export default {
   filters: {
     toUpperCase( value ) {
