@@ -3,10 +3,16 @@ import * as Files from '@zeit-ui/vue/lib/files.common'
 import * as Link from '@zeit-ui/vue/lib/link.common'
 import * as Card from '@zeit-ui/vue/lib/card.common'
 import * as Note from '@zeit-ui/vue/lib/note.common'
+import * as Fieldset from '@zeit-ui/vue/lib/fieldset.common'
+import * as Button from '@zeit-ui/vue/lib/button.common'
+import * as Switcher from '@zeit-ui/vue/lib/switcher.common'
 import '@zeit-ui/vue/lib/files.css'
 import '@zeit-ui/vue/lib/link.css'
 import '@zeit-ui/vue/lib/card.css'
 import '@zeit-ui/vue/lib/note.css'
+import '@zeit-ui/vue/lib/fieldset.css'
+import '@zeit-ui/vue/lib/button.css'
+import '@zeit-ui/vue/lib/switcher.css'
 import '@/css/index.less'
 
 export default ( { api } ) => {
@@ -14,6 +20,9 @@ export default ( { api } ) => {
   Link.install( Vue )
   Card.install( Vue )
   Note.install( Vue )
+  Fieldset.install( Vue )
+  Button.install( Vue )
+  Switcher.install( Vue )
 
   api.sidebar.configure( [
     {
