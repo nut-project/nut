@@ -67,8 +67,9 @@ function applyOneOfRule( rule, lang, loader, options, env, modules ) {
   rule.use( 'css' )
     .loader( 'css-loader' )
     .options( {
-      modules,
-      localIdentName: '[local]___[hash:base64:5]',
+      modules: modules ? {
+        localIdentName: '[local]___[hash:base64:5]',
+      } : false,
       importLoaders: loader ? 2 : 1,
     } )
 
