@@ -3,7 +3,7 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
-const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const PnpWebpackPlugin = require( 'pnp-webpack-plugin' )
