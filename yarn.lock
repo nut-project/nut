@@ -1179,6 +1179,11 @@ acorn@^6.0.2, acorn@^6.0.7:
   version "6.1.1"
   resolved "https://registry.npmjs.org/acorn/-/acorn-6.1.1.tgz#7d25ae05bb8ad1f9b699108e1094ecd7884adc1f"
 
+address@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/address/-/address-1.1.0.tgz#ef8e047847fcd2c5b6f50c16965f924fd99fe709"
+  integrity sha512-4diPfzWbLEIElVG4AnqP+00SULlPzNuyJFNnmMrLgyaxG6tZXJ1sn7mjBu4fHrJE+Yp/jgylOweJn2xsLMFggQ==
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"

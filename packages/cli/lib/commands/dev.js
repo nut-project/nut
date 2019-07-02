@@ -4,6 +4,7 @@ const boxen = require( 'boxen' )
 const chalk = require( 'chalk' )
 const read = require( 'read' )
 const open = require( 'open' )
+const address = require( 'address' )
 const prettyBytes = require( 'pretty-bytes' )
 const webpackMerge = require( 'webpack-merge' )
 const webpack = require( 'webpack' )
@@ -109,9 +110,15 @@ async function dev() {
   } )
 
   server.listen( port, host, () => {
+    const lanIP = address.ip()
+    const lanUrl = lanIP ? `http://${ lanIP }:${ port }` : ''
+
+    const localTips = `\n\nLocal:     ${ chalk.cyan( url ) }`
+    const lanTips = lanUrl ? `\n\nNetwork:   ${ chalk.cyan( lanUrl ) }` : ''
+
     console.log(
       boxen(
-        `Your application is running at\n\n${ chalk.cyan( url ) }`,
+        `Your application is running at${ localTips }${ lanTips }`,
         {
           padding: 1,
           borderColor: 'gray'
