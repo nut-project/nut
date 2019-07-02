@@ -33,6 +33,7 @@ export default ( { api } ) => {
         { title: '安装', path: 'pages/guide/installation' },
         { title: '体验', path: 'pages/guide/experience' },
         // { title: '如何开始', path: 'pages/guide/get-started' },
+        { title: '微前端', path: 'pages/guide/microfrontends' },
         { title: 'quicklink', path: 'pages/guide/quicklink' },
         { title: '静态资源', path: 'pages/guide/public' },
         { title: 'CSS 预处理器', path: 'pages/guide/css-preprocessor' },
@@ -42,7 +43,6 @@ export default ( { api } ) => {
         { title: '主题', path: 'pages/guide/theme' },
         { title: '图标', path: 'pages/guide/icon' },
         { title: '插件', path: 'pages/guide/plugin' },
-        { title: '微前端', path: 'pages/guide/microfrontends' },
       ]
     },
 
