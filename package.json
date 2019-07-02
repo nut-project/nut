@@ -22,12 +22,10 @@
     }
   },
   "lint-staged": {
-    "linters": {
-      "packages/**/*.js": [
-        "eslint --fix",
-        "git add"
-      ]
-    }
+    "packages/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "workspaces": {
     "packages": [

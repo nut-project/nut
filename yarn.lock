@@ -1069,9 +1069,10 @@
   version "0.1.1"
   resolved "https://registry.npmjs.org/@zeit-ui/vue-icons/-/vue-icons-0.1.1.tgz#5ec70e94883661b2c4d11ac0ff7af29ab6afb946"
 
-"@zeit-ui/vue@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/@zeit-ui/vue/-/vue-1.2.0.tgz#2ad4ee19c6b23820416954e5aa6d94cc9c3b0f32"
+"@zeit-ui/vue@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@zeit-ui/vue/-/vue-1.3.1.tgz#86d14b840854c1f614d4117eca7c23adcfa6dd3b"
+  integrity sha512-vNrgsH/t9+T4gq5cJCckvWoCYDHe5BZxqihmlY4nQhAoMPwZbvAcqak5gMaqRtu5LPYX4zyG6JRGFlXOJ5qAzA==
   dependencies:
     "@zeit-ui/vue-icons" "^0.1.1"
     prismjs "^1.15.0"
