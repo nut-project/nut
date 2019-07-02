@@ -54,5 +54,5 @@ export default ( { api } ) => {
     },
   ] )
 
-  api.page( 'pages/home' ).set( 'layout', 'none' )
+  api.page( 'pages/home' ).set( 'layout', 'now-custom' )
 }

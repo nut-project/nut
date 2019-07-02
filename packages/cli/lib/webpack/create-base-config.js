@@ -2,15 +2,12 @@
 
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
-const CopyPlugin = require( 'copy-webpack-plugin' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
-const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
-const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
+const PnpWebpackPlugin = require( 'pnp-webpack-plugin' )
 const Config = require( 'webpack-chain' )
-const hashsum = require( 'hash-sum' )
 const threadLoader = require( 'thread-loader' )
 
 const dirs = {
@@ -18,105 +15,46 @@ const dirs = {
   project: process.cwd(),
 }
 
-const pkg = require( dirs.project + '/package.json' )
+let pkg = {}
+try {
+  pkg = require( dirs.project + '/package.json' )
+} catch ( e ) {}
 
 const browserslist = pkg.browserslist ||
   [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
 
-module.exports = function createBaseConfig( nutConfig = {} ) {
+module.exports = function createBaseConfig( nutConfig = {}, appId ) {
   threadLoader.warmup( {}, [
     'babel-loader',
   ] )
 
   const config = new Config()
 
-  let entry
-  let suffix
-
-  switch ( nutConfig.type ) {
-  case 'host':
-    entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
-    break
-  case 'child':
-    entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
-    suffix = hashsum( Object.assign( {}, pkg, nutConfig ) )
-    config.output.jsonpFunction( 'webpackJsonp_' + suffix )
-    config.plugin( 'stats-write' )
-      .use( StatsWriterPlugin, [
-        {
-          filename: 'manifest.json',
-          transform( data ) {
-            const files = []
-
-            const index = data.assetsByChunkName.index
-            if ( Array.isArray( index ) ) {
-              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-              files.push( ...jsfiles )
-            } else if ( typeof index === 'string' ) {
-              if ( index.endsWith( '.js' ) ) {
-                files.push( index )
-              }
-            }
-            return JSON.stringify( {
-              files,
-            }, 0, 2 )
-          }
-        }
-      ] )
-    // use jsonp to fix cors issue
-    config.plugin( 'stats-write-js' )
-      .use( StatsWriterPlugin, [
-        {
-          filename: 'manifest.js',
-          transform( data ) {
-            const files = []
-
-            const index = data.assetsByChunkName.index
-            if ( Array.isArray( index ) ) {
-              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-              files.push( ...jsfiles )
-            } else if ( typeof index === 'string' ) {
-              if ( index.endsWith( '.js' ) ) {
-                files.push( index )
-              }
-            }
-
-            const json = JSON.stringify( {
-              files,
-            }, 0, 2 )
-
-            return `
-( function () {
-  if ( window.nutManifestJSONP ) {
-    var currentScript = document.currentScript
-    var dataset = currentScript ? currentScript.dataset : {}
-    window.nutManifestJSONP( ${ json }, dataset )
-  }
-} )()
-`.trim()
-          }
-        }
-      ] )
-    break
-  default:
-    entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
-  }
-
-  if ( nutConfig.type === 'single' ) {
-    config.optimization
-      .runtimeChunk( {
-        name: 'runtime',
-      } )
+  if ( appId ) {
+    config.output.jsonpFunction( 'webpackJsonp_' + appId )
   }
 
   config
-    .entry( 'index' )
-      .add( entry )
-      .end()
     .optimization
       .splitChunks( {
-        chunks: 'all',
-        minChunks: 2,
+        cacheGroups: {
+          vendors: {
+            test( mod, chunks ) {
+              if ( !mod.context.includes( 'node_modules' ) ) {
+                 return false
+               }
+
+              if ( chunks.find( chunk => chunk.name === 'child' ) ) {
+                return false
+              }
+
+              return true
+            },
+            name: 'vendors',
+            chunks: 'initial',
+            minChunks: 2,
+          }
+        },
       } )
       .end()
     .performance
@@ -125,6 +63,11 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .resolve
       .alias
         .set( '@', path.join( dirs.project, 'src' ) )
+        // pnp start
+        .set( '@babel/runtime', path.dirname( require.resolve( '@babel/runtime/package' ) ) )
+        .set( 'core-js', path.dirname( require.resolve( 'core-js/package' ) ) )
+        .set( 'regenerator-runtime', path.dirname( require.resolve( 'regenerator-runtime/package' ) ) )
+        // pnp end
         .end()
       .modules
         .clear()
@@ -142,44 +85,23 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           '.scss', '.sass', '.less', '.styl', '.stylus', '.css'
         ] )
         .end()
+      .plugin( 'pnp' )
+        .use( PnpWebpackPlugin )
+        .end()
       .end()
     .resolveLoader
       .modules
-      .clear()
-      .add( path.join( dirs.project, 'node_modules' ) )
-      .add( path.join( dirs.cli, '../../' ) )
-      .add( path.join( dirs.cli, 'node_modules' ) )
-      .add( 'node_modules' )
-      .end()
+        .clear()
+        .add( path.join( dirs.project, 'node_modules' ) )
+        .add( path.join( dirs.cli, '../../' ) )
+        .add( path.join( dirs.cli, 'node_modules' ) )
+        .add( 'node_modules' )
+        .end()
+      .plugin( 'pnp' )
+        .use( PnpWebpackPlugin.moduleLoader( module ) )
+        .end()
 
   config
-    .plugin( 'copy' )
-      .use( CopyPlugin, [
-        [
-          {
-            from: {
-              glob: '**/*',
-              dot: true
-            },
-            to: '.',
-            ignore: [ '.DS_Store' ]
-          }
-        ],
-        {
-          context: path.join( dirs.project, 'src/public' )
-        }
-      ] )
-      .end()
-    .plugin( 'html' )
-      .use( HtmlWebpackPlugin, [
-        {
-          ...( nutConfig.html || {} ),
-          template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
-          title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
-          favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
-        }
-      ] )
-      .end()
     .plugin( 'vue-loader' )
       .use( VueLoaderPlugin )
       .end()
@@ -233,7 +155,7 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           } )
           .end()
         .use( 'mdx-layout' )
-          .loader( require.resolve( '../loader/provide-mdx-layout' ) )
+          .loader( require.resolve( '../loader/mdx-arrtibutes' ) )
           .end()
         .end()
       .oneOf( 'normal' )
@@ -333,10 +255,10 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       .end()
     .oneOf( 'with-thread' )
       .use( 'thread' )
-        .loader( 'thread-loader' )
+        .loader( require.resolve( 'thread-loader' ) )
         .end()
       .use( 'babel' )
-        .loader( 'babel-loader' )
+        .loader( require.resolve( 'babel-loader' ) )
         .options( {
           presets: [
             [
@@ -409,16 +331,17 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .add( filterInclude )
         .end()
       .use( 'ts' )
-        .loader( 'ts-loader' )
-        .options( tsLoaderOptions )
+        .loader( require.resolve( 'ts-loader' ) )
+        .options( PnpWebpackPlugin.tsLoaderOptions( tsLoaderOptions ) )
         .end()
 
   config.module
     .rule( 'image' )
       .test( /\.(png|jpg|gif)$/i )
       .use( 'url' )
-        .loader( 'url-loader' )
+        .loader( require.resolve( 'url-loader' ) )
         .options( {
+          fallback: require.resolve( 'file-loader' ),
           limit: 8192
         } )
 
@@ -426,8 +349,9 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .rule( 'font' )
       .test( /\.(ttf|eot|woff|woff2|svg)(\?t=\d+)?$/i )
       .use( 'url' )
-        .loader( 'url-loader' )
+        .loader( require.resolve( 'url-loader' ) )
         .options( {
+          fallback: require.resolve( 'file-loader' ),
           limit: 8192
         } )
 
@@ -443,14 +367,16 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
     .rule( 'vue' )
       .test( /\.vue$/ )
       .use( 'cache' )
-        .loader( 'cache-loader' )
+        .loader( require.resolve( 'cache-loader' ) )
         .options( vueCacheOptions )
         .end()
       .use( 'mount-vue' )
         .loader( require.resolve( '../loader/mount-vue' ) )
         .end()
       .use( 'vue' )
-        .loader( 'vue-loader' )
+        .loader( require.resolve( 'vue-loader' ) )
+        .options( {
+        } )
 
   config.module
     .rule( 'pug' )
@@ -476,11 +402,8 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
       .use( CleanWebpackPlugin )
   }
 
-  if ( nutConfig.output && nutConfig.output.publicPath ) {
-    config.output.publicPath( nutConfig.output.publicPath )
-  } else {
-    config.output.publicPath( '/' )
-  }
+  const publicPath = ( nutConfig.output && nutConfig.output.publicPath ) || '/'
+  config.output.publicPath( publicPath )
 
   return config
 }

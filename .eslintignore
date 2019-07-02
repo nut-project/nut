@@ -1,3 +1,4 @@
 node_modules
 iconfont.js
 packages/cli/lib/templates
+packages/cli/lib/webpack/mini-css-extract-plugin

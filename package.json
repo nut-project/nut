@@ -9,6 +9,7 @@
     "c": "node ./packages/cli/bin/index.js create demo",
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",
+    "build:compose": "npm run build --prefix ./examples/host",
     "deploy": "npm run build:docs && gh-pages -d ./website/dist",
     "lint": "eslint packages --quiet",
     "test": "npm run lint",
@@ -21,12 +22,10 @@
     }
   },
   "lint-staged": {
-    "linters": {
-      "packages/**/*.js": [
-        "eslint --fix",
-        "git add"
-      ]
-    }
+    "packages/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "workspaces": {
     "packages": [
@@ -49,11 +48,11 @@
   "devDependencies": {
     "@commitlint/cli": "8.0.0",
     "@commitlint/config-conventional": "8.0.0",
-    "eslint": "5.16.0",
+    "eslint": "6.0.1",
     "eslint-config-mo": "0.5.2",
     "gh-pages": "2.0.1",
-    "husky": "2.4.1",
-    "lint-staged": "8.2.1"
+    "husky": "3.0.0",
+    "lint-staged": "9.0.0"
   },
   "dependencies": {}
 }

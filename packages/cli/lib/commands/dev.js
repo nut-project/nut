@@ -15,6 +15,8 @@ const applyCSSRules = require( '../webpack/apply-css-rules' )
 const generateVirtualModules = require( '../utils/generate-virtual-modules' )
 const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
+const getAppId = require( '../utils/get-app-id' )
+const { normal, child } = require( '../webpack/extend-webpack' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -57,22 +59,20 @@ async function dev() {
 
   let virtualModules
 
-  const webpackConfig = createBaseWebpackConfig( nutConfig )
+  const appId = getAppId()
+  const webpackConfig = createBaseWebpackConfig( nutConfig, appId )
+  normal( webpackConfig, nutConfig )
+  child( webpackConfig, nutConfig, appId )
 
   webpackConfig.mode( 'development' )
-
   webpackConfig.devtool( 'cheap-module-source-map' )
-
   webpackConfig.output
-    .filename( '[name].js' )
-
+    .filename( '[name].[hash:16].js' )
   webpackConfig
     .plugin( 'hot' )
       .use( webpack.HotModuleReplacementPlugin ) // eslint-disable-line
-
   webpackConfig.plugin( 'case-sensitive-paths' )
     .use( CaseSensitivePathsPlugin )
-
   webpackConfig.plugin( 'virtual-modules' )
     .init( ( Plugin, args ) => {
       virtualModules = new Plugin( ...args )
@@ -80,7 +80,7 @@ async function dev() {
     } )
     .use( VirtualModulesPlugin, [ modules ] )
 
-  applyCSSRules( webpackConfig, 'dev' )
+  applyCSSRules( webpackConfig, 'dev', appId )
 
   if ( typeof nutConfig.chainWebpack === 'function' ) {
     nutConfig.chainWebpack( webpackConfig )

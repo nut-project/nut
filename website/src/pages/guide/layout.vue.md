@@ -26,7 +26,7 @@ export default ctx => {
 
 每个页面的布局都可以不同，当然大部分情况下你不需要这么花里胡哨
 
-<zi-note type="Tips">
+<zi-note label="Tips">
   比较常用的是 none 这个特殊布局，none 布局几乎没有任何内容，相当于一个“空的画板”，你可以在这个基础上定制你的页面内容
 </zi-note>
 

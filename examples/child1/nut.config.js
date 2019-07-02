@@ -1,5 +1,4 @@
 module.exports = {
-  type: 'child',
   layout: 'kaola',
   port: 9001,
   output: {

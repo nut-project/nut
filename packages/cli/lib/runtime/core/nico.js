@@ -2,7 +2,13 @@
 import quicklink from 'quicklink'
 import nutConfig from '@/nut-auto-generated-nut-config'
 
-export default function createNico( rootRouter, routerFactory, prefix = '', ctx = {}, pluginOptions = {} ) {
+export default function createNico(
+  rootRouter,
+  routerFactory,
+  prefix = '',
+  ctx = {},
+  pluginOptions = {}
+) {
   const { events, pages, globals, api } = ctx
 
   let defaultCacheable = ctx.app && ctx.app.router && ctx.app.router.defaultCacheable
@@ -83,7 +89,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
       const chunkUrls = getAssetUrls( siblings.map( s => s.page && s.page.name ).filter( Boolean ) )
       const vendorUrls = getAssetUrls(
         Object.keys( globals.STATS_ASSETS_BY_CHUNKNAME || {} )
-          .filter( key => key.indexOf( 'vendors~' ) === 0 )
+          .filter( key => key.indexOf( 'vendors' ) === 0 )
       )
 
       quicklink( {
@@ -148,9 +154,8 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
               )
             }
 
-            if ( !this.resolvePage ) {
-              this.resolvePage = routeConfig.component()
-            }
+            // re-fetch
+            this.resolvePage = routeConfig.component()
 
             this.resolvePage
               .then( page => {
@@ -207,6 +212,32 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
                       ''
                     )
                   }
+
+                  // remove all un-related css
+                  const compose = routeConfig.compose || {}
+                  const head = document.head
+
+                  if ( compose.id ) {
+                    const linkTags = head.getElementsByTagName( 'link' )
+                    ;[].forEach.call( linkTags, function ( tag ) {
+                      if ( tag.dataset.appid && tag.dataset.appid !== compose.id ) {
+                        tag.parentNode.removeChild( tag )
+                      }
+                    } )
+                  }
+
+                  if ( compose.publicPath ) {
+                    let baseTag = head.getElementsByTagName( 'base' )[ 0 ]
+
+                    if ( baseTag && baseTag.hasAttribute( 'href' ) ) {
+                      baseTag.href = compose.publicPath
+                    } else {
+                      baseTag = document.createElement( 'base' )
+                      baseTag.href = compose.publicPath
+                      head.appendChild( baseTag )
+                    }
+                  }
+
                   return
                 }
 
@@ -493,7 +524,7 @@ export default function createNico( rootRouter, routerFactory, prefix = '', ctx 
           route.found = true
         }
 
-        if ( child.page.name === activeRouterName ) {
+        if ( child.page && ( child.page.name === activeRouterName ) ) {
           isAnyPageActive = true
           child.active = true
         } else {
