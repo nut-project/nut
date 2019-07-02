@@ -4,6 +4,7 @@ const boxen = require( 'boxen' )
 const chalk = require( 'chalk' )
 const read = require( 'read' )
 const open = require( 'open' )
+const prettyBytes = require( 'pretty-bytes' )
 const webpackMerge = require( 'webpack-merge' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
@@ -101,6 +102,11 @@ async function dev() {
   WebpackDevServer.addDevServerEntrypoints( finalWebpackConfig, devServerOptions )
   const compiler = webpack( finalWebpackConfig )
   const server = new WebpackDevServer( compiler, devServerOptions )
+
+  compiler.hooks.done.tap( 'memory-usage', () => {
+    const { heapUsed } = process.memoryUsage()
+    console.log( chalk.gray( `${ prettyBytes( heapUsed ) } Memory Used\n` ) )
+  } )
 
   server.listen( port, host, () => {
     console.log(
