@@ -4,7 +4,17 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "",
+  "description": "A framework born for micro frontends",
+  "keywords": [
+    "microfrontends",
+    "micro",
+    "frontend",
+    "architecture",
+    "spa",
+    "cli",
+    "static site generator",
+    "hmr"
+  ],
   "main": "lib/index.js",
   "bin": {
     "nut": "bin/index.js"
@@ -12,11 +22,25 @@
   "files": [
     "bin",
     "lib",
-    "yarn.lock"
+    "yarn.lock",
+    "README.md"
   ],
-  "scripts": {},
-  "keywords": [],
-  "author": "",
+  "engines": {
+    "node": ">= 8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/cli",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {
+    "prepublishOnly": "cp ../../README.md ./README.md"
+  },
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.4.0",

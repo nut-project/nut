@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="100px" src="./media/logo.png" alt="nut logo">
+  <img width="100px" src="media/logo.png" alt="nut logo">
 </p>
 
 <h1 align="center">NUT Project</h1>
@@ -7,6 +7,9 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@nut-project/cli">
     <img src="https://flat.badgen.net/npm/v/@nut-project/cli" alt="npm version">
+  </a>
+  <a href="https://github.com/nut-project/nut">
+    <img src="https://flat.badgen.net/npm/node/@nut-project/cli" alt="node version">
   </a>
   <a href="https://circleci.com/gh/nut-project/nut">
     <img src="https://flat.badgen.net/circleci/github/nut-project/nut/master" alt="build status">
@@ -32,20 +35,20 @@
 
 ## layout / theme HMR
 
-<img src="./media/hmr.gif" alt="hmr.gif" width="600px">
+<img src="media/hmr.gif" alt="hmr.gif" width="600px">
 
 ## markdown theme HMR
 
-<img src="./media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
+<img src="media/markdown-theme-hmr.gif" alt="markdown-theme-hmr.gif" width="600px">
 
 
 ## System events
 
-<img src="./media/system-events.jpg" alt="system-events.jpg" width="300px">
+<img src="media/system-events.jpg" alt="system-events.jpg" width="300px">
 
 ## Route matching
 
-<img src="./media/route-match.jpg" alt="route-match.jpg" width="300px">
+<img src="media/route-match.jpg" alt="route-match.jpg" width="300px">
 
 ## Builtin layouts
 
@@ -53,17 +56,17 @@
 
 | ocean | sakura |
 | :---: | :---: |
-| ![ocean](./media/default-ocean.jpg) | ![sakura](./media/default-sakura.jpg) |
+| ![ocean](media/default-ocean.jpg) | ![sakura](media/default-sakura.jpg) |
 
 #### saber
 
 | ocean | sakura |
 | :---: | :---: |
-| ![ocean](./media/saber-ocean.jpg) | ![sakura](./media/saber-sakura.jpg) |
+| ![ocean](media/saber-ocean.jpg) | ![sakura](media/saber-sakura.jpg) |
 
 #### now
 
-<img src="./media/now.jpg" alt="now" width="400px">
+<img src="media/now.jpg" alt="now" width="400px">
 
 ### How to write a layout
 
