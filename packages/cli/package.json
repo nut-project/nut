@@ -34,7 +34,7 @@
     "autoprefixer": "^9.5.1",
     "axios": "^0.19.0",
     "babel-loader": "^8.0.5",
-    "boxen": "^3.1.0",
+    "boxen": "^4.0.0",
     "cac": "^6.4.2",
     "cache-loader": "^3.0.1",
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
