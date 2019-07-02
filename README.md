@@ -9,6 +9,9 @@
     <img src="https://flat.badgen.net/npm/v/@nut-project/cli" alt="npm version">
   </a>
   <a href="https://github.com/nut-project/nut">
+    <img src="https://flat.badgen.net/david/dep/nut-project/nut/packages/cli" alt="dependencies">
+  </a>
+  <a href="https://github.com/nut-project/nut">
     <img src="https://flat.badgen.net/npm/node/@nut-project/cli" alt="node version">
   </a>
   <a href="https://circleci.com/gh/nut-project/nut">
