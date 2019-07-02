@@ -40,7 +40,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chalk": "^2.4.2",
     "chokidar": "^2.1.5",
-    "clean-webpack-plugin": "^2.0.2",
+    "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.0.2",
     "core-js": "^3.1.4",
     "cosmiconfig": "^5.2.0",
