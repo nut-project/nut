@@ -71,8 +71,8 @@ async function getPages( root, processor = v => v ) {
       'pages/**/*.ts',
     ], {
       cwd: root,
-      deep: true,
       onlyFiles: true,
+      deep: Infinity,
     } )
   } catch ( e ) {
     // console.log( e )

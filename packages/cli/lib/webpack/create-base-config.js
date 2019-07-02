@@ -2,11 +2,8 @@
 
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
-const CopyPlugin = require( 'copy-webpack-plugin' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
-const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
-const CleanWebpackPlugin = require( 'clean-webpack-plugin' ).default
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
 const PnpWebpackPlugin = require( 'pnp-webpack-plugin' )
@@ -33,92 +30,31 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
 
   const config = new Config()
 
-  let entry
-
-  switch ( nutConfig.type ) {
-  case 'host':
-    entry = path.join( dirs.cli, 'lib/runtime/entries/host.js' )
-    break
-  case 'child':
-    entry = path.join( dirs.cli, 'lib/runtime/entries/child.js' )
+  if ( appId ) {
     config.output.jsonpFunction( 'webpackJsonp_' + appId )
-    config.plugin( 'stats-write' )
-      .use( StatsWriterPlugin, [
-        {
-          filename: 'manifest.json',
-          transform( data ) {
-            const files = []
-
-            const index = data.assetsByChunkName.index
-            if ( Array.isArray( index ) ) {
-              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-              files.push( ...jsfiles )
-            } else if ( typeof index === 'string' ) {
-              if ( index.endsWith( '.js' ) ) {
-                files.push( index )
-              }
-            }
-            return JSON.stringify( {
-              files,
-            }, 0, 2 )
-          }
-        }
-      ] )
-    // use jsonp to fix cors issue
-    config.plugin( 'stats-write-js' )
-      .use( StatsWriterPlugin, [
-        {
-          filename: 'manifest.js',
-          transform( data ) {
-            const files = []
-
-            const index = data.assetsByChunkName.index
-            if ( Array.isArray( index ) ) {
-              const jsfiles = index.filter( file => file.endsWith( '.js' ) )
-              files.push( ...jsfiles )
-            } else if ( typeof index === 'string' ) {
-              if ( index.endsWith( '.js' ) ) {
-                files.push( index )
-              }
-            }
-
-            const json = JSON.stringify( {
-              files,
-              id: appId,
-            }, 0, 2 )
-
-            return `
-( function () {
-  if ( window.nutManifestJSONP ) {
-    var currentScript = document.currentScript
-    var dataset = currentScript ? currentScript.dataset : {}
-    window.nutManifestJSONP( ${ json }, dataset )
-  }
-} )()
-`.trim()
-          }
-        }
-      ] )
-    break
-  default:
-    entry = path.join( dirs.cli, 'lib/runtime/entries/single.js' )
-  }
-
-  if ( nutConfig.type === 'single' ) {
-    config.optimization
-      .runtimeChunk( {
-        name: 'runtime',
-      } )
   }
 
   config
-    .entry( 'index' )
-      .add( entry )
-      .end()
     .optimization
       .splitChunks( {
-        chunks: 'all',
-        minChunks: 2,
+        cacheGroups: {
+          vendors: {
+            test( mod, chunks ) {
+              if ( !mod.context.includes( 'node_modules' ) ) {
+                 return false
+               }
+
+              if ( chunks.find( chunk => chunk.name === 'child' ) ) {
+                return false
+              }
+
+              return true
+            },
+            name: 'vendors',
+            chunks: 'initial',
+            minChunks: 2,
+          }
+        },
       } )
       .end()
     .performance
@@ -166,33 +102,6 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .end()
 
   config
-    .plugin( 'copy' )
-      .use( CopyPlugin, [
-        [
-          {
-            from: {
-              glob: '**/*',
-              dot: true
-            },
-            to: '.',
-            ignore: [ '.DS_Store' ]
-          }
-        ],
-        {
-          context: path.join( dirs.project, 'src/public' )
-        }
-      ] )
-      .end()
-    .plugin( 'html' )
-      .use( HtmlWebpackPlugin, [
-        {
-          ...( nutConfig.html || {} ),
-          template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
-          title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
-          favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
-        }
-      ] )
-      .end()
     .plugin( 'vue-loader' )
       .use( VueLoaderPlugin )
       .end()
@@ -493,11 +402,8 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .use( CleanWebpackPlugin )
   }
 
-  if ( nutConfig.output && nutConfig.output.publicPath ) {
-    config.output.publicPath( nutConfig.output.publicPath )
-  } else {
-    config.output.publicPath( '/' )
-  }
+  const publicPath = ( nutConfig.output && nutConfig.output.publicPath ) || '/'
+  config.output.publicPath( publicPath )
 
   return config
 }

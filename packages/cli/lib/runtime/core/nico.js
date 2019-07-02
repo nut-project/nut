@@ -89,7 +89,7 @@ export default function createNico(
       const chunkUrls = getAssetUrls( siblings.map( s => s.page && s.page.name ).filter( Boolean ) )
       const vendorUrls = getAssetUrls(
         Object.keys( globals.STATS_ASSETS_BY_CHUNKNAME || {} )
-          .filter( key => key.indexOf( 'vendors~' ) === 0 )
+          .filter( key => key.indexOf( 'vendors' ) === 0 )
       )
 
       quicklink( {
@@ -214,16 +214,28 @@ export default function createNico(
                   }
 
                   // remove all un-related css
-                  const composeId = routeConfig.compose &&
-                    routeConfig.compose.id
-                  if ( composeId ) {
-                    const head = document.head
+                  const compose = routeConfig.compose || {}
+                  const head = document.head
+
+                  if ( compose.id ) {
                     const linkTags = head.getElementsByTagName( 'link' )
                     ;[].forEach.call( linkTags, function ( tag ) {
-                      if ( tag.dataset.appid && tag.dataset.appid !== composeId ) {
+                      if ( tag.dataset.appid && tag.dataset.appid !== compose.id ) {
                         tag.parentNode.removeChild( tag )
                       }
                     } )
+                  }
+
+                  if ( compose.publicPath ) {
+                    let baseTag = head.getElementsByTagName( 'base' )[ 0 ]
+
+                    if ( baseTag && baseTag.hasAttribute( 'href' ) ) {
+                      baseTag.href = compose.publicPath
+                    } else {
+                      baseTag = document.createElement( 'base' )
+                      baseTag.href = compose.publicPath
+                      head.appendChild( baseTag )
+                    }
                   }
 
                   return
@@ -512,7 +524,7 @@ export default function createNico(
           route.found = true
         }
 
-        if ( child.page.name === activeRouterName ) {
+        if ( child.page && ( child.page.name === activeRouterName ) ) {
           isAnyPageActive = true
           child.active = true
         } else {

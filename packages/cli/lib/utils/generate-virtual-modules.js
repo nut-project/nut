@@ -92,7 +92,7 @@ async function generateExtendContext( config, { env } = {} ) {
   ], {
     cwd: root,
     onlyFiles: true,
-    deep: 0,
+    deep: Infinity,
     absolute: true,
   } )
 

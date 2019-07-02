@@ -1,4 +1,5 @@
 import qs from 'query-string'
+import normalizeRoute from '../utils/normalize-route'
 
 export default function ( pages, rootRouter ) {
   return {
@@ -36,11 +37,24 @@ export default function ( pages, rootRouter ) {
     },
 
     format( route = '' ) {
+      const current = this.current || {}
+      const compose = current.options && current.options.compose
+
       if ( typeof route === 'string' ) {
+        if ( compose && compose.name && ( route.indexOf( 'pages' ) === 0 ) ) {
+          return `/${ compose.name }${ normalizeRoute( route ) }`
+        }
+
         return route
       }
 
-      const { page, query, params, layout } = route || {}
+      const { query, params, layout } = route || {}
+
+      let page = route && route.page
+
+      if ( compose && compose.name && ( route.indexOf( 'pages' ) === 0 ) ) {
+        page = `${ compose.name }/${ page }`
+      }
 
       const found = pages.find( p => p.page === page )
 
