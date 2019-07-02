@@ -26,7 +26,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">= 8.9.0"
+    "node": ">=8.9.0"
   },
   "repository": "https://github.com/nut-project/nut/tree/master/packages/cli",
   "homepage": "http://nut.js.org",
@@ -86,6 +86,7 @@
     "nprogress": "^0.2.0",
     "open": "^6.1.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "please-upgrade-node": "^3.1.1",
     "pnp-webpack-plugin": "^1.5.0",
     "postcss-loader": "^3.0.0",
     "pretty-bytes": "^5.2.0",

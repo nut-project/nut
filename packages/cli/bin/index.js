@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+const pkg = require( '../package.json' )
+
+require( 'please-upgrade-node' )( pkg, {
+  exitCode: 0,
+} )
+
 const cli = require( 'cac' )()
 const app = require( '../lib' )
 
@@ -25,7 +31,7 @@ cli
     app.create( dir )
   } )
 
-cli.version( require( '../package.json' ).version )
+cli.version( pkg.version )
 
 cli.help()
 
