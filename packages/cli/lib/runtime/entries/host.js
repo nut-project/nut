@@ -49,45 +49,44 @@ function loadJs( url, dataset ) {
   } )
 }
 
-function loadChild( manifest ) {
-  const name = manifest.name
-  const prefix = manifest.prefix
-
-  return manifest.files.reduce( ( total, file ) => {
-    return total.then( () => {
-      return loadJs( manifest.base + '/' + file, {
-        name,
-        prefix,
-      } )
-    } )
-  }, Promise.resolve() )
-}
-
 ( async function () {
   const compose = nutConfig.compose
-  const collection = []
+  const collections = []
   const manifests = []
 
   if ( compose ) {
     window.nutJsonp = function ( { pages, config, routes } = {}, dataset = {} ) {
-      const { name, prefix } = dataset
+      const { name: composeName } = dataset
 
-      collection.push( {
-        name,
-        prefix,
-        pages,
-        config,
-        routes
+      const manifest = manifests.find( m => {
+        return m.name === composeName
       } )
+
+      if ( manifest ) {
+        const { id, name, prefix, publicPath } = manifest
+
+        collections.push( {
+          id,
+          name,
+          prefix,
+          publicPath,
+          pages,
+          config,
+          routes
+        } )
+      }
     }
 
-    window.nutManifestJSONP = function ( { files = [] } = {}, dataset = {} ) {
+    window.nutManifestJSONP = function ( { files = [], id, publicPath = '/' } = {}, dataset = {} ) {
+      // name -> manifest
       const { name } = dataset
       manifests.push( {
         name,
         base: compose[ name ].service,
         prefix: compose[ name ].prefix,
         files,
+        id,
+        publicPath,
       } )
     }
 
@@ -98,19 +97,17 @@ function loadChild( manifest ) {
     } )
 
     await Promise.all( jobs )
-      .then( () => {
-        return Promise.all(
-          manifests.map( manifest => loadChild( manifest, collection ) )
-        )
-      } )
   }
 
-  const { pages, routes } = collection.reduce( ( total, c ) => {
+  const { pages, routes } = collections.reduce( ( total, c ) => {
     const prefix = c.prefix
     const name = c.name
+    const id = c.id
+    const publicPath = c.publicPath
 
     const pages = c.pages.map( page => {
       return Object.assign( {}, page, {
+        compose: { id, name, publicPath },
         name: name + '$' + page.name,
         page: name + '/' + page.page,
         route: prefix + page.route,
@@ -119,6 +116,7 @@ function loadChild( manifest ) {
 
     const routes = c.routes.map( route => {
       return Object.assign( {}, route, {
+        compose: { id, name, publicPath },
         name: name + '$' + route.name,
         page: name + '/' + route.page,
         path: prefix + route.path,
@@ -174,7 +172,13 @@ function loadChild( manifest ) {
       } )
   }
 
-  const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
+  const nico = await setupNico(
+    context,
+    pluginOptions,
+    routes,
+    rootRouter,
+    router
+  )
 
   if ( routerOptions.alias ) {
     Object.keys( routerOptions.alias ).forEach( page => {

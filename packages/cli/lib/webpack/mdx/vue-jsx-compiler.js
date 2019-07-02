@@ -27,7 +27,7 @@ function toVueJSX(node, parentNode = {}, options = {}) { // eslint-disable-line
       jsxNodes.push( childNode )
     }
 
-    const mdxLayout = `const MDXLayout = ${ layout ? layout : '"wrapper"' }`
+    const mdxLayout = `const MDXLayout = ${ layout ? layout : '"div"' }`
 
     const fn = `function MDXContent({ components, ...props }) {
   return (
@@ -123,12 +123,12 @@ function toVueExport( layout, jsxNodes, node ) {
       },
       render() {
         return (
-          <${ node.tagName } ${ layout ? `Layout={${ layout }} layoutProps={props}` : '' }
+          <MDXTag ${ layout ? `Layout={${ layout }} layoutProps={props}` : '' }
             name="wrapper"
             components={this.components}
           >
             ${ jsxNodes.map( childNode => toVueJSX( childNode, node ) ).join( '' ) }
-          </${ node.tagName }>
+          </MDXTag>
         );
       }
     }

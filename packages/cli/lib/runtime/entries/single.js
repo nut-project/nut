@@ -68,7 +68,13 @@ import use from '../context/use'
       } )
   }
 
-  const nico = await setupNico( context, pluginOptions, routes, rootRouter, router )
+  const nico = await setupNico(
+    context,
+    pluginOptions,
+    routes,
+    rootRouter,
+    router
+  )
 
   if ( routerOptions.alias ) {
     Object.keys( routerOptions.alias ).forEach( page => {

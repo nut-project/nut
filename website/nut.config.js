@@ -1,4 +1,6 @@
-module.exports = {
+const path = require( 'path' )
+
+const config = {
   port: 9000,
   router: {
     mode: 'history',
@@ -17,5 +19,18 @@ module.exports = {
   homepage: 'pages/home',
   babel: {
     transpileModules: [ '@zeit-ui/vue' ]
+  },
+  plugins: {
+    nowCustom: {
+      path: path.join( __dirname, './src/plugins/now-custom/index.js' ),
+    }
   }
 }
+
+if ( process.env.NODE_ENV === 'production' ) {
+  config.output = {
+    publicPath: 'https://nut.js.org/'
+  }
+}
+
+module.exports = config

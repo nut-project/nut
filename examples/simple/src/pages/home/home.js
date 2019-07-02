@@ -26,9 +26,11 @@ Page.$$nut = function ( ctx ) {
     //
     // },
 
-    // enter() {
-    //
-    // },
+    enter() {
+      import( './components/style' ).then( () => {
+        console.log( 'style loaded' )
+      } )
+    },
   }
 }
 

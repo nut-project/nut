@@ -14,25 +14,16 @@ const applyCSSRules = require( '../webpack/apply-css-rules' )
 const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const generateVirtualModules = require( '../utils/generate-virtual-modules' )
+const getAppId = require( '../utils/get-app-id' )
+const { normal, child } = require( '../webpack/extend-webpack' )
 
-async function prod() {
-  process.env.NODE_ENV = 'production'
-
-  const result = await loadConfig()
-  const config = result.config || {}
-
-  ensureConfigDefaults( config )
-
-  const webpackConfig = createBaseWebpackConfig( config )
-
+async function productionify( webpackConfig, config, appId ) {
   webpackConfig.mode( 'production' )
-
   webpackConfig.devtool( false )
-
   webpackConfig.output
     .filename( '[name].[contenthash].js' )
 
-  applyCSSRules( webpackConfig, 'prod' )
+  applyCSSRules( webpackConfig, 'prod', appId )
 
   webpackConfig.optimization
     .minimizer( 'js' )
@@ -74,6 +65,22 @@ async function prod() {
 
   webpackConfig.plugin( 'virtual-modules' )
     .use( VirtualModulesPlugin, [ modules ] )
+}
+
+async function prod() {
+  process.env.NODE_ENV = 'production'
+
+  const result = await loadConfig()
+  const config = result.config || {}
+
+  ensureConfigDefaults( config )
+
+  const appId = getAppId( config )
+
+  const webpackConfig = createBaseWebpackConfig( config, appId )
+  await productionify( webpackConfig, config, appId )
+  normal( webpackConfig, config )
+  child( webpackConfig, config, appId )
 
   if ( typeof config.chainWebpack === 'function' ) {
     config.chainWebpack( webpackConfig )

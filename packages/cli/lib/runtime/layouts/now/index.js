@@ -1,10 +1,15 @@
-/* global window */
+/* global window, document */
 
 import Regular from 'regularjs'
 import styles from './index.module.less'
+import NProgress from 'nprogress'
+import './nprogress.css'
 
 const Layout = Regular.extend( {
   template: `
+    <div class="${ styles.progress_container }">
+      <div class="${ styles.progress_container__inner }" id="nut-now-layout-progress"></div>
+    </div>
     <div class="${ styles.header }">
       <div class="${ styles.header__content }">
         <div class="${ styles.title }" on-click="{ this.onHome() }">
@@ -112,6 +117,32 @@ export default {
 
   async apply( ctx ) {
     let layout = null
+
+    const progressElId = 'nut-now-layout-progress'
+
+    ctx.api.router.beforeEach( function ( { next } ) {
+      const $progress = document.getElementById( progressElId )
+
+      if ( $progress ) {
+        NProgress.configure( {
+          parent: '#' + progressElId
+        } )
+        NProgress.start()
+      }
+
+      next()
+    } )
+
+    ctx.api.router.afterEach( function () {
+      const $progress = document.getElementById( progressElId )
+
+      if ( $progress ) {
+        NProgress.configure( {
+          parent: '#' + progressElId
+        } )
+        NProgress.done()
+      }
+    } )
 
     await ctx.api.layout.register( {
       name: 'now',

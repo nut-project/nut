@@ -43,6 +43,6 @@ ${ publicUrl }sample.jpg
 ${ publicUrl }font.woff2
 ```
 
-<zi-note type="Tips">
+<zi-note label="Tips">
   publicUrl 根据实际情况替换，可能为 `./`、`/` 或 `CDN 路径`
 </zi-note>
