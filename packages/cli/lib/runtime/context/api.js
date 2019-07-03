@@ -33,6 +33,10 @@ export default function ( { pages, router, globals } = {} ) {
         sidebar.forEach( s => {
           if ( s.children ) {
             walkChildren( s.children, s, child => {
+              if ( !child.path ) {
+                return
+              }
+
               const normalized = child.path.replace( /^(\/)/g, '' )
               const page = pages.find( child => child.page === normalized )
 

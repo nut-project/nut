@@ -507,7 +507,6 @@ export default function createNico(
 
   function markActive( sidebar = [], activeRouterName = '' ) {
     sidebar.forEach( s => {
-      let isAnyPageActive = false
       const route = {
         found: false,
         value: ''
@@ -517,29 +516,52 @@ export default function createNico(
         return
       }
 
-      // TODO: walk
-      s.children.forEach( child => {
-        if ( !route.found ) {
+      s.active = false
+      walkChildren( s.children, s, child => {
+        child.active = false
+      } )
+
+      let activePage
+      walkChildren( s.children, s, ( child, index, parent ) => {
+        child.parent = parent
+
+        if ( !route.found && child.page ) {
           route.value = child.page.route
           route.found = true
         }
 
         if ( child.page && ( child.page.name === activeRouterName ) ) {
-          isAnyPageActive = true
+          activePage = child
           child.active = true
-        } else {
-          child.active = false
         }
       } )
 
-      if ( isAnyPageActive ) {
-        s.active = true
-      } else {
-        s.active = false
+      if ( activePage ) {
+        let parent = activePage.parent
+        while ( parent ) {
+          parent.active = true
+          parent = parent.parent
+        }
       }
 
       s.route = route.value
     } )
+  }
+
+  function walkChildren( children, parent, callback ) {
+    if ( !children ) {
+      return
+    }
+
+    if ( Array.isArray( children ) ) {
+      children.forEach( ( v, i ) => {
+        callback( v, i, parent )
+
+        if ( Array.isArray( v.children ) ) {
+          walkChildren( v.children, v, callback )
+        }
+      } )
+    }
   }
 
   async function refreshLayout( { layout, router } ) {

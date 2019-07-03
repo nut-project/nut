@@ -1,0 +1,19 @@
+{
+  "name": "now2",
+  "private": true,
+  "version": "0.0.0",
+  "description": "my awesome nut project",
+  "keywords": [],
+  "scripts": {
+    "dev": "nut",
+    "prod": "nut --prod"
+  },
+  "author": {
+    "name": "fengzilong",
+    "email": "feng_zilong@163.com"
+  },
+  "devDependencies": {
+    "@nut-project/cli": "^0.2.5-32"
+  },
+  "license": "MIT"
+}

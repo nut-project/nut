@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npm run dev --prefix ./examples/simple",
     "build": "npm run build --prefix ./examples/simple",
+    "dev:now2": "npm run dev --prefix ./examples/now2",
     "c": "node ./packages/cli/bin/index.js create demo",
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",

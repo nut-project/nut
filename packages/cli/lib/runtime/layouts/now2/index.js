@@ -8,7 +8,7 @@ import './nprogress.css'
 const Layout = Regular.extend( {
   template: `
     <div class="${ styles.progress_container }">
-      <div class="${ styles.progress_container__inner }" id="nut-now-layout-progress"></div>
+      <div class="${ styles.progress_container__inner }" id="nut-now2-layout-progress"></div>
     </div>
     <div class="${ styles.header }">
       <div class="${ styles.header__content }">
@@ -41,11 +41,29 @@ const Layout = Regular.extend( {
               {#if page.title}
                 <a
                   href="javascript:;"
-                  on-click="{ this.onRoute( page.page ) }"
-                  class="${ styles.navbar__item } { page.active ? '${ styles.is_active }' : '' }"
+                  on-click="{ this.onToggleOpen( page ) }"
+                  class="${ styles.navbar__title } { page.active ? '${ styles.is_active }' : '' } { this.getOpenState( page ) ? '${ styles.is_open }' : '' }"
                 >
+                  <i class="icon nut-icons nut-icon-right ${ styles.navbar__icon }"></i>
                   { page.title }
                 </a>
+
+                {#if this.getOpenState( page ) && page.children && page.children.length > 0}
+                  <ul class="${ styles.link__items }">
+                    {#list page.children as child}
+                    <li>
+                      <a
+                        href="javascript:;"
+                        on-click="{ this.onRoute( child.page ) }"
+                        class="${ styles.link__item } { child.active ? '${ styles.is_active }' : '' }"
+                      >
+                        { child.title }
+                      </a>
+                    </li>
+                    {/list}
+                  </ul>
+                {/if}
+
               {/if}
             {/list}
           </div>
@@ -73,8 +91,26 @@ const Layout = Regular.extend( {
     },
   },
 
+  getOpenState( page ) {
+    return typeof page.open === 'undefined' ?
+      page.active :
+      page.open
+  },
+
+  onToggleOpen( page ) {
+    page.open = !this.getOpenState( page )
+  },
+
   getActivePage( pages ) {
-    return pages.find( page => page.active ) || {}
+    let found
+
+    walkChildren( pages, null, child => {
+      if ( child.page && child.active ) {
+        found = child
+      }
+    } )
+
+    return found || {}
   },
 
   getCurrentPages() {
@@ -108,17 +144,33 @@ const Layout = Regular.extend( {
   },
 } )
 
+function walkChildren( children, parent, callback ) {
+  if ( !children ) {
+    return
+  }
+
+  if ( Array.isArray( children ) ) {
+    children.forEach( ( v, i ) => {
+      callback( v, i, parent )
+
+      if ( Array.isArray( v.children ) ) {
+        walkChildren( v.children, v, callback )
+      }
+    } )
+  }
+}
+
 Layout.filter( 'uppercase', v => v && v.toUpperCase() )
 
 export default {
-  name: 'layout-now',
+  name: 'layout-now2',
 
   type: 'layout',
 
   async apply( ctx ) {
     let layout = null
 
-    const progressElId = 'nut-now-layout-progress'
+    const progressElId = 'nut-now2-layout-progress'
 
     ctx.api.router.beforeEach( function ( { next } ) {
       const $progress = document.getElementById( progressElId )
@@ -145,7 +197,7 @@ export default {
     } )
 
     await ctx.api.layout.register( {
-      name: 'now',
+      name: 'now2',
 
       mount( node ) {
         if ( !layout ) {

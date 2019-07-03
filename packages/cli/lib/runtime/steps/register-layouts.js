@@ -1,5 +1,6 @@
 import defaultLayout from '../layouts/default'
 import nowLayout from '../layouts/now'
+import now2Layout from '../layouts/now2'
 import noneLayout from '../layouts/none'
 import saberLayout from '../layouts/saber'
 import kaolaLayout from '../layouts/kaola'
@@ -13,5 +14,6 @@ export default async function ( context ) {
     nowLayout,
     noneLayout,
     kaolaLayout,
+    now2Layout,
   ], {}, context )
 }
