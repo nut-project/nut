@@ -38,7 +38,7 @@ const Layout = Regular.extend( {
         <aside class="${ styles.navbar }">
           <div class="${ styles.navbar__scroller }">
             {#list currentPages as page}
-              {#if page.title}
+              {#if page.children && page.children.length > 0}
                 <a
                   href="javascript:;"
                   on-click="{ this.onToggleOpen( page ) }"
@@ -63,7 +63,14 @@ const Layout = Regular.extend( {
                     {/list}
                   </ul>
                 {/if}
-
+              {#else}
+                <a
+                  href="javascript:;"
+                  on-click="{ this.onRoute( page.page ) }"
+                  class="${ styles.link__item } { page.active ? '${ styles.is_active }' : '' }"
+                >
+                  { page.title }
+                </a>
               {/if}
             {/list}
           </div>
@@ -203,6 +210,21 @@ export default {
         if ( !layout ) {
           layout = new Layout( {
             data: { ctx },
+          } )
+
+          ctx.events.on( 'page:after-mount', () => {
+            const sidebar = ctx.api.sidebar.get()
+            if ( sidebar && sidebar.length > 0 ) {
+              // reset when route change
+              sidebar.forEach( s => {
+                if ( s.children && s.children.length > 0 ) {
+                  s.children.forEach( c => {
+                    c.open = void 0
+                  } )
+                }
+              } )
+              layout.$update()
+            }
           } )
         }
 

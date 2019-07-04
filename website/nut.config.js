@@ -11,7 +11,7 @@ const config = {
   },
   logo: '/logo.png',
   theme: 'ocean',
-  layout: 'now',
+  layout: 'now2',
   plugins: {},
   markdown: {
     theme: 'prism-duotone-light',

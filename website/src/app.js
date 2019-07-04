@@ -29,20 +29,34 @@ export default ( { api } ) => {
       icon: '',
       title: '指南',
       children: [
-        { title: '介绍', path: 'pages/guide/introduction' },
-        { title: '安装', path: 'pages/guide/installation' },
-        { title: '体验', path: 'pages/guide/experience' },
-        // { title: '如何开始', path: 'pages/guide/get-started' },
-        { title: '微前端', path: 'pages/guide/microfrontends' },
-        { title: 'quicklink', path: 'pages/guide/quicklink' },
-        { title: '静态资源', path: 'pages/guide/public' },
-        { title: 'CSS 预处理器', path: 'pages/guide/css-preprocessor' },
-        { title: 'CSS Modules', path: 'pages/guide/css-modules' },
-        { title: 'Markdown', path: 'pages/guide/markdown' },
-        { title: '布局', path: 'pages/guide/layout' },
-        { title: '主题', path: 'pages/guide/theme' },
-        { title: '图标', path: 'pages/guide/icon' },
-        { title: '插件', path: 'pages/guide/plugin' },
+        {
+          title: 'Get Started',
+          children: [
+            { title: '介绍', path: 'pages/guide/introduction' },
+            { title: '安装', path: 'pages/guide/installation' },
+            { title: '体验', path: 'pages/guide/experience' },
+          ],
+        },
+        {
+          title: 'Concepts',
+          children: [
+            { title: '微前端', path: 'pages/guide/microfrontends' },
+            { title: '插件', path: 'pages/guide/plugin' },
+            { title: '布局', path: 'pages/guide/layout' },
+            { title: '主题', path: 'pages/guide/theme' },
+          ]
+        },
+        {
+          title: 'Features',
+          children: [
+            { title: 'CSS 预处理器', path: 'pages/guide/css-preprocessor' },
+            { title: 'CSS Modules', path: 'pages/guide/css-modules' },
+            { title: 'Markdown', path: 'pages/guide/markdown' },
+            { title: 'QuickLink', path: 'pages/guide/quicklink' },
+            { title: '静态资源', path: 'pages/guide/public' },
+            { title: '内置图标', path: 'pages/guide/icon' },
+          ]
+        }
       ]
     },
 
