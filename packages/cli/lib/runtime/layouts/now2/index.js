@@ -5,6 +5,57 @@ import styles from './index.module.less'
 import NProgress from 'nprogress'
 import './nprogress.css'
 
+const NavItem = Regular.extend( {
+  template: `
+    {#if page.children && page.children.length > 0}
+      <a
+        href="javascript:;"
+        on-click="{ this.onToggleOpen( page ) }"
+        class="${ styles.navbar__title } { page.active ? '${ styles.is_active }' : '' } { this.getOpenState( page ) ? '${ styles.is_open }' : '' }"
+      >
+        <i class="icon nut-icons nut-icon-right ${ styles.navbar__icon }"></i>
+        { page.title }
+      </a>
+
+      {#if this.getOpenState( page ) && page.children && page.children.length > 0}
+        <ul class="${ styles.link__items }">
+          {#list page.children as child}
+          <li class="${ styles.link__wrapper }">
+            <nav-item
+              page="{ child }"
+              on-route="{ this.onRoute( $event ) }"
+            ></nav-item>
+          </li>
+          {/list}
+        </ul>
+      {/if}
+    {#else}
+      <a
+        href="javascript:;"
+        on-click="{ this.onRoute( page.page ) }"
+        class="${ styles.link__item } { page.active ? '${ styles.is_active }' : '' }"
+      >
+        { page.title }
+      </a>
+    {/if}
+  `,
+  getOpenState( page ) {
+    return typeof page.open === 'undefined' ?
+      page.active :
+      page.open
+  },
+
+  onToggleOpen( page ) {
+    page.open = !this.getOpenState( page )
+  },
+
+  onRoute( page ) {
+    this.$emit( 'route', page )
+  },
+} )
+
+NavItem.component( 'nav-item', NavItem )
+
 const Layout = Regular.extend( {
   template: `
     <div class="${ styles.progress_container }">
@@ -38,40 +89,10 @@ const Layout = Regular.extend( {
         <aside class="${ styles.navbar }">
           <div class="${ styles.navbar__scroller }">
             {#list currentPages as page}
-              {#if page.children && page.children.length > 0}
-                <a
-                  href="javascript:;"
-                  on-click="{ this.onToggleOpen( page ) }"
-                  class="${ styles.navbar__title } { page.active ? '${ styles.is_active }' : '' } { this.getOpenState( page ) ? '${ styles.is_open }' : '' }"
-                >
-                  <i class="icon nut-icons nut-icon-right ${ styles.navbar__icon }"></i>
-                  { page.title }
-                </a>
-
-                {#if this.getOpenState( page ) && page.children && page.children.length > 0}
-                  <ul class="${ styles.link__items }">
-                    {#list page.children as child}
-                    <li>
-                      <a
-                        href="javascript:;"
-                        on-click="{ this.onRoute( child.page ) }"
-                        class="${ styles.link__item } { child.active ? '${ styles.is_active }' : '' }"
-                      >
-                        { child.title }
-                      </a>
-                    </li>
-                    {/list}
-                  </ul>
-                {/if}
-              {#else}
-                <a
-                  href="javascript:;"
-                  on-click="{ this.onRoute( page.page ) }"
-                  class="${ styles.link__item } { page.active ? '${ styles.is_active }' : '' }"
-                >
-                  { page.title }
-                </a>
-              {/if}
+              <nav-item
+                page="{ page }"
+                on-route="{ this.onRoute( $event ) }"
+              ></nav-item>
             {/list}
           </div>
         </aside>
@@ -98,14 +119,15 @@ const Layout = Regular.extend( {
     },
   },
 
-  getOpenState( page ) {
-    return typeof page.open === 'undefined' ?
-      page.active :
-      page.open
-  },
+  onRoute( page ) {
+    if ( page && page.route ) {
+      this.data.ctx.api.router.push( page.route )
+      return
+    }
 
-  onToggleOpen( page ) {
-    page.open = !this.getOpenState( page )
+    if ( page && page.link ) {
+      window.open( page.link )
+    }
   },
 
   getActivePage( pages ) {
@@ -138,17 +160,6 @@ const Layout = Regular.extend( {
   onHome() {
     this.data.ctx.api.router.push( '/' )
   },
-
-  onRoute( item ) {
-    if ( item && item.route ) {
-      this.data.ctx.api.router.push( item.route )
-      return
-    }
-
-    if ( item && item.link ) {
-      window.open( item.link )
-    }
-  },
 } )
 
 function walkChildren( children, parent, callback ) {
@@ -168,6 +179,7 @@ function walkChildren( children, parent, callback ) {
 }
 
 Layout.filter( 'uppercase', v => v && v.toUpperCase() )
+Layout.component( 'nav-item', NavItem )
 
 export default {
   name: 'layout-now2',
@@ -213,6 +225,8 @@ export default {
           } )
 
           ctx.events.on( 'page:after-mount', () => {
+            window.scrollTo( 0, 0 )
+
             const sidebar = ctx.api.sidebar.get()
             if ( sidebar && sidebar.length > 0 ) {
               // reset when route change

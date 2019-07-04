@@ -18,7 +18,13 @@ module.exports = {
         {
           title: 'Menu3',
           children: [
-            { title: 'Markdown', path: 'pages/markdown' },
+            { title: 'Demo2', path: 'pages/demo2' },
+            {
+              title: 'Leaf',
+              children: [
+                { title: 'Markdown', path: 'pages/markdown' },
+              ]
+            }
           ]
         }
       ]
@@ -27,9 +33,9 @@ module.exports = {
       title: 'Menu2',
       children: [
         {
-          title: 'Menu2',
+          title: 'Menu3',
           children: [
-            { title: 'Markdown', path: 'pages/markdown' },
+            { title: 'Demo3', path: 'pages/demo3' },
           ]
         }
       ]

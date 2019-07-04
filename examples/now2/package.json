@@ -5,15 +5,14 @@
   "description": "my awesome nut project",
   "keywords": [],
   "scripts": {
-    "dev": "nut",
-    "prod": "nut --prod"
+    "dev": "node ../../packages/cli/bin/index.js",
+    "prod": "node ../../packages/cli/bin/index.js --prod"
   },
   "author": {
     "name": "fengzilong",
     "email": "feng_zilong@163.com"
   },
   "devDependencies": {
-    "@nut-project/cli": "^0.2.5-32"
   },
   "license": "MIT"
 }
