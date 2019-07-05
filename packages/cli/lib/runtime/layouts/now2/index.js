@@ -1,8 +1,10 @@
 /* global window, document */
 
 import Regular from 'regularjs'
-import styles from './index.module.less'
 import NProgress from 'nprogress'
+import Headroom from 'headroom.js'
+import styles from './index.module.less'
+import headroomStyles from './headroom.module.less'
 import './nprogress.css'
 
 const NavItem = Regular.extend( {
@@ -61,7 +63,7 @@ const Layout = Regular.extend( {
     <div class="${ styles.progress_container }">
       <div class="${ styles.progress_container__inner }" id="nut-now2-layout-progress"></div>
     </div>
-    <div class="${ styles.header }">
+    <div ref="header" class="${ styles.header } ${ headroomStyles.unpinned }">
       <div class="${ styles.header__content }">
         <div class="${ styles.title }" on-click="{ this.onHome() }">
           {#if ctx.app.logo}
@@ -86,7 +88,7 @@ const Layout = Regular.extend( {
 
     <div class="${ styles.main }">
       <div class="${ styles.main__content }">
-        <aside class="${ styles.navbar }">
+        <aside class="${ styles.navbar } { headPinned ? '${ styles.is_head_pinned }' : '' }">
           <div class="${ styles.navbar__scroller }">
             {#list currentPages as page}
               <nav-item
@@ -98,14 +100,14 @@ const Layout = Regular.extend( {
         </aside>
 
         {#if this.getActivePage( currentPages ).page.type === 'markdown'}
-          <div class="${ styles.content }">
+          <div class="${ styles.content } DocSearch-content">
             <div
               class="${ styles.markdown } markdown-body"
               ref="$$mount"
             ></div>
           </div>
         {#else}
-          <div class="${ styles.content }">
+          <div class="${ styles.content } DocSearch-content">
             <div ref="$$mount"></div>
           </div>
         {/if}
@@ -117,6 +119,37 @@ const Layout = Regular.extend( {
     currentPages() {
       return this.getCurrentPages()
     },
+  },
+
+  config() {
+    this.data.headPinned = false
+  },
+
+  init() {
+    setTimeout( () => {
+      const headroom = new Headroom( this.$refs.header, {
+        classes: headroomStyles,
+        onPin: () => {
+          this.data.headPinned = true
+          this.$update()
+        },
+        onUnpin: () => {
+          this.data.headPinned = false
+          this.$update()
+        },
+      } )
+
+      headroom.init()
+
+      // update headroom state manually
+      if ( headroom.getScrollY() === 0 ) {
+        headroom.pin()
+      }
+
+      setTimeout( () => {
+        this.$refs.header.classList.add( headroomStyles.transition )
+      }, 10 )
+    }, 0 )
   },
 
   onRoute( page ) {
