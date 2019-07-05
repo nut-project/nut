@@ -93,7 +93,7 @@
   position: sticky;
   top: 0;
   box-sizing: border-box;
-  height: -webkit-calc( 100vh - @header-height );
+  height: ~"-webkit-calc( 100vh - "@header-height~" )";
   transition: top .3s ease;
 
   &.is_head_pinned {
