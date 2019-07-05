@@ -99,18 +99,39 @@ const Layout = Regular.extend( {
           </div>
         </aside>
 
-        {#if this.getActivePage( currentPages ).page.type === 'markdown'}
-          <div class="${ styles.content } DocSearch-content">
-            <div
-              class="${ styles.markdown } markdown-body"
-              ref="$$mount"
-            ></div>
+        <div class="${ styles.content } markdown-body DocSearch-content">
+          <div class="${ styles.flexmax }" ref="$$mount"></div>
+
+          <div class="${ styles.pagination }">
+            {#if prevPage}
+              <a
+                class="${ styles.pagination__item }"
+                href="javascript:;"
+                on-click="{ this.onRoute( prevPage.page ) }"
+              >
+                <i style="margin-right: 10px;" class="nut-icons nut-icon-arrowleft"></i>
+                { prevPage.title }
+              </a>
+            {#else}
+              <div></div>
+            {/if}
+
+            {#if nextPage}
+              <a
+                class="${ styles.pagination__item }"
+                href="javascript:;"
+                on-click="{ this.onRoute( nextPage.page ) }"
+              >
+                { nextPage.title }
+                <i  style="margin-left: 10px;" class="nut-icons nut-icon-arrowright"></i>
+              </a>
+            {#else}
+              <div></div>
+            {/if}
           </div>
-        {#else}
-          <div class="${ styles.content } DocSearch-content">
-            <div ref="$$mount"></div>
-          </div>
-        {/if}
+
+        </div>
+
       </div>
     </div>
   `,
@@ -260,6 +281,35 @@ export default {
           ctx.events.on( 'page:after-mount', () => {
             window.scrollTo( 0, 0 )
 
+            // update pagination
+            const pages = layout.$get( 'currentPages' )
+            const leafPages = []
+            walkChildren( pages, null, child => {
+              if ( !child.children ) {
+                leafPages.push( child )
+              }
+            } )
+
+            let activeIndex
+            leafPages.forEach( ( page, index ) => {
+              if ( page.active ) {
+                activeIndex = index
+              }
+            } )
+
+            if ( activeIndex > 0 ) {
+              layout.data.prevPage = leafPages[ activeIndex - 1 ]
+            } else {
+              layout.data.prevPage = null
+            }
+
+            if ( ( activeIndex + 1 ) < leafPages.length ) {
+              layout.data.nextPage = leafPages[ activeIndex + 1 ]
+            } else {
+              layout.data.nextPage = null
+            }
+
+            // update open
             const sidebar = ctx.api.sidebar.get()
             if ( sidebar && sidebar.length > 0 ) {
               // reset when route change
@@ -270,8 +320,9 @@ export default {
                   } )
                 }
               } )
-              layout.$update()
             }
+
+            layout.$update()
           } )
         }
 

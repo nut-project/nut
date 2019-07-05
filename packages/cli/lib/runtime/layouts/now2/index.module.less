@@ -1,4 +1,4 @@
-@navbar-width: 280px;
+@navbar-width: 210px;
 @header-height: 60px;
 
 .progress_container {
@@ -171,12 +171,40 @@
 }
 
 .content {
-  padding: 20px 0 20px 20px;
   flex: 1;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: ~"-webkit-calc( 100vh - "@header-height~" )";
+  box-sizing: border-box;
+  background-color: #fff;
+  padding: 50px 0 0px 60px;
 }
 
-.markdown {
-  background-color: #fff;
-  padding: 30px 0 30px 40px;
+.flexmax {
+  flex: 1;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0 40px 0;
+}
+
+:global(.markdown-body) .pagination__item {
+  display: block;
+  padding: 0 30px;
+  height: 38px;
+  line-height: 38px;
+  text-decoration: none;
+  color: #000;
+  border: solid 1px #000;
+  border-radius: 3px;
+  font-size: 14px;
+  position: relative;
+
+  &:hover {
+    color: #000;
+    text-decoration: none;
+  }
 }
