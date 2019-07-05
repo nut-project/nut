@@ -223,6 +223,24 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     return false
   }
 
+  const babelLoaderOptions = {
+    presets: [
+      [
+        require.resolve( '@babel/preset-env' ),
+        {
+          targets: {
+            browsers: browserslist
+          }
+        }
+      ]
+    ],
+    plugins: [
+      require.resolve( '@babel/plugin-transform-runtime' ),
+      require.resolve( '@babel/plugin-syntax-dynamic-import' ),
+    ],
+    sourceType: 'unambiguous',
+  }
+
   config.module
     .rule( 'js' )
     .test( /\.js$/ )
@@ -234,23 +252,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .resource( /nut-auto-generated/ )
       .use( 'babel' )
         .loader( 'babel-loader' )
-        .options( {
-          presets: [
-            [
-              require.resolve( '@babel/preset-env' ),
-              {
-                targets: {
-                  browsers: browserslist
-                }
-              }
-            ]
-          ],
-          plugins: [
-            require.resolve( '@babel/plugin-transform-runtime' ),
-            require.resolve( '@babel/plugin-syntax-dynamic-import' ),
-          ],
-          sourceType: 'unambiguous',
-        } )
+        .options( babelLoaderOptions )
         .end()
       .end()
     .oneOf( 'with-thread' )
@@ -259,23 +261,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .end()
       .use( 'babel' )
         .loader( require.resolve( 'babel-loader' ) )
-        .options( {
-          presets: [
-            [
-              require.resolve( '@babel/preset-env' ),
-              {
-                targets: {
-                  browsers: browserslist
-                }
-              }
-            ]
-          ],
-          plugins: [
-            require.resolve( '@babel/plugin-transform-runtime' ),
-            require.resolve( '@babel/plugin-syntax-dynamic-import' ),
-          ],
-          sourceType: 'unambiguous',
-        } )
+        .options( babelLoaderOptions )
 
   config.module
     .rule( 'jsx' )

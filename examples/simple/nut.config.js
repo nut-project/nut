@@ -71,12 +71,12 @@ module.exports = {
             { loader: 'html-loader' },
           ],
         },
-        {
-          test: /\.vue$/,
-          use: [
-            { loader: 'eslint-loader' }
-          ]
-        }
+        // {
+        //   test: /\.vue$/,
+        //   use: [
+        //     { loader: 'eslint-loader' }
+        //   ]
+        // }
       ]
     }
   }

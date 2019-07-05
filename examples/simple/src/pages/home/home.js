@@ -16,6 +16,18 @@ Page.$$nut = function ( ctx ) {
         instance = new Page()
       }
       instance.$inject( node )
+
+      const obj = {
+        foo: {
+          bar: {
+            baz: 'world',
+          },
+        },
+      };
+
+      const baz = obj?.foo?.bar?.baz;
+
+      console.log( baz )
     },
 
     unmount( node ) {
