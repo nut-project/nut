@@ -9,11 +9,11 @@
         <div class="title">
           <div>{{ $ctx.app.zh | toUpperCase }}</div>
         </div>
-        <div class="${ styles.sidebar }">
+        <div class="sidebar">
           <a
             v-for="item in $ctx.api.sidebar.get()"
-            href="javascript:;"
-            @click="onRoute( item )"
+            :href="normalizeRoute( item.route )"
+            @click="onRoute( $event, item )"
             :class="[ 'sidebar__item', item.active ? 'is_active' : '' ]"
           >
             {{ item.title }}
@@ -40,7 +40,19 @@ export default {
   },
 
   methods: {
-    onRoute( item ) {
+    normalizeRoute( url ) {
+      const config = this.$ctx.app
+      const routerMode = ( config && config.router && config.router.mode ) || 'hash'
+
+      if ( routerMode === 'hash' ) {
+        return '#' + url
+      }
+
+      return url
+    },
+    onRoute( e, item ) {
+      e.preventDefault()
+
       if ( item.route ) {
         this.$ctx.api.router.push( item.route )
         return

@@ -1,5 +1,5 @@
 {
-  "index_name": "",
+  "index_name": "nut",
   "start_urls": [
     "http://nut.js.org"
   ],

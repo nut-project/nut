@@ -115,8 +115,8 @@ const Layout = Regular.extend( {
             {#if prevPage}
               <a
                 class="${ styles.pagination__item }"
-                href="javascript:;"
-                on-click="{ this.onRoute( prevPage.page ) }"
+                href="{ prevPage.page.route | routerMode }"
+                on-click="{ this.onEmit( $event, prevPage.page ) }"
               >
                 <i style="margin-right: 4px;" class="nut-icons nut-icon-arrowleft"></i>
                 { prevPage.title }
@@ -128,8 +128,8 @@ const Layout = Regular.extend( {
             {#if nextPage}
               <a
                 class="${ styles.pagination__item }"
-                href="javascript:;"
-                on-click="{ this.onRoute( nextPage.page ) }"
+                href="{ nextPage.page.route | routerMode }"
+                on-click="{ this.onEmit( $event, nextPage.page ) }"
               >
                 { nextPage.title }
                 <i  style="margin-left: 4px;" class="nut-icons nut-icon-arrowright"></i>
