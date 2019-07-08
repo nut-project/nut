@@ -1,7 +1,7 @@
 <template>
   <article class="homepage">
     <div class="progress_container">
-      <div class="progress_container__inner" id="nut-now-layout-progress"></div>
+      <div class="progress_container__inner" id="nut-layout-now2-progress"></div>
     </div>
 
     <div class="header">

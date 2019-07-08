@@ -25,6 +25,7 @@ const NavItem = Regular.extend( {
           <li class="${ styles.link__wrapper }">
             <nav-item
               page="{ child }"
+              ctx="{ ctx }"
               on-route="{ this.onRoute( $event ) }"
             ></nav-item>
           </li>
@@ -33,14 +34,15 @@ const NavItem = Regular.extend( {
       {/if}
     {#else}
       <a
-        href="javascript:;"
-        on-click="{ this.onRoute( page.page ) }"
-        class="${ styles.link__item } { page.active ? '${ styles.is_active }' : '' }"
+        href="{ page.page.route | routerMode }"
+        on-click="{ this.onEmit( $event, page.page ) }"
+        class="${ styles.link__item } { page.active ? '${ styles.is_active } nut-layout-now2-lvl1' : '' }"
       >
         { page.title }
       </a>
     {/if}
   `,
+
   getOpenState( page ) {
     return typeof page.open === 'undefined' ?
       page.active :
@@ -51,17 +53,23 @@ const NavItem = Regular.extend( {
     page.open = !this.getOpenState( page )
   },
 
+  onEmit( e, page ) {
+    e.preventDefault()
+    this.$emit( 'route', page )
+  },
+
   onRoute( page ) {
     this.$emit( 'route', page )
   },
 } )
 
 NavItem.component( 'nav-item', NavItem )
+NavItem.filter( 'routerMode', routerModeFilter )
 
 const Layout = Regular.extend( {
   template: `
     <div class="${ styles.progress_container }">
-      <div class="${ styles.progress_container__inner }" id="nut-now2-layout-progress"></div>
+      <div class="${ styles.progress_container__inner }" id="nut-layout-now2-progress"></div>
     </div>
     <div ref="header" class="${ styles.header } ${ headroomStyles.unpinned }">
       <div class="${ styles.header__content }">
@@ -75,9 +83,9 @@ const Layout = Regular.extend( {
         <div class="${ styles.sidebar }">
           {#list ctx.api.sidebar.get() as item}
             <a
-              href="javascript:;"
-              on-click="{ this.onRoute( item ) }"
-              class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }"
+              href="{ item.route | routerMode }"
+              on-click="{ this.onEmit( $event, item ) }"
+              class="${ styles.sidebar__item } { item.active ? '${ styles.is_active } nut-layout-now2-lvl0' : '' }"
             >
               { item.title }
             </a>
@@ -93,13 +101,14 @@ const Layout = Regular.extend( {
             {#list currentPages as page}
               <nav-item
                 page="{ page }"
+                ctx="{ ctx }"
                 on-route="{ this.onRoute( $event ) }"
               ></nav-item>
             {/list}
           </div>
         </aside>
 
-        <div class="${ styles.content } markdown-body DocSearch-content">
+        <div class="${ styles.content } markdown-body nut-layout-now2-content">
           <div class="${ styles.flexmax }" ref="$$mount"></div>
 
           <div class="${ styles.pagination }">
@@ -173,6 +182,11 @@ const Layout = Regular.extend( {
     }, 0 )
   },
 
+  onEmit( e, page ) {
+    e.preventDefault()
+    this.onRoute( page )
+  },
+
   onRoute( page ) {
     if ( page && page.route ) {
       this.data.ctx.api.router.push( page.route )
@@ -233,7 +247,19 @@ function walkChildren( children, parent, callback ) {
 }
 
 Layout.filter( 'uppercase', v => v && v.toUpperCase() )
+Layout.filter( 'routerMode', routerModeFilter )
 Layout.component( 'nav-item', NavItem )
+
+function routerModeFilter( url ) {
+  const config = this.data.ctx && this.data.ctx.app
+  const routerMode = ( config && config.router && config.router.mode ) || 'hash'
+
+  if ( routerMode === 'hash' ) {
+    return '#' + url
+  }
+
+  return url
+}
 
 export default {
   name: 'layout-now2',
@@ -243,7 +269,7 @@ export default {
   async apply( ctx ) {
     let layout = null
 
-    const progressElId = 'nut-now2-layout-progress'
+    const progressElId = 'nut-layout-now2-progress'
 
     ctx.api.router.beforeEach( function ( { next } ) {
       const $progress = document.getElementById( progressElId )
