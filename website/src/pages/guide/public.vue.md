@@ -44,5 +44,5 @@ ${ publicUrl }font.woff2
 ```
 
 <zi-note label="Tips">
-  publicUrl 根据实际情况替换，可能为 `./`、`/` 或 `CDN 路径`
+  publicUrl 根据实际情况替换
 </zi-note>

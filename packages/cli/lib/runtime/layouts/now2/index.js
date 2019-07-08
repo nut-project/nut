@@ -109,7 +109,7 @@ const Layout = Regular.extend( {
                 href="javascript:;"
                 on-click="{ this.onRoute( prevPage.page ) }"
               >
-                <i style="margin-right: 10px;" class="nut-icons nut-icon-arrowleft"></i>
+                <i style="margin-right: 4px;" class="nut-icons nut-icon-arrowleft"></i>
                 { prevPage.title }
               </a>
             {#else}
@@ -123,7 +123,7 @@ const Layout = Regular.extend( {
                 on-click="{ this.onRoute( nextPage.page ) }"
               >
                 { nextPage.title }
-                <i  style="margin-left: 10px;" class="nut-icons nut-icon-arrowright"></i>
+                <i  style="margin-left: 4px;" class="nut-icons nut-icon-arrowright"></i>
               </a>
             {#else}
               <div></div>

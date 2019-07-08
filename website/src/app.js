@@ -43,7 +43,7 @@ export default ( { api } ) => {
             { title: '微前端', path: 'pages/guide/microfrontends' },
             { title: '插件', path: 'pages/guide/plugin' },
             { title: '布局', path: 'pages/guide/layout' },
-            { title: '主题', path: 'pages/guide/theme' },
+            // { title: '主题', path: 'pages/guide/theme' },
           ]
         },
         {

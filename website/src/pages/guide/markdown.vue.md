@@ -4,7 +4,7 @@ nut 会自动识别 `src/pages` 目录下的 `.md` 文件，转换成路由，�
 
 ## 默认高亮主题
 
-prism-tomorrow
+`prism-tomorrow`
 
 ## 所有高亮主题
 

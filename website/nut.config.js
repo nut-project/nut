@@ -15,6 +15,8 @@ const config = {
   plugins: {},
   markdown: {
     theme: 'prism-duotone-light',
+    remarkPlugins: [],
+    rehypePlugins: [],
   },
   homepage: 'pages/home',
   babel: {

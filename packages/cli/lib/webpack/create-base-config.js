@@ -146,9 +146,14 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .use( 'mdx-vue' )
           .loader( require.resolve( './mdx/vue-loader' ) )
           .options( {
+            remarkPlugins: [
+              ...( nutConfig.markdown.remarkPlugins )
+            ].filter( Boolean ),
             rehypePlugins: [
               require( '@mapbox/rehype-prism' ),
-            ],
+              require( 'rehype-slug' ),
+              ...( nutConfig.markdown.rehypePlugins )
+            ].filter( Boolean ),
             compilers: [
               require( './mdx/vue-jsx-compiler' ),
             ]
