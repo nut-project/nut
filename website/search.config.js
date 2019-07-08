@@ -1,7 +1,7 @@
 {
   "index_name": "",
   "start_urls": [
-    "http://nut.js.org/pages/guide/introduction"
+    "http://nut.js.org"
   ],
   "scrape_start_urls": false,
   "js_render": true,
