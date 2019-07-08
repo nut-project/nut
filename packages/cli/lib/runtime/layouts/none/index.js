@@ -3,6 +3,8 @@
 export default {
   name: 'layout-none',
 
+  localName: 'builtins:layout-none',
+
   type: 'layout',
 
   async apply( ctx ) {

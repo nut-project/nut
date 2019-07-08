@@ -7,7 +7,7 @@ import kaolaLayout from '../layouts/kaola'
 
 import applyPlugins from './apply-plugins'
 
-export default async function ( context ) {
+export default async function ( pluginOptions, context ) {
   await applyPlugins( [
     defaultLayout,
     saberLayout,
@@ -15,5 +15,5 @@ export default async function ( context ) {
     noneLayout,
     kaolaLayout,
     now2Layout,
-  ], {}, context )
+  ], pluginOptions, context )
 }

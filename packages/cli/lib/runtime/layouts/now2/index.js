@@ -3,6 +3,8 @@
 import Regular from 'regularjs'
 import NProgress from 'nprogress'
 import Headroom from 'headroom.js'
+import docsearch from 'docsearch.js'
+import './docsearch.less'
 import styles from './index.module.less'
 import headroomStyles from './headroom.module.less'
 import './nprogress.css'
@@ -80,16 +82,28 @@ const Layout = Regular.extend( {
 
           <div>{ ctx.app.zh | uppercase }</div>
         </div>
-        <div class="${ styles.sidebar }">
-          {#list ctx.api.sidebar.get() as item}
-            <a
-              href="{ item.route | routerMode }"
-              on-click="{ this.onEmit( $event, item ) }"
-              class="${ styles.sidebar__item } { item.active ? '${ styles.is_active } nut-layout-now2-lvl0' : '' }"
-            >
-              { item.title }
-            </a>
-          {/list}
+        <div class="${ styles.header__right }">
+          {#if options.search && options.search.indexName && options.search.apiKey}
+            <div class="${ styles.search }">
+              <input
+                spellcheck="false"
+                class="${ styles.search__input }"
+                id="nut-layout-now2-search-input"
+                type="text"
+              />
+            </div>
+          {/if}
+          <div class="${ styles.sidebar }">
+            {#list ctx.api.sidebar.get() as item}
+              <a
+                href="{ item.route | routerMode }"
+                on-click="{ this.onEmit( $event, item ) }"
+                class="${ styles.sidebar__item } { item.active ? '${ styles.is_active } nut-layout-now2-lvl0' : '' }"
+              >
+                { item.title }
+              </a>
+            {/list}
+          </div>
         </div>
       </div>
     </div>
@@ -157,6 +171,20 @@ const Layout = Regular.extend( {
 
   init() {
     setTimeout( () => {
+      if (
+        this.data.options.search &&
+        this.data.options.search.indexName &&
+        this.data.options.search.apiKey
+      ) {
+        docsearch( {
+          appId: this.data.options.search.appId || '',
+          apiKey: this.data.options.search.apiKey || '',
+          indexName: this.data.options.search.indexName || '',
+          inputSelector: '#nut-layout-now2-search-input',
+          debug: Boolean( this.data.options.search.debug ),
+        } )
+      }
+
       const headroom = new Headroom( this.$refs.header, {
         classes: headroomStyles,
         onPin: () => {
@@ -264,9 +292,13 @@ function routerModeFilter( url ) {
 export default {
   name: 'layout-now2',
 
+  localName: 'builtins:layout-now2',
+
   type: 'layout',
 
-  async apply( ctx ) {
+  async apply( ctx, options = {} ) {
+    console.log( options )
+
     let layout = null
 
     const progressElId = 'nut-layout-now2-progress'
@@ -301,7 +333,10 @@ export default {
       mount( node ) {
         if ( !layout ) {
           layout = new Layout( {
-            data: { ctx },
+            data: {
+              ctx,
+              options,
+            },
           } )
 
           ctx.events.on( 'page:after-mount', () => {
@@ -369,6 +404,7 @@ export default {
         }
 
         layout.data.ctx = data.ctx
+        layout.data.options = options
         layout.$update()
       },
 

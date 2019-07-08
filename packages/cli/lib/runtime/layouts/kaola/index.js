@@ -162,6 +162,8 @@ const Layout = Regular.extend( {
 export default {
   name: 'layout-kaola',
 
+  localName: 'builtins:layout-kaola',
+
   type: 'layout',
 
   async apply( ctx ) {

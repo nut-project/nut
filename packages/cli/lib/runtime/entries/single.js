@@ -88,7 +88,7 @@ import use from '../context/use'
 
   await app( context )
 
-  await registerLayouts( context )
+  await registerLayouts( pluginOptions, context )
 
   await events.emit( 'system:before-apply-plugins', context )
   await applyPlugins( plugins, pluginOptions, context )

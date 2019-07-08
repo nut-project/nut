@@ -86,6 +86,8 @@ const Layout = Regular.extend( {
 export default {
   name: 'layout-saber',
 
+  localName: 'builtins:layout-saber',
+
   type: 'layout',
 
   async apply( ctx ) {

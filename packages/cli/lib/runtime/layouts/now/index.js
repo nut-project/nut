@@ -113,6 +113,8 @@ Layout.filter( 'uppercase', v => v && v.toUpperCase() )
 export default {
   name: 'layout-now',
 
+  localName: 'builtins:layout-now',
+
   type: 'layout',
 
   async apply( ctx ) {

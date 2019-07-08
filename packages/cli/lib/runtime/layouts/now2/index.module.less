@@ -34,6 +34,28 @@
     align-items: center;
     justify-content: space-between;
   }
+  
+  &__right {
+    display: flex;
+  }
+}
+
+.search {
+  margin-right: 10px;
+
+  &__input {
+    border: solid 1px #eee;
+    color: #333;
+    width: 200px;
+    padding: 8px 10px;
+    border-radius: 3px;
+    outline: none;
+    background-color: #fff;
+    
+    &:focus {
+      background-color: #fafafa;
+    }
+  }
 }
 
 .title {
@@ -51,6 +73,8 @@
 
 .sidebar {
   font-size: 15px;
+  display: flex;
+  align-items: center;
 
   &__item {
     display: inline-block;

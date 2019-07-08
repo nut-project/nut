@@ -138,6 +138,8 @@ Layout.filter( 't', function ( v ) {
 export default {
   name: 'layout-default',
 
+  localName: 'builtins:layout-default',
+
   type: 'layout',
 
   async apply( ctx ) {
