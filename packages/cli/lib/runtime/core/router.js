@@ -73,14 +73,22 @@ export default function ( pages, rootRouter ) {
       return url
     },
 
-    push( route = '' ) {
-      const path = this.format( route )
+    push( route = '', options = {} ) {
+      const path = this.format( route, options )
       rootRouter.push( path )
     },
 
-    replace( route = '' ) {
-      const path = this.format( route )
+    replace( route = '', options = {} ) {
+      const path = this.format( route, options )
       rootRouter.replace( path )
+    },
+
+    match( ...args ) {
+      return rootRouter.match( ...args )
+    },
+
+    getSegment( ...args ) {
+      return rootRouter.getSegment( ...args )
     },
   }
 }

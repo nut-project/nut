@@ -15,13 +15,22 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
       },
       router: {
         ...api.router,
-        format( route ) {
+        format( route, options = {} ) {
           if ( typeof route === 'string' ) {
-            console.warn( '[router.format] cannot format string as route in plugin' )
-            return
+            route = api.router.getSegment( route )
           }
 
-          route.page = route.page + '@' + plugin.localName
+          if ( options.scoped === true ) {
+            // localName is unknown in plugin, so string is meaningless
+            if ( typeof route === 'string' ) {
+              console.warn( '[router.format] format string is not allowed in plugin' )
+              return
+            }
+
+            route.page = route.page + '@' + plugin.localName
+
+            return api.router.format( route )
+          }
 
           return api.router.format( route )
         }

@@ -18,7 +18,9 @@ module.exports = {
         'test',
         'release',
         'dependency',
+        'breaking',
       ]
-    ]
+    ],
+    'header-max-length': [ 2, 'always', 120 ]
   }
 }

@@ -170,19 +170,26 @@ const Layout = Regular.extend( {
   },
 
   init() {
+    const ctx = this.data.ctx
     setTimeout( () => {
-      if (
-        this.data.options.search &&
-        this.data.options.search.indexName &&
-        this.data.options.search.apiKey
-      ) {
-        docsearch( {
-          appId: this.data.options.search.appId || '',
-          apiKey: this.data.options.search.apiKey || '',
-          indexName: this.data.options.search.indexName || '',
-          inputSelector: '#nut-layout-now2-search-input',
-          debug: Boolean( this.data.options.search.debug ),
-        } )
+      const searchOptions = this.data.options.search || {}
+      if ( searchOptions.indexName && searchOptions.apiKey ) {
+        docsearch(
+          Object.assign( {}, searchOptions, {
+            inputSelector: '#nut-layout-now2-search-input',
+            debug: Boolean( searchOptions.debug ),
+            layout: 'collumns',
+            handleSelected( input, event, suggestion, datasetNumber, context ) {
+              if (
+                context.selectionMethod === 'click' ||
+                context.selectionMethod === 'enterKey'
+              ) {
+                input.setVal( '' )
+                ctx.api.router.push( suggestion.url )
+              }
+            },
+          } )
+        )
       }
 
       const headroom = new Headroom( this.$refs.header, {
@@ -297,8 +304,6 @@ export default {
   type: 'layout',
 
   async apply( ctx, options = {} ) {
-    console.log( options )
-
     let layout = null
 
     const progressElId = 'nut-layout-now2-progress'

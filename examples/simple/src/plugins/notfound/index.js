@@ -5,7 +5,7 @@ export default {
     events.on( 'route:notfound', () => {
       api.router.replace( {
         page: 'pages/index'
-      } )
+      }, { scoped: true } )
     } )
   }
 }
