@@ -34,6 +34,10 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     config.output.jsonpFunction( 'webpackJsonp_' + appId )
   }
 
+  const babelRuntimeRoot = path.dirname(
+    require.resolve( '@babel/runtime/package' )
+  )
+
   config
     .optimization
       .splitChunks( {
@@ -64,9 +68,13 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
       .alias
         .set( '@', path.join( dirs.project, 'src' ) )
         // pnp start
-        .set( '@babel/runtime', path.dirname( require.resolve( '@babel/runtime/package' ) ) )
-        .set( 'core-js', path.dirname( require.resolve( 'core-js/package' ) ) )
-        .set( 'regenerator-runtime', path.dirname( require.resolve( 'regenerator-runtime/package' ) ) )
+        .set( '@babel/runtime', babelRuntimeRoot )
+        .set( 'core-js', path.dirname(
+          resolveFrom.silent( babelRuntimeRoot, 'core-js/package' )
+        ) )
+        .set( 'regenerator-runtime', path.dirname(
+          resolveFrom.silent( babelRuntimeRoot, 'regenerator-runtime/package' )
+        ) )
         // pnp end
         .end()
       .modules
