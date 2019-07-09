@@ -89,6 +89,7 @@ const Layout = Regular.extend( {
                 spellcheck="false"
                 class="${ styles.search__input }"
                 id="nut-layout-now2-search-input"
+                placeholder="Search"
                 type="text"
               />
             </div>
