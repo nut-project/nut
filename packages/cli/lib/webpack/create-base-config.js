@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 
 const path = require( 'path' )
-const fse = require( 'fs-extra' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
@@ -9,6 +8,7 @@ const WebpackBar = require( 'webpackbar' )
 const PnpWebpackPlugin = require( 'pnp-webpack-plugin' )
 const Config = require( 'webpack-chain' )
 const threadLoader = require( 'thread-loader' )
+const resolveFrom = require( 'resolve-from' )
 
 const dirs = {
   cli: path.join( __dirname, '../../' ),
@@ -305,14 +305,16 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
 
   // TODO: support .tsx later
   const tsLoaderOptions = {
-    appendTsSuffixTo: [ /\.vue$/ ]
+    transpileOnly: true,
+    appendTsSuffixTo: [ /\.vue$/ ],
   }
 
-  if (
-    !fse.pathExistsSync( path.join( dirs.project, 'tsconfig.json' ) )
-  ) {
+  let configFile = resolveFrom.silent( dirs.project, 'tsconfig.json' )
+
+  if ( !configFile ) {
+    configFile = path.join( __dirname, 'tsconfig.json' )
     tsLoaderOptions.context = dirs.project
-    tsLoaderOptions.configFile = path.join( __dirname, 'tsconfig.json' )
+    tsLoaderOptions.configFile = configFile
   }
 
   config.module
@@ -325,6 +327,21 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .loader( require.resolve( 'ts-loader' ) )
         .options( PnpWebpackPlugin.tsLoaderOptions( tsLoaderOptions ) )
         .end()
+
+  const tslintConfigFile = resolveFrom.silent( dirs.project, 'tslint.json' )
+
+  config
+    .plugin( 'fork-ts-checker' )
+    .use( require( 'fork-ts-checker-webpack-plugin' ), [
+      {
+        vue: true,
+        tsconfig: configFile,
+        tslint: Boolean( tslintConfigFile ),
+        formatter: 'codeframe',
+        checkSyntacticErrors: false,
+        measureCompilationTime: false,
+      }
+    ] )
 
   config.module
     .rule( 'image' )

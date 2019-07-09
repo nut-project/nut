@@ -106,7 +106,7 @@ async function dev() {
 
   compiler.hooks.done.tap( 'memory-usage', () => {
     const { heapUsed } = process.memoryUsage()
-    console.log( chalk.gray( `${ prettyBytes( heapUsed ) } Memory Used\n` ) )
+    console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
   } )
 
   server.listen( port, host, () => {

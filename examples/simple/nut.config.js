@@ -55,6 +55,16 @@ module.exports = {
     template: 'default',
     options: {},
   },
+  chainWebpack( config ) {
+    config.module
+      .rule( 'ts' )
+        .use( 'ts' )
+        .loader( 'ts-loader' )
+        .tap( options => {
+          options.transpileOnly = true
+          return options
+        } )
+  },
   configureWebpack: {
     resolve: {
       alias: {
