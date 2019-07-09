@@ -8747,10 +8747,10 @@ unbzip2-stream@^1.0.9:
     buffer "^5.2.1"
     through "^2.3.8"
 
-unfancy-router@0.1.7:
-  version "0.1.7"
-  resolved "https://registry.npmjs.org/unfancy-router/-/unfancy-router-0.1.7.tgz#5b9882b488c359543000272ca06d7f055a5018c4"
-  integrity sha512-AvtSvNAdfrjDt5l/LPSaMcq3GePRxUmzM/bhhSRCmQ7W/WPvXGNDAsXqNsx+EQHX0brSQ7GicTSySo4g8kwJyA==
+unfancy-router@0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/unfancy-router/-/unfancy-router-0.1.8.tgz#7400a3514025f0a35480f5a9cd9348bd6801af1e"
+  integrity sha512-88qh+00o5JtW6oB+Nxbal2c1YxNDPYcwITeDBzxLi8Y9IPsP+7baQXUPWQKe8lBA76q883kZJIJU7xHB69GPng==
   dependencies:
     dush "^3.0.5"
     fast-memoize "^2.2.8"
