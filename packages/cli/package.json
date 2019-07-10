@@ -122,7 +122,7 @@
     "tippy.js": "^4.2.1",
     "ts-loader": "^6.0.3",
     "typescript": "^3.5.2",
-    "unfancy-router": "^0.1.8",
+    "unfancy-router": "0.1.9",
     "unist-util-visit": "^1.4.1",
     "url-loader": "^2.0.0",
     "v8-compile-cache": "^2.0.3",

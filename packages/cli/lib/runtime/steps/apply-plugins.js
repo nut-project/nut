@@ -15,7 +15,9 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
       },
       router: {
         ...api.router,
-        format( route, options = {} ) {
+        format( route, options ) {
+          options = options || {}
+
           if ( typeof route === 'string' ) {
             route = api.router.getSegment( route )
           }

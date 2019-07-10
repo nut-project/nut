@@ -48,7 +48,7 @@ export default function ( pages, rootRouter ) {
         return route
       }
 
-      const { query, params, layout } = route || {}
+      const { query, params, hash, layout } = route || {}
 
       let page = route && route.page
 
@@ -70,17 +70,21 @@ export default function ( pages, rootRouter ) {
         url = url + '?' + qs.stringify( query )
       }
 
+      if ( hash ) {
+        url = url + '#' + hash
+      }
+
       return url
     },
 
-    push( route = '', options = {} ) {
+    push( route = '', options = {}, callback ) {
       const path = this.format( route, options )
-      rootRouter.push( path )
+      rootRouter.push( path, callback )
     },
 
-    replace( route = '', options = {} ) {
+    replace( route = '', options = {}, callback ) {
       const path = this.format( route, options )
-      rootRouter.replace( path )
+      rootRouter.replace( path, callback )
     },
 
     match( ...args ) {

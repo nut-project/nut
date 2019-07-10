@@ -1,4 +1,4 @@
-/* global window, document */
+/* global window, document, location */
 
 import Regular from 'regularjs'
 import NProgress from 'nprogress'
@@ -172,7 +172,31 @@ const Layout = Regular.extend( {
 
   init() {
     const ctx = this.data.ctx
+
+    const headroom = this.headroom = new Headroom( this.$refs.header, {
+      classes: headroomStyles,
+      onPin: () => {
+        this.data.headPinned = true
+        this.$update()
+      },
+      onUnpin: () => {
+        this.data.headPinned = false
+        this.$update()
+      },
+    } )
+
     setTimeout( () => {
+      headroom.init()
+
+      // update headroom state manually
+      if ( headroom.getScrollY() === 0 ) {
+        headroom.pin()
+      }
+
+      setTimeout( () => {
+        this.$refs.header.classList.add( headroomStyles.transition )
+      }, 10 )
+
       const searchOptions = this.data.options.search || {}
       if ( searchOptions.indexName && searchOptions.apiKey ) {
         docsearch(
@@ -186,36 +210,42 @@ const Layout = Regular.extend( {
                 context.selectionMethod === 'enterKey'
               ) {
                 input.setVal( '' )
-                ctx.api.router.push( suggestion.url )
+                ctx.api.router.push( suggestion.url, {}, () => {
+                  // page DOM maybe not ready
+                  setTimeout( triggerAnchor, 100 )
+                } )
               }
             },
           } )
         )
+
+        setTimeout( triggerAnchor, 100 )
       }
-
-      const headroom = new Headroom( this.$refs.header, {
-        classes: headroomStyles,
-        onPin: () => {
-          this.data.headPinned = true
-          this.$update()
-        },
-        onUnpin: () => {
-          this.data.headPinned = false
-          this.$update()
-        },
-      } )
-
-      headroom.init()
-
-      // update headroom state manually
-      if ( headroom.getScrollY() === 0 ) {
-        headroom.pin()
-      }
-
-      setTimeout( () => {
-        this.$refs.header.classList.add( headroomStyles.transition )
-      }, 10 )
     }, 0 )
+
+    function triggerAnchor() {
+      if (
+        ctx.app.router &&
+          ctx.app.router.mode === 'history' &&
+          location.hash
+      ) {
+        // force anchor
+        let tag = document.createElement( 'a' )
+        tag.href = location.hash
+        tag.click()
+        tag = null
+
+        // check headroom
+        setTimeout( checkHeadroom, 50 )
+        setTimeout( checkHeadroom, 400 )
+      }
+    }
+
+    function checkHeadroom() {
+      if ( headroom.getScrollY() > 0 ) {
+        headroom.unpin()
+      }
+    }
   },
 
   onEmit( e, page ) {
