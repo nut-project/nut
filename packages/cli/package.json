@@ -121,6 +121,7 @@
     "tildify": "^2.0.0",
     "tippy.js": "^4.2.1",
     "ts-loader": "^6.0.3",
+    "tslint": "^5.18.0",
     "typescript": "^3.5.2",
     "unfancy-router": "0.1.9",
     "unist-util-visit": "^1.4.1",

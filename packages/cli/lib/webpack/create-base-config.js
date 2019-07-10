@@ -317,7 +317,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     appendTsSuffixTo: [ /\.vue$/ ],
   }
 
-  let configFile = resolveFrom.silent( dirs.project, 'tsconfig.json' )
+  let configFile = resolveFrom.silent( dirs.project, './tsconfig.json' )
 
   if ( !configFile ) {
     configFile = path.join( __dirname, 'tsconfig.json' )
@@ -336,7 +336,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .options( PnpWebpackPlugin.tsLoaderOptions( tsLoaderOptions ) )
         .end()
 
-  const tslintConfigFile = resolveFrom.silent( dirs.project, 'tslint.json' )
+  const tslintConfigFile = resolveFrom.silent( dirs.project, './tslint.json' )
 
   config
     .plugin( 'fork-ts-checker' )
