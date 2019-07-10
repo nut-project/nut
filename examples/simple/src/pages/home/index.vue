@@ -1,6 +1,7 @@
 <template>
   <div :class="$style.x">
     vue test
+    <button @click="onRoute">link</button>
   </div>
 </template>
 
@@ -24,7 +25,13 @@ export default {
 
   created() {
     console.log( this.$ctx )
-  }
+  },
+
+  methods: {
+    onRoute() {
+      this.$ctx.api.router.push( 'pages/x' )
+    },
+  },
 }
 </script>
 

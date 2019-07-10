@@ -123,7 +123,7 @@
     "ts-loader": "^6.0.3",
     "tslint": "^5.18.0",
     "typescript": "^3.5.2",
-    "unfancy-router": "0.1.9",
+    "unfancy-router": "0.1.10",
     "unist-util-visit": "^1.4.1",
     "url-loader": "^2.0.0",
     "v8-compile-cache": "^2.0.3",

@@ -23,7 +23,7 @@ export default {
       },
 
       unmount( node ) {
-        if ( node && container ) {
+        if ( node && container && ( container.parentNode === node ) ) {
           node.removeChild( container )
         }
       },
