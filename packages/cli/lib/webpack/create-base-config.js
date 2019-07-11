@@ -218,7 +218,8 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     if ( allTranspileModules ) {
       const shouldTranspile = allTranspileModules.some( m => {
         if ( typeof m === 'string' ) {
-          return filepath.includes( `/node_modules/${ m }/` )
+          return filepath.includes( `/node_modules/${ m }/` ) ||
+            filepath.includes( `/node_modules/_${ m.replace( /\//g, '_' ) }` )
         }
 
         if ( m && m.test ) {
