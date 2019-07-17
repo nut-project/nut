@@ -184,6 +184,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     'unfancy-router',
     require( '../../package.json' ).name,
     /@nut-plugins/i,
+    'debug', // from docsearch.js -> algoliasearch -> debug
   ]
 
   if ( nutConfig.plugins ) {
