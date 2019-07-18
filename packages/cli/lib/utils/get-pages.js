@@ -6,9 +6,11 @@ const resolveFrom = require( 'resolve-from' )
 const dirs = require( './dirs' )
 const pathUtils = require( './path-utils' )
 
-module.exports = async function getAllPages( config ) {
+module.exports = async function getAllPages( config, { cliOptions = {} } = {} ) {
   const root = path.join( dirs.project, 'src' )
-  const pages = await getPages( root )
+  const pages = await getPages( root, cliOptions.singlePage ? page => {
+    return page.page === cliOptions.singlePage
+  } : null )
   const pluginPages = await getPluginPages( config.plugins )
 
   pages.push( ...pluginPages )
@@ -42,7 +44,7 @@ async function getPluginPages( plugins = {} ) {
       return Promise.resolve()
     }
 
-    const pluginPages = await getPages( root, page => {
+    const pluginPages = await getPages( root, null, page => {
       page.name = page.name + '_' + slugify( name, { separator: '$' } )
       page.page = page.page + '@' + name
       page.route = page.route + '@' + name
@@ -59,7 +61,7 @@ async function getPluginPages( plugins = {} ) {
   return pages.filter( Boolean )
 }
 
-async function getPages( root, processor = v => v ) {
+async function getPages( root, filter, processor = v => v ) {
   let files = []
 
   try {
@@ -115,7 +117,7 @@ async function getPages( root, processor = v => v ) {
       const filepath = path.join( root, file )
       const page = pathUtils.normalize( path.join( dir, name ) )
 
-      return processor( {
+      const processed = await processor( {
         name: postfix(
           slugify( page, { separator: '$' } ),
           index
@@ -127,7 +129,16 @@ async function getPages( root, processor = v => v ) {
         provider: '',
         plugin: '',
       } )
+
+      if ( filter ) {
+        if ( ( filter( processed ) ) ) {
+          return processed
+        }
+        return
+      }
+
+      return processed
     } )
 
-  return await Promise.all( promises )
+  return ( await Promise.all( promises ) ).filter( Boolean )
 }

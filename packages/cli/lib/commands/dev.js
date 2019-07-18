@@ -28,7 +28,7 @@ const dirs = {
   project: process.cwd(),
 }
 
-async function dev() {
+async function dev( cliOptions = {} ) {
   process.env.NODE_ENV = 'development'
 
   let result = await loadConfig()
@@ -38,7 +38,6 @@ async function dev() {
 
   const host = nutConfig.host || DEFAULT_HOST
   const port = nutConfig.port || DEFAULT_PORT
-  const url = 'http://' + host + ':' + port
 
   let devServerOptions = {
     contentBase: './dist',
@@ -56,7 +55,8 @@ async function dev() {
   }
 
   const modules = await generateVirtualModules( nutConfig, {
-    env: 'dev'
+    env: 'dev',
+    cliOptions,
   } )
 
   let virtualModules
@@ -110,21 +110,36 @@ async function dev() {
   } )
 
   server.listen( port, host, () => {
-    const lanIP = address.ip()
-    const lanUrl = lanIP ? `http://${ lanIP }:${ port }` : ''
+    const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
 
-    const localTips = `\n\nLocal:     ${ chalk.cyan( url ) }`
-    const lanTips = lanUrl ? `\n\nNetwork:   ${ chalk.cyan( lanUrl ) }` : ''
-
-    console.log(
-      boxen(
-        `Your application is running at${ localTips }${ lanTips }`,
-        {
-          padding: 1,
-          borderColor: 'gray'
-        }
+    if ( cliOptions.singlePage ) {
+      console.log(
+        boxen(
+          `Your sinlg page is available at${
+            getTips( {
+              host,
+              port,
+              routerMode,
+              page: cliOptions.singlePage
+            } )
+          }`,
+          {
+            padding: 1,
+            borderColor: 'gray'
+          }
+        )
       )
-    )
+    } else {
+      console.log(
+        boxen(
+          `Your application is running at${ getTips( { host, port } ) }`,
+          {
+            padding: 1,
+            borderColor: 'gray'
+          }
+        )
+      )
+    }
 
     console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open' ) + '\n' )
 
@@ -137,10 +152,42 @@ async function dev() {
       }
 
       if ( input === '' ) {
-        await open( url )
+        await open( getOpenUrl( {
+          host,
+          port,
+          routerMode,
+          page: cliOptions.singlePage
+        } ) )
       }
     } )
   } )
+
+  function getOpenUrl( { host, port, routerMode = 'hash', page } ) {
+    const url = 'http://' + host + ':' + port
+
+    let suffix = ''
+    if ( page ) {
+      suffix = ( routerMode === 'hash' ? '/#/' : '/' ) + page
+    }
+
+    return url + suffix
+  }
+
+  function getTips( { host, port, routerMode, page } ) {
+    const url = 'http://' + host + ':' + port
+    const lanIP = address.ip()
+    const lanUrl = lanIP ? `http://${ lanIP }:${ port }` : ''
+
+    let suffix = ''
+    if ( page ) {
+      suffix = ( routerMode === 'hash' ? '/#/' : '/' ) + page
+    }
+
+    const localTips = `\n\nLocal:     ${ chalk.cyan( url + suffix ) }`
+    const lanTips = lanUrl ? `\n\nNetwork:   ${ chalk.cyan( lanUrl + suffix ) }` : ''
+
+    return localTips + lanTips
+  }
 
   const onFileChange = async () => {
     if ( !virtualModules ) {
@@ -152,7 +199,8 @@ async function dev() {
       nutConfig = result.config
 
       const modules = await generateVirtualModules( nutConfig, {
-        env: 'dev'
+        env: 'dev',
+        cliOptions,
       } )
 
       for ( const [ path, content ] of Object.entries( modules ) ) {

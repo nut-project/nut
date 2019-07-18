@@ -58,6 +58,11 @@ export default function ( pages, rootRouter ) {
 
       const found = pages.find( p => p.page === page )
 
+      if ( !found ) {
+        console.warn( `[router.format] cannot resolve page ${ page }` )
+        return
+      }
+
       let url = '/'
 
       if ( layout ) {
@@ -79,11 +84,17 @@ export default function ( pages, rootRouter ) {
 
     push( route = '', options = {}, callback ) {
       const path = this.format( route, options )
+      if ( !path ) {
+        return
+      }
       rootRouter.push( path, callback )
     },
 
     replace( route = '', options = {}, callback ) {
       const path = this.format( route, options )
+      if ( !path ) {
+        return
+      }
       rootRouter.replace( path, callback )
     },
 

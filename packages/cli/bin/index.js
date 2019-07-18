@@ -17,11 +17,14 @@ process
 cli
   .command( '', 'Build in development mode' )
   .option( '--prod', 'Build in production mode' )
+  .option( '--single-page <page>', 'Build single page to speed up' )
   .action( options => {
+    options = normalizeCliOptions( options )
+
     if ( options.prod ) {
       app.prod()
     } else {
-      app.dev()
+      app.dev( options )
     }
   } )
 
@@ -36,3 +39,11 @@ cli.version( pkg.version )
 cli.help()
 
 cli.parse()
+
+function normalizeCliOptions( options ) {
+  if ( options.singlePage ) {
+    options.singlePage = options.singlePage.replace( /^\/+|\/+$/g, '' )
+  }
+
+  return options
+}

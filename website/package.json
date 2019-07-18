@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "node ../packages/cli/bin/index.js",
+    "dev": "node ../packages/cli/bin/index.js --single-page=pages/guide/css-modules",
     "build": "node ../packages/cli/bin/index.js --prod"
   },
   "devDependencies": {},

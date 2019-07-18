@@ -7,8 +7,8 @@ const dirs = require( './dirs' )
 const getPages = require( './get-pages' )
 const pathUtils = require( './path-utils' )
 
-async function generateVirtualModules( config, { env = 'dev' } = {} ) {
-  const pages = await getPages( config )
+async function generateVirtualModules( config, { env = 'dev', cliOptions = {} } = {} ) {
+  const pages = await getPages( config, { cliOptions } )
   const nutConfig = await generateNutConfig( config )
   const routes = await generateRoutes( pages )
   const plugins = await generatePlugins( config, { env } )
