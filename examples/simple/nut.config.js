@@ -48,7 +48,10 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': 'http://127.0.0.1:7000'
-    }
+    },
+    before() {
+      console.log( 'dev server before' )
+    },
   },
   sidebar: null,
   landing: {

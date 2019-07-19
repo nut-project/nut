@@ -177,6 +177,17 @@ async function dev( cliOptions = {} ) {
   }
 
   if ( nutConfig.devServer ) {
+    const userDevServerBefore = nutConfig.devServer.before
+    const nutDevServerBefore = devServerOptions.before
+
+    if ( userDevServerBefore ) {
+      devServerOptions.before = function ( ...args ) {
+        nutDevServerBefore( ...args )
+        return userDevServerBefore( ...args )
+      }
+
+      delete nutConfig.devServer.before
+    }
     devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
   }
 
