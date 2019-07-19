@@ -309,13 +309,17 @@ async function dev( cliOptions = {} ) {
     .watch( [
       result.filepath,
       ...appFiles,
-    ] )
+    ], {
+      ignoreInitial: true,
+    } )
     .on( 'change', onFileChange )
 
   chokidar
     .watch( [
       path.join( dirs.project, 'src/pages' ),
-    ] )
+    ], {
+      ignoreInitial: true,
+    } )
     .on( 'add', onFileChange )
     .on( 'unlink', onFileChange )
 }
