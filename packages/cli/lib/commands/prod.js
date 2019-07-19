@@ -96,6 +96,13 @@ async function productionify( webpackConfig, config, appId ) {
 
   webpackConfig.plugin( 'virtual-modules' )
     .use( VirtualModulesPlugin, [ modules ] )
+
+  webpackConfig.plugin( 'define' )
+    .use( webpack.DefinePlugin, [
+      {
+        NUT_CLI_DYNAMIC: JSON.stringify( false )
+      }
+    ] )
 }
 
 async function prod() {

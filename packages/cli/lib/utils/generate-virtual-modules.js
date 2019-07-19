@@ -7,10 +7,16 @@ const dirs = require( './dirs' )
 const getPages = require( './get-pages' )
 const pathUtils = require( './path-utils' )
 
-async function generateVirtualModules( config, { env = 'dev', cliOptions = {} } = {} ) {
+async function generateVirtualModules(
+  config,
+  { env = 'dev', cliOptions = {}, dynamicPages = [] } = {},
+) {
   const pages = await getPages( config, { cliOptions } )
   const nutConfig = await generateNutConfig( config )
-  const routes = await generateRoutes( pages )
+  const routes = await generateRoutes(
+    pages,
+    cliOptions.dynamic ? dynamicPages : null
+  )
   const plugins = await generatePlugins( config, { env } )
   const pluginOptions = await generatePluginOptions( config, { env } )
   const markdownThemeCSS = await generateMarkdownThemeCSS( config )
@@ -19,13 +25,14 @@ async function generateVirtualModules( config, { env = 'dev', cliOptions = {} } 
 
   return diff( {
     'src/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
-    'src/nut-auto-generated-routes.js': routes,
+    'src/nut-auto-generated-routes.js': routes.source,
     'src/nut-auto-generated-plugins.js': plugins,
     'src/nut-auto-generated-plugin-options.js': pluginOptions,
     'src/nut-auto-generated-extend-context.js': extendContext,
     'src/nut-auto-generated-nut-config.js': nutConfig,
     'src/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
     [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
+    ...routes.files,
   } )
 }
 
@@ -250,18 +257,73 @@ function getPackageRoot( pkg ) {
   return path.dirname( require.resolve( `${ pkg }/package.json` ) )
 }
 
-async function generateRoutes( pages ) {
-  return 'const routes = [\n' + pages
+async function generateRoutes( pages, dynamicPages ) {
+  const routes = pages
     .map( page => `{
       name: '${ page.name }',
       path: '${ page.route }',
       page: ${ JSON.stringify( page.page ) },
       filepath: ${ JSON.stringify( tildify( page.filepath ) ) },
-      component: () => import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' ),
+      component: ${ page.name },
       provider: '${ page.provider }',
       plugin: '${ page.plugin }',
-    }` ).join( ',\n' ) + '\n];' +
-    `export default routes;`
+    }` ).join( ',\n' )
+
+  const imports = []
+  const HMRs = []
+  const files = {}
+
+  pages.forEach( page => {
+    imports.push( `
+      import ${ page.name } from '@/nut-auto-generated-route-components/${ page.name }.js'
+    ` )
+
+    HMRs.push( `
+      module.hot.accept(
+        '@/nut-auto-generated-route-components/${ page.name }.js',
+        () => {
+          routes.find( route => {
+            if ( route.name === ${ JSON.stringify( page.name ) } ) {
+              route.component = ${ page.name }
+            }
+          } )
+        }
+      )
+    ` )
+
+    const filename = `src/nut-auto-generated-route-components/${ page.name }.js`
+    let content = `
+      export default () => {
+        return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
+      }
+    `
+
+    if ( dynamicPages && !dynamicPages.includes( page.page ) ) {
+      content = `
+        export default () => {
+          return Promise.resolve( {} )
+        }
+      `
+    }
+    files[ filename ] = content
+  } )
+
+  return {
+    source: `
+      ${ imports.join( '' ) }
+
+      const routes = [
+        ${ routes }
+      ];
+      
+      if ( module.hot ) {
+        ${ HMRs.join( '' ) }
+      }
+
+      export default routes;
+    `,
+    files,
+  }
 }
 
 module.exports = generateVirtualModules

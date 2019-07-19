@@ -18,6 +18,7 @@ cli
   .command( '', 'Build in development mode' )
   .option( '--prod', 'Build in production mode' )
   .option( '--single-page <page>', 'Build single page to speed up' )
+  .option( '--dynamic' )
   .action( options => {
     options = normalizeCliOptions( options )
 

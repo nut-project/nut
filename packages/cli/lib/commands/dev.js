@@ -39,24 +39,12 @@ async function dev( cliOptions = {} ) {
   const host = nutConfig.host || DEFAULT_HOST
   const port = nutConfig.port || DEFAULT_PORT
 
-  let devServerOptions = {
-    contentBase: './dist',
-    host,
-    hot: true,
-    quiet: true,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    historyApiFallback: true,
-  }
-
-  if ( nutConfig.devServer ) {
-    devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
-  }
+  const dynamicPages = []
 
   const modules = await generateVirtualModules( nutConfig, {
     env: 'dev',
     cliOptions,
+    dynamicPages,
   } )
 
   let virtualModules
@@ -81,6 +69,12 @@ async function dev( cliOptions = {} ) {
       return virtualModules
     } )
     .use( VirtualModulesPlugin, [ modules ] )
+  webpackConfig.plugin( 'define' )
+    .use( webpack.DefinePlugin, [
+      {
+        NUT_CLI_DYNAMIC: JSON.stringify( Boolean( cliOptions.dynamic ) )
+      }
+    ] )
 
   applyCSSRules( webpackConfig, 'dev', appId )
 
@@ -100,14 +94,94 @@ async function dev( cliOptions = {} ) {
     )
   }
 
-  WebpackDevServer.addDevServerEntrypoints( finalWebpackConfig, devServerOptions )
   const compiler = webpack( finalWebpackConfig )
-  const server = new WebpackDevServer( compiler, devServerOptions )
 
   compiler.hooks.done.tap( 'memory-usage', () => {
     const { heapUsed } = process.memoryUsage()
     console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
   } )
+
+  const waitCallbacks = []
+  compiler.hooks.done.tap( 'wait-until-valid', () => {
+    let callback = waitCallbacks.shift()
+    while ( callback ) {
+      callback()
+      callback = waitCallbacks.shift()
+    }
+  } )
+
+  function waitUntilValid() {
+    const deferred = {}
+
+    deferred.promise = new Promise( ( resolve, reject ) => {
+      deferred.resolve = resolve
+      deferred.reject = reject
+    } )
+
+    waitCallbacks.push( deferred.resolve )
+
+    return deferred.promise
+  }
+
+  let devServerOptions = {
+    contentBase: './dist',
+    host,
+    hot: true,
+    quiet: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    historyApiFallback: true,
+    before( app ) {
+      app.get( `/_nut_dynamic_build_page`, async ( req, res ) => {
+        const page = req.query.page
+
+        if ( !cliOptions.dynamic ) {
+          return res.json( {
+            success: true,
+            waitHotApply: false,
+          } )
+        }
+
+        // prevent waiting for valid
+        if ( dynamicPages.includes( page ) ) {
+          return res.json( {
+            success: true,
+            waitHotApply: false,
+          } )
+        }
+
+        dynamicPages.push( page )
+
+        const modules = await generateVirtualModules( nutConfig, {
+          env: 'dev',
+          cliOptions,
+          dynamicPages,
+        } )
+
+        for ( const [ path, content ] of Object.entries( modules ) ) {
+          virtualModules.writeModule(
+            path,
+            content
+          )
+        }
+
+        await waitUntilValid()
+
+        res.json( {
+          success: true,
+          waitHotApply: true,
+        } )
+      } )
+    },
+  }
+
+  if ( nutConfig.devServer ) {
+    devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
+  }
+
+  WebpackDevServer.addDevServerEntrypoints( finalWebpackConfig, devServerOptions )
+  const server = new WebpackDevServer( compiler, devServerOptions )
 
   server.listen( port, host, () => {
     const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
@@ -201,6 +275,7 @@ async function dev( cliOptions = {} ) {
       const modules = await generateVirtualModules( nutConfig, {
         env: 'dev',
         cliOptions,
+        dynamicPages,
       } )
 
       for ( const [ path, content ] of Object.entries( modules ) ) {

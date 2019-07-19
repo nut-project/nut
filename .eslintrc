@@ -1,3 +1,7 @@
 {
-  "extends": "mo/esnext"
+  "extends": "mo/esnext",
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "allowImportExportEverywhere": true
+  }
 }

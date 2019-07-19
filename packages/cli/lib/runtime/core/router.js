@@ -1,5 +1,6 @@
 import qs from 'query-string'
 import normalizeRoute from '../utils/normalize-route'
+import dynamicBuild from '../utils/dynamic-build'
 
 export default function ( pages, rootRouter ) {
   return {
@@ -82,20 +83,34 @@ export default function ( pages, rootRouter ) {
       return url
     },
 
-    push( route = '', options = {}, callback ) {
+    async push( route = '', options = {}, callback ) {
       const path = this.format( route, options )
       if ( !path ) {
         return
       }
+
+      await dynamicBuild( this.matchPage( path ) )
+
       rootRouter.push( path, callback )
     },
 
-    replace( route = '', options = {}, callback ) {
+    async replace( route = '', options = {}, callback ) {
       const path = this.format( route, options )
       if ( !path ) {
         return
       }
+
+      await dynamicBuild( this.matchPage( path ) )
+
       rootRouter.replace( path, callback )
+    },
+
+    matchPage( ...args ) {
+      const matched = rootRouter.match( ...args )
+
+      if ( matched ) {
+        return matched && matched.options && matched.options.page
+      }
     },
 
     match( ...args ) {

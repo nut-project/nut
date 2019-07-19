@@ -21,6 +21,9 @@ import registerLayouts from '../steps/register-layouts'
 
 import getFirstRoute from '../utils/get-first-route'
 import switchTheme from '../utils/switch-theme'
+// fix __webpack_require__.e is not defined in dynamic build mode
+import '../utils/add-require-ensure'
+import dynamicBuild from '../utils/dynamic-build'
 
 import app from '@/nut-auto-generated-app'
 import createAPI from '../context/api'
@@ -109,10 +112,14 @@ import use from '../context/use'
     }
   }
 
+  const matched = rootRouter.match()
+  const matchedPage = matched && matched.options && matched.options.page
+
+  await dynamicBuild( matchedPage )
+
   nico.start( '#app' )
   events.emit( 'route:enabled', context )
 
-  const matched = rootRouter.match()
   if ( !matched || ( matched.router === rootRouter ) ) {
     const homeMatched = rootRouter.match( '/' )
 
@@ -120,11 +127,11 @@ import use from '../context/use'
       homeMatched &&
       ( homeMatched.router !== rootRouter )
     ) {
-      rootRouter.push( '/' )
+      context.api.router.push( '/' )
     } else {
       const firstRoute = getFirstRoute( context )
       if ( firstRoute ) {
-        rootRouter.push( firstRoute )
+        context.api.router.push( firstRoute )
       }
     }
   }
