@@ -53,6 +53,14 @@ async function dynamicBuild( page ) {
     }
 
     if ( json.success && ( json.waitHotApply === true ) ) {
+      if ( module.hot.status() === 'idle' ) {
+        // force trigger hmr update if still in idle status
+        try {
+          await module.hot.check( true )
+        } catch ( e ) {
+          console.log( e )
+        }
+      }
       await promise
     }
   }
