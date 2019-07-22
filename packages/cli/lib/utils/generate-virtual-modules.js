@@ -315,10 +315,16 @@ async function generateRoutes( pages, dynamicPages ) {
       const routes = [
         ${ routes }
       ];
-      
-      if ( module.hot ) {
-        ${ HMRs.join( '' ) }
-      }
+
+      ${
+  dynamicPages ?
+    `
+          if ( module.hot ) {
+            ${ HMRs.join( '' ) }
+          }
+          ` :
+    ``
+}
 
       export default routes;
     `,
