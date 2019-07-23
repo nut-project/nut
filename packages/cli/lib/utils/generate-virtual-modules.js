@@ -9,13 +9,14 @@ const pathUtils = require( './path-utils' )
 
 async function generateVirtualModules(
   config,
-  { env = 'dev', cliOptions = {}, dynamicPages = [] } = {},
+  { env = 'dev', cliOptions = {}, dynamicPages = [], slimRoutesHMR = false } = {},
 ) {
   const pages = await getPages( config, { cliOptions } )
   const nutConfig = await generateNutConfig( config )
   const routes = await generateRoutes(
     pages,
-    cliOptions.dynamic ? dynamicPages : null
+    cliOptions.dynamic ? dynamicPages : null,
+    slimRoutesHMR
   )
   const plugins = await generatePlugins( config, { env } )
   const pluginOptions = await generatePluginOptions( config, { env } )
@@ -257,7 +258,7 @@ function getPackageRoot( pkg ) {
   return path.dirname( require.resolve( `${ pkg }/package.json` ) )
 }
 
-async function generateRoutes( pages, dynamicPages ) {
+async function generateRoutes( pages, dynamicPages, slimRoutesHMR ) {
   const routes = pages
     .map( page => `{
       name: '${ page.name }',
@@ -278,18 +279,34 @@ async function generateRoutes( pages, dynamicPages ) {
       import ${ page.name } from '@/nut-auto-generated-route-components/${ page.name }.js'
     ` )
 
-    HMRs.push( `
-      module.hot.accept(
-        '@/nut-auto-generated-route-components/${ page.name }.js',
-        () => {
+    const builtBefore = dynamicPages.includes( page.page )
+
+    if ( ( slimRoutesHMR && !builtBefore ) || !slimRoutesHMR ) {
+      HMRs.push( `
+        function ${ page.name }_accept() {
           routes.find( route => {
             if ( route.name === ${ JSON.stringify( page.name ) } ) {
               route.component = ${ page.name }
             }
           } )
+
+          const key = Object.keys( module.hot._acceptedDependencies )
+            .find( dep => {
+              return !!~dep.indexOf( '/${ page.name }.js' )
+            } )
+
+          if ( key ) {
+            delete module.hot._acceptedDependencies[ key ]
+            console.log( 'accept delete ${ page.page }', module )
+          }
         }
-      )
-    ` )
+
+        module.hot.accept(
+          '@/nut-auto-generated-route-components/${ page.name }.js',
+          ${ page.name }_accept
+        )
+      ` )
+    }
 
     const filename = `src/nut-auto-generated-route-components/${ page.name }.js`
     let content = `
@@ -317,13 +334,10 @@ async function generateRoutes( pages, dynamicPages ) {
       ];
 
       ${
-  dynamicPages ?
-    `
+  dynamicPages ? `
           if ( module.hot ) {
             ${ HMRs.join( '' ) }
-          }
-          ` :
-    ``
+          }` : ``
 }
 
       export default routes;

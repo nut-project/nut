@@ -11,6 +11,7 @@ const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
+const history = require( 'connect-history-api-fallback' )
 
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
@@ -75,6 +76,12 @@ async function dev( cliOptions = {} ) {
         NUT_CLI_DYNAMIC: JSON.stringify( Boolean( cliOptions.dynamic ) )
       }
     ] )
+  if ( cliOptions.dynamic ) {
+    webpackConfig.optimization
+      .splitChunks( {
+        chunks: 'initial'
+      } )
+  }
 
   applyCSSRules( webpackConfig, 'dev', appId )
 
@@ -131,7 +138,7 @@ async function dev( cliOptions = {} ) {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    historyApiFallback: true,
+    historyApiFallback: false,
     before( app ) {
       app.get( `/_nut_dynamic_build_page`, async ( req, res ) => {
         const page = req.query.page
@@ -159,19 +166,48 @@ async function dev( cliOptions = {} ) {
           dynamicPages,
         } )
 
-        for ( const [ path, content ] of Object.entries( modules ) ) {
-          virtualModules.writeModule(
-            path,
-            content
-          )
-        }
+        if ( Object.keys( modules ).length > 0 ) {
+          for ( const [ path, content ] of Object.entries( modules ) ) {
+            virtualModules.writeModule(
+              path,
+              content
+            )
+          }
 
-        await waitUntilValid()
+          await waitUntilValid()
+        }
 
         res.json( {
           success: true,
           waitHotApply: true,
         } )
+      } )
+
+      app.use( history() )
+
+      // rebuild slim routes(without unused HMR code) before following requests
+      app.use( async ( req, res, next ) => {
+        if ( req.path === '/index.html' ) {
+          const modules = await generateVirtualModules( nutConfig, {
+            env: 'dev',
+            cliOptions,
+            dynamicPages,
+            slimRoutesHMR: true,
+          } )
+
+          if ( Object.keys( modules ).length > 0 ) {
+            for ( const [ path, content ] of Object.entries( modules ) ) {
+              virtualModules.writeModule(
+                path,
+                content
+              )
+            }
+
+            await waitUntilValid()
+          }
+        }
+
+        next()
       } )
     },
   }
