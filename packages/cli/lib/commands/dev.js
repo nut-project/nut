@@ -41,11 +41,13 @@ async function dev( cliOptions = {} ) {
   const port = nutConfig.port || DEFAULT_PORT
 
   const dynamicPages = []
+  let lockedDynamicPages = []
 
   const modules = await generateVirtualModules( nutConfig, {
     env: 'dev',
     cliOptions,
     dynamicPages,
+    lockedDynamicPages,
   } )
 
   let virtualModules
@@ -164,6 +166,7 @@ async function dev( cliOptions = {} ) {
           env: 'dev',
           cliOptions,
           dynamicPages,
+          lockedDynamicPages,
         } )
 
         if ( Object.keys( modules ).length > 0 ) {
@@ -187,12 +190,19 @@ async function dev( cliOptions = {} ) {
 
       // rebuild slim routes(without unused HMR code) before following requests
       app.use( async ( req, res, next ) => {
+        if ( !cliOptions.dynamic ) {
+          return next()
+        }
+
         if ( req.path === '/index.html' ) {
+          lockedDynamicPages = dynamicPages.slice()
+
           const modules = await generateVirtualModules( nutConfig, {
             env: 'dev',
             cliOptions,
             dynamicPages,
-            slimRoutesHMR: true,
+            // used for generate `module.hot.accept`s, ensure no page refresh
+            lockedDynamicPages,
           } )
 
           if ( Object.keys( modules ).length > 0 ) {
@@ -323,6 +333,7 @@ async function dev( cliOptions = {} ) {
         env: 'dev',
         cliOptions,
         dynamicPages,
+        lockedDynamicPages,
       } )
 
       for ( const [ path, content ] of Object.entries( modules ) ) {

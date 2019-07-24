@@ -3,9 +3,17 @@ function onHMRStatusTransferTo( condition = () => false, callback = () => {} ) {
   if ( module.hot ) {
     /* eslint-disable */
     function handler( status ) {
-      if ( condition( status ) === true ) {
-        module.hot.removeStatusHandler( handler )
+      if ( ( condition( status ) === true ) && ( handler.disable !== true ) ) {
         callback()
+
+        // let's disable it and remove it later
+        handler.disable = true
+
+        // don't remove handler while handlers are executing in loops
+        // or some handler won't be executed
+        setTimeout( function () {
+          module.hot.removeStatusHandler( handler )
+        }, 0 )
       }
     }
     /* eslint-enable */
@@ -21,26 +29,32 @@ async function dynamicBuild( page ) {
   }
 
   if ( module.hot && page ) {
-    const promise = new Promise( resolve => {
-      if ( module.hot.status() === 'idle' ) {
-        onHMRStatusTransferTo(
-          status => status !== 'idle',
-          () => {
-            onHMRStatusTransferTo(
-              status => status === 'idle',
-              () => {
-                resolve()
-              }
-            )
-          }
-        )
-      } else {
-        onHMRStatusTransferTo(
-          status => status === 'idle',
-          resolve
-        )
-      }
+    const deferred = {
+      page,
+    }
+    deferred.promise = new Promise( ( resolve, reject ) => {
+      deferred.resolve = resolve
+      deferred.reject = reject
     } )
+
+    if ( module.hot.status() === 'idle' ) {
+      // console.log( 'idle -> !idle -> idle' )
+      onHMRStatusTransferTo(
+        status => status !== 'idle',
+        function () {
+          onHMRStatusTransferTo(
+            status => status === 'idle',
+            deferred.resolve
+          )
+        }
+      )
+    } else {
+      // console.log( '!idle -> idle' )
+      onHMRStatusTransferTo(
+        status => status === 'idle',
+        deferred.resolve
+      )
+    }
 
     let json
     try {
@@ -52,7 +66,7 @@ async function dynamicBuild( page ) {
       console.log( e )
     }
 
-    if ( json.success && ( json.waitHotApply === true ) ) {
+    if ( json && json.success && ( json.waitHotApply === true ) ) {
       if ( module.hot.status() === 'idle' ) {
         // force trigger hmr update if still in idle status
         try {
@@ -61,7 +75,10 @@ async function dynamicBuild( page ) {
           console.log( e )
         }
       }
-      await promise
+
+      await deferred.promise
+    } else {
+      deferred.resolve()
     }
   }
 }

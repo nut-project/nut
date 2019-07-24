@@ -9,14 +9,19 @@ const pathUtils = require( './path-utils' )
 
 async function generateVirtualModules(
   config,
-  { env = 'dev', cliOptions = {}, dynamicPages = [], slimRoutesHMR = false } = {},
+  {
+    env = 'dev',
+    cliOptions = {},
+    dynamicPages = [],
+    lockedDynamicPages = [],
+  } = {},
 ) {
   const pages = await getPages( config, { cliOptions } )
   const nutConfig = await generateNutConfig( config )
   const routes = await generateRoutes(
     pages,
     cliOptions.dynamic ? dynamicPages : null,
-    slimRoutesHMR
+    lockedDynamicPages,
   )
   const plugins = await generatePlugins( config, { env } )
   const pluginOptions = await generatePluginOptions( config, { env } )
@@ -258,7 +263,7 @@ function getPackageRoot( pkg ) {
   return path.dirname( require.resolve( `${ pkg }/package.json` ) )
 }
 
-async function generateRoutes( pages, dynamicPages, slimRoutesHMR ) {
+async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
   const routes = pages
     .map( page => `{
       name: '${ page.name }',
@@ -279,9 +284,9 @@ async function generateRoutes( pages, dynamicPages, slimRoutesHMR ) {
       import ${ page.name } from '@/nut-auto-generated-route-components/${ page.name }.js'
     ` )
 
-    const builtBefore = dynamicPages.includes( page.page )
+    const builtBefore = lockedDynamicPages.includes( page.page )
 
-    if ( ( slimRoutesHMR && !builtBefore ) || !slimRoutesHMR ) {
+    if ( !builtBefore ) {
       HMRs.push( `
         function ${ page.name }_accept() {
           routes.find( route => {
@@ -297,7 +302,6 @@ async function generateRoutes( pages, dynamicPages, slimRoutesHMR ) {
 
           if ( key ) {
             delete module.hot._acceptedDependencies[ key ]
-            console.log( 'accept delete ${ page.page }', module )
           }
         }
 
