@@ -289,14 +289,14 @@ async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
     if ( !builtBefore ) {
       HMRs.push( `
         function ${ page.name }_accept() {
-          routes.find( route => {
+          routes.find( function ( route ) {
             if ( route.name === ${ JSON.stringify( page.name ) } ) {
               route.component = ${ page.name }
             }
           } )
 
           const key = Object.keys( module.hot._acceptedDependencies )
-            .find( dep => {
+            .find( function ( dep ) {
               return !!~dep.indexOf( '/${ page.name }.js' )
             } )
 
@@ -314,14 +314,14 @@ async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
 
     const filename = `src/nut-auto-generated-route-components/${ page.name }.js`
     let content = `
-      export default () => {
+      export default function () {
         return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
       }
     `
 
     if ( dynamicPages && !dynamicPages.includes( page.page ) ) {
       content = `
-        export default () => {
+        export default function () {
           return Promise.resolve( {} )
         }
       `
@@ -333,7 +333,7 @@ async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
     source: `
       ${ imports.join( '' ) }
 
-      const routes = [
+      var routes = [
         ${ routes }
       ];
 

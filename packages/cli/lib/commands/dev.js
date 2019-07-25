@@ -347,6 +347,15 @@ async function dev( cliOptions = {} ) {
     }
   }
 
+  const watchOptions = {
+    ignoreInitial: true,
+    persistent: true,
+    followSymlinks: false,
+    atomic: false,
+    alwaysStat: true,
+    ignorePermissionErrors: true,
+  }
+
   const appFiles = [
     path.join( dirs.project, 'src/app.js' ),
     path.join( dirs.project, 'src/app.ts' ),
@@ -356,17 +365,13 @@ async function dev( cliOptions = {} ) {
     .watch( [
       result.filepath,
       ...appFiles,
-    ], {
-      ignoreInitial: true,
-    } )
+    ], watchOptions )
     .on( 'change', onFileChange )
 
   chokidar
     .watch( [
       path.join( dirs.project, 'src/pages' ),
-    ], {
-      ignoreInitial: true,
-    } )
+    ], watchOptions )
     .on( 'add', onFileChange )
     .on( 'unlink', onFileChange )
 }

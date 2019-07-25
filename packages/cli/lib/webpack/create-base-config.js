@@ -200,6 +200,12 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     .concat( transpileModules )
     .concat( internalTranspileModules )
 
+  const excludeLargeFiles = [
+    /src\/nut-auto-generated-pages\.js/,
+    /src\/nut-auto-generated-routes\.js/,
+    /src\/nut-auto-generated-route-components\//,
+  ]
+
   const jsIncludeCaches = {}
 
   // from egoist/poi
@@ -261,6 +267,9 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     .test( /\.js$/ )
     .include
       .add( filterInclude )
+      .end()
+    .exclude
+      .add( excludeLargeFiles )
       .end()
     .oneOf( 'normal' )
       // cannot apply thread-loader to virtual modules
