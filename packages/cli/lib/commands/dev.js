@@ -9,7 +9,7 @@ const prettyBytes = require( 'pretty-bytes' )
 const webpackMerge = require( 'webpack-merge' )
 const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
-const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+const VirtualModulesPlugin = require( '../webpack/plugins/virtual-modules' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
 const history = require( 'connect-history-api-fallback' )
 

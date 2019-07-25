@@ -2,7 +2,7 @@
 
 const webpack = require( 'webpack' )
 const webpackMerge = require( 'webpack-merge' )
-const VirtualModulesPlugin = require( 'webpack-virtual-modules' )
+const VirtualModulesPlugin = require( '../webpack/plugins/virtual-modules' )
 const TerserJSPlugin = require( 'terser-webpack-plugin' )
 const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
 const table = require( 'text-table' )
