@@ -20,6 +20,7 @@ async function generateVirtualModules(
   const nutConfig = await generateNutConfig( config )
   const routes = await generateRoutes(
     pages,
+    cliOptions.dynamic,
     cliOptions.dynamic ? dynamicPages : null,
     lockedDynamicPages,
   )
@@ -263,7 +264,7 @@ function getPackageRoot( pkg ) {
   return path.dirname( require.resolve( `${ pkg }/package.json` ) )
 }
 
-async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
+async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages ) {
   const routes = pages
     .map( page => `{
       name: '${ page.name }',
@@ -275,15 +276,11 @@ async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
       plugin: '${ page.plugin }',
     }` ).join( ',\n' )
 
-  const imports = []
+  const declarations = []
   const HMRs = []
   const files = {}
 
   pages.forEach( page => {
-    imports.push( `
-      import ${ page.name } from '@/nut-auto-generated-route-components/${ page.name }.js'
-    ` )
-
     const builtBefore = lockedDynamicPages.includes( page.page )
 
     if ( !builtBefore ) {
@@ -312,37 +309,45 @@ async function generateRoutes( pages, dynamicPages, lockedDynamicPages ) {
       ` )
     }
 
-    const filename = `src/nut-auto-generated-route-components/${ page.name }.js`
-    let content = `
-      export default function () {
-        return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
-      }
-    `
+    if ( dynamic ) {
+      const filename = `nut-auto-generated-route-components/${ page.name }.js`
 
-    if ( dynamicPages && !dynamicPages.includes( page.page ) ) {
-      content = `
+      declarations.push( `
+        import ${ page.name } from '@/${ filename }'
+      ` )
+
+      let content = `
         export default function () {
-          return Promise.resolve( {} )
+          return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
         }
       `
+
+      if ( dynamicPages && !dynamicPages.includes( page.page ) ) {
+        content = `
+          export default function () {
+            return Promise.resolve( {} )
+          }
+        `
+      }
+      files[ `src/${ filename }` ] = content
+    } else {
+      declarations.push( `
+        function ${ page.name }() {
+          return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
+        }
+      ` )
     }
-    files[ filename ] = content
   } )
 
   return {
     source: `
-      ${ imports.join( '' ) }
+      ${ declarations.join( '\n' ) }
 
       var routes = [
         ${ routes }
       ];
 
-      ${
-  dynamicPages ? `
-          if ( module.hot ) {
-            ${ HMRs.join( '' ) }
-          }` : ``
-}
+      ${ dynamic ? `if ( module.hot ) { ${ HMRs.join( '' ) } }` : `` }
 
       export default routes;
     `,
