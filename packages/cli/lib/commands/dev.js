@@ -228,8 +228,9 @@ async function dev( cliOptions = {} ) {
 
     if ( userDevServerBefore ) {
       devServerOptions.before = function ( ...args ) {
+        // use user-defined before first
+        userDevServerBefore( ...args )
         nutDevServerBefore( ...args )
-        return userDevServerBefore( ...args )
       }
 
       delete nutConfig.devServer.before
