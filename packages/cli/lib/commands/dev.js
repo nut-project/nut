@@ -11,7 +11,6 @@ const webpack = require( 'webpack' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( '../webpack/plugins/virtual-modules' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
-const history = require( 'connect-history-api-fallback' )
 
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
@@ -140,7 +139,7 @@ async function dev( cliOptions = {} ) {
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    historyApiFallback: false,
+    historyApiFallback: true,
     before( app ) {
       app.get( `/_nut_dynamic_build_page`, async ( req, res ) => {
         const page = req.query.page
@@ -185,9 +184,8 @@ async function dev( cliOptions = {} ) {
           waitHotApply: true,
         } )
       } )
-
-      app.use( history() )
-
+    },
+    after( app ) {
       // rebuild slim routes(without unused HMR code) before following requests
       app.use( async ( req, res, next ) => {
         if ( !cliOptions.dynamic ) {
@@ -223,18 +221,32 @@ async function dev( cliOptions = {} ) {
   }
 
   if ( nutConfig.devServer ) {
+    // before
     const userDevServerBefore = nutConfig.devServer.before
     const nutDevServerBefore = devServerOptions.before
 
     if ( userDevServerBefore ) {
       devServerOptions.before = function ( ...args ) {
-        // use user-defined before first
         userDevServerBefore( ...args )
         nutDevServerBefore( ...args )
       }
 
       delete nutConfig.devServer.before
     }
+
+    // after
+    const userDevServerAfter = nutConfig.devServer.after
+    const nutDevServerAfter = devServerOptions.after
+
+    if ( userDevServerAfter ) {
+      devServerOptions.after = function ( ...args ) {
+        nutDevServerAfter( ...args )
+        userDevServerAfter( ...args )
+      }
+
+      delete nutConfig.devServer.after
+    }
+
     devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
   }
 
