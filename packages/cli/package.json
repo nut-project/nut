@@ -119,7 +119,6 @@
     "terser-webpack-plugin": "^1.2.3",
     "text-table": "^0.2.0",
     "thread-loader": "^2.1.2",
-    "tildify": "^2.0.0",
     "tippy.js": "^4.2.1",
     "ts-loader": "^6.0.3",
     "tslint": "^5.18.0",

@@ -101,6 +101,9 @@ const Layout = Regular.extend( {
                 on-click="{ this.onEmit( $event, item ) }"
                 class="${ styles.sidebar__item } { item.active ? '${ styles.is_active } nut-layout-now2-lvl0' : '' }"
               >
+                {#if item.icon}
+                  <span class="icon nut-icons nut-icon-{ item.icon }"></span>
+                {/if}
                 { item.title }
               </a>
             {/list}
@@ -140,7 +143,15 @@ const Layout = Regular.extend( {
                 { prevPage.title }
               </a>
             {#else}
-              <div></div>
+              <div style="width: 80px;"></div>
+            {/if}
+
+            {#if options.editpage}
+            <div class="${ styles.edit_page }">
+              <a href="javascript:;" on-click="{ this.onEditPage() }">
+                <span class="icon nut-icons nut-icon-edit"></span> 编辑本页
+              </a>
+            </div>
             {/if}
 
             {#if nextPage}
@@ -150,10 +161,10 @@ const Layout = Regular.extend( {
                 on-click="{ this.onEmit( $event, nextPage.page ) }"
               >
                 { nextPage.title }
-                <i  style="margin-left: 4px;" class="nut-icons nut-icon-arrowright"></i>
+                <i style="margin-left: 4px;" class="nut-icons nut-icon-arrowright"></i>
               </a>
             {#else}
-              <div></div>
+              <div style="width: 80px;"></div>
             {/if}
           </div>
 
@@ -248,6 +259,36 @@ const Layout = Regular.extend( {
       if ( headroom.getScrollY() > 0 ) {
         headroom.unpin()
       }
+    }
+  },
+
+  onEditPage() {
+    const options = this.data.options || {}
+    // if you are in some monorepo or use some plugin to provide pages
+    // please provide a custom handler
+    const handler = options.editpage && options.editpage.handler
+    let base = ( options.editpage && options.editpage.base ) || ''
+    const currentRouter = this.data.ctx.api.router.current
+
+    if ( currentRouter && currentRouter.options ) {
+      const page = {
+        page: currentRouter.options.page,
+        extension: currentRouter.options.extension,
+        provider: currentRouter.options.page,
+        plugin: currentRouter.options.plugin,
+      }
+
+      if ( handler ) {
+        return handler( this.data.ctx, page )
+      }
+
+      if ( !base ) {
+        return console.warn( 'no pages base uri found for editpage, try to add `editpage.base`' )
+      }
+
+      base = base.replace( /\/$/, '' )
+
+      window.open( base + '/' + page.page + page.extension )
     }
   },
 

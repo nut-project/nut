@@ -85,7 +85,7 @@
     display: inline-block;
     color: #666;
     text-decoration: none;
-    padding: 0 6px;
+    padding: 0 8px;
     text-decoration: none;
     cursor: pointer;
     font-size: 15px;
@@ -208,25 +208,46 @@
   min-height: ~"-webkit-calc( 100vh - "@header-height~" )";
   box-sizing: border-box;
   background-color: #fff;
-  padding: 50px 0 0px 40px;
+  padding: 50px 0 40px 40px;
+}
+
+.edit_page {
+  text-align: center;
+  font-size: 14px;
+  flex: 1;
+
+  a {
+    color: #999;
+    text-decoration: none;
+    padding: 6px 30px;
+    font-size: 13px;
+    opacity: 0.4;
+    transition: opacity ease .2s;
+    vertical-align: -webkit-baseline-middle;
+
+    &:hover {
+      text-decoration: none;
+      opacity: 1;
+    }
+  }
 }
 
 .pagination {
   display: flex;
   justify-content: space-between;
-  padding: 40px 0;
+  margin-top: 40px;
 }
 
 :global(.markdown-body) .pagination__item {
   display: block;
   padding: 0 19px;
-  height: 32px;
-  line-height: 32px;
+  height: 36px;
+  line-height: 36px;
   text-decoration: none;
   color: #666;
   border: solid 1px #ddd;
   border-radius: 3px;
-  font-size: 12px;
+  font-size: 13px;
   position: relative;
 
   &:hover {

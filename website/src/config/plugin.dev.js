@@ -8,7 +8,10 @@ export default {
       placeholder: '搜索',
     },
     navbar: {
-      width: '200px'
-    }
+      width: '200px',
+    },
+    editpage: {
+      base: 'https://github.com/nut-project/nut/tree/master/website/src/',
+    },
   }
 }

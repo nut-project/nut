@@ -30,7 +30,7 @@ export default ( { api } ) => {
       title: '指南',
       children: [
         {
-          title: 'Get Started',
+          title: '如何开始',
           children: [
             { title: '介绍', path: 'pages/guide/introduction' },
             { title: '安装', path: 'pages/guide/installation' },
@@ -38,7 +38,7 @@ export default ( { api } ) => {
           ],
         },
         {
-          title: 'Concepts',
+          title: '核心概念',
           children: [
             { title: '微前端', path: 'pages/guide/microfrontends' },
             { title: '插件', path: 'pages/guide/plugin' },
@@ -47,7 +47,7 @@ export default ( { api } ) => {
           ]
         },
         {
-          title: 'Features',
+          title: '其他特性',
           children: [
             { title: 'CSS 预处理器', path: 'pages/guide/css-preprocessor' },
             { title: 'CSS Modules', path: 'pages/guide/css-modules' },
@@ -71,7 +71,7 @@ export default ( { api } ) => {
     },
 
     {
-      icon: '',
+      icon: 'github-fill',
       title: 'GitHub',
       link: 'https://github.com/fengzilong/nut'
     },

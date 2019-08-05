@@ -124,6 +124,7 @@ async function getPages( root, filter, processor = v => v ) {
         ),
         filepath,
         page,
+        extension: ext,
         route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
         type: types[ ext ] || '',
         provider: '',

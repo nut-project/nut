@@ -147,7 +147,7 @@ export default function createNico(
           beforeEnter( e ) {
             if ( process.env.NODE_ENV === 'development' ) {
               console.log(
-                '\n%cMatch%c' + routeConfig.filepath + '%c\n',
+                '\n%cMatch%c' + routeConfig.page + '%c\n',
                 'background-color: #0089ff;color: #fff;padding: 2px 6px;',
                 'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
                 ''

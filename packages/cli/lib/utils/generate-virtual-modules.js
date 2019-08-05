@@ -1,6 +1,5 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
-const tildify = require( 'tildify' )
 const globby = require( 'globby' )
 
 const dirs = require( './dirs' )
@@ -17,27 +16,22 @@ async function generateVirtualModules(
   } = {},
 ) {
   const pages = await getPages( config, { cliOptions } )
-  const nutConfig = await generateNutConfig( config )
   const routes = await generateRoutes(
     pages,
     cliOptions.dynamic,
     cliOptions.dynamic ? dynamicPages : null,
     lockedDynamicPages,
   )
-  const plugins = await generatePlugins( config, { env } )
-  const pluginOptions = await generatePluginOptions( config, { env } )
-  const markdownThemeCSS = await generateMarkdownThemeCSS( config )
-  const extendContext = await generateExtendContext( config, { env } )
   const app = await generateAppContent()
 
   return diff( {
-    'src/nut-auto-generated-pages.js': `export default ${ JSON.stringify( pages ) }`,
+    'src/nut-auto-generated-pages.js': await generatePages( env, pages ),
     'src/nut-auto-generated-routes.js': routes.source,
-    'src/nut-auto-generated-plugins.js': plugins,
-    'src/nut-auto-generated-plugin-options.js': pluginOptions,
-    'src/nut-auto-generated-extend-context.js': extendContext,
-    'src/nut-auto-generated-nut-config.js': nutConfig,
-    'src/nut-auto-generated-markdown-theme.css': markdownThemeCSS,
+    'src/nut-auto-generated-plugins.js': await generatePlugins( config, { env } ),
+    'src/nut-auto-generated-plugin-options.js': await generatePluginOptions( config, { env } ),
+    'src/nut-auto-generated-extend-context.js': await generateExtendContext( config, { env } ),
+    'src/nut-auto-generated-nut-config.js': await generateNutConfig( config ),
+    'src/nut-auto-generated-markdown-theme.css': await generateMarkdownThemeCSS( config ),
     [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
     ...routes.files,
   } )
@@ -56,6 +50,23 @@ function diff( modules ) {
       total[ key ] = modules[ key ]
       return total
     }, {} )
+}
+
+async function generatePages( env, pages ) {
+  // for security purpose, remove filepath
+  if ( env === 'prod' ) {
+    pages = pages.map( page => {
+      const tmp = {}
+      Object.keys( page ).forEach( key => {
+        if ( key !== 'filepath' ) {
+          tmp[ key ] = page[ key ]
+        }
+      } )
+      return tmp
+    } )
+  }
+
+  return `export default ${ JSON.stringify( pages ) }`
 }
 
 async function generateNutConfig( config ) {
@@ -270,10 +281,10 @@ async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages 
       name: '${ page.name }',
       path: '${ page.route }',
       page: ${ JSON.stringify( page.page ) },
-      filepath: ${ JSON.stringify( tildify( page.filepath ) ) },
+      extension: ${ JSON.stringify( page.extension ) },
       component: ${ page.name },
-      provider: '${ page.provider }',
-      plugin: '${ page.plugin }',
+      provider: ${ JSON.stringify( page.provider ) },
+      plugin: ${ JSON.stringify( page.plugin ) },
     }` ).join( ',\n' )
 
   const declarations = []
