@@ -121,66 +121,80 @@ async function generateExtendContext( config, { env } = {} ) {
     absolute: true,
   } )
 
-  const promises = files.map( async ( file, index ) => {
+  const promises = files.map( async file => {
     const fn = require( file )
-    const key = path.basename( file, path.extname( file ) )
-    const variable = 'context_' + index
 
-    const runtimePath = await fn( config, { env } )
+    const context = await fn( config, { env } )
 
-    if ( !runtimePath ) {
+    if ( !context ) {
       return
     }
 
-    return {
-      statement: `import ${ variable } from '${ runtimePath }';`,
-      key,
-      variable,
-    }
+    return context
   } )
 
-  let _imports = await Promise.all( promises )
+  let contexts = await Promise.all( promises )
 
-  _imports = _imports.filter( Boolean )
-
-  const pairs = _imports.map( imp => {
-    return imp.key + ': ' + imp.variable + ','
-  } )
+  contexts = contexts.filter( Boolean )
 
   return `
-    ${ _imports.map( imp => imp.statement ).join( '' ) }
+    ${ contexts.map( ctx => ctx.imports.join( ';\n' ) ).join( '\n' ) }
+
+    ${ contexts.map( ctx => ctx.code ).join( ';\n' ) }
+
     export default function () {
       return {
-        ${ pairs.join( '' ) }
+        ${ contexts.map( ctx => `${ ctx.key }: ${ ctx.variable }` ).join( ',\n' ) }
       }
     }
   `
 }
 
-async function getPluginOptionsFilePath( env ) {
+async function getPluginOptions( env ) {
   const cwd = process.cwd()
 
-  const file = 'config/plugin.' + env + '.js'
+  const defaultFile = `config/plugin.default.js`
+  const file = `config/plugin.${ env }.js`
 
-  const exists = await fse.pathExists( path.join( cwd, 'src/' + file ) )
+  const defaultExists = await fse.pathExists( path.join( cwd, `src/${ defaultFile }` ) )
+  const exists = await fse.pathExists( path.join( cwd, `src/${ file }` ) )
 
-  if ( !exists ) {
+  if ( !exists && !defaultExists ) {
     return
   }
 
-  return `@/${ file }`
+  return {
+    imports: [
+      defaultExists ? `import plugin_options_default from '@/${ defaultFile }';` : ``,
+      exists ? `import plugin_options from '@/${ file }';` : ``,
+    ].filter( Boolean ),
+    code: `
+      ${ defaultExists ? `` : `const plugin_options_default = {}` }
+      ${ exists ? `` : `const plugin_options = {}` }
+      const plugin_options_final = Object.assign(
+        {},
+        plugin_options_default,
+        plugin_options
+      )
+    `,
+    variable: `plugin_options_final`,
+  }
 }
 
 async function generatePluginOptions( config, { env } = {} ) {
-  const filepath = await getPluginOptionsFilePath( env )
+  const pluginOptions = await getPluginOptions( env )
 
-  if ( filepath ) {
-    return `
-      export { default } from '${ filepath }'
-    `
+  if ( !pluginOptions ) {
+    return `export default {}`
   }
 
-  return `export default {}`
+  return `
+    ${ pluginOptions.imports.join( ';\n' ) }
+
+    ${ pluginOptions.code }
+
+    export default ${ pluginOptions.variable }
+  `
 }
 
 async function generatePlugins( config, { env } = {} ) {

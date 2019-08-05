@@ -374,11 +374,16 @@ async function dev( cliOptions = {} ) {
     path.join( dirs.project, 'src/app.ts' ),
   ]
 
+  const configDir = path.join( dirs.project, 'src/config' )
+
   chokidar
     .watch( [
       result.filepath,
       ...appFiles,
+      configDir,
     ], watchOptions )
+    .on( 'add', onFileChange )
+    .on( 'unlink', onFileChange )
     .on( 'change', onFileChange )
 
   chokidar

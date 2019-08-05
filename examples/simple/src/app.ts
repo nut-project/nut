@@ -1,7 +1,9 @@
 export default async function app( ctx ) {
   let world: string = 'world'
   console.log( world )
-  
+
+  console.log( ctx.config )
+
   ctx.env // -> development / production
   ctx.pages
   const link = ctx.api.router.format( {
