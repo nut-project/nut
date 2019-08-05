@@ -426,7 +426,7 @@ export default {
             const pages = layout.$get( 'currentPages' )
             const leafPages = []
             walkChildren( pages, null, child => {
-              if ( !child.children ) {
+              if ( !child.children || ( child.children.length === 0 ) ) {
                 leafPages.push( child )
               }
             } )
