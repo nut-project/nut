@@ -89,7 +89,7 @@ const Layout = Regular.extend( {
                 spellcheck="false"
                 class="${ styles.search__input }"
                 id="nut-layout-now2-search-input"
-                placeholder="Search"
+                placeholder="{ options.search.placeholder || 'Search' }"
                 type="text"
               />
             </div>
@@ -111,7 +111,10 @@ const Layout = Regular.extend( {
 
     <div class="${ styles.main }">
       <div class="${ styles.main__content }">
-        <aside class="${ styles.navbar } { headPinned ? '${ styles.is_head_pinned }' : '' }">
+        <aside
+          class="${ styles.navbar } { headPinned ? '${ styles.is_head_pinned }' : '' }"
+          style="{ options.navbar && options.navbar.width ? 'width: ' + options.navbar.width + ';' : '' }"
+        >
           <div class="${ styles.navbar__scroller }">
             {#list currentPages as page}
               <nav-item
@@ -124,7 +127,7 @@ const Layout = Regular.extend( {
         </aside>
 
         <div class="${ styles.content } markdown-body nut-layout-now2-content">
-          <div class="${ styles.flexmax }" ref="$$mount"></div>
+          <div ref="$$mount"></div>
 
           <div class="${ styles.pagination }">
             {#if prevPage}

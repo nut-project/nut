@@ -4,7 +4,11 @@ export default {
       appId: 'FZANFOBNUT',
       apiKey: '8c79ef62f918611dd1dce669466327ca',
       indexName: 'nut',
-      debug: true
+      debug: true,
+      placeholder: '搜索',
+    },
+    navbar: {
+      width: '200px'
     }
   }
 }
