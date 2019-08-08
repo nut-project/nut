@@ -359,6 +359,8 @@ export default function createNico(
           },
 
           async enter( { from, to, params, query } = {} ) {
+            ctx.api.router.current = this
+
             const page = this.page
 
             if ( page ) {
@@ -410,8 +412,6 @@ export default function createNico(
             if ( page && typeof page.enter === 'function' ) {
               page.enter( { from, to, params, query } )
             }
-
-            ctx.api.router.current = this
 
             // use quicklink
             quicklinkSiblingPages( routeConfig )
