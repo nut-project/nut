@@ -565,7 +565,7 @@ export default function createNico(
   }
 
   async function refreshLayout( { layout, router } ) {
-    await events.emit( 'layout:before-update', { layout, router: this } )
+    await events.emit( 'layout:before-update', { layout, router } )
 
     ctx.app = nutConfig
 
@@ -579,7 +579,7 @@ export default function createNico(
       layout.update( { ctx } )
     }
 
-    await events.emit( 'layout:after-update', { layout, router: this } )
+    await events.emit( 'layout:after-update', { layout, router } )
   }
 
   return nico
