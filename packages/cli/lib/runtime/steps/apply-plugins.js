@@ -1,4 +1,6 @@
-export default async function applyPlugins( allPlugins = [], allPluginOptions = {}, { env, app, api, events, plugins } = {} ) {
+export default async function applyPlugins( allPlugins = [], allPluginOptions = {}, ctx = {} ) {
+  const { env, app, events, plugins } = ctx
+
   for ( let i = 0, len = allPlugins.length; i < len; i++ ) {
     const plugin = allPlugins[ i ]
     const pluginOptions = allPluginOptions[ plugin.localName ] || {}
@@ -7,36 +9,47 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
       return
     }
 
+    const stubRouter = {
+      ...ctx.api.router,
+      format( route, options ) {
+        options = options || {}
+
+        if ( typeof route === 'string' ) {
+          route = ctx.api.router.getSegment( route )
+        }
+
+        if ( options.scoped === true ) {
+          // localName is unknown in plugin, so string is meaningless
+          if ( typeof route === 'string' ) {
+            console.warn( '[router.format] format string is not allowed in plugin' )
+            return
+          }
+
+          route.page = route.page + '@' + plugin.localName
+
+          return ctx.api.router.format( route )
+        }
+
+        return ctx.api.router.format( route )
+      }
+    }
+
+    Object.defineProperty( stubRouter, 'current', {
+      get() {
+        return ctx.api.router.current
+      },
+      set( value ) {
+        ctx.api.router.current = value
+      }
+    } )
+
     const stubAPI = {
-      ...api,
+      ...ctx.api,
       expose( prop, value ) {
         plugins[ plugin.localName ] = plugins[ plugin.localName ] || {}
         plugins[ plugin.localName ][ prop ] = value
       },
-      router: {
-        ...api.router,
-        format( route, options ) {
-          options = options || {}
-
-          if ( typeof route === 'string' ) {
-            route = api.router.getSegment( route )
-          }
-
-          if ( options.scoped === true ) {
-            // localName is unknown in plugin, so string is meaningless
-            if ( typeof route === 'string' ) {
-              console.warn( '[router.format] format string is not allowed in plugin' )
-              return
-            }
-
-            route.page = route.page + '@' + plugin.localName
-
-            return api.router.format( route )
-          }
-
-          return api.router.format( route )
-        }
-      }
+      router: stubRouter
     }
 
     const stubEvents = {
