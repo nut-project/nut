@@ -93,9 +93,15 @@ MDXContent.isMDXComponent = true`
       props = JSON.stringify( node.properties )
     }
 
-    return `<MDXTag name="${ node.tagName }" components={ components }${
+    const output = `<MDXTag name="${ node.tagName }" components={ components }${
       parentNode.tagName ? ` parentName="${ parentNode.tagName }"` : ''
     }${ props ? ` cprops={${ props }}` : '' }>${ children }</MDXTag>`
+
+    if ( node.tagName === 'pre' ) {
+      return `<div class="nut-language-highlight">${ output }</div>`
+    }
+
+    return output
   }
 
   // Wraps all text nodes except new lines inside template string

@@ -53,17 +53,17 @@ renderer.code = function ( code, infostring, escaped ) {
   }
 
   if ( !lang ) {
-    return '<pre class="language-unknown"><code>' +
+    return '<div class="nut-language-highlight"><pre class="language-unknown"><code>' +
     ( escaped ? code : escape( code, true ) ) +
-    '</code></pre>'
+    '</code></pre></div>'
   }
 
   const langClass = 'language-' + escape( lang, true )
 
-  return '<pre class="' + langClass + '" data-lang="' + escape( lang, true ) +
+  return '<div class="nut-language-highlight"><pre class="' + langClass + '" data-lang="' + escape( lang, true ) +
     '"><code class="' + langClass + '">' +
     ( escaped ? code : escape( code, true ) ) +
-    '</code></pre>\n'
+    '</code></pre></div>\n'
 }
 
 function highlight( str, lang ) {

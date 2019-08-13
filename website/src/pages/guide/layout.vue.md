@@ -20,7 +20,7 @@ nut 内置了以下几套布局
 
 ```js
 export default ctx => {
-  ctx.api.page( 'pages/path', 'layout-name' )
+  ctx.api.page( 'pages/path' ).set( 'layout', 'layout-name' )
 }
 ```
 

@@ -123,6 +123,7 @@
   box-sizing: border-box;
   height: ~"-webkit-calc( 100vh )";
   transition: top .3s ease;
+  flex-shrink: 0;
 
   &.is_head_pinned {
     top: @header-height;
@@ -203,6 +204,8 @@
 .content {
   flex: 1;
   display: flex;
+  /* https://stackoverflow.com/a/41675912 */
+  min-width: 0;
   flex-direction: column;
   min-height: ~"-webkit-calc( 100vh - "@header-height~" )";
   box-sizing: border-box;

@@ -73,7 +73,7 @@ export default ( { api } ) => {
     {
       icon: 'github-fill',
       title: 'GitHub',
-      link: 'https://github.com/fengzilong/nut'
+      link: 'https://github.com/nut-project/nut'
     },
   ] )
 
