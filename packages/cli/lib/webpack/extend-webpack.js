@@ -4,22 +4,18 @@ const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
-
-const dirs = {
-  cli: path.join( __dirname, '../../' ),
-  project: process.cwd(),
-}
+const dirs = require( '../utils/dirs' )
 
 exports.normal = function ( config, nutConfig ) {
   if ( nutConfig.type === 'host' ) {
     config
       .entry( 'index' )
-        .add( path.join( dirs.cli, 'lib/runtime/entries/host.js' ) )
+        .add( path.join( dirs.runtime, 'entries/host.js' ) )
         .end()
   } else {
     config
       .entry( 'index' )
-        .add( path.join( dirs.cli, 'lib/runtime/entries/single.js' ) )
+        .add( path.join( dirs.runtime, 'entries/single.js' ) )
         .end()
   }
   config
@@ -46,7 +42,7 @@ exports.normal = function ( config, nutConfig ) {
           ...( nutConfig.html || {} ),
           template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
           title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
-          favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( __dirname, '../runtime/favicon.png' ),
+          favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( dirs.runtime, 'favicon.png' ),
           excludeChunks: [ 'child' ],
         }
       ] )
@@ -71,7 +67,7 @@ function getFilesFromChunk( chunk ) {
 exports.child = function ( config, nutConfig, appId ) {
   config
     .entry( 'child' )
-      .add( path.join( dirs.cli, 'lib/runtime/entries/child.js' ) )
+      .add( path.join( dirs.runtime, 'entries/child.js' ) )
       .end()
 
   config.plugin( 'stats-write' )

@@ -9,11 +9,7 @@ const PnpWebpackPlugin = require( 'pnp-webpack-plugin' )
 const Config = require( 'webpack-chain' )
 const threadLoader = require( 'thread-loader' )
 const resolveFrom = require( 'resolve-from' )
-
-const dirs = {
-  cli: path.join( __dirname, '../../' ),
-  project: process.cwd(),
-}
+const dirs = require( '../utils/dirs' )
 
 let pkg = {}
 try {
@@ -82,6 +78,8 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .add( path.join( dirs.project, 'node_modules' ) )
         .add( path.join( dirs.cli, '../../' ) )
         .add( path.join( dirs.cli, 'node_modules' ) )
+        .add( path.join( dirs.runtime, '../../' ) )
+        .add( path.join( dirs.runtime, 'node_modules' ) )
         .add( 'node_modules' )
         .end()
       .extensions
@@ -182,7 +180,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
   ) || []
   const internalTranspileModules = [
     'unfancy-router/src',
-    require( '../../package.json' ).name + '/lib/runtime',
+    '@nut-project/runtime/src',
     /@nut-plugins/i,
     'debug', // from docsearch.js -> algoliasearch -> debug
   ]

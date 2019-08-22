@@ -4,17 +4,21 @@
   "description": "",
   "version": "0.0.0",
   "scripts": {
+    "dev:docs": "npm run dev --prefix ./website",
+    "build:docs": "npm run build --prefix ./website",
+    "deploy": "npm run build:docs && gh-pages -d ./website/dist",
+    "lint": "eslint packages --quiet",
+    "test": "npm run lint",
+    "prepublishOnly": "npm test",
+    "clean": "lerna clean",
+    "version:all:dry-run": "lerna version --conventional-commits --no-git-tag-version --no-push",
+    "version:all": "lerna version --conventional-commits",
+    "publish:all": "lerna publish from-git",
     "dev": "npm run dev --prefix ./examples/simple",
     "build": "npm run build --prefix ./examples/simple",
     "dev:now2": "npm run dev --prefix ./examples/now2",
     "c": "node ./packages/cli/bin/index.js create demo",
-    "dev:docs": "npm run dev --prefix ./website",
-    "build:docs": "npm run build --prefix ./website",
-    "build:compose": "npm run build --prefix ./examples/host",
-    "deploy": "npm run build:docs && gh-pages -d ./website/dist",
-    "lint": "eslint packages --quiet",
-    "test": "npm run lint",
-    "prepublishOnly": "npm test"
+    "build:compose": "npm run build --prefix ./examples/host"
   },
   "husky": {
     "hooks": {
@@ -31,6 +35,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "plugins/*",
       "examples/*",
       "website"
     ]
@@ -54,6 +59,7 @@
     "eslint-config-mo": "0.5.2",
     "gh-pages": "2.0.1",
     "husky": "3.0.0",
+    "lerna": "^3.16.4",
     "lint-staged": "9.1.0"
   },
   "dependencies": {}
