@@ -1,10 +1,5 @@
-const path = require( 'path' )
 const hashsum = require( 'hash-sum' )
-
-const dirs = {
-  cli: path.join( __dirname, '../../' ),
-  project: process.cwd(),
-}
+const dirs = require( './dirs' )
 
 module.exports = function getAppId( nutConfig ) {
   let pkg = {}

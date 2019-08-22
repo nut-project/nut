@@ -19,14 +19,10 @@ const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const getAppId = require( '../utils/get-app-id' )
 const { normal, child } = require( '../webpack/extend-webpack' )
+const dirs = require( '../utils/dirs' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
-
-const dirs = {
-  cli: path.join( __dirname, '../../' ),
-  project: process.cwd(),
-}
 
 async function dev( cliOptions = {} ) {
   process.env.NODE_ENV = 'development'
