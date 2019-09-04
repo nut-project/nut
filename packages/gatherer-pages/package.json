@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/gatherer-pages",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.0",
   "private": true,
   "publishConfig": {
     "access": "public"
@@ -39,8 +39,5 @@
     "email": "fengzilong1992@gmail.com",
     "url": "https://github.com/fengzilong"
   },
-  "license": "MIT",
-  "dependencies": {
-
-  }
+  "license": "MIT"
 }

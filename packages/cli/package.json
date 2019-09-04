@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/cli",
-  "version": "0.3.28",
+  "version": "0.3.29-alpha.0",
   "publishConfig": {
     "access": "public"
   },
@@ -42,8 +42,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@nut-project/driver-pages": "^0.0.1-alpha.0",
     "cac": "^6.4.2",
-    "please-upgrade-node": "^3.1.1",
-    "@nut-project/driver-pages": "^0.0.0"
+    "please-upgrade-node": "^3.1.1"
   }
 }
