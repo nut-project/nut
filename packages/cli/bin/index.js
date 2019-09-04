@@ -7,44 +7,18 @@ require( 'please-upgrade-node' )( pkg, {
 } )
 
 const cli = require( 'cac' )()
-const app = require( '../lib' )
+const Driver = require( '@nut-project/driver-pages' )
 
 process
   .on( 'unhandledRejection', ( reason, p ) => {
     console.error( reason, 'Unhandled Rejection at Promise', p )
   } )
 
-cli
-  .command( '', 'Build in development mode' )
-  .option( '--prod', 'Build in production mode' )
-  .option( '--single-page <page>', 'Build single page to speed up' )
-  .option( '--dynamic' )
-  .action( options => {
-    options = normalizeCliOptions( options )
+;( async () => {
+  const driver = new Driver()
+  await driver.apply( cli )
 
-    if ( options.prod ) {
-      app.prod()
-    } else {
-      app.dev( options )
-    }
-  } )
-
-cli
-  .command( 'create [dir]', 'Generate a new project to target folder' )
-  .action( dir => {
-    app.create( dir )
-  } )
-
-cli.version( pkg.version )
-
-cli.help()
-
-cli.parse()
-
-function normalizeCliOptions( options ) {
-  if ( options.singlePage ) {
-    options.singlePage = options.singlePage.replace( /^\/+|\/+$/g, '' )
-  }
-
-  return options
-}
+  cli.version( pkg.version )
+  cli.help()
+  cli.parse()
+} )()

@@ -180,7 +180,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
   ) || []
   const internalTranspileModules = [
     'unfancy-router/src',
-    '@nut-project/runtime/src',
+    '@nut-project/runtime-pages/src',
     /@nut-plugins/i,
     'debug', // from docsearch.js -> algoliasearch -> debug
   ]
