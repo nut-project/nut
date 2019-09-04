@@ -101,7 +101,7 @@
     "sass-loader": "^7.1.0",
     "schema-utils": "^1.0.0",
     "string-width": "^4.1.0",
-    "style-loader": "^0.23.1",
+    "style-loader": "^1.0.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "terser-webpack-plugin": "^1.2.3",
