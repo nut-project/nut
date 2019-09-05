@@ -75,12 +75,12 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         .end()
       .modules
         .clear()
+        .add( 'node_modules' ) // use closest node_modules first
         .add( path.join( dirs.project, 'node_modules' ) )
         .add( path.join( dirs.cli, '../../' ) )
         .add( path.join( dirs.cli, 'node_modules' ) )
         .add( path.join( dirs.runtime, '../../' ) )
         .add( path.join( dirs.runtime, 'node_modules' ) )
-        .add( 'node_modules' )
         .end()
       .extensions
         .merge( [
