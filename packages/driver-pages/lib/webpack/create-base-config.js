@@ -98,10 +98,10 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
     .resolveLoader
       .modules
         .clear()
+        .add( 'node_modules' )
         .add( path.join( dirs.project, 'node_modules' ) )
         .add( path.join( dirs.cli, '../../' ) )
         .add( path.join( dirs.cli, 'node_modules' ) )
-        .add( 'node_modules' )
         .end()
       .plugin( 'pnp' )
         .use( PnpWebpackPlugin.moduleLoader( module ) )
