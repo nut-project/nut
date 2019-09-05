@@ -8,11 +8,6 @@ module.exports = class WebpackDriver extends Driver {
   }
 
   async apply( cli ) {
-    // FIXME: watching files in super.apply
-    // cause cannot exit in prod mode
-    // maybe super driver should not be responsible for this
-    // await super.apply( cli )
-
     cli
       .command( '', 'Build in development mode' )
       .option( '--prod', 'Build in production mode' )
@@ -21,7 +16,7 @@ module.exports = class WebpackDriver extends Driver {
       .action( options => {
         options = normalizeCliOptions( options )
 
-        utils.poweredBy( pkg.name )
+        utils.poweredBy( pkg.name, pkg.version )
 
         if ( options.prod ) {
           commands.prod()

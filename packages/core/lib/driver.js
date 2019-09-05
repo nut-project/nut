@@ -4,12 +4,17 @@ const chokidar = require( 'chokidar' )
 const logger = require( './logger' )
 
 module.exports = class Driver extends EventEmitter {
+  constructor() {
+    super()
+    this.check()
+  }
+
   name() {
     return 'nut'
   }
 
-  async _check() {
-    const loaded = await this.loadConfig()
+  check() {
+    const loaded = this.loadConfigSync()
 
     if ( !loaded ) {
       logger.error( 'No config file found' )
@@ -17,11 +22,9 @@ module.exports = class Driver extends EventEmitter {
     }
   }
 
-  async apply() {
-    await this._check()
-
-    // watch config file and emit `config:change` event
-    // when add / unlink / change
+  async watch() {
+    // watch config file for add / unlink / change event
+    // and emit `config:change` event
     const loaded = await this.loadConfig()
 
     const onConfigChange = async () => {
@@ -47,22 +50,32 @@ module.exports = class Driver extends EventEmitter {
       .on( 'change', onConfigChange )
   }
 
-  async loadConfig() {
+  loadConfig() {
+    return this._loadConfig()
+  }
+
+  loadConfigSync() {
+    return this._loadConfig( { sync: true } )
+  }
+
+  _loadConfig( options = {} ) {
+    const sync = options.sync
+
     const name = this.name()
 
     if ( !this._explorer ) {
       this._explorer = cosmiconfig( name, { cache: false } )
     }
 
-    let result = null
-
-    try {
-      result = await this._explorer.search()
-    } catch ( e ) {
-      console.log( e )
+    if ( sync ) {
+      return this._explorer.searchSync()
     }
+    return this._explorer.search()
+  }
 
-    return result
+  async getConfig() {
+    const loaded = await this.loadConfig()
+    return loaded && loaded.config
   }
 
   // driver should be responsible for fetch runtime

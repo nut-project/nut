@@ -1,4 +1,5 @@
 const gradient = require( 'gradient-string' )
+const chalk = require( 'chalk' )
 
 exports.delay = ( duration = 0 ) => {
   return new Promise( resolve => {
@@ -6,7 +7,7 @@ exports.delay = ( duration = 0 ) => {
   } )
 }
 
-exports.poweredBy = packageName => {
+exports.poweredBy = ( packageName, version ) => {
   const builtins = [
     'vice',
     'fruit',
@@ -15,7 +16,7 @@ exports.poweredBy = packageName => {
 
   const index = getRandomIntFromRange( 0, builtins.length - 1 )
 
-  console.log( `\nPowered by ${ gradient[ builtins[ index ] ]( packageName ) }\n` )
+  console.log( `\nPowered by ${ gradient[ builtins[ index ] ]( packageName ) } ${ chalk.dim( '(' + version + ')' ) }\n` )
 }
 
 function getRandomIntFromRange( min, max ) {
