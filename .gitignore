@@ -1,8 +1,7 @@
 dist
 /server
 /demo
-/packages/cli/README.md
-/packages/runtime/README.md
+/packages/**/README.md
 .DS_Store
 
 # Logs
