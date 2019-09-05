@@ -2,8 +2,8 @@ const path = require( 'path' )
 const chokidar = require( 'chokidar' )
 const boxen = require( 'boxen' )
 const chalk = require( 'chalk' )
-const read = require( 'read' )
 const open = require( 'open' )
+const exit = require( 'exit' )
 const address = require( 'address' )
 const prettyBytes = require( 'pretty-bytes' )
 const webpackMerge = require( 'webpack-merge' )
@@ -281,25 +281,42 @@ async function dev( cliOptions = {} ) {
       )
     }
 
-    console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open' ) + '\n' )
+    console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open in browser' ) + '\n' )
 
-    read( {
-      silent: true,
-    }, async ( err, input ) => {
-      if ( err ) {
-        process.exit( 0 )
-        return
-      }
+    // modified from:
+    // https://github.com/facebook/jest/blob/b7cb5221bb06b6fe63c1a5e725ddbc1aaa82d306/packages/jest-core/src/watch.ts#L445
+    const stdin = process.stdin
+    const CONTROL_C = '\u0003'
+    const CONTROL_D = '\u0004'
+    const ENTER = '\r'
 
-      if ( input === '' ) {
-        await open( getOpenUrl( {
-          host,
-          port,
-          routerMode,
-          page: cliOptions.singlePage
-        } ) )
-      }
-    } )
+    if ( typeof stdin.setRawMode === 'function' ) {
+      stdin.setRawMode( true )
+      stdin.resume()
+      stdin.setEncoding( 'utf8' )
+      stdin.on( 'data', async key => {
+        if ( key === CONTROL_C || key === CONTROL_D ) {
+          if ( typeof stdin.setRawMode === 'function' ) {
+            stdin.setRawMode( false )
+          }
+          exit( 0 )
+          return
+        }
+
+        switch ( key ) {
+        case ENTER:
+          await open( getOpenUrl( {
+            host,
+            port,
+            routerMode,
+            page: cliOptions.singlePage
+          } ) )
+          break
+        default:
+          break
+        }
+      } )
+    }
   } )
 
   function getOpenUrl( { host, port, routerMode = 'hash', page } ) {
