@@ -37,9 +37,14 @@ export default async function app( ctx ) {
   ctx.api.sidebar.configure( [
     {
       icon: 'sketch',
+      title: '独立宝石',
+      path: 'pages/home/home'
+    },
+    {
+      icon: 'sketch',
       title: '宝石',
       children: [
-        { title: 'home', path: 'pages/home/home' },
+        // { title: 'home', path: 'pages/home/home' },
         { title: 'regular', path: 'pages/home/regular' },
         { title: 'vue', path: 'pages/home/vue' },
         { title: 'vue sfc', path: 'pages/home/index' },

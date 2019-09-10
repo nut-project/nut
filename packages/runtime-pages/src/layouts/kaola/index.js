@@ -35,26 +35,26 @@ const Layout = Regular.extend( {
 
       <div class="${ styles.menu }">
         {#list ctx.api.sidebar.get() as item}
-          <a
-            {#if item.link}
-            href="{ item.link }"
-            target="_blank"
-            {#else}
-            href="javascript:;"
-            on-click="{ item.open = !item.open }"
-            {/if}
-            class="${ styles.sidebar__title } { item.active ? '${ styles.is_active }' : '' }"
-          >
-            <i class="${ styles.sidebar__icon } nut-icons nut-icon-{ item.icon }"></i>
-            <span>{ item.title }</span>
-            {#if !item.link}
-            <div class="${ styles.sidebar__arrow_container }">
-              <i class="${ styles.sidebar__arrow } nut-icons nut-icon-down { item.open ? '${ styles.is_open }' : '' }"></i>
-            </div>
-            {/if}
-          </a>
-
           {#if item.children && item.children.length > 0}
+            <a
+              {#if item.link}
+              href="{ item.link }"
+              target="_blank"
+              {#else}
+              href="javascript:;"
+              on-click="{ item.open = !item.open }"
+              {/if}
+              class="${ styles.sidebar__title } { item.active ? '${ styles.is_active }' : '' }"
+            >
+              <i class="${ styles.sidebar__icon } nut-icons nut-icon-{ item.icon }"></i>
+              <span>{ item.title }</span>
+              {#if !item.link}
+              <div class="${ styles.sidebar__arrow_container }">
+                <i class="${ styles.sidebar__arrow } nut-icons nut-icon-down { item.open ? '${ styles.is_open }' : '' }"></i>
+              </div>
+              {/if}
+            </a>
+
             <ul class="${ styles.sidebar__items }" r-style="{ { height: item.open ? item.children.length * 50 + 'px' : '0' } }">
               {#list item.children as page}
                 {#if page.title}
@@ -70,6 +70,24 @@ const Layout = Regular.extend( {
                 {/if}
               {/list}
             </ul>
+
+          {#else}
+            {#if item.title}
+              <ul class="${ styles.sidebar__items }">
+                <li class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }">
+                  <a
+                    href="javascript:;"
+                    on-click="{ this.onRoute( item.page ) }"
+                    class="${ styles.sidebar__link }"
+                    style="padding-left: 20px;"
+                  >
+                    <i class="${ styles.sidebar__icon } nut-icons nut-icon-{ item.icon }"></i>
+                    { item.title }
+                  </a>
+                </li>
+              </ul>
+            {/if}
+
           {/if}
         {/list}
       </div>

@@ -30,22 +30,36 @@ export default function ( { pages, router, globals } = {} ) {
     sidebar: {
       _sidebar: null,
       configure( sidebar = [] ) {
+        walkChildren( sidebar, null, child => {
+          if ( !child.path ) {
+            return
+          }
+
+          const normalized = child.path.replace( /^(\/)/g, '' )
+          const page = pages.find( child => child.page === normalized )
+
+          if ( page ) {
+            child.page = page
+          } else {
+            child.page = null
+          }
+        } )
+
         sidebar.forEach( s => {
-          if ( s.children ) {
-            walkChildren( s.children, s, child => {
-              if ( !child.path ) {
-                return
-              }
+          const defaultRoute = {
+            found: false,
+            route: ''
+          }
 
-              const normalized = child.path.replace( /^(\/)/g, '' )
-              const page = pages.find( child => child.page === normalized )
+          walkChildren( s, child => {
+            if ( !defaultRoute.found && child.page ) {
+              defaultRoute.found = true
+              defaultRoute.route = child.page.route
+            }
+          } )
 
-              if ( page ) {
-                child.page = page
-              } else {
-                child.page = null
-              }
-            } )
+          if ( defaultRoute.found ) {
+            s.route = defaultRoute.route
           }
         } )
 

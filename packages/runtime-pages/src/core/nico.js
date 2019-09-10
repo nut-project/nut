@@ -506,46 +506,26 @@ export default function createNico(
   }
 
   function markActive( sidebar = [], activeRouterName = '' ) {
-    sidebar.forEach( s => {
-      const route = {
-        found: false,
-        value: ''
-      }
+    let activePage
 
-      if ( !s.children ) {
-        return
-      }
+    walkChildren( sidebar, null, ( child, index, parent ) => {
+      child.parent = parent
 
-      s.active = false
-      walkChildren( s.children, s, child => {
+      if ( child.page && ( child.page.name === activeRouterName ) ) {
+        activePage = child
+        child.active = true
+      } else {
         child.active = false
-      } )
-
-      let activePage
-      walkChildren( s.children, s, ( child, index, parent ) => {
-        child.parent = parent
-
-        if ( !route.found && child.page ) {
-          route.value = child.page.route
-          route.found = true
-        }
-
-        if ( child.page && ( child.page.name === activeRouterName ) ) {
-          activePage = child
-          child.active = true
-        }
-      } )
-
-      if ( activePage ) {
-        let parent = activePage.parent
-        while ( parent ) {
-          parent.active = true
-          parent = parent.parent
-        }
       }
-
-      s.route = route.value
     } )
+
+    if ( activePage ) {
+      let parent = activePage.parent
+      while ( parent ) {
+        parent.active = true
+        parent = parent.parent
+      }
+    }
   }
 
   function walkChildren( children, parent, callback ) {

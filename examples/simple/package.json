@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "description": "",
   "scripts": {
-    "dev": "node ../../packages/cli/bin/index.js --dynamic",
+    "dev": "node ../../packages/cli/bin/index.js",
     "build": "node ../../packages/cli/bin/index.js --prod"
   },
   "keywords": [],
