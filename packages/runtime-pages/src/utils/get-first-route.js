@@ -4,9 +4,15 @@ export default function getFirstRoute( context ) {
   const sidebar = context.api.sidebar.get()
 
   sidebar.some( s => {
+    if ( s.page ) {
+      found = s
+      return true
+    }
+
     const children = s.children
 
-    if ( children[ 0 ] ) {
+    // TODO: use walkChildren
+    if ( children && children[ 0 ] ) {
       found = children[ 0 ]
       return true
     }

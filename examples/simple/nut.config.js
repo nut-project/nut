@@ -90,5 +90,6 @@ module.exports = {
         // }
       ]
     }
-  }
+  },
+  homepage: 'pages/documents/index'
 }

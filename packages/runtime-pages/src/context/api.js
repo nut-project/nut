@@ -11,6 +11,8 @@ export default function ( { pages, router, globals } = {} ) {
     crossDomain: true,
   } )
 
+  const routerAPI = createRouter( pages, router )
+
   return {
     axios: axiosInstance,
 
@@ -25,12 +27,44 @@ export default function ( { pages, router, globals } = {} ) {
 
     homepage,
 
-    router: createRouter( pages, router ),
+    router: routerAPI,
 
     sidebar: {
       _sidebar: null,
-      configure( sidebar = [] ) {
+
+      trace() {
+        const sidebar = this.get()
+        const currentRouteName = routerAPI.current && routerAPI.current.name
+
+        if ( !sidebar || !currentRouteName ) {
+          return []
+        }
+
+        let active = null
         walkChildren( sidebar, null, child => {
+          if ( child.page && ( child.page.name === currentRouteName ) ) {
+            active = child
+          }
+        } )
+
+        const traces = []
+
+        if ( active ) {
+          let parent = active
+
+          while ( parent ) {
+            traces.unshift( parent )
+            parent = parent.parent
+          }
+        }
+
+        return traces
+      },
+
+      configure( sidebar = [] ) {
+        walkChildren( sidebar, null, ( child, index, parent ) => {
+          child.parent = parent
+
           if ( !child.path ) {
             return
           }

@@ -96,7 +96,24 @@ const Layout = Regular.extend( {
 
     <div class="${ styles.main }" style="{ collapsed ? 'margin-left: 0;' : '' }">
       <div class="${ styles.main__content }">
-        {#if this.getActivePage( currentPages ).page.type === 'markdown'}
+        {#if options.showBreadcrumb}
+          <ul class="${ styles.breadcrumbs }">
+            <li class="${ styles.breadcrumbs__item }">
+              <a href="javascript:;" on-click="{ this.onPush( '/' ) }">首页</a>
+            </li>
+            {#list activePaths as path}
+              {#if path.page}
+                <li class="${ styles.breadcrumbs__item } ${ styles.is_sep }">
+                  /
+                </li>
+                <li class="${ styles.breadcrumbs__item } { path_index === activePaths.length - 1 ? '${ styles.is_current }' : '' }">
+                  <a href="javascript:;" on-click="{ this.onPush( path.page.route ) }">{ path.title }</a>
+                </li>
+              {/if}
+            {/list}
+          </ul>
+        {/if}
+        {#if currentPage && currentPage.type === 'markdown'}
           <div
             class="${ styles.markdown } markdown-body"
             ref="$$mount"
@@ -111,8 +128,11 @@ const Layout = Regular.extend( {
   `,
 
   computed: {
-    currentPages() {
-      return this.getCurrentPages()
+    currentPage() {
+      return this.data.ctx.pages.find( page => page.active )
+    },
+    activePaths() {
+      return this.data.ctx.api.sidebar.trace()
     },
   },
 
@@ -153,23 +173,12 @@ const Layout = Regular.extend( {
     }
   },
 
-  getActivePage( pages ) {
-    return pages.find( page => page.active ) || {}
-  },
-
-  getCurrentPages() {
-    if ( !this.data.ctx ) {
-      return []
+  onPush( route ) {
+    if ( !route ) {
+      return
     }
 
-    const sidebar = this.data.ctx.api.sidebar.get()
-    const found = sidebar.find( s => s.active )
-
-    if ( !found ) {
-      return []
-    }
-
-    return found.children || []
+    this.data.ctx.api.router.push( route )
   },
 
   onLogout() {
@@ -184,7 +193,7 @@ export default {
 
   type: 'layout',
 
-  async apply( ctx ) {
+  async apply( ctx, options = {} ) {
     let layout = null
 
     await ctx.api.layout.register( {
@@ -199,7 +208,10 @@ export default {
           } )
 
           layout = new Layout( {
-            data: { ctx }
+            data: {
+              ctx,
+              options,
+            }
           } )
 
           layout.$on( 'logout', () => {

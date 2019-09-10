@@ -506,6 +506,16 @@ export default function createNico(
   }
 
   function markActive( sidebar = [], activeRouterName = '' ) {
+    // for pages
+    pages.forEach( page => {
+      if ( page.name === activeRouterName ) {
+        page.active = true
+      } else {
+        page.active = false
+      }
+    } )
+
+    // for sidebar
     let activePage
 
     walkChildren( sidebar, null, ( child, index, parent ) => {
