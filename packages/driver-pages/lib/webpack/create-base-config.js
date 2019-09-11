@@ -40,7 +40,7 @@ module.exports = function createBaseConfig( nutConfig = {}, appId ) {
         cacheGroups: {
           vendors: {
             test( mod, chunks ) {
-              if ( !mod.context.includes( 'node_modules' ) ) {
+              if ( !mod.context || !mod.context.includes( 'node_modules' ) ) {
                  return false
                }
 
