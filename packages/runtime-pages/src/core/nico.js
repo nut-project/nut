@@ -187,6 +187,7 @@ export default function createNico(
               } )
               .then( page => {
                 page.attributes = page.attributes || {}
+                page.page = ctx.pages.find( page => page.page === this.options.page )
                 this.page = page
               } )
               .then( () => {
@@ -397,7 +398,7 @@ export default function createNico(
                 await events.emit( 'layout:after-mount', layout )
               }
 
-              await refreshLayout( { layout, router: this } )
+              await updateLayoutState( { layout, router: this } )
 
               // TODO: pass params to page
               await events.emit( 'page:before-mount', page )
@@ -475,15 +476,41 @@ export default function createNico(
   }
 
   if ( module.hot ) {
+    let oldLayoutName = ( nutConfig && nutConfig.layout ) || 'default'
     module.hot.accept( '@/nut-auto-generated-nut-config', () => {
-      const newLayout = ( nutConfig && nutConfig.layout ) || 'default'
-      if ( nico.layoutName !== newLayout ) {
-        switchLayout( ctx, nico, newLayout )
+      const currentPage = api.layout.currentPage
+      const newLayoutName = ( nutConfig && nutConfig.layout ) || 'default'
+
+      if ( !currentPage || !currentPage.page ) {
+        oldLayoutName = newLayoutName
+        return
       }
+
+      const pageLayoutName = api.page( currentPage.page.page ).get( 'layout' )
+
+      // layout changed and current page does not use custom layout
+      if (
+        ( newLayoutName !== oldLayoutName ) &&
+        !pageLayoutName
+      ) {
+        switchLayout( ctx, newLayoutName )
+
+        updateLayoutState( {
+          layout: api.layout.getLayoutByName( newLayoutName ),
+          router: ctx.api.router.current,
+        } )
+      } else {
+        updateLayoutState( {
+          layout: api.layout.getLayoutByName( pageLayoutName ),
+          router: ctx.api.router.current,
+        } )
+      }
+
+      oldLayoutName = newLayoutName
     } )
   }
 
-  async function switchLayout( ctx, nico, name ) {
+  async function switchLayout( ctx, name ) {
     const { api } = ctx
     const page = api.layout.currentPage
     api.layout.unmountPage( page )
@@ -497,7 +524,7 @@ export default function createNico(
 
     api.layout.mount( newLayout.name, { ctx } )
 
-    await refreshLayout( {
+    await updateLayoutState( {
       layout: newLayout,
       router: ctx.api.router.current,
     } )
@@ -554,7 +581,7 @@ export default function createNico(
     }
   }
 
-  async function refreshLayout( { layout, router } ) {
+  async function updateLayoutState( { layout, router } ) {
     await events.emit( 'layout:before-update', { layout, router } )
 
     ctx.app = nutConfig

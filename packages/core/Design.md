@@ -1,8 +1,23 @@
-## driver is mostly responsible for:
+## gatherer
 
-1. bridge for webpack( or other bundler ) and runtime
-2. expose api for plugin to manipulate node / browser stuff
+collect artifacts for driver / plugin
 
-## gatherer is mostly responsible for:
+## driver
 
-collect info for driver
+1. setup webpack( or other bundler )
+2. expose api for plugin( webpack + artifacts from gatherer )
+3. contains gatherer
+
+## runtime
+
+1. define entries, modify webpack config using driver api
+2. expose api for plugin( runtime )
+
+## plugin
+
+1. plugin can hook artifacts / modify webpack entry / webpack dev server
+2. plugin can call runtime api to modify runtime code
+
+## presets
+
+combine different driver and runtime
