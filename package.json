@@ -20,7 +20,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "node scripts/dependency-check.js && lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -53,9 +53,12 @@
     "@commitlint/cli": "8.0.0",
     "@commitlint/config-conventional": "8.0.0",
     "babel-eslint": "^10.0.2",
+    "chalk": "^2.4.2",
+    "dependency-check": "^4.1.0",
     "eslint": "6.0.1",
     "eslint-config-mo": "0.5.2",
     "gh-pages": "2.1.1",
+    "globby": "^10.0.1",
     "husky": "3.0.0",
     "lerna": "^3.16.4",
     "lint-staged": "9.1.0"
