@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+require( 'v8-compile-cache' )
 const pkg = require( '../package.json' )
 
 require( 'please-upgrade-node' )( pkg, {

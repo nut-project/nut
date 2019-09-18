@@ -39,5 +39,9 @@
     "email": "fengzilong1992@gmail.com",
     "url": "https://github.com/fengzilong"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@nut-project/core": "^0.0.1",
+    "chokidar": "^3.1.0"
+  }
 }

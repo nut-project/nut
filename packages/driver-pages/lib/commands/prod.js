@@ -11,13 +11,12 @@ const chalk = require( 'chalk' )
 const prettyBytes = require( 'pretty-bytes' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
-const loadConfig = require( '../utils/load-config' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
-const generateVirtualModules = require( '../utils/generate-virtual-modules' )
+const generateModules = require( '../webpack/generate-modules' )
 const getAppId = require( '../utils/get-app-id' )
 const { normal, child } = require( '../webpack/extend-webpack' )
 
-async function productionify( webpackConfig, config, appId ) {
+async function productionify( api, webpackConfig, config, appId ) {
   webpackConfig.mode( 'production' )
   webpackConfig.devtool( false )
   webpackConfig.output
@@ -90,7 +89,7 @@ async function productionify( webpackConfig, config, appId ) {
     .minimizer( 'css' )
     .use( OptimizeCSSAssetsPlugin )
 
-  const modules = await generateVirtualModules( config, {
+  const modules = await generateModules( await api.getArtifacts(), {
     env: 'prod'
   } )
 
@@ -105,18 +104,15 @@ async function productionify( webpackConfig, config, appId ) {
     ] )
 }
 
-async function prod() {
-  process.env.NODE_ENV = 'production'
-
-  const result = await loadConfig()
-  const config = result.config || {}
+async function prod( { api } = {} ) {
+  const config = await api.getConfig() || {}
 
   ensureConfigDefaults( config )
 
   const appId = getAppId( config )
 
   const webpackConfig = createBaseWebpackConfig( config, appId )
-  await productionify( webpackConfig, config, appId )
+  await productionify( api, webpackConfig, config, appId )
   normal( webpackConfig, config )
   child( webpackConfig, config, appId )
 

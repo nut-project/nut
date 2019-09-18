@@ -2,19 +2,19 @@ const path = require( 'path' )
 const fse = require( 'fs-extra' )
 const globby = require( 'globby' )
 
-const dirs = require( './dirs' )
-const getPages = require( './get-pages' )
-const pathUtils = require( './path-utils' )
+const dirs = require( '../utils/dirs' )
+const getPages = require( '../utils/get-pages' )
+const pathUtils = require( '../utils/path-utils' )
 
-async function generateVirtualModules(
-  config,
-  {
+async function generateModules( artifacts = {}, options = {} ) {
+  const { config } = artifacts
+  const {
     env = 'dev',
     cliOptions = {},
     dynamicPages = [],
     lockedDynamicPages = [],
-  } = {},
-) {
+  } = options
+
   const pages = await getPages( config, { cliOptions } )
   const routes = await generateRoutes(
     pages,
@@ -380,4 +380,4 @@ async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages 
   }
 }
 
-module.exports = generateVirtualModules
+module.exports = generateModules

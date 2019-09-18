@@ -1,28 +1,33 @@
-const { Driver, utils } = require( '@nut-project/core' )
+const { utils } = require( '@nut-project/core' )
+const PagesGatherer = require( '@nut-project/gatherer-pages' )
 const commands = require( './commands' )
 const pkg = require( '../package.json' )
 
-module.exports = class WebpackDriver extends Driver {
-  name() {
-    return `nut` // pages.config.js
-  }
-
+class PagesDriver {
   async apply( cli ) {
     cli
       .command( '', 'Build in development mode' )
       .option( '--prod', 'Build in production mode' )
       .option( '--single-page <page>', 'Build single page to speed up' )
       .option( '--dynamic' )
-      .action( options => {
+      .action( async options => {
         options = normalizeCliOptions( options )
 
         utils.poweredBy( pkg.name, pkg.version )
 
+        const gatherer = new PagesGatherer( `nut` )
+
+        let env
+
         if ( options.prod ) {
-          commands.prod()
+          env = 'production'
         } else {
-          commands.dev( options )
+          env = 'development'
         }
+
+        process.env.NODE_ENV = env
+
+        commands[ env ]( await gatherer.apply( env ), options )
       } )
 
     cli
@@ -40,3 +45,5 @@ function normalizeCliOptions( options ) {
 
   return options
 }
+
+module.exports = PagesDriver

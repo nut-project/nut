@@ -20,7 +20,6 @@
   },
   "files": [
     "bin",
-    "lib",
     "yarn.lock",
     "README.md"
   ],
@@ -44,6 +43,7 @@
   "dependencies": {
     "@nut-project/driver-pages": "^0.0.1",
     "cac": "^6.4.2",
-    "please-upgrade-node": "^3.1.1"
+    "please-upgrade-node": "^3.1.1",
+    "v8-compile-cache": "^2.1.0"
   }
 }
