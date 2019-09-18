@@ -1,5 +1,3 @@
-const path = require( 'path' )
-const chokidar = require( 'chokidar' )
 const boxen = require( 'boxen' )
 const chalk = require( 'chalk' )
 const open = require( 'open' )
@@ -14,21 +12,16 @@ const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' 
 
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
-const generateVirtualModules = require( '../utils/generate-virtual-modules' )
-const loadConfig = require( '../utils/load-config' )
+const generateModules = require( '../webpack/generate-modules' )
 const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const getAppId = require( '../utils/get-app-id' )
 const { normal, child } = require( '../webpack/extend-webpack' )
-const dirs = require( '../utils/dirs' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
 
-async function dev( cliOptions = {} ) {
-  process.env.NODE_ENV = 'development'
-
-  let result = await loadConfig()
-  let nutConfig = result.config || {}
+async function dev( { api, events } = {}, cliOptions = {} ) {
+  const nutConfig = await api.getConfig()
 
   ensureConfigDefaults( nutConfig )
 
@@ -38,7 +31,7 @@ async function dev( cliOptions = {} ) {
   const dynamicPages = []
   let lockedDynamicPages = []
 
-  const modules = await generateVirtualModules( nutConfig, {
+  const modules = await generateModules( await api.getArtifacts(), {
     env: 'dev',
     cliOptions,
     dynamicPages,
@@ -157,7 +150,7 @@ async function dev( cliOptions = {} ) {
 
         dynamicPages.push( page )
 
-        const modules = await generateVirtualModules( nutConfig, {
+        const modules = await generateModules( await api.getArtifacts(), {
           env: 'dev',
           cliOptions,
           dynamicPages,
@@ -191,7 +184,7 @@ async function dev( cliOptions = {} ) {
         if ( req.path === '/index.html' ) {
           lockedDynamicPages = dynamicPages.slice()
 
-          const modules = await generateVirtualModules( nutConfig, {
+          const modules = await generateModules( nutConfig, {
             env: 'dev',
             cliOptions,
             dynamicPages,
@@ -346,16 +339,13 @@ async function dev( cliOptions = {} ) {
     return localTips + lanTips
   }
 
-  const onFileChange = async () => {
+  events.on( 'change', async () => {
     if ( !virtualModules ) {
       return
     }
 
     try {
-      result = await loadConfig()
-      nutConfig = result.config
-
-      const modules = await generateVirtualModules( nutConfig, {
+      const modules = await generateModules( await api.getArtifacts(), {
         env: 'dev',
         cliOptions,
         dynamicPages,
@@ -371,40 +361,7 @@ async function dev( cliOptions = {} ) {
     } catch ( e ) {
       console.log( e )
     }
-  }
-
-  const watchOptions = {
-    ignoreInitial: true,
-    persistent: true,
-    followSymlinks: false,
-    atomic: false,
-    alwaysStat: true,
-    ignorePermissionErrors: true,
-  }
-
-  const appFiles = [
-    path.join( dirs.project, 'src/app.js' ),
-    path.join( dirs.project, 'src/app.ts' ),
-  ]
-
-  const configDir = path.join( dirs.project, 'src/config' )
-
-  chokidar
-    .watch( [
-      result.filepath,
-      ...appFiles,
-      configDir,
-    ], watchOptions )
-    .on( 'add', onFileChange )
-    .on( 'unlink', onFileChange )
-    .on( 'change', onFileChange )
-
-  chokidar
-    .watch( [
-      path.join( dirs.project, 'src/pages' ),
-    ], watchOptions )
-    .on( 'add', onFileChange )
-    .on( 'unlink', onFileChange )
+  } )
 }
 
 module.exports = dev

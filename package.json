@@ -1,8 +1,6 @@
 {
   "name": "nut",
   "private": true,
-  "description": "",
-  "version": "0.0.0",
   "scripts": {
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",
