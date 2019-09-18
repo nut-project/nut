@@ -1,6 +1,6 @@
 {
   "name": "nut-docs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "dev": "node ../packages/cli/bin/index.js",

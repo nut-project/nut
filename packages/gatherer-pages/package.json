@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/gatherer-pages",
-  "version": "0.0.2-alpha.1",
+  "version": "0.0.2",
   "publishConfig": {
     "access": "public"
   },
@@ -40,7 +40,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@nut-project/core": "^0.0.2-alpha.0",
+    "@nut-project/core": "^0.0.2",
     "chokidar": "^3.1.0"
   }
 }
