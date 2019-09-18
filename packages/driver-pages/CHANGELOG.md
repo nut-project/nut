@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.4](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.0.3...@nut-project/driver-pages@0.0.4) (2019-09-18)
+
+**Note:** Version bump only for package @nut-project/driver-pages
+
+
+
+
+
 ## [0.0.3](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.0.2...@nut-project/driver-pages@0.0.3) (2019-09-18)
 
 **Note:** Version bump only for package @nut-project/driver-pages

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/nut-project/nut/tree/master/packages/runtime/compare/@nut-project/runtime-pages@0.1.2...@nut-project/runtime-pages@0.1.3) (2019-09-18)
+
+
+### Bug Fixes
+
+* should not hot replace layout if page has its own layout ([e4e675c](https://github.com/nut-project/nut/tree/master/packages/runtime/commit/e4e675c))
+
+
+
+
+
 ## [0.1.2](https://github.com/nut-project/nut/tree/master/packages/runtime/compare/@nut-project/runtime-pages@0.1.1...@nut-project/runtime-pages@0.1.2) (2019-09-18)
 
 
