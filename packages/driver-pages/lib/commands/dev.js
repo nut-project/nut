@@ -184,7 +184,7 @@ async function dev( { api, events } = {}, cliOptions = {} ) {
         if ( req.path === '/index.html' ) {
           lockedDynamicPages = dynamicPages.slice()
 
-          const modules = await generateModules( nutConfig, {
+          const modules = await generateModules( await api.getArtifacts(), {
             env: 'dev',
             cliOptions,
             dynamicPages,
