@@ -85,7 +85,7 @@ export default function ( { pages, router, globals } = {} ) {
             route: ''
           }
 
-          walkChildren( s, child => {
+          walkChildren( s.children, s, child => {
             if ( !defaultRoute.found && child.page ) {
               defaultRoute.found = true
               defaultRoute.route = child.page.route
