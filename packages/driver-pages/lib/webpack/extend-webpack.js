@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 
+const fs = require( 'fs' )
 const path = require( 'path' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
@@ -18,6 +19,17 @@ exports.normal = function ( config, nutConfig ) {
         .add( path.join( dirs.runtime, 'entries/single.js' ) )
         .end()
   }
+
+  let templatePath
+
+  if ( nutConfig.html && nutConfig.html.template ) {
+    templatePath = nutConfig.html && nutConfig.html.template
+  } else if ( fs.existsSync( path.resolve( dirs.project, 'src/index.ejs' ) ) ) {
+    templatePath = path.resolve( dirs.project, 'src/index.ejs' )
+  } else {
+    templatePath = path.join( __dirname, './template.ejs' )
+  }
+
   config
     .plugin( 'copy' )
       .use( CopyPlugin, [
@@ -40,7 +52,7 @@ exports.normal = function ( config, nutConfig ) {
       .use( HtmlWebpackPlugin, [
         {
           ...( nutConfig.html || {} ),
-          template: ( nutConfig.html && nutConfig.html.template ) || path.join( __dirname, './template.ejs' ),
+          template: templatePath,
           title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
           favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( dirs.runtime, 'favicon.png' ),
           excludeChunks: [ 'child' ],
