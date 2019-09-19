@@ -3,11 +3,12 @@ const fse = require( 'fs-extra' )
 const globby = require( 'globby' )
 
 const dirs = require( '../utils/dirs' )
-const getPages = require( '../utils/get-pages' )
 const pathUtils = require( '../utils/path-utils' )
 
 async function generateModules( artifacts = {}, options = {} ) {
   const { config } = artifacts
+  let { pages } = artifacts
+
   const {
     env = 'dev',
     cliOptions = {},
@@ -15,7 +16,14 @@ async function generateModules( artifacts = {}, options = {} ) {
     lockedDynamicPages = [],
   } = options
 
-  const pages = await getPages( config, { cliOptions } )
+  addRouteForPages( pages )
+
+  if ( cliOptions.singlePage ) {
+    pages = pages.filter( page => {
+      return page.page === cliOptions.singlePage
+    } )
+  }
+
   const routes = await generateRoutes(
     pages,
     cliOptions.dynamic,
@@ -35,6 +43,18 @@ async function generateModules( artifacts = {}, options = {} ) {
     [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
     ...routes.files,
   } )
+}
+
+function addRouteForPages( pages ) {
+  pages.forEach( page => {
+    page.route = '/' + page.page.replace( /(\/_)(.+)/g, '/:$2' )
+
+    if ( page.provider === 'plugin' ) {
+      page.route = page.route + '@' + page.plugin
+    }
+  } )
+
+  return pages
 }
 
 const modulesHistory = {}

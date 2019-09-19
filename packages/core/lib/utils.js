@@ -24,3 +24,7 @@ function getRandomIntFromRange( min, max ) {
   max = Math.floor( max )
   return Math.floor( Math.random() * ( max - min + 1 ) ) + min
 }
+
+exports.normalizePath = ( path = '' ) => {
+  return path.replace( /\\/g, '/' )
+}

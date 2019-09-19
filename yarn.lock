@@ -1760,7 +1760,7 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@sindresorhus/slugify@^0.9.0":
+"@sindresorhus/slugify@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@sindresorhus/slugify/-/slugify-0.9.1.tgz#892ad24d70b442c0a14fe519cb4019d59bc5069f"
   integrity sha512-b6heYM9dzZD13t2GOiEQTDE0qX+I1GyOotMwKh9VQqzuNiVdPVT8dM43fe9HNb/3ul+Qwd5oKSEDrDIfhq3bnQ==
@@ -2207,6 +2207,11 @@ acorn@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.0.0.tgz#26b8d1cd9a9b700350b71c0905546f64d1284e7a"
   integrity sha512-PaF/MduxijYYt7unVGRuds1vBC9bFxbNf+VWqhOClfdgy7RlVkQqt610ig1/yxTgsDIfW1cWDel5EBbOy3jdtQ==
+
+address@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/address/-/address-1.1.2.tgz#bf1116c9c758c51b7a933d296b72c221ed9428b6"
+  integrity sha512-aT6camzM4xEA54YVJYSqxz1kv4IHnQZRtThJJHhUMRExaU5spC7jX5ugSwTaTgJliIgs4VhZOk7htClvQ/LmRA==
 
 agent-base@4, agent-base@^4.3.0:
   version "4.3.0"

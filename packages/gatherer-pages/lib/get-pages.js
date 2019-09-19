@@ -2,16 +2,16 @@ const path = require( 'path' )
 const globby = require( 'globby' )
 const slugify = require( '@sindresorhus/slugify' )
 const resolveFrom = require( 'resolve-from' )
+const { utils } = require( '@nut-project/core' )
 
-const dirs = require( './dirs' )
-const pathUtils = require( './path-utils' )
+const dirs = {
+  project: process.cwd(),
+}
 
-module.exports = async function getAllPages( config, { cliOptions = {} } = {} ) {
+module.exports = async function getAllPages( plugins ) {
   const root = path.join( dirs.project, 'src' )
-  const pages = await getPages( root, cliOptions.singlePage ? page => {
-    return page.page === cliOptions.singlePage
-  } : null )
-  const pluginPages = await getPluginPages( config.plugins )
+  const pages = await getPages( root )
+  const pluginPages = await getPluginPages( plugins )
 
   pages.push( ...pluginPages )
 
@@ -44,10 +44,9 @@ async function getPluginPages( plugins = {} ) {
       return Promise.resolve()
     }
 
-    const pluginPages = await getPages( root, null, page => {
+    const pluginPages = await getPages( root, page => {
       page.name = page.name + '_' + slugify( name, { separator: '$' } )
       page.page = page.page + '@' + name
-      page.route = page.route + '@' + name
       page.provider = 'plugin'
       page.plugin = name
       return page
@@ -61,7 +60,7 @@ async function getPluginPages( plugins = {} ) {
   return pages.filter( Boolean )
 }
 
-async function getPages( root, filter, processor = v => v ) {
+async function getPages( root, processor = v => v ) {
   let files = []
 
   try {
@@ -115,7 +114,7 @@ async function getPages( root, filter, processor = v => v ) {
       ext = matches[ 0 ] ? matches[ 0 ] : ext
 
       const filepath = path.join( root, file )
-      const page = pathUtils.normalize( path.join( dir, name ) )
+      const page = utils.normalizePath( path.join( dir, name ) )
 
       const processed = await processor( {
         name: postfix(
@@ -125,18 +124,10 @@ async function getPages( root, filter, processor = v => v ) {
         filepath,
         page,
         extension: ext,
-        route: '/' + page.replace( /(\/_)(.+)/g, '/:$2' ),
         type: types[ ext ] || '',
         provider: '',
         plugin: '',
       } )
-
-      if ( filter ) {
-        if ( ( filter( processed ) ) ) {
-          return processed
-        }
-        return
-      }
 
       return processed
     } )

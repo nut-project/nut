@@ -41,6 +41,9 @@
   "license": "MIT",
   "dependencies": {
     "@nut-project/core": "^0.0.2",
-    "chokidar": "^3.1.0"
+    "@sindresorhus/slugify": "^0.9.1",
+    "chokidar": "^3.1.0",
+    "globby": "^10.0.1",
+    "resolve-from": "^5.0.0"
   }
 }

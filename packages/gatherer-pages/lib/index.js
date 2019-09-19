@@ -2,6 +2,7 @@ const EventEmitter = require( 'events' )
 const path = require( 'path' )
 const chokidar = require( 'chokidar' )
 const { gatherer } = require( '@nut-project/core' )
+const getPages = require( './get-pages' )
 
 // extract from filesystem / watch filesystem:
 // pages from src/pages
@@ -27,14 +28,16 @@ class PagesGatherer {
       events: this.emitter,
       api: {
         async getArtifacts() {
-          const pages = []
+          const config = await gatherer.getConfig( name )
+          const pages = await getPages( config.plugins )
+
           const plugins = []
           // const pluginOptions = []
           // const markdownHighlightCSS = ''
           // const app = {}
 
           return {
-            config: await gatherer.getConfig( name ),
+            config,
             pages,
             plugins,
           }
