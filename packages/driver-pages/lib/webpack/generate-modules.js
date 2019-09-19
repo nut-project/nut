@@ -36,7 +36,7 @@ async function generateModules( artifacts = {}, options = {} ) {
     'src/nut-auto-generated-routes.js': routes.source,
     'src/nut-auto-generated-plugins.js': await generatePlugins( config, { env } ),
     'src/nut-auto-generated-plugin-options.js': await generatePluginOptions( config, { env } ),
-    'src/nut-auto-generated-extend-context.js': await generateExtendContext( config, { env } ),
+    'src/nut-auto-generated-config.js': await generateConfig( config, { env } ),
     'src/nut-auto-generated-nut-config.js': await generateNutConfig( config ),
     'src/nut-auto-generated-markdown-theme.css': await generateMarkdownThemeCSS( config ),
     [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
@@ -125,39 +125,16 @@ async function generateAppContent() {
   }
 }
 
-async function generateExtendContext( config, { env } = {} ) {
-  const root = path.join( __dirname, '../context' )
-  const files = await utils.globby( [
-    '*.js'
-  ], { cwd: root } )
+async function generateConfig( config, { env } = {} ) {
+  let files = await utils.globby( [
+    'config/config.*.js'
+  ] )
 
-  const promises = files.map( async file => {
-    const fn = require( file )
+  files = files.filter(
+    file => file.includes( `.default.` ) || file.includes( `.${ env }.` )
+  )
 
-    const context = await fn( config, { env } )
-
-    if ( !context ) {
-      return
-    }
-
-    return context
-  } )
-
-  let contexts = await Promise.all( promises )
-
-  contexts = contexts.filter( Boolean )
-
-  return `
-    ${ contexts.map( ctx => ctx.imports.join( ';\n' ) ).join( '\n' ) }
-
-    ${ contexts.map( ctx => ctx.code ).join( ';\n' ) }
-
-    export default function () {
-      return {
-        ${ contexts.map( ctx => `${ ctx.key }: ${ ctx.variable }` ).join( ',\n' ) }
-      }
-    }
-  `
+  return await utils.mergeFiles( files )
 }
 
 async function generatePluginOptions( config, { env } = {} ) {

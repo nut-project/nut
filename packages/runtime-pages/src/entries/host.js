@@ -11,7 +11,7 @@ import '../css/override.less'
 import nutConfig from '@/nut-auto-generated-nut-config'
 import plugins from '@/nut-auto-generated-plugins'
 import pluginOptions from '@/nut-auto-generated-plugin-options'
-import extendContext from '@/nut-auto-generated-extend-context'
+import config from '@/nut-auto-generated-config'
 
 import applyPlugins from '../steps/apply-plugins'
 import setupNico from '../steps/setup-nico'
@@ -143,7 +143,7 @@ function loadJs( url, dataset ) {
   const globals = window.NUT_GLOBALS || {}
 
   const context = {
-    ...extendContext(),
+    config,
     env: process.env.NODE_ENV,
     plugins,
     app: nutConfig,

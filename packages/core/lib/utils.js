@@ -50,13 +50,13 @@ async function globby( patterns, options = {} ) {
 // import files( hoist default file by default ) into one
 // and export merged object
 function mergeFiles( files, options = {} ) {
+  const { hoistDefaultFile = true, defaultExport = '{}' } = options
+
   if ( !files || files.length === 0 ) {
     return `
-      export default {}
+      export default ${ defaultExport }
     `
   }
-
-  const { hoistDefaultFile = true } = options
 
   if ( hoistDefaultFile ) {
     // sort files, put `*.default.*` at first
