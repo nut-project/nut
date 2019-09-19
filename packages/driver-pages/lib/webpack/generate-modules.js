@@ -1,7 +1,6 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
-const globby = require( 'globby' )
-
+const { utils } = require( '@nut-project/core' )
 const dirs = require( '../utils/dirs' )
 const pathUtils = require( '../utils/path-utils' )
 
@@ -90,7 +89,7 @@ async function generatePages( env, pages ) {
 }
 
 async function generateNutConfig( config ) {
-  const output = [
+  const picked = utils.pick( config, [
     'zh',
     'en',
     'logo',
@@ -100,13 +99,9 @@ async function generateNutConfig( config ) {
     'compose',
     'router',
     'homepage',
-  ].map( key => {
-    return `"${ key }": ${ JSON.stringify( config[ key ] ) }`
-  } )
+  ] )
 
-  return `export default {
-    ${ output.join( ',\n' ) }
-  }`
+  return `export default ${ JSON.stringify( picked ) }`
 }
 
 async function generateAppContent() {
@@ -132,14 +127,9 @@ async function generateAppContent() {
 
 async function generateExtendContext( config, { env } = {} ) {
   const root = path.join( __dirname, '../context' )
-  const files = await globby( [
+  const files = await utils.globby( [
     '*.js'
-  ], {
-    cwd: root,
-    onlyFiles: true,
-    deep: Infinity,
-    absolute: true,
-  } )
+  ], { cwd: root } )
 
   const promises = files.map( async file => {
     const fn = require( file )
@@ -170,51 +160,16 @@ async function generateExtendContext( config, { env } = {} ) {
   `
 }
 
-async function getPluginOptions( env ) {
-  const cwd = process.cwd()
-
-  const defaultFile = `config/plugin.default.js`
-  const file = `config/plugin.${ env }.js`
-
-  const defaultExists = await fse.pathExists( path.join( cwd, `src/${ defaultFile }` ) )
-  const exists = await fse.pathExists( path.join( cwd, `src/${ file }` ) )
-
-  if ( !exists && !defaultExists ) {
-    return
-  }
-
-  return {
-    imports: [
-      defaultExists ? `import plugin_options_default from '@/${ defaultFile }';` : ``,
-      exists ? `import plugin_options from '@/${ file }';` : ``,
-    ].filter( Boolean ),
-    code: `
-      ${ defaultExists ? `` : `const plugin_options_default = {}` }
-      ${ exists ? `` : `const plugin_options = {}` }
-      const plugin_options_final = Object.assign(
-        {},
-        plugin_options_default,
-        plugin_options
-      )
-    `,
-    variable: `plugin_options_final`,
-  }
-}
-
 async function generatePluginOptions( config, { env } = {} ) {
-  const pluginOptions = await getPluginOptions( env )
+  let files = await utils.globby( [
+    `config/plugin.*.js`
+  ] )
 
-  if ( !pluginOptions ) {
-    return `export default {}`
-  }
+  files = files.filter(
+    file => file.includes( `.default.` ) || file.includes( `.${ env }.` )
+  )
 
-  return `
-    ${ pluginOptions.imports.join( ';\n' ) }
-
-    ${ pluginOptions.code }
-
-    export default ${ pluginOptions.variable }
-  `
+  return await utils.mergeFiles( files )
 }
 
 async function generatePlugins( config, { env } = {} ) {
@@ -225,10 +180,7 @@ async function generatePlugins( config, { env } = {} ) {
       localName,
       ...pluginsObj[ localName ],
     } ) )
-    .map( normalizePlugin )
 
-  // filter truthy
-  plugins = plugins.filter( Boolean )
   // filter valid .path / .package
   plugins = plugins.filter( plugin => ( plugin.path || plugin.package ) )
   // filter enable
@@ -254,16 +206,6 @@ async function generatePlugins( config, { env } = {} ) {
     ${ _localnames }
     ${ _exports }
   `
-}
-
-function normalizePlugin( plugin ) {
-  plugin.env = plugin.env || [ 'dev', 'prod' ]
-  // eslint-disable-next-line
-  plugin.enable = typeof plugin.enable !== 'undefined' ?
-    Boolean( plugin.enable ) :
-    true
-
-  return plugin
 }
 
 async function generateMarkdownThemeCSS( config ) {

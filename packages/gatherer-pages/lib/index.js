@@ -28,23 +28,17 @@ class PagesGatherer {
       events: this.emitter,
       api: {
         async getArtifacts() {
-          const config = await gatherer.getConfig( name )
+          const config = await this.getConfig()
           const pages = await getPages( config.plugins )
-
-          const plugins = []
-          // const pluginOptions = []
-          // const markdownHighlightCSS = ''
-          // const app = {}
 
           return {
             config,
             pages,
-            plugins,
           }
         },
 
-        getConfig: () => {
-          return gatherer.getConfig( name )
+        async getConfig() {
+          return normalizeConfig( await gatherer.getConfig( name ) )
         },
       }
     }
@@ -96,6 +90,24 @@ class PagesGatherer {
       .on( 'add', callback )
       .on( 'unlink', callback )
   }
+}
+
+function normalizeConfig( config ) {
+  config.plugins = config.plugins || {}
+
+  // normalize plugin
+  for ( const name in config.plugins ) {
+    const plugin = config.plugins[ name ]
+
+    plugin.env = plugin.env || [ 'dev', 'prod' ]
+
+    // eslint-disable-next-line
+    plugin.enable = typeof plugin.enable !== 'undefined' ?
+      Boolean( plugin.enable ) :
+      true
+  }
+
+  return config
 }
 
 module.exports = PagesGatherer
