@@ -13,6 +13,7 @@
     "spa",
     "hmr"
   ],
+  "main": "lib/index.js",
   "files": [
     "src",
     "README.md"
