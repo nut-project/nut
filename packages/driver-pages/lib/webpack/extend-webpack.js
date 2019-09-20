@@ -8,17 +8,10 @@ const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
 const dirs = require( '../utils/dirs' )
 
 exports.normal = function ( config, nutConfig ) {
-  if ( nutConfig.type === 'host' ) {
-    config
-      .entry( 'index' )
-        .add( path.join( dirs.runtime, 'entries/host.js' ) )
-        .end()
-  } else {
-    config
-      .entry( 'index' )
-        .add( path.join( dirs.runtime, 'entries/single.js' ) )
-        .end()
-  }
+  config
+    .entry( 'index' )
+      .add( path.join( dirs.runtime, 'entries/default.js' ) )
+      .end()
 
   let templatePath
 

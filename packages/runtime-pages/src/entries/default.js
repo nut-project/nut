@@ -15,6 +15,7 @@ import routes from '@/nut-auto-generated-routes'
 import pluginOptions from '@/nut-auto-generated-plugin-options'
 import config from '@/nut-auto-generated-config'
 
+import applyCompose from '../steps/apply-compose'
 import applyPlugins from '../steps/apply-plugins'
 import setupNico from '../steps/setup-nico'
 import registerLayouts from '../steps/register-layouts'
@@ -31,6 +32,12 @@ import events from '../context/events'
 import use from '../context/use'
 
 ;( async function () {
+  if ( nutConfig.compose ) {
+    const composed = await applyCompose( nutConfig.compose )
+    pages.push( ...composed.pages )
+    routes.push( ...composed.routes )
+  }
+
   const routerOptions = nutConfig.router || {}
   const router = createRouter( routerOptions )
 

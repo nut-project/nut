@@ -1,5 +1,4 @@
 module.exports = {
-  type: 'host',
   layout: 'now',
   zh: 'nut compose',
   router: {
