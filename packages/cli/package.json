@@ -42,6 +42,8 @@
   "license": "MIT",
   "dependencies": {
     "@nut-project/driver-pages": "^0.0.4",
+    "@nut-project/gatherer-pages": "^0.0.2",
+    "@nut-project/runtime-pages": "^0.1.3",
     "cac": "^6.4.2",
     "please-upgrade-node": "^3.1.1",
     "v8-compile-cache": "^2.1.0"

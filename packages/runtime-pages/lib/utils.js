@@ -1,0 +1,3 @@
+exports.getUniqueApplicationId = function getUniqueApplicationId() {
+
+}

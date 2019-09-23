@@ -21,14 +21,16 @@ module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev', appId 
 
   applyCSSRule( webpackConfig, 'css', /\.css$/, null, {}, env )
 
-  webpackConfig.plugin( 'mini-css-extract' )
-    .use( MiniCssExtractPlugin, [ {
-      attrs: {
-        'data-appid': appId
-      },
-      filename: `[name].[contenthash].css`,
-      chunkFilename: `[name].[contenthash].css`,
-    } ] )
+  if ( env === 'prod' ) {
+    webpackConfig.plugin( 'mini-css-extract' )
+      .use( MiniCssExtractPlugin, [ {
+        attrs: {
+          'data-appid': appId
+        },
+        filename: `[name].[contenthash].css`,
+        chunkFilename: `[name].[contenthash].css`,
+      } ] )
+  }
 }
 
 function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {

@@ -16,7 +16,10 @@ process
   } )
 
 ;( async () => {
-  const driver = new Driver()
+  const driver = new Driver( {
+    gatherer: require.resolve( '@nut-project/gatherer-pages' ),
+    runtime: require.resolve( '@nut-project/runtime-pages' ),
+  } )
   await driver.apply( cli )
 
   cli.version( pkg.version )

@@ -19,16 +19,12 @@ try {
 const browserslist = pkg.browserslist ||
   [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
 
-module.exports = function createBaseConfig( nutConfig = {}, appId ) {
+module.exports = function createBaseConfig( nutConfig = {} ) {
   threadLoader.warmup( {}, [
     'babel-loader',
   ] )
 
   const config = new Config()
-
-  if ( appId ) {
-    config.output.jsonpFunction( 'webpackJsonp_' + appId )
-  }
 
   const babelRuntimeRoot = path.dirname(
     require.resolve( '@babel/runtime/package' )

@@ -104,17 +104,33 @@ async function productionify( api, webpackConfig, config, appId ) {
     ] )
 }
 
-async function prod( { api } = {} ) {
+async function prod( gatherer = {}, runtime, cliOptions = {} ) {
+  const { api } = gatherer
   const config = await api.getConfig() || {}
 
   ensureConfigDefaults( config )
 
   const appId = getAppId( config )
 
-  const webpackConfig = createBaseWebpackConfig( config, appId )
+  const webpackConfig = createBaseWebpackConfig( config )
   await productionify( api, webpackConfig, config, appId )
   normal( webpackConfig, config )
   child( webpackConfig, config, appId )
+
+  if ( appId ) {
+    webpackConfig.output.jsonpFunction( 'webpackJsonp_' + appId )
+  }
+
+  await runtime.apply( {
+    env: 'production',
+    cli: {
+      options: cliOptions,
+    },
+    api: {
+      gatherer,
+      webpack: webpackConfig,
+    }
+  } )
 
   if ( typeof config.chainWebpack === 'function' ) {
     config.chainWebpack( webpackConfig )

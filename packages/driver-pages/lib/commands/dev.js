@@ -20,7 +20,8 @@ const { normal, child } = require( '../webpack/extend-webpack' )
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
 
-async function dev( { api, events } = {}, cliOptions = {} ) {
+async function dev( gatherer = {}, runtime, cliOptions = {} ) {
+  const { api, events } = gatherer
   const nutConfig = await api.getConfig()
 
   ensureConfigDefaults( nutConfig )
@@ -41,9 +42,13 @@ async function dev( { api, events } = {}, cliOptions = {} ) {
   let virtualModules
 
   const appId = getAppId()
-  const webpackConfig = createBaseWebpackConfig( nutConfig, appId )
+  const webpackConfig = createBaseWebpackConfig( nutConfig )
   normal( webpackConfig, nutConfig )
   child( webpackConfig, nutConfig, appId )
+
+  if ( appId ) {
+    webpackConfig.output.jsonpFunction( 'webpackJsonp_' + appId )
+  }
 
   webpackConfig.mode( 'development' )
   webpackConfig.devtool( 'cheap-module-source-map' )
@@ -74,6 +79,17 @@ async function dev( { api, events } = {}, cliOptions = {} ) {
   }
 
   applyCSSRules( webpackConfig, 'dev', appId )
+
+  await runtime.apply( {
+    env: 'development',
+    cli: {
+      options: cliOptions,
+    },
+    api: {
+      gatherer,
+      webpack: webpackConfig,
+    }
+  } )
 
   if ( typeof nutConfig.chainWebpack === 'function' ) {
     nutConfig.chainWebpack( webpackConfig )

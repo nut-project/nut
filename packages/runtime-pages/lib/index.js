@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 class PagesRuntime {
-  apply( { api, events } = {} ) {
+  apply( { env, api } = {} ) {
     // api.webpack.
   }
 }

@@ -1,10 +1,20 @@
 const { utils } = require( '@nut-project/core' )
-const PagesGatherer = require( '@nut-project/gatherer-pages' )
 const commands = require( './commands' )
 const pkg = require( '../package.json' )
 
 class PagesDriver {
+  constructor( { gatherer, runtime } = {} ) {
+    const Gatherer = require( gatherer )
+    const Runtime = require( runtime )
+
+    this.gatherer = new Gatherer( 'nut' )
+    this.runtime = new Runtime()
+  }
+
   async apply( cli ) {
+    const gatherer = this.gatherer
+    const runtime = this.runtime
+
     cli
       .command( '', 'Build in development mode' )
       .option( '--prod', 'Build in production mode' )
@@ -14,8 +24,6 @@ class PagesDriver {
         options = normalizeCliOptions( options )
 
         utils.poweredBy( pkg.name, pkg.version )
-
-        const gatherer = new PagesGatherer( `nut` )
 
         let env
 
@@ -27,7 +35,7 @@ class PagesDriver {
 
         process.env.NODE_ENV = env
 
-        commands[ env ]( await gatherer.apply( env ), options )
+        commands[ env ]( await gatherer.apply( env ), runtime, options )
       } )
 
     cli
