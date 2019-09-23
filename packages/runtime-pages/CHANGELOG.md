@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.5](https://github.com/nut-project/nut/tree/master/packages/runtime/compare/@nut-project/runtime-pages@0.1.4...@nut-project/runtime-pages@0.1.5) (2019-09-23)
+
+
+### Bug Fixes
+
+* set alias before apply plugins, so we can use api.router.match( '/' ) in plugins ([c5ca37f](https://github.com/nut-project/nut/tree/master/packages/runtime/commit/c5ca37f))
+
+
+
+
+
 ## [0.1.3](https://github.com/nut-project/nut/tree/master/packages/runtime/compare/@nut-project/runtime-pages@0.1.2...@nut-project/runtime-pages@0.1.3) (2019-09-18)
 
 
