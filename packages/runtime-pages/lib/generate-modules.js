@@ -1,8 +1,11 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
 const { utils } = require( '@nut-project/core' )
-const dirs = require( '../utils/dirs' )
-const pathUtils = require( '../utils/path-utils' )
+const { toRelativePath } = require( './utils' )
+
+const dirs = {
+  project: process.cwd()
+}
 
 async function generateModules( artifacts = {}, options = {} ) {
   const { config } = artifacts
@@ -166,7 +169,7 @@ async function generatePlugins( config, { env } = {} ) {
   plugins = plugins.filter( plugin => ~plugin.env.indexOf( env ) )
 
   const _imports = plugins.map( ( plugin, index ) => {
-    const importPath = plugin.path ? pathUtils.toRelative( plugin.path ) : plugin.package
+    const importPath = plugin.path ? toRelativePath( plugin.path ) : plugin.package
     return `import plugin_${ index } from '${ importPath }';`
   } ).join( '\n' )
 
@@ -282,7 +285,7 @@ async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages 
 
       let content = `
         export default function () {
-          return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
+          return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ toRelativePath( page.filepath ) }' )
         }
       `
 
@@ -297,7 +300,7 @@ async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages 
     } else {
       declarations.push( `
         function ${ page.name }() {
-          return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ pathUtils.toRelative( page.filepath ) }' )
+          return import( /* webpackChunkName: ${ JSON.stringify( page.name ) } */ '${ toRelativePath( page.filepath ) }' )
         }
       ` )
     }

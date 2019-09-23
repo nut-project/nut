@@ -1,0 +1,36 @@
+{
+  "name": "@nut-project/webpack-virtual-modules",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "webpack-virtual-modules",
+  "keywords": [
+    "webpack",
+    "virtual",
+    "modules"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/webpack-virtual-modules",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^4.1.1"
+  }
+}

@@ -1,8 +1,8 @@
 /* eslint-disable indent */
 
+const path = require( 'path' )
 const webpack = require( 'webpack' )
 const webpackMerge = require( 'webpack-merge' )
-const VirtualModulesPlugin = require( '../webpack/plugins/virtual-modules' )
 const TerserJSPlugin = require( 'terser-webpack-plugin' )
 const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
 const table = require( 'text-table' )
@@ -10,10 +10,8 @@ const stringWidth = require( 'string-width' )
 const chalk = require( 'chalk' )
 const prettyBytes = require( 'pretty-bytes' )
 const resolveFrom = require( 'resolve-from' )
-const path = require( 'path' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
-const generateModules = require( '../webpack/generate-modules' )
 
 async function prod( gatherer = {}, runtime, cliOptions = {} ) {
   const { api } = gatherer
@@ -92,13 +90,6 @@ async function prod( gatherer = {}, runtime, cliOptions = {} ) {
   webpackConfig.optimization
     .minimizer( 'css' )
     .use( OptimizeCSSAssetsPlugin )
-
-  const modules = await generateModules( await api.getArtifacts(), {
-    env: 'prod'
-  } )
-
-  webpackConfig.plugin( 'virtual-modules' )
-    .use( VirtualModulesPlugin, [ modules ] )
 
   await runtime.apply( {
     env: 'production',
