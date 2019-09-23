@@ -1,5 +1,5 @@
 export default async function applyPlugins( allPlugins = [], allPluginOptions = {}, ctx = {} ) {
-  const { env, app, events, plugins } = ctx
+  const { env, app, config, pages, events, plugins } = ctx
 
   for ( let i = 0, len = allPlugins.length; i < len; i++ ) {
     const plugin = allPlugins[ i ]
@@ -74,7 +74,9 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
 
     await plugin.apply( {
       env,
+      config,
       app,
+      pages,
       api: stubAPI,
       events: stubEvents,
     }, pluginOptions )
