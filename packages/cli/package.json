@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/cli",
-  "version": "0.3.33-alpha.0",
+  "version": "0.3.33-alpha.1",
   "publishConfig": {
     "access": "public"
   },
@@ -43,7 +43,7 @@
   "dependencies": {
     "@nut-project/driver-pages": "^0.0.5-alpha.0",
     "@nut-project/gatherer-pages": "^0.0.3-alpha.0",
-    "@nut-project/runtime-pages": "^0.1.4-alpha.0",
+    "@nut-project/runtime-pages": "^0.1.4-alpha.1",
     "cac": "^6.4.2",
     "please-upgrade-node": "^3.1.1",
     "v8-compile-cache": "^2.1.0"
