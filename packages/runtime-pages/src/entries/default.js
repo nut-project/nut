@@ -98,6 +98,15 @@ import use from '../context/use'
 
   await app( context )
 
+  const homepage = context.api.homepage.get()
+
+  if ( homepage ) {
+    const router = rootRouter.find( r => r.options.page === homepage )
+    if ( router ) {
+      router.alias( '/' )
+    }
+  }
+
   await registerLayouts( pluginOptions, context )
 
   await events.emit( 'system:before-apply-plugins', context )
@@ -109,15 +118,6 @@ import use from '../context/use'
   } )
 
   await events.emit( 'system:before-startup', context )
-
-  const homepage = context.api.homepage.get()
-
-  if ( homepage ) {
-    const router = rootRouter.find( r => r.options.page === homepage )
-    if ( router ) {
-      router.alias( '/' )
-    }
-  }
 
   const matched = rootRouter.match()
   const matchedPage = matched && matched.options && matched.options.page
