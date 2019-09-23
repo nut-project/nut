@@ -35,7 +35,11 @@ class PagesDriver {
 
         process.env.NODE_ENV = env
 
-        commands[ env ]( await gatherer.apply( env ), runtime, options )
+        commands[ env ](
+          await gatherer.apply( env ),
+          runtime,
+          options
+        )
       } )
 
     cli

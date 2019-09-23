@@ -3,7 +3,7 @@
 // https://github.com/webpack-contrib/mini-css-extract-plugin/issues/413
 const MiniCssExtractPlugin = require( './mini-css-extract-plugin' )
 
-module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev', appId ) {
+module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev' ) {
   applyCSSRule( webpackConfig, 'less', /\.less$/, 'less-loader', {}, env )
 
   applyCSSRule( webpackConfig, 'scss', /\.scss$/, 'sass-loader', {
@@ -24,9 +24,6 @@ module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev', appId 
   if ( env === 'prod' ) {
     webpackConfig.plugin( 'mini-css-extract' )
       .use( MiniCssExtractPlugin, [ {
-        attrs: {
-          'data-appid': appId
-        },
         filename: `[name].[contenthash].css`,
         chunkFilename: `[name].[contenthash].css`,
       } ] )

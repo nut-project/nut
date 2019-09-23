@@ -6,16 +6,15 @@ const address = require( 'address' )
 const prettyBytes = require( 'pretty-bytes' )
 const webpackMerge = require( 'webpack-merge' )
 const webpack = require( 'webpack' )
+const path = require( 'path' )
 const WebpackDevServer = require( 'webpack-dev-server' )
 const VirtualModulesPlugin = require( '../webpack/plugins/virtual-modules' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
+const resolveFrom = require( 'resolve-from' )
 
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
 const generateModules = require( '../webpack/generate-modules' )
-const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
-const getAppId = require( '../utils/get-app-id' )
-const { normal, child } = require( '../webpack/extend-webpack' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -23,8 +22,6 @@ const DEFAULT_PORT = 9000
 async function dev( gatherer = {}, runtime, cliOptions = {} ) {
   const { api, events } = gatherer
   const nutConfig = await api.getConfig()
-
-  ensureConfigDefaults( nutConfig )
 
   const host = nutConfig.host || DEFAULT_HOST
   const port = nutConfig.port || DEFAULT_PORT
@@ -41,14 +38,7 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
 
   let virtualModules
 
-  const appId = getAppId()
   const webpackConfig = createBaseWebpackConfig( nutConfig )
-  normal( webpackConfig, nutConfig )
-  child( webpackConfig, nutConfig, appId )
-
-  if ( appId ) {
-    webpackConfig.output.jsonpFunction( 'webpackJsonp_' + appId )
-  }
 
   webpackConfig.mode( 'development' )
   webpackConfig.devtool( 'cheap-module-source-map' )
@@ -59,26 +49,15 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
       .use( webpack.HotModuleReplacementPlugin ) // eslint-disable-line
   webpackConfig.plugin( 'case-sensitive-paths' )
     .use( CaseSensitivePathsPlugin )
+
+  applyCSSRules( webpackConfig, 'dev' )
+
   webpackConfig.plugin( 'virtual-modules' )
     .init( ( Plugin, args ) => {
       virtualModules = new Plugin( ...args )
       return virtualModules
     } )
     .use( VirtualModulesPlugin, [ modules ] )
-  webpackConfig.plugin( 'define' )
-    .use( webpack.DefinePlugin, [
-      {
-        NUT_CLI_DYNAMIC: JSON.stringify( Boolean( cliOptions.dynamic ) )
-      }
-    ] )
-  if ( cliOptions.dynamic ) {
-    webpackConfig.optimization
-      .splitChunks( {
-        chunks: 'initial'
-      } )
-  }
-
-  applyCSSRules( webpackConfig, 'dev', appId )
 
   await runtime.apply( {
     env: 'development',
@@ -88,6 +67,12 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
     api: {
       gatherer,
       webpack: webpackConfig,
+      require( id ) {
+        const context = path.join( __dirname, '../../node_modules' )
+        const resolved = resolveFrom( context, id )
+
+        return require( resolved )
+      }
     }
   } )
 

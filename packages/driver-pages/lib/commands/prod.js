@@ -9,20 +9,24 @@ const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
 const chalk = require( 'chalk' )
 const prettyBytes = require( 'pretty-bytes' )
+const resolveFrom = require( 'resolve-from' )
+const path = require( 'path' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
-const ensureConfigDefaults = require( '../utils/ensure-config-defaults' )
 const generateModules = require( '../webpack/generate-modules' )
-const getAppId = require( '../utils/get-app-id' )
-const { normal, child } = require( '../webpack/extend-webpack' )
 
-async function productionify( api, webpackConfig, config, appId ) {
+async function prod( gatherer = {}, runtime, cliOptions = {} ) {
+  const { api } = gatherer
+  const config = await api.getConfig() || {}
+
+  const webpackConfig = createBaseWebpackConfig( config )
+
   webpackConfig.mode( 'production' )
   webpackConfig.devtool( false )
   webpackConfig.output
     .filename( '[name].[contenthash].js' )
 
-  applyCSSRules( webpackConfig, 'prod', appId )
+  applyCSSRules( webpackConfig, 'prod' )
 
   webpackConfig.optimization
     .minimizer( 'js' )
@@ -96,31 +100,6 @@ async function productionify( api, webpackConfig, config, appId ) {
   webpackConfig.plugin( 'virtual-modules' )
     .use( VirtualModulesPlugin, [ modules ] )
 
-  webpackConfig.plugin( 'define' )
-    .use( webpack.DefinePlugin, [
-      {
-        NUT_CLI_DYNAMIC: JSON.stringify( false )
-      }
-    ] )
-}
-
-async function prod( gatherer = {}, runtime, cliOptions = {} ) {
-  const { api } = gatherer
-  const config = await api.getConfig() || {}
-
-  ensureConfigDefaults( config )
-
-  const appId = getAppId( config )
-
-  const webpackConfig = createBaseWebpackConfig( config )
-  await productionify( api, webpackConfig, config, appId )
-  normal( webpackConfig, config )
-  child( webpackConfig, config, appId )
-
-  if ( appId ) {
-    webpackConfig.output.jsonpFunction( 'webpackJsonp_' + appId )
-  }
-
   await runtime.apply( {
     env: 'production',
     cli: {
@@ -129,6 +108,12 @@ async function prod( gatherer = {}, runtime, cliOptions = {} ) {
     api: {
       gatherer,
       webpack: webpackConfig,
+      require( id ) {
+        const context = path.join( __dirname, '../../node_modules' )
+        const resolved = resolveFrom( context, id )
+
+        return require( resolved )
+      }
     }
   } )
 

@@ -75,8 +75,6 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
         .add( path.join( dirs.project, 'node_modules' ) )
         .add( path.join( dirs.cli, '../../' ) )
         .add( path.join( dirs.cli, 'node_modules' ) )
-        .add( path.join( dirs.runtime, '../../' ) )
-        .add( path.join( dirs.runtime, 'node_modules' ) )
         .end()
       .extensions
         .merge( [

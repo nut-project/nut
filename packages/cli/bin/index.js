@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 require( 'v8-compile-cache' )
+const path = require( 'path' )
 const pkg = require( '../package.json' )
 
 require( 'please-upgrade-node' )( pkg, {
@@ -17,8 +18,12 @@ process
 
 ;( async () => {
   const driver = new Driver( {
-    gatherer: require.resolve( '@nut-project/gatherer-pages' ),
-    runtime: require.resolve( '@nut-project/runtime-pages' ),
+    gatherer: path.dirname(
+      require.resolve( '@nut-project/gatherer-pages/package' )
+    ),
+    runtime: path.dirname(
+      require.resolve( '@nut-project/runtime-pages/package' )
+    ),
   } )
   await driver.apply( cli )
 
