@@ -147,12 +147,12 @@ module.exports = function createBaseConfig( nutConfig = {} ) {
           .loader( require.resolve( './mdx/vue-loader' ) )
           .options( {
             remarkPlugins: [
-              ...( nutConfig.markdown.remarkPlugins )
+              ...( ( nutConfig.markdown && nutConfig.markdown.remarkPlugins ) || [] )
             ].filter( Boolean ),
             rehypePlugins: [
               require( '@mapbox/rehype-prism' ),
               require( 'rehype-slug' ),
-              ...( nutConfig.markdown.rehypePlugins )
+              ...( ( nutConfig.markdown && nutConfig.markdown.rehypePlugins ) || [] )
             ].filter( Boolean ),
             compilers: [
               require( './mdx/vue-jsx-compiler' ),
