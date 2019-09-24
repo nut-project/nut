@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <section ref="$$mount">
+    <section ref="mount">
     </section>
   </article>
 </template>

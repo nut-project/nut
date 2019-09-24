@@ -145,6 +145,7 @@ export default function createNico(
           ...routeConfig,
 
           beforeEnter( e ) {
+            const { params, query, from, to } = e
             if ( process.env.NODE_ENV === 'development' ) {
               console.log(
                 '\n%cMatch%c' + routeConfig.page + '%c\n',
@@ -182,8 +183,17 @@ export default function createNico(
                   this.page.destroy()
                 }
 
+                const pageContext = Object.assign( {}, ctx, {
+                  route: {
+                    params,
+                    query: Object.assign( {}, query ),
+                    from,
+                    to,
+                  }
+                } )
+
                 // $$nut may return promise
-                return page.default.$$nut( ctx, options )
+                return page.default.$$nut( pageContext, options )
               } )
               .then( page => {
                 page.attributes = page.attributes || {}

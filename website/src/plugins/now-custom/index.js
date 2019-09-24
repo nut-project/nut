@@ -44,8 +44,10 @@ export default {
         if ( !layout ) {
           Vue.config.devtools = process.env.NODE_ENV === 'development'
 
-          layout = new Vue( Layout, {
-            props: {
+          const Ctor = Vue.extend( Layout )
+
+          layout = new Ctor( {
+            propsData: {
               $ctx: ctx,
             }
           } )
@@ -86,7 +88,7 @@ export default {
       },
 
       getMountNode() {
-        return layout && layout.$refs.$$mount
+        return layout && layout.$refs.mount
       },
     } )
   }

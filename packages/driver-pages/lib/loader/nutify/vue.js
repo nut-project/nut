@@ -2,6 +2,32 @@
 
 import Vue from 'vue'
 
+// inject $ctx
+Vue.mixin( {
+  beforeCreate() {
+    const options = this.$options
+
+    if ( options.ctx ) {
+      this.$ctx = options.ctx
+    } else if ( options.parent && options.parent.$ctx ) {
+      this.$ctx = options.parent.$ctx
+    }
+  }
+} )
+
+// inject $route
+Vue.mixin( {
+  beforeCreate() {
+    const options = this.$options
+
+    if ( options.route ) {
+      this.$route = options.route
+    } else if ( options.parent && options.parent.$route ) {
+      this.$route = options.parent.$route
+    }
+  }
+} )
+
 export default function ( all = {} ) {
   const Page = all.default || {}
   const attributes = all.attributes || {}
@@ -10,10 +36,6 @@ export default function ( all = {} ) {
     let instance
     let el
 
-    if ( !Vue.prototype.$ctx ) {
-      Vue.prototype.$ctx = ctx
-    }
-
     const definition = {
       attributes,
 
@@ -21,7 +43,11 @@ export default function ( all = {} ) {
         if ( !instance ) {
           Vue.config.devtools = process.env.NODE_ENV === 'development'
 
-          instance = new Vue( Page )
+          const Ctor = Vue.extend( Page )
+          instance = new Ctor( {
+            ctx,
+            route: ctx.route || {},
+          } )
 
           if ( window.__VUE_DEVTOOLS_GLOBAL_HOOK__ ) {
             window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue = instance.constructor
