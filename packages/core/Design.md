@@ -5,14 +5,15 @@ expose api for reading filesystem and communicating with runtime
 
 ## driver
 
-1. setup webpack( or other bundler )
+1. setup basic webpack( or other bundler )
 2. expose api for plugin( webpack + artifacts from gatherer )
 3. contains gatherer
 
 ## runtime
 
-1. define entries, modify webpack config using driver api
+1. define commands( addCommand ), define entries, modify webpack config using driver api
 2. expose api for plugin( runtime )
+3. runtime can be extended( extends: 'runtime-pages' ), user can write their own runtime
 
 ## plugin
 
@@ -21,4 +22,19 @@ expose api for reading filesystem and communicating with runtime
 
 ## presets
 
-combine different driver and runtime
+combine different driver, runtime, and several plugins
+expose new command root
+
+{
+  "name": "pages",
+  "driver": "driver-webpack",
+  "gatherer": "gatherer-pages",
+  "processor": "processor-pages"
+}
+
+in project package.json
+
+"scripts": {
+  "dev": "nut pages dev",
+  "build": "nut pages build"
+}
