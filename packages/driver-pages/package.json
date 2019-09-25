@@ -85,7 +85,7 @@
     "resolve-from": "^5.0.0",
     "sao": "^1.6.1",
     "sass": "^1.19.0",
-    "sass-loader": "^7.1.0",
+    "sass-loader": "^8.0.0",
     "schema-utils": "^1.0.0",
     "string-width": "^4.1.0",
     "style-loader": "^0.23.1",
