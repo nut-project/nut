@@ -130,7 +130,7 @@ async function generateAppContent() {
 
 async function generateConfig( config, { env } = {} ) {
   let files = await utils.globby( [
-    'config/config.*.js'
+    'src/config/config.*.js'
   ] )
 
   files = files.filter(
@@ -142,7 +142,7 @@ async function generateConfig( config, { env } = {} ) {
 
 async function generatePluginOptions( config, { env } = {} ) {
   let files = await utils.globby( [
-    `config/plugin.*.js`
+    `src/config/plugin.*.js`
   ] )
 
   files = files.filter(
