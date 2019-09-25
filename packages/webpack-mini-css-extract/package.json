@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/mini-css-extract",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.0",
   "publishConfig": {
     "access": "public"
   },
@@ -22,8 +22,7 @@
   "bugs": {
     "url": "https://github.com/nut-project/nut/issues/new/choose"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "author": {
     "name": "fengzilong",
     "email": "fengzilong1992@gmail.com",
@@ -34,8 +33,8 @@
     "webpack": "^4.4.0"
   },
   "dependencies": {
-    "normalize-url": "^4.3.0",
     "loader-utils": "^1.2.3",
+    "normalize-url": "^4.3.0",
     "schema-utils": "^1.0.0",
     "webpack-sources": "^1.3.0"
   }
