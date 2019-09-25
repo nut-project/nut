@@ -1,4 +1,4 @@
 node_modules
 iconfont.js
 packages/driver-pages/lib/templates
-packages/driver-pages/lib/webpack/mini-css-extract-plugin
+packages/webpack-mini-css-extract
