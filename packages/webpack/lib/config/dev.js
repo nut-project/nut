@@ -1,6 +1,10 @@
+const webpack = require( 'webpack' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
+const css = require( './css' )
 
 module.exports = function ( config ) {
+  css( config, 'development' )
+
   config.mode( 'development' )
   config.devtool( 'cheap-module-source-map' )
   config.output

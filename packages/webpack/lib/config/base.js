@@ -3,6 +3,7 @@ const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
+const webpack = require( 'webpack' )
 const threadLoader = require( 'thread-loader' )
 const resolveFrom = require( 'resolve-from' )
 
@@ -42,7 +43,7 @@ module.exports = function ( config, options ) {
     .add( path.join( root, '../../' ) )
     .add( path.join( root, 'node_modules' ) )
 
-  config.output.publicPath( '/' )
+  config.output.publicPath( options.publicPath || '/' )
 
   js( config, options )
   jsx( config, options )
@@ -55,12 +56,18 @@ module.exports = function ( config, options ) {
   image( config )
   fonts( config )
   error( config )
+  define( config )
 
   if ( options.clean ) {
     clean( config )
   }
 
   return config
+}
+
+function define( config ) {
+  config.plugin( 'define' )
+    .use( webpack.DefinePlugin, [ {} ] )
 }
 
 function getBabelOptions( { browserslist } = {} ) {
@@ -84,6 +91,8 @@ function getBabelOptions( { browserslist } = {} ) {
 }
 
 function ts( config, { include } = {} ) {
+  // TODO: support .tsx
+
   const tsLoaderOptions = {
     transpileOnly: true,
     appendTsSuffixTo: [ /\.vue$/ ],
@@ -157,6 +166,14 @@ function js( config, { browserslist, include, exclude } = {} ) {
     .end()
     .exclude
     .add( exclude )
+    .end()
+    .oneOf( 'virtual' )
+  // cannot apply thread-loader to virtual modules
+    .resource( /auto-generated/ )
+    .use( 'babel' )
+    .loader( 'babel-loader' )
+    .options( babelOptions )
+    .end()
     .end()
     .oneOf( 'with-thread' )
     .use( 'thread' )

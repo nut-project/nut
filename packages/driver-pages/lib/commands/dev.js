@@ -1,30 +1,14 @@
 const path = require( 'path' )
 const EventEmitter = require( 'events' )
-const chalk = require( 'chalk' )
 const resolveFrom = require( 'resolve-from' )
-const prettyBytes = require( 'pretty-bytes' )
 const webpackMerge = require( 'webpack-merge' )
-const webpack = require( 'webpack' )
-const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
+const { serve } = require( '@nut-project/webpack' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
-const applyCSSRules = require( '../webpack/apply-css-rules' )
 
 async function dev( gatherer = {}, runtime, cliOptions = {} ) {
   const nutConfig = await gatherer.getConfig()
 
-  const webpackConfig = createBaseWebpackConfig( nutConfig )
-
-  webpackConfig.mode( 'development' )
-  webpackConfig.devtool( 'cheap-module-source-map' )
-  webpackConfig.output
-    .filename( '[name].[hash:16].js' )
-  webpackConfig
-    .plugin( 'hot' )
-      .use( webpack.HotModuleReplacementPlugin ) // eslint-disable-line
-  webpackConfig.plugin( 'case-sensitive-paths' )
-    .use( CaseSensitivePathsPlugin )
-
-  applyCSSRules( webpackConfig, 'dev' )
+  const webpackConfig = createBaseWebpackConfig( nutConfig, 'development' )
 
   const emitter = new EventEmitter()
 
@@ -36,6 +20,7 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
     api: {
       gatherer,
       webpack: webpackConfig,
+      serve,
       require( id ) {
         const context = path.join( __dirname, '../../node_modules' )
         const resolved = resolveFrom( context, id )
@@ -62,14 +47,7 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
     )
   }
 
-  const compiler = webpack( finalWebpackConfig )
-
-  compiler.hooks.done.tap( 'memory-usage', () => {
-    const { heapUsed } = process.memoryUsage()
-    console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
-  } )
-
-  emitter.emit( 'compiler', compiler, finalWebpackConfig )
+  emitter.emit( 'ready', finalWebpackConfig )
 }
 
 module.exports = dev

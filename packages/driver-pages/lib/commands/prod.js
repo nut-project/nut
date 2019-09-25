@@ -1,94 +1,19 @@
 /* eslint-disable indent */
 
 const path = require( 'path' )
-const webpack = require( 'webpack' )
 const webpackMerge = require( 'webpack-merge' )
-const TerserJSPlugin = require( 'terser-webpack-plugin' )
-const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
 const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
 const chalk = require( 'chalk' )
 const prettyBytes = require( 'pretty-bytes' )
 const resolveFrom = require( 'resolve-from' )
+const { build } = require( '@nut-project/webpack' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
-const applyCSSRules = require( '../webpack/apply-css-rules' )
 
 async function prod( gatherer = {}, runtime, cliOptions = {} ) {
   const config = await gatherer.getConfig() || {}
 
-  const webpackConfig = createBaseWebpackConfig( config )
-
-  webpackConfig.mode( 'production' )
-  webpackConfig.devtool( false )
-  webpackConfig.output
-    .filename( '[name].[contenthash].js' )
-
-  applyCSSRules( webpackConfig, 'prod' )
-
-  webpackConfig.optimization
-    .minimizer( 'js' )
-      .use( TerserJSPlugin, [
-        {
-          cache: true,
-          parallel: true,
-          sourceMap: false,
-          terserOptions: {
-            parse: {
-              ecma: 8
-            },
-            /* eslint-disable */
-            // compress is from vue-cli
-            compress: {
-              // turn off flags with small gains to speed up minification
-              arrows: false,
-              collapse_vars: false, // 0.3kb
-              comparisons: false,
-              computed_props: false,
-              hoist_funs: false,
-              hoist_props: false,
-              hoist_vars: false,
-              inline: false,
-              loops: false,
-              negate_iife: false,
-              properties: false,
-              reduce_funcs: false,
-              reduce_vars: false,
-              switches: false,
-              toplevel: false,
-              typeofs: false,
-
-              // a few flags with noticable gains/speed ratio
-              // numbers based on out of the box vendor bundle
-              booleans: true, // 0.7kb
-              if_return: true, // 0.4kb
-              sequences: true, // 0.7kb
-              unused: true, // 2.3kb
-
-              // required features to drop conditional branches
-              conditionals: true,
-              dead_code: true,
-              evaluate: true,
-
-              warnings: false,
-              comparisons: false,
-              inline: 2
-            },
-            /* eslint-enable */
-          mangle: true,
-          safari10: true,
-          output: {
-            ecma: 5,
-            comments: false,
-            // eslint-disable-next-line
-              ascii_only: true
-          }
-        }
-      }
-    ] )
-
-  webpackConfig.optimization
-    .minimizer( 'css' )
-    .use( OptimizeCSSAssetsPlugin )
+  const webpackConfig = createBaseWebpackConfig( config, 'production' )
 
   await runtime.apply( {
     env: 'production',
@@ -122,13 +47,8 @@ async function prod( gatherer = {}, runtime, cliOptions = {} ) {
     )
   }
 
-  const compiler = webpack( finalWebpackConfig )
-
-  compiler.run( ( err, stats ) => {
-    if ( err ) {
-      console.error( err )
-      return
-    }
+  try {
+    const stats = await build( finalWebpackConfig )
 
     const result = stats.toJson( {
       assets: true,
@@ -177,7 +97,9 @@ async function prod( gatherer = {}, runtime, cliOptions = {} ) {
     )
 
     console.log( '\n' )
-  } )
+  } catch ( e ) {
+    console.error( e )
+  }
 }
 
 module.exports = prod

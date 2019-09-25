@@ -1,0 +1,42 @@
+{
+  "name": "@nut-project/mini-css-extract",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "mini-css-extract-plugin",
+  "keywords": [
+    "mini-css-extract-plugin"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "yarn.lock",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/webpack-mini-css-extract",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {
+  },
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "webpack": "^4.4.0"
+  },
+  "dependencies": {
+    "normalize-url": "^4.3.0",
+    "loader-utils": "^1.2.3",
+    "schema-utils": "^1.0.0",
+    "webpack-sources": "^1.3.0"
+  }
+}

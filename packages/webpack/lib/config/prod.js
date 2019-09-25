@@ -1,7 +1,10 @@
 const TerserJSPlugin = require( 'terser-webpack-plugin' )
 const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
+const css = require( './css' )
 
 module.exports = function ( config ) {
+  css( config, 'production' )
+
   config.mode( 'production' )
   config.devtool( false )
   config.output.filename( '[name].[contenthash].js' )

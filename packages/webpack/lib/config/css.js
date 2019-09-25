@@ -1,9 +1,9 @@
 /* eslint-disable indent */
 
 // https://github.com/webpack-contrib/mini-css-extract-plugin/issues/413
-const MiniCssExtractPlugin = require( './mini-css-extract-plugin' )
+const MiniCssExtractPlugin = require( '@nut-project/mini-css-extract' )
 
-module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev' ) {
+module.exports = function applyCSSRules( webpackConfig = {}, env = 'development' ) {
   applyCSSRule( webpackConfig, 'less', /\.less$/, 'less-loader', {}, env )
 
   applyCSSRule( webpackConfig, 'scss', /\.scss$/, 'sass-loader', {
@@ -21,7 +21,7 @@ module.exports = function applyCSSRules( webpackConfig = {}, env = 'dev' ) {
 
   applyCSSRule( webpackConfig, 'css', /\.css$/, null, {}, env )
 
-  if ( env === 'prod' ) {
+  if ( env === 'production' ) {
     webpackConfig.plugin( 'mini-css-extract' )
       .use( MiniCssExtractPlugin, [ {
         filename: `[name].[contenthash].css`,
@@ -50,7 +50,7 @@ function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
 }
 
 function applyOneOfRule( rule, lang, loader, options, env, modules ) {
-  if ( env === 'prod' ) {
+  if ( env === 'production' ) {
     rule.use( 'mini-css-extract' )
       .loader( MiniCssExtractPlugin.loader )
       .options( {
@@ -58,7 +58,7 @@ function applyOneOfRule( rule, lang, loader, options, env, modules ) {
       } )
   }
 
-  if ( env === 'dev' ) {
+  if ( env === 'development' ) {
     rule.use( 'style' )
       .loader( 'style-loader' )
   }

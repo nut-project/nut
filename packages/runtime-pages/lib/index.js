@@ -174,14 +174,18 @@ class PagesRuntime {
     const { api, events, cli } = driver
     const config = api.webpack
     const gatherer = api.gatherer
-    const webpack = api.require( 'webpack' )
 
     config.plugin( 'define' )
-      .use( webpack.DefinePlugin, [
-        {
-          NUT_CLI_DYNAMIC: JSON.stringify( Boolean( cli.options.dynamic ) )
+      .tap( args => {
+        if ( !args[ 0 ] ) {
+          args.push( {} )
         }
-      ] )
+        const definitions = args[ 0 ]
+        definitions.NUT_CLI_DYNAMIC = JSON.stringify( Boolean( cli.options.dynamic ) )
+        return [
+          definitions
+        ]
+      } )
 
     if ( cli.options.dynamic ) {
       config.optimization
@@ -208,12 +212,12 @@ class PagesRuntime {
       .use( VirtualModulesPlugin, [ modules ] )
 
     // setup dev server
-    events.on( 'compiler', ( compiler, config ) => {
-      this._setupDevServer( compiler, config, driver, nutConfig, virtualModules )
+    events.on( 'ready', config => {
+      this._setupDevServer( config, driver, nutConfig, virtualModules )
     } )
   }
 
-  async _setupDevServer( compiler, webpackConfig, driver = {}, nutConfig, virtualModules ) {
+  async _setupDevServer( webpackConfig, driver = {}, nutConfig, virtualModules ) {
     const { api, cli } = driver
     const gatherer = api.gatherer
     const host = nutConfig.host || DEFAULT_HOST
@@ -221,16 +225,7 @@ class PagesRuntime {
     const dynamicPages = []
     let lockedDynamicPages = []
 
-    const WebpackDevServer = api.require( 'webpack-dev-server' )
-
     const waitCallbacks = []
-    compiler.hooks.done.tap( 'wait-until-valid', () => {
-      let callback = waitCallbacks.shift()
-      while ( callback ) {
-        callback()
-        callback = waitCallbacks.shift()
-      }
-    } )
 
     function waitUntilValid() {
       const deferred = {}
@@ -247,6 +242,7 @@ class PagesRuntime {
 
     let devServerOptions = {
       contentBase: './dist',
+      port,
       host,
       hot: true,
       quiet: true,
@@ -364,10 +360,7 @@ class PagesRuntime {
       devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
     }
 
-    WebpackDevServer.addDevServerEntrypoints( webpackConfig, devServerOptions )
-    const server = new WebpackDevServer( compiler, devServerOptions )
-
-    server.listen( port, host, () => {
+    const { compiler } = api.serve( webpackConfig, devServerOptions, () => {
       const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
 
       if ( cli.options.singlePage ) {
@@ -437,6 +430,14 @@ class PagesRuntime {
       }
     } )
 
+    compiler.hooks.done.tap( 'wait-until-valid', () => {
+      let callback = waitCallbacks.shift()
+      while ( callback ) {
+        callback()
+        callback = waitCallbacks.shift()
+      }
+    } )
+
     function getOpenUrl( { host, port, routerMode = 'hash', page } ) {
       const url = 'http://' + host + ':' + port
 
@@ -491,16 +492,20 @@ class PagesRuntime {
 
   async _prod( driver = {}, nutConfig ) {
     const { api } = driver
-    const webpack = api.require( 'webpack' )
     const gatherer = api.gatherer
     const config = api.webpack
 
     config.plugin( 'define' )
-      .use( webpack.DefinePlugin, [
-        {
-          NUT_CLI_DYNAMIC: JSON.stringify( false )
+      .tap( args => {
+        if ( !args[ 0 ] ) {
+          args.push( {} )
         }
-      ] )
+        const definitions = args[ 0 ]
+        definitions.NUT_CLI_DYNAMIC = JSON.stringify( false )
+        return [
+          definitions
+        ]
+      } )
 
     const appId = await getUniqueApplicationId( nutConfig )
 

@@ -1,4 +1,4 @@
-import webpack from 'webpack'
+const webpack = require( 'webpack' )
 
 module.exports = function build( config ) {
   const compiler = webpack( config )
