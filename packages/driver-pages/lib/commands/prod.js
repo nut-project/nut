@@ -14,8 +14,7 @@ const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const applyCSSRules = require( '../webpack/apply-css-rules' )
 
 async function prod( gatherer = {}, runtime, cliOptions = {} ) {
-  const { api } = gatherer
-  const config = await api.getConfig() || {}
+  const config = await gatherer.getConfig() || {}
 
   const webpackConfig = createBaseWebpackConfig( config )
 

@@ -27,7 +27,7 @@ class PagesRuntime {
   async apply( driver = {} ) {
     const { env, api } = driver
 
-    const nutConfig = await api.gatherer.api.getConfig()
+    const nutConfig = await api.gatherer.getConfig()
 
     await this._base( driver, nutConfig )
 
@@ -191,7 +191,7 @@ class PagesRuntime {
     }
 
     // setup virtual modules
-    const modules = await generateModules( await gatherer.api.getArtifacts(), {
+    const modules = await generateModules( await gatherer.getArtifacts(), {
       env: 'dev',
       cliOptions: cli.options,
       dynamicPages: [],
@@ -275,7 +275,7 @@ class PagesRuntime {
 
           dynamicPages.push( page )
 
-          const modules = await generateModules( await gatherer.api.getArtifacts(), {
+          const modules = await generateModules( await gatherer.getArtifacts(), {
             env: 'dev',
             cliOptions: cli.options,
             dynamicPages,
@@ -309,7 +309,7 @@ class PagesRuntime {
           if ( req.path === '/index.html' ) {
             lockedDynamicPages = dynamicPages.slice()
 
-            const modules = await generateModules( await gatherer.api.getArtifacts(), {
+            const modules = await generateModules( await gatherer.getArtifacts(), {
               env: 'dev',
               cliOptions: cli.options,
               dynamicPages,
@@ -464,13 +464,13 @@ class PagesRuntime {
       return localTips + lanTips
     }
 
-    gatherer.events.on( 'change', async () => {
+    gatherer.on( 'change', async () => {
       if ( !virtualModules ) {
         return
       }
 
       try {
-        const modules = await generateModules( await gatherer.api.getArtifacts(), {
+        const modules = await generateModules( await gatherer.getArtifacts(), {
           env: 'dev',
           cliOptions: cli.options,
           dynamicPages,
@@ -515,7 +515,7 @@ class PagesRuntime {
         return args
       } )
 
-    const modules = await generateModules( await gatherer.api.getArtifacts(), {
+    const modules = await generateModules( await gatherer.getArtifacts(), {
       env: 'prod'
     } )
 

@@ -9,88 +9,78 @@ const getPages = require( './get-pages' )
 // src/app.{js|ts}
 // config from nut.config.js
 // markdown ...
-class PagesGatherer {
-  constructor( name ) {
-    this.name = name
-    this.cfg = config( name )
-    this.emitter = new EventEmitter()
+module.exports = async function ( { name, env } = {} ) {
+  const cfg = config( name )
+
+  const emitter = new EventEmitter()
+
+  await cfg.check()
+
+  if ( env === 'development' ) {
+    await watch( cfg, emitter )
   }
 
-  async apply( env ) {
-    const cfg = this.cfg
+  Object.assign( emitter, {
+    async getArtifacts() {
+      const config = await this.getConfig()
+      const pages = await getPages( config.plugins )
 
-    await cfg.check()
-
-    if ( env === 'development' ) {
-      await this._watch()
-    }
-
-    return {
-      events: this.emitter,
-      api: {
-        async getArtifacts() {
-          const config = await this.getConfig()
-          const pages = await getPages( config.plugins )
-
-          return {
-            config,
-            pages,
-          }
-        },
-
-        async getConfig() {
-          return normalizeConfig( await cfg.get() )
-        },
+      return {
+        config,
+        pages,
       }
-    }
+    },
+
+    async getConfig() {
+      return normalizeConfig( await cfg.get() )
+    },
+  } )
+
+  return emitter
+}
+
+async function watch( cfg, emitter ) {
+  const dirs = {
+    project: process.cwd()
   }
 
-  async _watch() {
-    const cfg = this.cfg
-    const emitter = this.emitter
-
-    const dirs = {
-      project: process.cwd()
-    }
-
-    // watch files
-    const watchOptions = {
-      ignoreInitial: true,
-      persistent: true,
-      followSymlinks: false,
-      atomic: false,
-      alwaysStat: true,
-      ignorePermissionErrors: true,
-    }
-
-    const appFiles = [
-      path.join( dirs.project, 'src/app.js' ),
-      path.join( dirs.project, 'src/app.ts' ),
-    ]
-
-    const configDir = path.join( dirs.project, 'src/config' )
-
-    const callback = () => {
-      emitter.emit( 'change' )
-    }
-
-    chokidar
-      .watch( [
-        await cfg.getFile(),
-        ...appFiles,
-        configDir,
-      ], watchOptions )
-      .on( 'add', callback )
-      .on( 'unlink', callback )
-      .on( 'change', callback )
-
-    chokidar
-      .watch( [
-        path.join( dirs.project, 'src/pages' ),
-      ], watchOptions )
-      .on( 'add', callback )
-      .on( 'unlink', callback )
+  // watch files
+  const watchOptions = {
+    ignoreInitial: true,
+    persistent: true,
+    followSymlinks: false,
+    atomic: false,
+    alwaysStat: true,
+    ignorePermissionErrors: true,
   }
+
+  const appFiles = [
+    path.join( dirs.project, 'src/app.js' ),
+    path.join( dirs.project, 'src/app.ts' ),
+  ]
+
+  const configDir = path.join( dirs.project, 'src/config' )
+
+  const callback = () => {
+    emitter.emit( 'change' )
+  }
+
+  chokidar
+    .watch( [
+      await cfg.getFile(),
+      ...appFiles,
+      configDir,
+    ], watchOptions )
+    .on( 'add', callback )
+    .on( 'unlink', callback )
+    .on( 'change', callback )
+
+  chokidar
+    .watch( [
+      path.join( dirs.project, 'src/pages' ),
+    ], watchOptions )
+    .on( 'add', callback )
+    .on( 'unlink', callback )
 }
 
 function normalizeConfig( config ) {
@@ -110,5 +100,3 @@ function normalizeConfig( config ) {
 
   return config
 }
-
-module.exports = PagesGatherer

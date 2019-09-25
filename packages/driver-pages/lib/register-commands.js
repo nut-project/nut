@@ -1,8 +1,6 @@
-const Gatherer = require( '@nut-project/gatherer-pages' )
+const createGatherer = require( '@nut-project/gatherer-pages' )
 const Runtime = require( '@nut-project/runtime-pages' )
-const { utils } = require( '@nut-project/core' )
 const commands = require( './commands' )
-const pkg = require( '../package.json' )
 
 module.exports = function ( cli ) {
   cli
@@ -11,12 +9,9 @@ module.exports = function ( cli ) {
     .option( '--single-page <page>', 'Build single page to speed up' )
     .option( '--dynamic' )
     .action( async options => {
-      const gatherer = new Gatherer( 'nut' )
       const runtime = new Runtime()
 
       options = normalizeCliOptions( options )
-
-      utils.poweredBy( pkg.name, pkg.version )
 
       let env
 
@@ -29,7 +24,10 @@ module.exports = function ( cli ) {
       process.env.NODE_ENV = env
 
       commands[ env ](
-        await gatherer.apply( env ),
+        await createGatherer( {
+          name: 'nut',
+          env,
+        } ),
         runtime,
         options
       )
