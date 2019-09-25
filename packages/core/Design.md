@@ -21,21 +21,21 @@ TODO: remove events, use gatherer.on
 1. plugin can hook artifacts / modify webpack entry / webpack dev server
 2. plugin can call runtime api to modify runtime code
 
-powered by presets-pages
+powered by preset-pages
 
-presets-pages -> 插件集合（插件可以注册命令）（presets可以认为是commands集合，所以可以提供一个scope用于隔离命令）
+preset-pages -> 插件集合（插件可以注册命令）（preset可以认为是commands集合，所以可以提供一个scope用于隔离命令）
 
   nut: [
     {
       "scope": "pages"
-      "presets": [ "presets-pages" ]
+      "preset": [ "preset-pages" ]
     }
   ]
   // 插件内部是否需要集成 webpack 和 webpack dev server？可以暴露高阶api出来？
   插件内部的命令有 api.watchFiles() api.rebuild()(没有，应该是插件暴露的)
   插件增强插件(基础的pages)这一点可以作为卖点
   in plugin -> （备注：driver 概念可以移除，冗余，增加理解成本）
-    // nut 级别的插件可以定制runtime（runtime级别还有一个插件，至于 nut插件和runtime插件的组合使用，可以再定一个新的集合（presets））
+    // nut 级别的插件可以定制runtime（runtime级别还有一个插件，至于 nut插件和runtime插件的组合使用，可以再定一个新的集合（preset））
     new Gatherer( 'runtime' ) + new Runtime（在插件中结合 runtime）（概念移除，插件 api 中有对应的gatherer api和events）
     // runtime does not provide webpack config itself, but driver does
     // create webpack config in driver
