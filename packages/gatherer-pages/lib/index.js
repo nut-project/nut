@@ -1,7 +1,7 @@
 const EventEmitter = require( 'events' )
 const path = require( 'path' )
 const chokidar = require( 'chokidar' )
-const { gatherer } = require( '@nut-project/core' )
+const { config } = require( '@nut-project/core' )
 const getPages = require( './get-pages' )
 
 // extract from filesystem / watch filesystem:
@@ -12,13 +12,14 @@ const getPages = require( './get-pages' )
 class PagesGatherer {
   constructor( name ) {
     this.name = name
+    this.cfg = config( name )
     this.emitter = new EventEmitter()
   }
 
   async apply( env ) {
-    const name = this.name
+    const cfg = this.cfg
 
-    await gatherer.check( name )
+    await cfg.check()
 
     if ( env === 'development' ) {
       await this._watch()
@@ -38,14 +39,14 @@ class PagesGatherer {
         },
 
         async getConfig() {
-          return normalizeConfig( await gatherer.getConfig( name ) )
+          return normalizeConfig( await cfg.get() )
         },
       }
     }
   }
 
   async _watch() {
-    const name = this.name
+    const cfg = this.cfg
     const emitter = this.emitter
 
     const dirs = {
@@ -75,7 +76,7 @@ class PagesGatherer {
 
     chokidar
       .watch( [
-        await gatherer.getConfigFile( name ),
+        await cfg.getFile(),
         ...appFiles,
         configDir,
       ], watchOptions )

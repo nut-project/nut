@@ -1,7 +1,7 @@
 const cosmiconfig = require( 'cosmiconfig' )
 const logger = require( './logger' )
 
-class Gatherer {
+class Config {
   constructor( name ) {
     this._name = name
   }
@@ -11,7 +11,7 @@ class Gatherer {
   }
 
   async check() {
-    const loaded = await this.loadConfig()
+    const loaded = await this.load()
 
     if ( !loaded ) {
       logger.error( 'No config file found' )
@@ -19,15 +19,15 @@ class Gatherer {
     }
   }
 
-  loadConfig() {
-    return this._loadConfig()
+  load() {
+    return this._load()
   }
 
-  loadConfigSync() {
-    return this._loadConfig( { sync: true } )
+  loadSync() {
+    return this._load( { sync: true } )
   }
 
-  _loadConfig( options = {} ) {
+  _load( options = {} ) {
     const sync = options.sync
 
     const name = this.name()
@@ -42,14 +42,14 @@ class Gatherer {
     return this._explorer.search()
   }
 
-  async getConfigFile() {
-    const loaded = await this.loadConfig()
+  async getFile() {
+    const loaded = await this.load()
 
     return loaded && loaded.filepath
   }
 
-  async getConfig() {
-    const loaded = await this.loadConfig()
+  async get() {
+    const loaded = await this.load()
     return loaded && loaded.config
   }
 }
@@ -61,21 +61,10 @@ function singleton( name ) {
   }
 
   if ( !instances[ name ] ) {
-    instances[ name ] = new Gatherer( name )
+    instances[ name ] = new Config( name )
   }
 
   return instances[ name ]
 }
 
-function expose( method ) {
-  return function ( name ) {
-    const instance = singleton( name )
-    return instance && instance[ method ] && instance[ method ]()
-  }
-}
-
-module.exports = {
-  check: expose( 'check' ),
-  getConfig: expose( 'getConfig' ),
-  getConfigFile: expose( 'getConfigFile' ),
-}
+module.exports = name => singleton( name )

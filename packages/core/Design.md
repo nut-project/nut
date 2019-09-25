@@ -2,6 +2,7 @@
 
 collect artifacts for driver / plugin
 expose api for reading filesystem and communicating with runtime
+TODO: remove events, use gatherer.on
 
 ## driver
 
