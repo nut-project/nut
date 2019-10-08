@@ -29,15 +29,14 @@ in project package.json
 1. plugin can define entries / hook artifacts / modify webpack entry / webpack dev server
 2. plugin can call runtime api to modify runtime code
 
-## presets（ user plugins ）
+## presets ( user plugins )
 
 powered by preset-pages
 
-preset-pages -> user 插件集合（preset 是对 pages 的增强，不能新增命令，不然和 stable 违背）
+preset-pages -> user plugins for driver-pages
 
-  nutConfig: {
-    "preset": [ "preset-pages" ]
-  }
-
-  // 目前的问题在于，runtime api 太弱，很多 runtime 代码都是硬编码在内部，然后要求 webpack 适配
-  // TODO: 增强 runtime api，类似 runtime.createFile，全部 runtime 文件可以在 driver 中创建（借助 virtual modules），这样才是一个完整的插件流程，从收集产物 -> runtime -> modify webpack，而不是先写好 runtime，然后 webpack 修改配置进行配合
+```json
+nutConfig: {
+  "preset": [ "preset-pages" ]
+}
+```
