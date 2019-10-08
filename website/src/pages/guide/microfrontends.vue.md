@@ -5,7 +5,6 @@
   <zi-link more href="http://fengzilong.github.io/nut-todomvc-example/">http://fengzilong.github.io/nut-todomvc-example/</zi-link>
 
   <template slot="footer">
-    <p>微前端合成</p>
     <zi-button
       size="mini"
       type="primary"

@@ -101,9 +101,11 @@ p.danger {
   }
 }
 
-.markdown-body pre code {
-  color: #24292e;
+code[class*="language-"], pre[class*="language-"], pre[class*="language-"] code {
+  color: #ccc;
+}
 
+pre[class*="language-"] code {
   &::before {
     content: '';
   }
@@ -111,11 +113,6 @@ p.danger {
   &::after {
     content: '';
   }
-}
-
-code[class*="language-"], pre[class*="language-"] {
-  background-color: #fff;
-  border: solid 1px #eaeaea;
 }
 
 .zi-switcher {

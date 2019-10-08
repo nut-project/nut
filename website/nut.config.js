@@ -14,7 +14,7 @@ const config = {
   layout: 'now2',
   plugins: {},
   markdown: {
-    theme: 'prism-duotone-light',
+    theme: 'prism-dracula',
     remarkPlugins: [],
     rehypePlugins: [],
   },
