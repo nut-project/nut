@@ -241,7 +241,8 @@ class PagesRuntime {
     }
 
     let devServerOptions = {
-      contentBase: './dist',
+      publicPath: webpackConfig.output && webpackConfig.output.publicPath,
+      contentBase: false,
       port,
       host,
       hot: true,
