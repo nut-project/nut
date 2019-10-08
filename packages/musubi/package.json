@@ -32,6 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cac": "^6.5.3"
+    "cac": "^6.5.3",
+    "@nut-project/core": "^0.0.4-alpha.1"
   }
 }
