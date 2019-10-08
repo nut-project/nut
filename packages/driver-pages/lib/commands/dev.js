@@ -37,7 +37,6 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
 
   let finalWebpackConfig = webpackConfig.toConfig()
 
-  // webpack configuration is ready to go
   if ( typeof nutConfig.configureWebpack === 'function' ) {
     nutConfig.configureWebpack( finalWebpackConfig )
   } else if ( typeof nutConfig.configureWebpack === 'object' ) {
@@ -47,6 +46,7 @@ async function dev( gatherer = {}, runtime, cliOptions = {} ) {
     )
   }
 
+  // webpack configuration is ready
   emitter.emit( 'ready', finalWebpackConfig )
 }
 

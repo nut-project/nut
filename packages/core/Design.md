@@ -1,4 +1,4 @@
-## gatherer（can be merged into core-plugin-pages）
+## gatherer（can be merged into driver-pages）
 
 collect artifacts for driver / plugin
 expose api for reading filesystem and communicating with runtime
@@ -8,7 +8,7 @@ expose api for reading filesystem and communicating with runtime
 1. setup basic webpack( or other bundler )
 2. expose api for configure webpack
 
-## core plugin ( e.g. core-plugin-pages )
+## driver ( e.g. driver-pages )
 
 1. add commands
 2. expose api for other user plugins
@@ -24,7 +24,7 @@ in project package.json
   "build": "nut pages build"
 }
 
-## user plugin ( api provided by core-plugin-pages )
+## user plugin ( api provided by driver-pages )
 
 1. plugin can define entries / hook artifacts / modify webpack entry / webpack dev server
 2. plugin can call runtime api to modify runtime code
