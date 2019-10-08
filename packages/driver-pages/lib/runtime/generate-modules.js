@@ -16,6 +16,7 @@ async function generateModules( artifacts = {}, options = {} ) {
     cliOptions = {},
     dynamicPages = [],
     lockedDynamicPages = [],
+    skipDiff = false,
   } = options
 
   addRouteForPages( pages )
@@ -34,7 +35,7 @@ async function generateModules( artifacts = {}, options = {} ) {
   )
   const app = await generateAppContent()
 
-  return diff( {
+  const modules = {
     'src/nut-auto-generated-pages.js': await generatePages( env, pages ),
     'src/nut-auto-generated-routes.js': routes.source,
     'src/nut-auto-generated-plugins.js': await generatePlugins( config, { env } ),
@@ -44,7 +45,16 @@ async function generateModules( artifacts = {}, options = {} ) {
     'src/nut-auto-generated-markdown-theme.css': await generateMarkdownThemeCSS( config ),
     [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
     ...routes.files,
-  } )
+  }
+
+  if ( skipDiff === true ) {
+    addModulesCache( modules )
+    return modules
+  }
+
+  const diffed = diff( modules )
+  addModulesCache( modules )
+  return diffed
 }
 
 function addRouteForPages( pages ) {
@@ -61,13 +71,16 @@ function addRouteForPages( pages ) {
 
 const modulesHistory = {}
 
+function addModulesCache( modules ) {
+  Object.keys( modules )
+    .forEach( key => {
+      modulesHistory[ key ] = modules[ key ]
+    } )
+}
+
 function diff( modules ) {
   return Object.keys( modules )
-    .filter( key => {
-      const isEqual = modules[ key ] !== modulesHistory[ key ]
-      modulesHistory[ key ] = modules[ key ]
-      return isEqual
-    } )
+    .filter( key => modules[ key ] !== modulesHistory[ key ] )
     .reduce( ( total, key ) => {
       total[ key ] = modules[ key ]
       return total

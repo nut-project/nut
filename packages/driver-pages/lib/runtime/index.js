@@ -7,12 +7,18 @@ const boxen = require( 'boxen' )
 const open = require( 'open' )
 const exit = require( 'exit' )
 const address = require( 'address' )
+const webpackMerge = require( 'webpack-merge' )
+const table = require( 'text-table' )
+const stringWidth = require( 'string-width' )
+const prettyBytes = require( 'pretty-bytes' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
-const { getUniqueApplicationId } = require( './utils' )
 const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
+const { serve, build } = require( '@nut-project/webpack' )
+const { getUniqueApplicationId } = require( './utils' )
 const generateModules = require( './generate-modules' )
+const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -24,23 +30,23 @@ const dirs = {
 
 class PagesRuntime {
   async apply( driver = {} ) {
+    this._driver = driver
+
     const { env, api } = driver
 
     const nutConfig = await api.gatherer.getConfig()
+    const config = createBaseWebpackConfig( nutConfig, env )
 
-    await this._base( driver, nutConfig )
+    await this._base( config, nutConfig )
 
     if ( env === 'production' ) {
-      await this._prod( driver, nutConfig )
+      await this._prod( driver, config, nutConfig )
     } else {
-      await this._dev( driver, nutConfig )
+      await this._dev( driver, config, nutConfig )
     }
   }
 
-  async _base( driver = {}, nutConfig ) {
-    const { api } = driver
-    const config = api.webpack
-
+  async _base( config, nutConfig ) {
     config
       .entry( 'index' )
         .add( path.join( dirs.runtime, 'entries/default.js' ) )
@@ -165,9 +171,8 @@ class PagesRuntime {
       ] )
   }
 
-  async _dev( driver = {}, nutConfig ) {
-    const { api, events, cli } = driver
-    const config = api.webpack
+  async _dev( driver = {}, config, nutConfig ) {
+    const { api, cli } = driver
     const gatherer = api.gatherer
 
     config.plugin( 'define' )
@@ -195,6 +200,8 @@ class PagesRuntime {
       cliOptions: cli.options,
       dynamicPages: [],
       lockedDynamicPages: [],
+      // skipDiff to make sure modules is available on restart
+      skipDiff: true
     } )
 
     let virtualModules
@@ -206,10 +213,22 @@ class PagesRuntime {
       } )
       .use( VirtualModulesPlugin, [ modules ] )
 
-    // setup dev server
-    events.on( 'ready', config => {
-      this._setupDevServer( config, driver, nutConfig, virtualModules )
-    } )
+    if ( typeof nutConfig.chainWebpack === 'function' ) {
+      nutConfig.chainWebpack( config )
+    }
+
+    let finalWebpackConfig = config.toConfig()
+
+    if ( typeof nutConfig.configureWebpack === 'function' ) {
+      nutConfig.configureWebpack( finalWebpackConfig )
+    } else if ( typeof nutConfig.configureWebpack === 'object' ) {
+      finalWebpackConfig = webpackMerge.smart(
+        finalWebpackConfig,
+        nutConfig.configureWebpack
+      )
+    }
+
+    this._setupDevServer( finalWebpackConfig, driver, nutConfig, virtualModules )
   }
 
   async _setupDevServer( webpackConfig, driver = {}, nutConfig, virtualModules ) {
@@ -356,7 +375,7 @@ class PagesRuntime {
       devServerOptions = Object.assign( devServerOptions, nutConfig.devServer )
     }
 
-    const { compiler } = api.serve( webpackConfig, devServerOptions, () => {
+    const { compiler, server } = serve( webpackConfig, devServerOptions, () => {
       const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
 
       if ( cli.options.singlePage ) {
@@ -388,14 +407,55 @@ class PagesRuntime {
         )
       }
 
-      console.log( '\n' + chalk.gray( 'Tips: Press "Enter" to open in browser' ) + '\n' )
+      console.log()
+      console.log( chalk.gray( 'Tips: ' ) )
+      console.log( chalk.gray( 'Press "Enter" to open in browser' ) )
+      console.log( chalk.gray( 'Press "r" to restart dev server' ) )
+      console.log( chalk.gray( 'Press "q" to quit' ) )
+      console.log()
 
-      // modified from:
-      // https://github.com/facebook/jest/blob/b7cb5221bb06b6fe63c1a5e725ddbc1aaa82d306/packages/jest-core/src/watch.ts#L445
       const stdin = process.stdin
       const CONTROL_C = '\u0003'
       const CONTROL_D = '\u0004'
       const ENTER = '\r'
+
+      this._keyStrokeHandler = async key => {
+        switch ( key ) {
+        case ENTER:
+          await open( getOpenUrl( {
+            host,
+            port,
+            routerMode,
+            page: cli.options.singlePage
+          } ) )
+          break
+        case 'r':
+          if ( server && server.close ) {
+            server.close( async () => {
+              console.log( 'DevServer killed, restarting...' )
+              await this.apply( this._driver )
+            } )
+          }
+          break
+        case 'q':
+          if ( typeof stdin.setRawMode === 'function' ) {
+            stdin.setRawMode( false )
+          }
+          exit( 0 )
+          break
+        default:
+          break
+        }
+      }
+
+      if ( this._keyStrokeListened ) {
+        return
+      }
+
+      this._keyStrokeListened = true
+
+      // modified from:
+      // https://github.com/facebook/jest/blob/b7cb5221bb06b6fe63c1a5e725ddbc1aaa82d306/packages/jest-core/src/watch.ts#L445
 
       if ( typeof stdin.setRawMode === 'function' ) {
         stdin.setRawMode( true )
@@ -410,18 +470,7 @@ class PagesRuntime {
             return
           }
 
-          switch ( key ) {
-          case ENTER:
-            await open( getOpenUrl( {
-              host,
-              port,
-              routerMode,
-              page: cli.options.singlePage
-            } ) )
-            break
-          default:
-            break
-          }
+          await this._keyStrokeHandler( key )
         } )
       }
     } )
@@ -486,10 +535,9 @@ class PagesRuntime {
     } )
   }
 
-  async _prod( driver = {}, nutConfig ) {
+  async _prod( driver = {}, config, nutConfig ) {
     const { api } = driver
     const gatherer = api.gatherer
-    const config = api.webpack
 
     config.plugin( 'define' )
       .tap( args => {
@@ -522,6 +570,75 @@ class PagesRuntime {
 
     config.plugin( 'virtual-modules' )
       .use( VirtualModulesPlugin, [ modules ] )
+
+    if ( typeof nutConfig.chainWebpack === 'function' ) {
+      nutConfig.chainWebpack( config )
+    }
+
+    let finalWebpackConfig = config.toConfig()
+
+    if ( typeof nutConfig.configureWebpack === 'function' ) {
+      nutConfig.configureWebpack( finalWebpackConfig )
+    } else if ( typeof nutConfig.configureWebpack === 'object' ) {
+      finalWebpackConfig = webpackMerge.smart(
+        finalWebpackConfig,
+        nutConfig.configureWebpack
+      )
+    }
+
+    try {
+      const stats = await build( finalWebpackConfig )
+
+      const result = stats.toJson( {
+        assets: true,
+        // remove extra fields
+        chunks: false,
+        children: false,
+        chunkGroups: false,
+        chunkModules: false,
+        warnings: false,
+        modules: false,
+        source: false,
+        entrypoints: false,
+        performance: false,
+      } )
+
+      let output = [
+        [ ' File', 'Size' ].map( s => chalk.bold( s ) ),
+        [ ' ----', '----' ].map( s => chalk.dim( s ) )
+      ]
+
+      result.assets.sort( ( a, b ) => {
+        return b.size - a.size
+      } )
+
+      output = output.concat( result.assets.map( asset => [ chalk.green( ' ' + asset.name ), prettyBytes( asset.size ) ] ) )
+
+      output = table( output, {
+        stringLength: stringWidth,
+      } )
+
+      console.log( `\n${ output }\n` )
+
+      console.log(
+        stats.toString( {
+          assets: false,
+          children: false,
+          chunks: false,
+          colors: true,
+          warnings: false,
+          errors: true,
+          errorDetails: true,
+          modules: false,
+          entrypoints: false,
+          performance: false,
+        } )
+      )
+
+      console.log( '\n' )
+    } catch ( e ) {
+      console.error( e )
+    }
   }
 }
 
