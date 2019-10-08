@@ -1,5 +1,5 @@
 const createGatherer = require( './gatherer' )
-const Runtime = require( '@nut-project/runtime-pages' )
+const Runtime = require( './runtime' )
 const commands = require( './commands' )
 
 module.exports = function ( cli ) {

@@ -18,7 +18,7 @@ module.exports = function createBaseConfig( nutConfig = {}, env ) {
   ) || []
   const internalTranspileModules = [
     'unfancy-router/src',
-    '@nut-project/runtime-pages/src',
+    `${ pkg.name }/lib/runtime/files`,
     /@nut-plugins/i,
     'debug', // from docsearch.js -> algoliasearch -> debug
   ]
@@ -117,14 +117,14 @@ module.exports = function createBaseConfig( nutConfig = {}, env ) {
         .set( '@', path.join( dirs.project, 'src' ) )
         .end()
       .modules
-        .add( path.join( dirs.cli, '../../' ) )
-        .add( path.join( dirs.cli, 'node_modules' ) )
+        .add( path.join( dirs.driver, '../../' ) )
+        .add( path.join( dirs.driver, 'node_modules' ) )
         .end()
       .end()
     .resolveLoader
       .modules
-        .add( path.join( dirs.cli, '../../' ) )
-        .add( path.join( dirs.cli, 'node_modules' ) )
+        .add( path.join( dirs.driver, '../../' ) )
+        .add( path.join( dirs.driver, 'node_modules' ) )
         .end()
 
   const babelOptions = getBabelOptions()

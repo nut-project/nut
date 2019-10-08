@@ -18,8 +18,7 @@ const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
 
 const dirs = {
-  runtime: path.join( __dirname, '../src' ),
-  runtimeRoot: path.join( __dirname, '../' ),
+  runtime: path.join( __dirname, 'files' ),
   project: process.cwd(),
 }
 
@@ -41,10 +40,6 @@ class PagesRuntime {
   async _base( driver = {}, nutConfig ) {
     const { api } = driver
     const config = api.webpack
-
-    config.resolve.modules
-      .add( path.join( dirs.runtimeRoot, '../../' ) )
-      .add( path.join( dirs.runtimeRoot, 'node_modules' ) )
 
     config
       .entry( 'index' )
