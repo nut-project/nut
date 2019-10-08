@@ -14,7 +14,7 @@ function randomInt( min, max ) {
   return Math.floor( Math.random() * ( max - min + 1 ) ) + min
 }
 
-function poweredBy( packageName, version ) {
+function poweredBy( drivers ) {
   const builtins = [
     'vice',
     'fruit',
@@ -23,7 +23,19 @@ function poweredBy( packageName, version ) {
 
   const index = randomInt( 0, builtins.length - 1 )
 
-  console.log( `\nPowered by ${ gradient[ builtins[ index ] ]( packageName ) } ${ chalk.dim( '(' + version + ')' ) }\n` )
+  let output = '\nPowered by '
+
+  const colorize = gradient[ builtins[ index ] ]
+
+  output = output + drivers
+    .map( driver => {
+      return `${ colorize( driver.name ) } ${ chalk.dim( '(' + driver.version + ')' ) }`
+    } )
+    .join( ' ' )
+
+  output = output + '\n'
+
+  console.log( output )
 }
 
 function normalizePath( path = '' ) {

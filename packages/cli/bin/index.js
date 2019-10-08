@@ -13,18 +13,12 @@ process
   } )
 
 const musubi = require( '@nut-project/musubi' )
-const { utils } = require( '@nut-project/core' )
 const driver = require( '@nut-project/driver-pages' )
-const driverPkg = require( '@nut-project/driver-pages/package' )
 
 ;( async () => {
   const cli = musubi()
 
-  utils.poweredBy( driverPkg.name, driverPkg.version )
-
-  driver( cli )
-
-  await cli.apply( {
-    version: pkg.version
-  } )
+  cli.version( pkg.version )
+  await cli.use( driver )
+  await cli.apply()
 } )()

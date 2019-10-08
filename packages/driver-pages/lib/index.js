@@ -1,5 +1,9 @@
 const commands = require( './register-commands' )
+const pkg = require( '../package.json' )
 
-module.exports = function ( cli ) {
-  cli.use( commands )
+exports.name = pkg.name
+exports.version = pkg.version
+exports.apply = function ( { register } ) {
+  register( commands )
+  register( commands )
 }
