@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-alpha.0](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.1.1-alpha.1...@nut-project/driver-pages@0.2.0-alpha.0) (2019-10-08)
+
+
+### Features
+
+* listen key stroke for r(estart) and q(uit) ([887d80e](https://github.com/nut-project/nut/tree/master/packages/gatherer/commit/887d80e))
+
+
+
+
+
 # [0.1.0](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.0.5...@nut-project/driver-pages@0.1.0) (2019-09-24)
 
 

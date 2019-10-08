@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/musubi",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "publishConfig": {
     "access": "public"
   },
@@ -32,7 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "cac": "^6.5.3",
-    "@nut-project/core": "^0.0.4-alpha.1"
+    "@nut-project/core": "^0.0.4-alpha.2",
+    "cac": "^6.5.3"
   }
 }
