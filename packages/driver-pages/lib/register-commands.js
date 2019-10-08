@@ -1,4 +1,4 @@
-const createGatherer = require( '@nut-project/gatherer-pages' )
+const createGatherer = require( './gatherer' )
 const Runtime = require( '@nut-project/runtime-pages' )
 const commands = require( './commands' )
 
