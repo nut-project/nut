@@ -59,7 +59,7 @@ async function watch( cfg, emitter ) {
     path.join( dirs.project, 'src/app.ts' ),
   ]
 
-  const configDir = path.join( dirs.project, 'src/config' )
+  const configDir = path.join( dirs.project, 'config' )
 
   const callback = () => {
     emitter.emit( 'change' )
