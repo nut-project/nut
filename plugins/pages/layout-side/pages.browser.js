@@ -139,7 +139,7 @@ export default async function( ctx ) {
   let layout = null
 
   await ctx.api.layout.register( {
-    name: 'default',
+    name: 'side',
 
     mount( node ) {
       if ( !layout ) {

@@ -28,6 +28,15 @@ const config = {
     now: {
       path: path.join( __dirname, '../plugins/pages/layout-now' )
     },
+    kaola: {
+      path: path.join( __dirname, '../plugins/pages/layout-kaola' ),
+    },
+    side: {
+      path: path.join( __dirname, '../plugins/pages/layout-side' ),
+    },
+    saber: {
+      path: path.join( __dirname, '../plugins/pages/layout-saber' ),
+    },
   }
 }
 
