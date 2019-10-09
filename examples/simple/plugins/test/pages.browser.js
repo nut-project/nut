@@ -1,6 +1,4 @@
-exports.name = 'test',
-
-exports.apply = function ( ctx = {}, options = {} ) {
+export default function ( ctx = {}, options = {} ) {
   const { events } = ctx
 
   events.on( 'system:before-startup', () => {} )

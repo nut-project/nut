@@ -1,6 +1,6 @@
 const path = require( 'path' )
 const sao = require( 'sao' )
-const Runtime = require( './runtime' )
+const Core = require( './core' )
 
 module.exports = scope => cli => {
   cli
@@ -30,21 +30,13 @@ module.exports = scope => cli => {
 }
 
 function createAction( scope, env ) {
-  return async function ( options ) {
-    const runtime = new Runtime()
-
-    if ( options.singlePage ) {
-      options.singlePage = options.singlePage.replace( /^\/+|\/+$/g, '' )
-    }
-
+  return async function ( cliOptions = {} ) {
     process.env.NODE_ENV = env
 
-    await runtime.apply( {
+    await new Core( {
       env,
       scope,
-      cli: {
-        options,
-      },
-    } )
+      cliOptions,
+    } ).apply()
   }
 }

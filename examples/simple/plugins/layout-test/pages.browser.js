@@ -90,47 +90,41 @@ const Layout = Regular.extend( {
 
 Layout.filter( 'uppercase', v => v && v.toUpperCase() )
 
-export default {
-  name: 'layout-now',
+export default async function( ctx ) {
+  let layout = null
 
-  type: 'layout',
+  await ctx.api.layout.register( {
+    name: 'test',
 
-  async apply( ctx ) {
-    let layout = null
+    mount( node ) {
+      if ( !layout ) {
+        layout = new Layout( {
+          data: { ctx },
+        } )
+      }
 
-    await ctx.api.layout.register( {
-      name: 'test',
+      layout.$inject( node )
+    },
 
-      mount( node ) {
-        if ( !layout ) {
-          layout = new Layout( {
-            data: { ctx },
-          } )
-        }
+    unmount( node ) {
+      if ( !layout ) {
+        return
+      }
 
-        layout.$inject( node )
-      },
+      layout.$inject( false )
+    },
 
-      unmount( node ) {
-        if ( !layout ) {
-          return
-        }
+    update( data = {} ) {
+      if ( !layout ) {
+        return
+      }
 
-        layout.$inject( false )
-      },
+      layout.data.ctx = data.ctx
+      layout.$update()
+    },
 
-      update( data = {} ) {
-        if ( !layout ) {
-          return
-        }
-
-        layout.data.ctx = data.ctx
-        layout.$update()
-      },
-
-      getMountNode() {
-        return layout && layout.$refs.$$mount
-      },
-    } )
-  }
+    getMountNode() {
+      return layout && layout.$refs.$$mount
+    },
+  } )
 }

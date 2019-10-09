@@ -44,6 +44,7 @@
     "cosmiconfig": "^5.2.1",
     "globby": "^10.0.1",
     "gradient-string": "^1.2.0",
-    "signale": "^1.4.0"
+    "signale": "^1.4.0",
+    "deepmerge": "^4.0.0"
   }
 }

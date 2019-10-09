@@ -20,6 +20,7 @@ const { getUniqueApplicationId } = require( './utils' )
 const generateModules = require( './generate-modules' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
 const createGatherer = require( '../gatherer' )
+// const filterPlugins = require( './filter-plugins' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -30,8 +31,10 @@ const dirs = {
 }
 
 class PagesRuntime {
-  async apply( options = {} ) {
-    const { scope, env } = options
+  async apply( api ) {
+    this.api = api
+
+    const { scope, env } = this.api
 
     if ( !this._gatherer ) {
       const gatherer = await createGatherer( {
@@ -44,19 +47,31 @@ class PagesRuntime {
 
     const gatherer = this._gatherer
 
-    this._options = options
+    const nutConfig = await gatherer.getConfig()
+
+    // let plugins = filterPlugins( nutConfig.plugins, {
+    //   file: 'pages.node.js',
+    //   env
+    // } )
+    //
+    // plugins = plugins.reduce( ( total, plugin ) => {
+    //   total[ plugin.localName ] = plugin.path ?
+    //     require( path.join( plugin.path, 'pages.node.js' ) ) :
+    //     require( `${ plugin.packages }/pages.node.js` )
+    //
+    //   return total
+    // }, {} )
 
     // TODO: load plugins
 
-    const nutConfig = await gatherer.getConfig()
     const config = createBaseWebpackConfig( nutConfig, env )
 
     await this._base( config, nutConfig )
 
     if ( env === 'production' ) {
-      await this._prod( config, nutConfig )
+      await this._build( config, nutConfig )
     } else {
-      await this._dev( options, config, nutConfig )
+      await this._dev( config, nutConfig )
     }
   }
 
@@ -185,9 +200,19 @@ class PagesRuntime {
       ] )
   }
 
-  async _dev( options = {}, config, nutConfig ) {
-    const { cli } = options
+  async getModules( options = {} ) {
     const gatherer = this._gatherer
+    const { env, cliOptions } = this.api
+
+    return await generateModules( await gatherer.getArtifacts(), {
+      env,
+      cliOptions,
+      ...options,
+    } )
+  }
+
+  async _dev( config, nutConfig ) {
+    const { cliOptions } = this.api
 
     config.plugin( 'define' )
       .tap( args => {
@@ -195,13 +220,13 @@ class PagesRuntime {
           args.push( {} )
         }
         const definitions = args[ 0 ]
-        definitions.NUT_CLI_DYNAMIC = JSON.stringify( Boolean( cli.options.dynamic ) )
+        definitions.NUT_CLI_DYNAMIC = JSON.stringify( Boolean( cliOptions.dynamic ) )
         return [
           definitions
         ]
       } )
 
-    if ( cli.options.dynamic ) {
+    if ( cliOptions.dynamic ) {
       config.optimization
         .splitChunks( {
           chunks: 'initial'
@@ -209,9 +234,7 @@ class PagesRuntime {
     }
 
     // setup virtual modules
-    const modules = await generateModules( await gatherer.getArtifacts(), {
-      env: 'dev',
-      cliOptions: cli.options,
+    const modules = await this.getModules( {
       dynamicPages: [],
       lockedDynamicPages: [],
       // skipDiff to make sure modules is available on restart
@@ -242,11 +265,11 @@ class PagesRuntime {
       )
     }
 
-    this._setupDevServer( finalWebpackConfig, options, nutConfig, virtualModules )
+    this._setupDevServer( finalWebpackConfig, nutConfig, virtualModules )
   }
 
-  async _setupDevServer( webpackConfig, options = {}, nutConfig, virtualModules ) {
-    const { cli } = options
+  async _setupDevServer( webpackConfig, nutConfig, virtualModules ) {
+    const { cliOptions } = this.api
     const gatherer = this._gatherer
     const host = nutConfig.host || DEFAULT_HOST
     const port = nutConfig.port || DEFAULT_PORT
@@ -283,7 +306,7 @@ class PagesRuntime {
         app.get( `/_nut_dynamic_build_page`, async ( req, res ) => {
           const page = req.query.page
 
-          if ( !cli.options.dynamic ) {
+          if ( !cliOptions.dynamic ) {
             return res.json( {
               success: true,
               waitHotApply: false,
@@ -300,9 +323,7 @@ class PagesRuntime {
 
           dynamicPages.push( page )
 
-          const modules = await generateModules( await gatherer.getArtifacts(), {
-            env: 'dev',
-            cliOptions: cli.options,
+          const modules = await this.getModules( {
             dynamicPages,
             lockedDynamicPages,
           } )
@@ -327,16 +348,14 @@ class PagesRuntime {
       after( app ) {
         // rebuild slim routes(without unused HMR code) before following requests
         app.use( async ( req, res, next ) => {
-          if ( !cli.options.dynamic ) {
+          if ( !cliOptions.dynamic ) {
             return next()
           }
 
           if ( req.path === '/index.html' ) {
             lockedDynamicPages = dynamicPages.slice()
 
-            const modules = await generateModules( await gatherer.getArtifacts(), {
-              env: 'dev',
-              cliOptions: cli.options,
+            const modules = await this.getModules( {
               dynamicPages,
               // used for generate `module.hot.accept`s, ensure no page refresh
               lockedDynamicPages,
@@ -392,7 +411,7 @@ class PagesRuntime {
     const { compiler, server } = serve( webpackConfig, devServerOptions, () => {
       const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
 
-      if ( cli.options.singlePage ) {
+      if ( cliOptions.singlePage ) {
         console.log(
           boxen(
             `Your sinlg page is available at${
@@ -400,7 +419,7 @@ class PagesRuntime {
                 host,
                 port,
                 routerMode,
-                page: cli.options.singlePage
+                page: cliOptions.singlePage
               } )
             }`,
             {
@@ -440,7 +459,7 @@ class PagesRuntime {
             host,
             port,
             routerMode,
-            page: cli.options.singlePage
+            page: cliOptions.singlePage
           } ) )
           break
         case 'r':
@@ -530,9 +549,7 @@ class PagesRuntime {
       }
 
       try {
-        const modules = await generateModules( await gatherer.getArtifacts(), {
-          env: 'dev',
-          cliOptions: cli.options,
+        const modules = await this.getModules( {
           dynamicPages,
           lockedDynamicPages,
         } )
@@ -549,9 +566,7 @@ class PagesRuntime {
     } )
   }
 
-  async _prod( config, nutConfig ) {
-    const gatherer = this._gatherer
-
+  async _build( config, nutConfig ) {
     config.plugin( 'define' )
       .tap( args => {
         if ( !args[ 0 ] ) {
@@ -577,9 +592,7 @@ class PagesRuntime {
         return args
       } )
 
-    const modules = await generateModules( await gatherer.getArtifacts(), {
-      env: 'prod'
-    } )
+    const modules = await this.getModules()
 
     config.plugin( 'virtual-modules' )
       .use( VirtualModulesPlugin, [ modules ] )

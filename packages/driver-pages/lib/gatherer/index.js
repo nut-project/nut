@@ -90,7 +90,7 @@ function normalizeConfig( config ) {
   for ( const name in config.plugins ) {
     const plugin = config.plugins[ name ]
 
-    plugin.env = plugin.env || [ 'dev', 'prod' ]
+    plugin.env = plugin.env || [ 'development', 'production' ]
 
     // eslint-disable-next-line
     plugin.enable = typeof plugin.enable !== 'undefined' ?

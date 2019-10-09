@@ -2,6 +2,7 @@ const path = require( 'path' )
 const fse = require( 'fs-extra' )
 const { utils } = require( '@nut-project/core' )
 const { toRelativePath } = require( './utils' )
+const filterPlugins = require( './filter-plugins' )
 
 const dirs = {
   project: process.cwd()
@@ -12,7 +13,7 @@ async function generateModules( artifacts = {}, options = {} ) {
   let { pages } = artifacts
 
   const {
-    env = 'dev',
+    env = 'development',
     cliOptions = {},
     dynamicPages = [],
     lockedDynamicPages = [],
@@ -89,7 +90,7 @@ function diff( modules ) {
 
 async function generatePages( env, pages ) {
   // for security purpose, remove filepath
-  if ( env === 'prod' ) {
+  if ( env === 'production' ) {
     pages = pages.map( page => {
       const tmp = {}
       Object.keys( page ).forEach( key => {
@@ -141,74 +142,57 @@ async function generateAppContent() {
   }
 }
 
+function shortenEnv( env ) {
+  const map = {
+    development: 'dev',
+    production: 'prod',
+  }
+  return map[ env ] || 'dev'
+}
+
 async function generateConfig( config, { env } = {} ) {
+  env = shortenEnv( env )
+
   let files = await utils.globby( [
-    'src/config/config.*.js'
+    'config/config.*.js'
   ] )
 
   files = files.filter(
     file => file.includes( `.default.` ) || file.includes( `.${ env }.` )
   )
 
-  return await utils.mergeFiles( files )
+  const merged = await utils.merge( files.reduce( ( total, file ) => {
+    total.push( require( file ) )
+    return total
+  }, [] ) )
+
+  return JSON.stringify( merged )
 }
 
 async function generatePluginOptions( config, { env } = {} ) {
+  env = shortenEnv( env )
+
   let files = await utils.globby( [
-    `src/config/plugin.*.js`
+    `config/plugin.*.js`
   ] )
 
   files = files.filter(
     file => file.includes( `.default.` ) || file.includes( `.${ env }.` )
   )
 
-  return await utils.mergeFiles( files )
+  const merged = await utils.merge( files.reduce( ( total, file ) => {
+    total.push( require( file ) )
+    return total
+  }, [] ) )
+
+  return JSON.stringify( merged )
 }
 
 async function generatePlugins( config, { env } = {} ) {
-  const pluginsObj = config.plugins || {}
-
-  let plugins = Object.keys( pluginsObj )
-    .map( localName => ( {
-      localName,
-      ...pluginsObj[ localName ],
-    } ) )
-
-  // filter .path / .package
-  plugins = plugins.filter( plugin => {
-    if ( !plugin.path && !plugin.package ) {
-      return false
-    }
-
-    if ( plugin.path ) {
-      const exists = fse.pathExistsSync( path.join( plugin.path, 'pages.browser.js' ) )
-      if ( exists ) {
-        return true
-      }
-
-      return false
-    }
-
-    if ( plugin.package ) {
-      const baseDir = path.dirname(
-        require.resolve( `${ plugin.package }/package.json` )
-      )
-
-      const exists = fse.pathExistsSync( path.join( baseDir, 'pages.browser.js' ) )
-
-      if ( exists ) {
-        return true
-      }
-
-      return false
-    }
-
-    return false
+  const plugins = filterPlugins( config.plugins, {
+    file: 'pages.browser.js',
+    env
   } )
-  // filter enable
-  plugins = plugins.filter( plugin => plugin.enable )
-  // filter env
-  plugins = plugins.filter( plugin => ~plugin.env.indexOf( env ) )
 
   const _imports = plugins.map( ( plugin, index ) => {
     const importPath = plugin.path ?

@@ -36,10 +36,10 @@ module.exports = {
     //   path: require.resolve( './plugins/test' ),
     // },
     notfound: {
-      path: require.resolve( './src/plugins/notfound' ),
+      path: require.resolve( './plugins/notfound' ),
     },
     layoutTest: {
-      path: require.resolve( './src/plugins/layout-test' ),
+      path: require.resolve( './plugins/layout-test' ),
     }
   },
   markdown: {

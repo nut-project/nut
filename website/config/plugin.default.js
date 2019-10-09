@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   now: {
     search: {
       appId: 'FZANFOBNUT',
