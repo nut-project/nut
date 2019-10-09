@@ -1,0 +1,41 @@
+{
+  "name": "@nut-plugins/pages-layout-side",
+  "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "pages-layout-side",
+  "keywords": [
+    "nut",
+    "pages",
+    "plugin"
+  ],
+  "files": [
+    "pages.browser.js",
+    "pages.node.js"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/gatherer",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {
+    "prepublishOnly": "cp ../../README.md ./README.md"
+  },
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "cosmiconfig": "^5.2.1",
+    "globby": "^10.0.1",
+    "gradient-string": "^1.2.0",
+    "signale": "^1.4.0"
+  }
+}

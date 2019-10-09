@@ -52,7 +52,15 @@ export default {
     return this._layouts
   },
 
+  hasLayout( name ) {
+    return Boolean( this._layouts[ name ] )
+  },
+
   getLayoutByName( name ) {
+    if ( !this._layouts[ name ] ) {
+      return this._layouts.none
+    }
+
     return this._layouts[ name ]
   },
 

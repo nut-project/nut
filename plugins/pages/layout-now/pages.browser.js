@@ -371,126 +371,118 @@ function routerModeFilter( url ) {
   return url
 }
 
-export default {
-  name: 'layout-now2',
+export default async function( ctx, options = {} ) {
+  let layout = null
 
-  localName: 'builtins:layout-now2',
+  const progressElId = 'nut-layout-now2-progress'
 
-  type: 'layout',
+  ctx.api.router.beforeEach( function ( { next } ) {
+    const $progress = document.getElementById( progressElId )
 
-  async apply( ctx, options = {} ) {
-    let layout = null
+    if ( $progress ) {
+      NProgress.configure( {
+        parent: '#' + progressElId
+      } )
+      NProgress.start()
+    }
 
-    const progressElId = 'nut-layout-now2-progress'
+    next()
+  } )
 
-    ctx.api.router.beforeEach( function ( { next } ) {
-      const $progress = document.getElementById( progressElId )
+  ctx.api.router.afterEach( function () {
+    const $progress = document.getElementById( progressElId )
 
-      if ( $progress ) {
-        NProgress.configure( {
-          parent: '#' + progressElId
+    if ( $progress ) {
+      NProgress.configure( {
+        parent: '#' + progressElId
+      } )
+      NProgress.done()
+    }
+  } )
+
+  await ctx.api.layout.register( {
+    name: 'now',
+
+    mount( node ) {
+      if ( !layout ) {
+        layout = new Layout( {
+          data: {
+            ctx,
+            options,
+          },
         } )
-        NProgress.start()
-      }
 
-      next()
-    } )
+        ctx.events.on( 'page:after-mount', () => {
+          window.scrollTo( 0, 0 )
 
-    ctx.api.router.afterEach( function () {
-      const $progress = document.getElementById( progressElId )
-
-      if ( $progress ) {
-        NProgress.configure( {
-          parent: '#' + progressElId
-        } )
-        NProgress.done()
-      }
-    } )
-
-    await ctx.api.layout.register( {
-      name: 'now2',
-
-      mount( node ) {
-        if ( !layout ) {
-          layout = new Layout( {
-            data: {
-              ctx,
-              options,
-            },
+          // update pagination
+          const pages = layout.$get( 'currentPages' )
+          const leafPages = []
+          walkChildren( pages, null, child => {
+            if ( !child.children || ( child.children.length === 0 ) ) {
+              leafPages.push( child )
+            }
           } )
 
-          ctx.events.on( 'page:after-mount', () => {
-            window.scrollTo( 0, 0 )
-
-            // update pagination
-            const pages = layout.$get( 'currentPages' )
-            const leafPages = []
-            walkChildren( pages, null, child => {
-              if ( !child.children || ( child.children.length === 0 ) ) {
-                leafPages.push( child )
-              }
-            } )
-
-            let activeIndex
-            leafPages.forEach( ( page, index ) => {
-              if ( page.active ) {
-                activeIndex = index
-              }
-            } )
-
-            if ( activeIndex > 0 ) {
-              layout.data.prevPage = leafPages[ activeIndex - 1 ]
-            } else {
-              layout.data.prevPage = null
+          let activeIndex
+          leafPages.forEach( ( page, index ) => {
+            if ( page.active ) {
+              activeIndex = index
             }
-
-            if ( ( activeIndex + 1 ) < leafPages.length ) {
-              layout.data.nextPage = leafPages[ activeIndex + 1 ]
-            } else {
-              layout.data.nextPage = null
-            }
-
-            // update open
-            const sidebar = ctx.api.sidebar.get()
-            if ( sidebar && sidebar.length > 0 ) {
-              // reset when route change
-              sidebar.forEach( s => {
-                if ( s.children && s.children.length > 0 ) {
-                  s.children.forEach( c => {
-                    c.open = void 0
-                  } )
-                }
-              } )
-            }
-
-            layout.$update()
           } )
-        }
 
-        layout.$inject( node )
-      },
+          if ( activeIndex > 0 ) {
+            layout.data.prevPage = leafPages[ activeIndex - 1 ]
+          } else {
+            layout.data.prevPage = null
+          }
 
-      unmount() {
-        if ( !layout ) {
-          return
-        }
+          if ( ( activeIndex + 1 ) < leafPages.length ) {
+            layout.data.nextPage = leafPages[ activeIndex + 1 ]
+          } else {
+            layout.data.nextPage = null
+          }
 
-        layout.$inject( false )
-      },
+          // update open
+          const sidebar = ctx.api.sidebar.get()
+          if ( sidebar && sidebar.length > 0 ) {
+            // reset when route change
+            sidebar.forEach( s => {
+              if ( s.children && s.children.length > 0 ) {
+                s.children.forEach( c => {
+                  c.open = void 0
+                } )
+              }
+            } )
+          }
 
-      update( data = {} ) {
-        if ( !layout ) {
-          return
-        }
+          layout.$update()
+        } )
+      }
 
-        layout.data.ctx = data.ctx
-        layout.data.options = options
-        layout.$update()
-      },
+      layout.$inject( node )
+    },
 
-      getMountNode() {
-        return layout && layout.$refs.$$mount
-      },
-    } )
-  }
+    unmount() {
+      if ( !layout ) {
+        return
+      }
+
+      layout.$inject( false )
+    },
+
+    update( data = {} ) {
+      if ( !layout ) {
+        return
+      }
+
+      layout.data.ctx = data.ctx
+      layout.data.options = options
+      layout.$update()
+    },
+
+    getMountNode() {
+      return layout && layout.$refs.$$mount
+    },
+  } )
 }

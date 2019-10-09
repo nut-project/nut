@@ -59,6 +59,8 @@ pages.node.js
 
 ```js
 module.exports = function ( ctx, options ) {
+  ctx.modifyConfig
+  ctx.rebuild( outputPath ) build site with different config
   ctx.restart( reason ) only in dev mode
   ctx.refreshBrowser
   ctx.html.addScript during webpack compile
@@ -78,5 +80,17 @@ module.exports = function ( ctx, options ) {
   // ctx.emit
   // ctx.on
   // ctx.expose
+
+  ctx.gatherer.watchConfig( 'layout', () => {
+    ctx.writeFile(  )
+    ctx.addRoute(  )
+  } )
+
+  ctx.gatherer.watchFile( 'pages/foo', () => {
+
+  } )
+
+  // like ctx.body
+  ctx.data = { foo: 'bar' }
 }
 ```

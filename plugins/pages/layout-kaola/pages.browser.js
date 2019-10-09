@@ -186,70 +186,62 @@ const Layout = Regular.extend( {
   },
 } )
 
-export default {
-  name: 'layout-kaola',
+export default async function( ctx, options = {} ) {
+  let layout = null
 
-  localName: 'builtins:layout-kaola',
+  await ctx.api.layout.register( {
+    name: 'kaola',
 
-  type: 'layout',
+    mount( node, { ctx } ) {
+      if ( !layout ) {
+        const sidebar = ctx.api.sidebar.get()
 
-  async apply( ctx, options = {} ) {
-    let layout = null
+        sidebar.forEach( s => {
+          s.open = s.active
+        } )
 
-    await ctx.api.layout.register( {
-      name: 'kaola',
+        layout = new Layout( {
+          data: {
+            ctx,
+            options,
+          }
+        } )
 
-      mount( node, { ctx } ) {
-        if ( !layout ) {
-          const sidebar = ctx.api.sidebar.get()
+        layout.$on( 'logout', () => {
+          ctx.events.emit( 'layout:logout' )
+        } )
 
-          sidebar.forEach( s => {
-            s.open = s.active
-          } )
+        layout.$on( 'collapse', () => {
+          ctx.events.emit( 'layout:collapse' )
+        } )
 
-          layout = new Layout( {
-            data: {
-              ctx,
-              options,
-            }
-          } )
+        layout.$on( 'uncollapse', () => {
+          ctx.events.emit( 'layout:uncollapse' )
+        } )
+      }
 
-          layout.$on( 'logout', () => {
-            ctx.events.emit( 'layout:logout' )
-          } )
+      layout.$inject( node )
+    },
 
-          layout.$on( 'collapse', () => {
-            ctx.events.emit( 'layout:collapse' )
-          } )
+    unmount() {
+      if ( !layout ) {
+        return
+      }
 
-          layout.$on( 'uncollapse', () => {
-            ctx.events.emit( 'layout:uncollapse' )
-          } )
-        }
+      layout.$inject( false )
+    },
 
-        layout.$inject( node )
-      },
+    update( data = {} ) {
+      if ( !layout ) {
+        return
+      }
 
-      unmount() {
-        if ( !layout ) {
-          return
-        }
+      layout.data.ctx = data.ctx
+      layout.$update()
+    },
 
-        layout.$inject( false )
-      },
-
-      update( data = {} ) {
-        if ( !layout ) {
-          return
-        }
-
-        layout.data.ctx = data.ctx
-        layout.$update()
-      },
-
-      getMountNode() {
-        return layout && layout.$refs.$$mount
-      },
-    } )
-  }
+    getMountNode() {
+      return layout && layout.$refs.$$mount
+    },
+  } )
 }

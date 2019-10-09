@@ -83,49 +83,41 @@ const Layout = Regular.extend( {
   },
 } )
 
-export default {
-  name: 'layout-saber',
+export default async function( ctx ) {
+  let layout = null
 
-  localName: 'builtins:layout-saber',
+  await ctx.api.layout.register( {
+    name: 'saber',
 
-  type: 'layout',
+    mount( node ) {
+      if ( !layout ) {
+        layout = new Layout( {
+          data: { ctx },
+        } )
+      }
 
-  async apply( ctx ) {
-    let layout = null
+      layout.$inject( node )
+    },
 
-    await ctx.api.layout.register( {
-      name: 'saber',
+    unmount() {
+      if ( !layout ) {
+        return
+      }
 
-      mount( node ) {
-        if ( !layout ) {
-          layout = new Layout( {
-            data: { ctx },
-          } )
-        }
+      layout.$inject( false )
+    },
 
-        layout.$inject( node )
-      },
+    update( data = {} ) {
+      if ( !layout ) {
+        return
+      }
 
-      unmount() {
-        if ( !layout ) {
-          return
-        }
+      layout.data.ctx = data.ctx
+      layout.$update()
+    },
 
-        layout.$inject( false )
-      },
-
-      update( data = {} ) {
-        if ( !layout ) {
-          return
-        }
-
-        layout.data.ctx = data.ctx
-        layout.$update()
-      },
-
-      getMountNode() {
-        return layout && layout.$refs.$$mount
-      },
-    } )
-  }
+    getMountNode() {
+      return layout && layout.$refs.$$mount
+    },
+  } )
 }

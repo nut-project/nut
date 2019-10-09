@@ -1,13 +1,9 @@
 export default async function applyPlugins( allPlugins = [], allPluginOptions = {}, ctx = {} ) {
-  const { env, app, config, pages, events, plugins } = ctx
+  const { env, app, config, pages, events } = ctx
 
   for ( let i = 0, len = allPlugins.length; i < len; i++ ) {
     const plugin = allPlugins[ i ]
     const pluginOptions = allPluginOptions[ plugin.localName ] || {}
-
-    if ( !plugin.apply ) {
-      return
-    }
 
     const stubRouter = {
       ...ctx.api.router,
@@ -45,9 +41,8 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
 
     const stubAPI = {
       ...ctx.api,
-      expose( prop, value ) {
-        plugins[ plugin.localName ] = plugins[ plugin.localName ] || {}
-        plugins[ plugin.localName ][ prop ] = value
+      expose( name, value ) {
+        ctx.expose( plugin.localName, name, value )
       },
       router: stubRouter
     }
@@ -72,7 +67,12 @@ export default async function applyPlugins( allPlugins = [], allPluginOptions = 
       },
     }
 
-    await plugin.apply( {
+    if ( typeof plugin !== 'function' ) {
+      ctx.logger.error( 'Error', `${ plugin.localName } is not a valid plugin` )
+      return
+    }
+
+    await plugin( {
       env,
       config,
       app,

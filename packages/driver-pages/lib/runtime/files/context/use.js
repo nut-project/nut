@@ -1,20 +1,31 @@
-export default function use( pluginName, methodName, ...args ) {
-  const plugins = this.plugins || {}
-  const exposed = plugins[ pluginName ]
+export default {
+  _exposed: {},
 
-  if ( !exposed ) {
-    return
-  }
+  expose( scope, name, value ) {
+    const exposed = this._exposed || {}
 
-  const method = exposed[ methodName ]
+    exposed[ scope ] = exposed[ scope ] || {}
+    exposed[ scope ][ name ] = value
 
-  if ( !method ) {
-    return
-  }
+    this._exposed = exposed
+  },
 
-  if ( typeof method === 'function' ) {
-    return method( ...args )
-  }
+  use( scope, name, ...args ) {
+    if ( !this._exposed || !this._exposed[ scope ] ) {
+      return
+    }
 
-  return method
+    const exposed = this._exposed[ scope ]
+    const method = exposed[ name ]
+
+    if ( !method ) {
+      return
+    }
+
+    if ( typeof method === 'function' ) {
+      return method( ...args )
+    }
+
+    return method
+  },
 }

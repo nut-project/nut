@@ -18,17 +18,18 @@ import config from '@/nut-auto-generated-config'
 import applyCompose from '../steps/apply-compose'
 import applyPlugins from '../steps/apply-plugins'
 import setupNico from '../steps/setup-nico'
-import registerLayouts from '../steps/register-layouts'
 
 import getFirstRoute from '../utils/get-first-route'
 import switchTheme from '../utils/switch-theme'
 // fix __webpack_require__.e is not defined in dynamic build mode
 import '../utils/add-require-ensure'
 import dynamicBuild from '../utils/dynamic-build'
+import logger from '../utils/logger'
 
 import app from '@/nut-auto-generated-app'
 import createAPI from '../context/api'
 import events from '../context/events'
+import none from '../layouts/none/pages.browser'
 import use from '../context/use'
 
 ;( async function () {
@@ -48,16 +49,22 @@ import use from '../context/use'
 
   const globals = window.NUT_GLOBALS || {}
 
+  // add internal plugins
+  none.localName = 'builtin:layout-none'
+  plugins.unshift( none )
+
   const context = {
     config,
     env: process.env.NODE_ENV,
-    plugins: {},
     app: nutConfig,
     api: createAPI( { pages, router: rootRouter, globals } ),
     events,
     pages,
-    use,
     globals,
+    logger,
+    plugins,
+    pluginOptions,
+    ...use,
   }
 
   if ( nutConfig.sidebar ) {
@@ -106,8 +113,6 @@ import use from '../context/use'
       router.alias( '/' )
     }
   }
-
-  await registerLayouts( pluginOptions, context )
 
   await events.emit( 'system:before-apply-plugins', context )
   await applyPlugins( plugins, pluginOptions, context )

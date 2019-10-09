@@ -174,15 +174,46 @@ async function generatePlugins( config, { env } = {} ) {
       ...pluginsObj[ localName ],
     } ) )
 
-  // filter valid .path / .package
-  plugins = plugins.filter( plugin => ( plugin.path || plugin.package ) )
+  // filter .path / .package
+  plugins = plugins.filter( plugin => {
+    if ( !plugin.path && !plugin.package ) {
+      return false
+    }
+
+    if ( plugin.path ) {
+      const exists = fse.pathExistsSync( path.join( plugin.path, 'pages.browser.js' ) )
+      if ( exists ) {
+        return true
+      }
+
+      return false
+    }
+
+    if ( plugin.package ) {
+      const baseDir = path.dirname(
+        require.resolve( `${ plugin.package }/package.json` )
+      )
+
+      const exists = fse.pathExistsSync( path.join( baseDir, 'pages.browser.js' ) )
+
+      if ( exists ) {
+        return true
+      }
+
+      return false
+    }
+
+    return false
+  } )
   // filter enable
   plugins = plugins.filter( plugin => plugin.enable )
   // filter env
   plugins = plugins.filter( plugin => ~plugin.env.indexOf( env ) )
 
   const _imports = plugins.map( ( plugin, index ) => {
-    const importPath = plugin.path ? toRelativePath( plugin.path ) : plugin.package
+    const importPath = plugin.path ?
+      toRelativePath( path.join( plugin.path, 'pages.browser.js' ) ) :
+      plugin.package + '/pages.browser.js'
     return `import plugin_${ index } from '${ importPath }';`
   } ).join( '\n' )
 

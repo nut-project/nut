@@ -1,6 +1,14 @@
 /* global document */
+/* eslint-disable new-cap */
+
 import quicklink from 'quicklink'
 import nutConfig from '@/nut-auto-generated-nut-config'
+
+const errors = {
+  LAYOUT_NOT_FOUND( name ) {
+    return `layout "${ name }" is not registered`
+  }
+}
 
 export default function createNico(
   rootRouter,
@@ -147,12 +155,7 @@ export default function createNico(
           beforeEnter( e ) {
             const { params, query, from, to } = e
             if ( process.env.NODE_ENV === 'development' ) {
-              console.log(
-                '\n%cMatch%c' + routeConfig.page + '%c\n',
-                'background-color: #0089ff;color: #fff;padding: 2px 6px;',
-                'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
-                ''
-              )
+              ctx.logger.info( 'Match', routeConfig.page )
             }
 
             // re-fetch
@@ -216,12 +219,7 @@ export default function createNico(
                 if ( nextCount === 0 ) {
                   e.next()
                   if ( process.env.NODE_ENV === 'development' ) {
-                    console.log(
-                      '\n%cRouterGuard%cbeforeEnter passed%c\n',
-                      'background-color: #0089ff;color: #fff;padding: 2px 6px;',
-                      'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
-                      ''
-                    )
+                    ctx.logger.info( 'RouterGuard', 'beforeEnter passed' )
                   }
 
                   // remove all un-related css
@@ -276,12 +274,7 @@ export default function createNico(
                     }
 
                     if ( process.env.NODE_ENV === 'development' ) {
-                      console.log(
-                        '\n%cRouterGuard%cbeforeEnter passed%c\n',
-                        'background-color: #0089ff;color: #fff;padding: 2px 6px;',
-                        'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
-                        ''
-                      )
+                      ctx.logger.info( 'RouterGuard', 'beforeEnter passed' )
                     }
                   }
                 }
@@ -314,12 +307,7 @@ export default function createNico(
             if ( nextCount === 0 ) {
               e.next()
               if ( process.env.NODE_ENV === 'development' ) {
-                console.log(
-                  '\n%cRouterGuard%cbeforeLeave passed%c\n',
-                  'background-color: #0089ff;color: #fff;padding: 2px 6px;',
-                  'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
-                  ''
-                )
+                ctx.logger.info( 'RouterGuard', 'beforeLeave passed' )
               }
               return
             }
@@ -336,12 +324,7 @@ export default function createNico(
                 e.next()
 
                 if ( process.env.NODE_ENV === 'development' ) {
-                  console.log(
-                    '\n%cRouterGuard%cbeforeLeave passed%c\n',
-                    'background-color: #0089ff;color: #fff;padding: 2px 6px;',
-                    'background-color: #3c3e6f;color: #fff;padding: 2px 6px;',
-                    ''
-                  )
+                  ctx.logger.info( 'RouterGuard', 'beforeLeave passed' )
                 }
               }
             }
@@ -386,6 +369,10 @@ export default function createNico(
 
               if ( to && to.options && to.options.page ) {
                 newLayout = api.page( to.options.page ).get( 'layout' ) || DEFAULT_LAYOUT
+              }
+
+              if ( !api.layout.hasLayout( newLayout ) ) {
+                ctx.logger.error( 'Error', errors.LAYOUT_NOT_FOUND( newLayout ) )
               }
 
               const layouts = {
@@ -503,6 +490,11 @@ export default function createNico(
         ( newLayoutName !== oldLayoutName ) &&
         !pageLayoutName
       ) {
+        if ( !api.layout.hasLayout( newLayoutName ) ) {
+          ctx.logger.error( 'Error', errors.LAYOUT_NOT_FOUND( newLayoutName ) )
+          return
+        }
+
         switchLayout( ctx, newLayoutName )
 
         updateLayoutState( {
@@ -510,6 +502,11 @@ export default function createNico(
           router: ctx.api.router.current,
         } )
       } else {
+        if ( !api.layout.hasLayout( pageLayoutName ) ) {
+          ctx.logger.error( 'Error', errors.LAYOUT_NOT_FOUND( pageLayoutName ) )
+          return
+        }
+
         updateLayoutState( {
           layout: api.layout.getLayoutByName( pageLayoutName ),
           router: ctx.api.router.current,
@@ -602,7 +599,7 @@ export default function createNico(
 
     markActive( ctx.api.sidebar.get(), router && router.name )
 
-    if ( layout.update ) {
+    if ( layout && layout.update ) {
       layout.update( { ctx } )
     }
 
