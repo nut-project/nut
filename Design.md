@@ -40,3 +40,40 @@ nutConfig: {
   "preset": [ "preset-pages" ]
 }
 ```
+
+# Plugin API
+
+app.js
+
+```js
+export default ( ctx, options ) => {
+  ctx.api
+  ctx.events
+  ctx.expose
+  ctx.emit
+  ctx.on
+}
+```
+
+index.js
+
+```js
+module.exports = function ( ctx, options ) {
+  ctx.restart( reason ) only in dev mode
+  ctx.refreshBrowser
+  ctx.html.addScript before(duration) webpack compile
+  ctx.html.addMeta
+  ctx.html.addLink
+  ctx.html.addStyle
+  ctx.writeVirtualModules
+  ctx.chainWebpack
+  ctx.modifyWebpack
+  ctx.middlewares.append
+  ctx.middlewares.prepend
+  ctx.middlewares.before
+  ctx.middlewares.after
+  ctx.emit
+  ctx.on
+  ctx.expose
+}
+```
