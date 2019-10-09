@@ -1,19 +1,17 @@
 const path = require( 'path' )
-const resolveFrom = require( 'resolve-from' )
 const sao = require( 'sao' )
 const Runtime = require( './runtime' )
-const createGatherer = require( './gatherer' )
 
-module.exports = function ( cli ) {
+module.exports = scope => cli => {
   cli
     .command( 'dev', 'Build in development mode' )
     .option( '--single-page <page>', 'Build single page to speed up' )
     .option( '--dynamic' )
-    .action( createAction( 'development' ) )
+    .action( createAction( scope, 'development' ) )
 
   cli
     .command( 'build', 'Build in production mode' )
-    .action( createAction( 'production' ) )
+    .action( createAction( scope, 'production' ) )
 
   cli
     .command( 'create [dir]', 'Generate a new project to target folder' )
@@ -31,13 +29,9 @@ module.exports = function ( cli ) {
     } )
 }
 
-function createAction( env ) {
+function createAction( scope, env ) {
   return async function ( options ) {
     const runtime = new Runtime()
-    const gatherer = await createGatherer( {
-      name: 'pages',
-      env,
-    } )
 
     if ( options.singlePage ) {
       options.singlePage = options.singlePage.replace( /^\/+|\/+$/g, '' )
@@ -47,18 +41,10 @@ function createAction( env ) {
 
     await runtime.apply( {
       env,
+      scope,
       cli: {
         options,
       },
-      api: {
-        gatherer,
-        require( id ) {
-          const context = path.join( __dirname, '../node_modules' )
-          const resolved = resolveFrom( context, id )
-
-          return require( resolved )
-        }
-      }
     } )
   }
 }

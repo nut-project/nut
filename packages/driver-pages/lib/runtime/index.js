@@ -19,6 +19,7 @@ const { serve, build } = require( '@nut-project/webpack' )
 const { getUniqueApplicationId } = require( './utils' )
 const generateModules = require( './generate-modules' )
 const createBaseWebpackConfig = require( '../webpack/create-base-config' )
+const createGatherer = require( '../gatherer' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -29,20 +30,33 @@ const dirs = {
 }
 
 class PagesRuntime {
-  async apply( driver = {} ) {
-    this._driver = driver
+  async apply( options = {} ) {
+    const { scope, env } = options
 
-    const { env, api } = driver
+    if ( !this._gatherer ) {
+      const gatherer = await createGatherer( {
+        name: scope,
+        env,
+      } )
 
-    const nutConfig = await api.gatherer.getConfig()
+      this._gatherer = gatherer
+    }
+
+    const gatherer = this._gatherer
+
+    this._options = options
+
+    // TODO: load plugins
+
+    const nutConfig = await gatherer.getConfig()
     const config = createBaseWebpackConfig( nutConfig, env )
 
     await this._base( config, nutConfig )
 
     if ( env === 'production' ) {
-      await this._prod( driver, config, nutConfig )
+      await this._prod( config, nutConfig )
     } else {
-      await this._dev( driver, config, nutConfig )
+      await this._dev( options, config, nutConfig )
     }
   }
 
@@ -171,9 +185,9 @@ class PagesRuntime {
       ] )
   }
 
-  async _dev( driver = {}, config, nutConfig ) {
-    const { api, cli } = driver
-    const gatherer = api.gatherer
+  async _dev( options = {}, config, nutConfig ) {
+    const { cli } = options
+    const gatherer = this._gatherer
 
     config.plugin( 'define' )
       .tap( args => {
@@ -228,12 +242,12 @@ class PagesRuntime {
       )
     }
 
-    this._setupDevServer( finalWebpackConfig, driver, nutConfig, virtualModules )
+    this._setupDevServer( finalWebpackConfig, options, nutConfig, virtualModules )
   }
 
-  async _setupDevServer( webpackConfig, driver = {}, nutConfig, virtualModules ) {
-    const { api, cli } = driver
-    const gatherer = api.gatherer
+  async _setupDevServer( webpackConfig, options = {}, nutConfig, virtualModules ) {
+    const { cli } = options
+    const gatherer = this._gatherer
     const host = nutConfig.host || DEFAULT_HOST
     const port = nutConfig.port || DEFAULT_PORT
     const dynamicPages = []
@@ -433,7 +447,7 @@ class PagesRuntime {
           if ( server && server.close ) {
             server.close( async () => {
               console.log( 'DevServer killed, restarting...' )
-              await this.apply( this._driver )
+              await this.apply( this._options )
             } )
           }
           break
@@ -535,9 +549,8 @@ class PagesRuntime {
     } )
   }
 
-  async _prod( driver = {}, config, nutConfig ) {
-    const { api } = driver
-    const gatherer = api.gatherer
+  async _prod( config, nutConfig ) {
+    const gatherer = this._gatherer
 
     config.plugin( 'define' )
       .tap( args => {

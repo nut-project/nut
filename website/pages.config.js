@@ -37,6 +37,9 @@ const config = {
     saber: {
       path: path.join( __dirname, '../plugins/pages/layout-saber' ),
     },
+    test: {
+      path: path.join( __dirname, '../plugins/pages/test' ),
+    }
   }
 }
 
