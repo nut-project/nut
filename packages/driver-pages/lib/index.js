@@ -5,5 +5,4 @@ exports.name = pkg.name
 exports.version = pkg.version
 exports.apply = function ( { register } ) {
   register( commands )
-  register( commands )
 }
