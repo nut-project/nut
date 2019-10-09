@@ -41,9 +41,9 @@ nutConfig: {
 }
 ```
 
-# Plugin API
+# App / Plugin API
 
-app.js
+pages.browser.js
 
 ```js
 export default ( ctx, options ) => {
@@ -55,7 +55,7 @@ export default ( ctx, options ) => {
 }
 ```
 
-index.js
+pages.node.js
 
 ```js
 module.exports = function ( ctx, options ) {
