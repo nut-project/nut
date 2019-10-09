@@ -9,7 +9,7 @@
   "command": {
     "version": {
       "ignoreChanges": [ "**/__fixtures__/**", "**/__tests__/**", "**/*.md" ],
-      "allowBranch": "master",
+      "allowBranch": [ "master", "unstable-0.x" ],
       "message": "chore(release): publish"
     },
     "publish": {
