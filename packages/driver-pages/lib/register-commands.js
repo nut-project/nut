@@ -1,49 +1,64 @@
-const createGatherer = require( './gatherer' )
+const path = require( 'path' )
+const resolveFrom = require( 'resolve-from' )
+const sao = require( 'sao' )
 const Runtime = require( './runtime' )
-const commands = require( './commands' )
+const createGatherer = require( './gatherer' )
 
 module.exports = function ( cli ) {
   cli
-    .command( '', 'Build in development mode' )
-    .option( '--prod', 'Build in production mode' )
+    .command( 'dev', 'Build in development mode' )
     .option( '--single-page <page>', 'Build single page to speed up' )
     .option( '--dynamic' )
-    .action( async options => {
-      const runtime = new Runtime()
+    .action( createAction( 'development' ) )
 
-      options = normalizeCliOptions( options )
-
-      let env
-
-      if ( options.prod ) {
-        env = 'production'
-      } else {
-        env = 'development'
-      }
-
-      process.env.NODE_ENV = env
-
-      commands[ env ](
-        await createGatherer( {
-          name: 'nut',
-          env,
-        } ),
-        runtime,
-        options
-      )
-    } )
+  cli
+    .command( 'build', 'Build in production mode' )
+    .action( createAction( 'production' ) )
 
   cli
     .command( 'create [dir]', 'Generate a new project to target folder' )
-    .action( dir => {
-      commands.create( dir )
+    .action( async dir => {
+      const outDir = path.join( process.cwd(), dir )
+
+      const saoGenerator = sao( {
+        generator: path.join( __dirname, './templates/simple' ),
+        outDir,
+        updateCheck: true,
+        logLevel: 3
+      } )
+
+      await saoGenerator.run().catch( sao.handleError )
     } )
 }
 
-function normalizeCliOptions( options ) {
-  if ( options.singlePage ) {
-    options.singlePage = options.singlePage.replace( /^\/+|\/+$/g, '' )
-  }
+function createAction( env ) {
+  return async function ( options ) {
+    const runtime = new Runtime()
+    const gatherer = await createGatherer( {
+      name: 'pages',
+      env,
+    } )
 
-  return options
+    if ( options.singlePage ) {
+      options.singlePage = options.singlePage.replace( /^\/+|\/+$/g, '' )
+    }
+
+    process.env.NODE_ENV = env
+
+    await runtime.apply( {
+      env,
+      cli: {
+        options,
+      },
+      api: {
+        gatherer,
+        require( id ) {
+          const context = path.join( __dirname, '../node_modules' )
+          const resolved = resolveFrom( context, id )
+
+          return require( resolved )
+        }
+      }
+    } )
+  }
 }

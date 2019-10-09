@@ -12,7 +12,6 @@ const config = {
   logo: '/logo.png',
   theme: 'ocean',
   layout: 'now2',
-  plugins: {},
   markdown: {
     theme: 'prism-dracula',
     remarkPlugins: [],
@@ -24,7 +23,7 @@ const config = {
   },
   plugins: {
     nowCustom: {
-      path: path.join( __dirname, './src/plugins/now-custom/index.js' ),
+      path: path.join( __dirname, './src/plugins/now-custom' ),
     }
   }
 }

@@ -61,19 +61,22 @@ pages.node.js
 module.exports = function ( ctx, options ) {
   ctx.restart( reason ) only in dev mode
   ctx.refreshBrowser
-  ctx.html.addScript before(duration) webpack compile
+  ctx.html.addScript during webpack compile
   ctx.html.addMeta
   ctx.html.addLink
   ctx.html.addStyle
-  ctx.writeVirtualModules
+  ctx.virtualModules.write()
   ctx.chainWebpack
   ctx.modifyWebpack
   ctx.middlewares.append
   ctx.middlewares.prepend
   ctx.middlewares.before
   ctx.middlewares.after
-  ctx.emit
-  ctx.on
-  ctx.expose
+  ctx.markdown.registerTheme
+  ctx.markdown.addRemarkPlugin
+  ctx.markdown.addRehypePlugin
+  // ctx.emit
+  // ctx.on
+  // ctx.expose
 }
 ```
