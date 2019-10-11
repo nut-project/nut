@@ -1,6 +1,6 @@
 dist
 /server
-/demo
+/website/demo
 /packages/**/README.md
 .DS_Store
 

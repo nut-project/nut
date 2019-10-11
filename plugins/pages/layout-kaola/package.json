@@ -10,14 +10,14 @@
     "pages",
     "plugin"
   ],
+  "main": "lib/index.js",
   "files": [
-    "pages.browser.js",
-    "pages.node.js"
+    "lib"
   ],
   "engines": {
     "node": ">=8.9.0"
   },
-  "repository": "https://github.com/nut-project/nut/tree/master/packages/gatherer",
+  "repository": "https://github.com/nut-project/nut/tree/master/plugins/pages/layout-kaola",
   "homepage": "http://nut.js.org",
   "bugs": {
     "url": "https://github.com/nut-project/nut/issues/new/choose"

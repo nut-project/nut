@@ -14,7 +14,7 @@ class Config {
     const loaded = await this.load()
 
     if ( !loaded ) {
-      logger.error( 'No config file found' )
+      logger.error( `No config file found ( e.g. ${ this._name + '.config.js' } )\n` )
       process.exit( 0 )
     }
   }
