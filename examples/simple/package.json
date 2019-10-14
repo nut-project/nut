@@ -1,7 +1,7 @@
 {
   "name": "simple",
   "private": true,
-  "version": "2.0.0-alpha.0",
+  "version": "1.0.0-alpha.2",
   "description": "",
   "scripts": {
     "dev": "node ../../packages/cli/bin/index.js pages dev",

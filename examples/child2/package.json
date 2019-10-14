@@ -1,6 +1,6 @@
 {
   "name": "child2",
-  "version": "2.0.0-alpha.0",
+  "version": "1.0.0-alpha.2",
   "private": true,
   "description": "",
   "main": "nut.config.js",
