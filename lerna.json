@@ -1,6 +1,7 @@
 {
   "packages": [
     "packages/*",
+    "templates/*",
     "plugins/pages/*"
   ],
   "version": "independent",
