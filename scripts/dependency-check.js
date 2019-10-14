@@ -11,9 +11,10 @@ process
 ;( async () => {
   const files = await globby( [
     'packages/**/package.json',
-    '!packages/runtime-*/package.json',
+    'plugins/pages/**/package.json',
     '!packages/**/node_modules/**/package.json',
-    '!packages/driver-pages/lib/templates/**/package.json',
+    '!plugins/**/node_modules/**/package.json',
+    '!plugins/pages/microfrontends/lib/create/templates/**/package.json',
   ], {
     absolute: true
   } )

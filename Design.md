@@ -59,21 +59,38 @@ pages.node.js
 
 ```js
 module.exports = function ( ctx, options ) {
+  ctx.modifyConfig
+  ctx.rebuild( outputPath ) build site with different config
   ctx.restart( reason ) only in dev mode
   ctx.refreshBrowser
-  ctx.html.addScript before(duration) webpack compile
+  ctx.html.addScript during webpack compile
   ctx.html.addMeta
   ctx.html.addLink
   ctx.html.addStyle
-  ctx.writeVirtualModules
+  ctx.virtualModules.write()
   ctx.chainWebpack
   ctx.modifyWebpack
   ctx.middlewares.append
   ctx.middlewares.prepend
   ctx.middlewares.before
   ctx.middlewares.after
-  ctx.emit
-  ctx.on
-  ctx.expose
+  ctx.markdown.registerTheme
+  ctx.markdown.addRemarkPlugin
+  ctx.markdown.addRehypePlugin
+  // ctx.emit
+  // ctx.on
+  // ctx.expose
+
+  ctx.gatherer.watchConfig( 'layout', () => {
+    ctx.writeFile(  )
+    ctx.addRoute(  )
+  } )
+
+  ctx.gatherer.watchFile( 'pages/foo', () => {
+
+  } )
+
+  // like ctx.body
+  ctx.data = { foo: 'bar' }
 }
 ```

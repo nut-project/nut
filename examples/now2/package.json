@@ -5,8 +5,8 @@
   "description": "my awesome nut project",
   "keywords": [],
   "scripts": {
-    "dev": "node ../../packages/cli/bin/index.js",
-    "prod": "node ../../packages/cli/bin/index.js --prod"
+    "dev": "node ../../packages/cli/bin/index.js pages dev",
+    "prod": "node ../../packages/cli/bin/index.js pages build"
   },
   "author": {
     "name": "fengzilong",

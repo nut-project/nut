@@ -1,7 +1,7 @@
 {
   "packages": [
     "packages/*",
-    "plugins/*"
+    "plugins/pages/*"
   ],
   "version": "independent",
   "useWorkspaces": true,

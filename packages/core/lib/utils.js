@@ -1,6 +1,7 @@
 const gradient = require( 'gradient-string' )
 const chalk = require( 'chalk' )
 const glob = require( 'globby' )
+const deepmerge = require( 'deepmerge' )
 
 function delay( duration = 0 ) {
   return new Promise( resolve => {
@@ -104,6 +105,12 @@ function mergeFiles( files, options = {} ) {
   `
 }
 
+function merge( ...objects ) {
+  return deepmerge.all( objects, {
+    arrayMerge: ( destinationArray, sourceArray ) => sourceArray
+  } )
+}
+
 exports.delay = delay
 exports.randomInt = randomInt
 exports.poweredBy = poweredBy
@@ -111,3 +118,4 @@ exports.normalizePath = normalizePath
 exports.pick = pick
 exports.globby = globby
 exports.mergeFiles = mergeFiles
+exports.merge = merge

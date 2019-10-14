@@ -65,6 +65,7 @@ VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
     self._watcher &&
     self._watcher.watchFileSystem &&
     self._watcher.watchFileSystem.wfs &&
+    self._watcher.watchFileSystem.wfs.watcher &&
     self._watcher.watchFileSystem.wfs.watcher.fileWatchers.length
   ) {
     self._watcher.watchFileSystem.wfs.watcher.fileWatchers.forEach(function(fileWatcher) {

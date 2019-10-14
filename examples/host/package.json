@@ -5,8 +5,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "node ../../packages/cli/bin/index.js",
-    "build": "node ../../packages/cli/bin/index.js --prod"
+    "dev": "node ../../packages/cli/bin/index.js pages dev",
+    "build": "node ../../packages/cli/bin/index.js pages build"
   },
   "keywords": [],
   "author": "",

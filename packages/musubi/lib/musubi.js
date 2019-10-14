@@ -9,31 +9,19 @@ class Musubi {
   }
 
   // use driver
-  // name / version / apply
+  // name / version / scope / apply
   async use( driver ) {
-    if ( !driver.name || !driver.version || !driver.apply ) {
+    if ( !driver.name || !driver.version || !driver.scope || !driver.apply ) {
       return
     }
 
-    // should use the same scope in one driver
-    let lastScope
+    const scope = driver.scope
 
     await driver.apply( {
-      register: ( scope, plugin ) => {
+      scope,
+      register: plugin => {
         if ( typeof plugin === 'undefined' ) {
-          plugin = scope
-          scope = ''
-        }
-
-        const hasLastScope = typeof lastScope !== 'undefined'
-
-        if ( hasLastScope && ( scope !== lastScope ) ) {
-          console.log( `Should register the same scope in driver ${ driver.name }\n` )
-          process.exit( 0 )
-        }
-
-        if ( !hasLastScope ) {
-          lastScope = scope
+          return
         }
 
         this.plugins[ scope ] = this.plugins[ scope ] || []
@@ -78,11 +66,11 @@ class Musubi {
       console.log( '\nCommand not found\n' )
     }
 
-    const pendings = plugins.map( plugin => plugin( this.cli ) )
-    await Promise.all( pendings )
-
     const drivers = this.drivers[ scope ]
     utils.poweredBy( drivers )
+
+    const pendings = plugins.map( plugin => plugin( this.cli ) )
+    await Promise.all( pendings )
 
     this.cli.help()
     this.cli.parse( argv )
