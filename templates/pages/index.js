@@ -8,8 +8,8 @@ const cli = cac()
 
 cli
   .command( '[dir]', 'Generate a new project to target folder' )
-  .action( async dir => {
-    const outDir = path.join( process.cwd(), dir )
+  .action( async ( dir ) => {
+    const outDir = path.join( process.cwd(), dir || './' )
 
     const saoGenerator = sao( {
       generator: __dirname,
