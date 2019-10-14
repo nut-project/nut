@@ -538,8 +538,6 @@ module.exports = {
     }
 
     const rebuildModules = async () => {
-      console.log( 'rebuildModules', virtualModules )
-
       if ( !virtualModules ) {
         return
       }
@@ -549,8 +547,6 @@ module.exports = {
           dynamicPages,
           lockedDynamicPages,
         } )
-
-        console.log( modules )
 
         for ( const [ path, content ] of Object.entries( modules ) ) {
           virtualModules.writeModule(

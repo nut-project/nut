@@ -1,5 +1,5 @@
 {
-  "name": "@nut-plugins/microfrontends",
+  "name": "@nut-plugins/pages-microfrontends",
   "version": "0.0.0",
   "publishConfig": {
     "access": "public"

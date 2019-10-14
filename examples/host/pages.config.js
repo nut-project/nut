@@ -24,4 +24,9 @@ module.exports = {
   //     alias: [ 'x', 'y', 'z' ]
   //   }
   // }
+
+  plugins: [
+    '@nut-plugins/pages-microfrontends',
+    '@nut-plugins/pages-layout-now'
+  ]
 }

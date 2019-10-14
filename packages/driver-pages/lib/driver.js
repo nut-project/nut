@@ -7,6 +7,7 @@ const tildify = require( 'tildify' )
 const chalk = require( 'chalk' )
 const path = require( 'path' )
 const exit = require( 'exit' )
+const whyIsNodeRunning = require( 'why-is-node-running' )
 const { config, logger } = require( '@nut-project/core' )
 const {
   chain, serve, build, webpack, WebpackDevServer
@@ -150,29 +151,6 @@ class PagesDriver {
 
     this.verbose = this.config.verbose === true
 
-    // modified from:
-    // https://github.com/facebook/jest/blob/b7cb5221bb06b6fe63c1a5e725ddbc1aaa82d306/packages/jest-core/src/watch.ts#L445
-    const stdin = process.stdin
-    if ( typeof stdin.setRawMode === 'function' ) {
-      stdin.setRawMode( true )
-      stdin.resume()
-      stdin.setEncoding( 'utf8' )
-      stdin.on( 'data', async key => {
-        const CONTROL_C = '\u0003'
-        const CONTROL_D = '\u0004'
-
-        if ( key === CONTROL_C || key === CONTROL_D ) {
-          if ( typeof stdin.setRawMode === 'function' ) {
-            stdin.setRawMode( false )
-          }
-          exit( 0 )
-          return
-        }
-
-        await this.hooks.stdin.promise( key )
-      } )
-    }
-
     // core plugins can access every hook, but there is no env for them
     // if you want access env, consider use beforeRun hook
     await this.applyPlugins( this.config.corePlugins )
@@ -193,6 +171,10 @@ class PagesDriver {
             this._env = env
             this._cliOptions = cliOptions
             process.env.NODE_ENV = env
+
+            if ( env === 'development' ) {
+              this._listenForStdin()
+            }
 
             // reload config
             await this.getConfig()
@@ -217,6 +199,31 @@ class PagesDriver {
       this.logger.error( 'Invalid command: ' + cli.args.join( ' ' ) )
       console.log()
     } )
+  }
+
+  _listenForStdin() {
+    // modified from:
+    // https://github.com/facebook/jest/blob/b7cb5221bb06b6fe63c1a5e725ddbc1aaa82d306/packages/jest-core/src/watch.ts#L445
+    const stdin = process.stdin
+    if ( typeof stdin.setRawMode === 'function' ) {
+      stdin.setRawMode( true )
+      stdin.resume()
+      stdin.setEncoding( 'utf8' )
+      stdin.on( 'data', async key => {
+        const CONTROL_C = '\u0003'
+        const CONTROL_D = '\u0004'
+
+        if ( key === CONTROL_C || key === CONTROL_D ) {
+          if ( typeof stdin.setRawMode === 'function' ) {
+            stdin.setRawMode( false )
+          }
+          exit( 0 )
+          return
+        }
+
+        await this.hooks.stdin.promise( key )
+      } )
+    }
   }
 
   _mapCommandToEnv( name ) {
@@ -295,6 +302,12 @@ class PagesDriver {
         await this.hooks.afterBuild.promise( null, stats )
       } catch ( e ) {
         await this.hooks.afterBuild.promise( e )
+      }
+
+      if ( this.cliOptions.whyIsNodeRunning ) {
+        try {
+          whyIsNodeRunning()
+        } catch ( e ) {}
       }
     }
   }
