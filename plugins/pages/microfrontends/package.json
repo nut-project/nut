@@ -24,7 +24,6 @@
     "url": "https://github.com/nut-project/nut/issues/new/choose"
   },
   "scripts": {
-    "prepublishOnly": "cp ../../README.md ./README.md"
   },
   "author": {
     "name": "fengzilong",
