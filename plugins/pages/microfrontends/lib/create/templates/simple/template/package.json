@@ -5,15 +5,17 @@
   "description": "{{ description }}",
   "keywords": [],
   "scripts": {
-    "dev": "nut",
-    "prod": "nut --prod"
+    "dev": "nut pages dev",
+    "build": "nut pages build"
   },
   "author": {
     {{#if username}}"name": "{{ username }}"{{/if}}{{#if email}},
     "email": "{{ email }}"{{/if}}
   },
   "devDependencies": {
-    "@nut-project/cli": "latest"
+    "@nut-project/cli": "^1.0.0",
+    "@nut-plugins/pages-microfrontends": "^1.0.0",
+    "@nut-plugins/pages-layout-now": "^1.0.0"
   },
   "license": "MIT"
 }
