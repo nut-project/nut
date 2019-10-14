@@ -360,7 +360,7 @@ module.exports = {
 
     api.hooks.serverOptions.tap( ID, ( options = {} ) => {
       const { host, port } = options
-      api.hooks.afterServe.tap( ID, server => {
+      api.hooks.afterServe.tap( ID, ( { server } ) => {
         const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
 
         if ( cliOptions.singlePage ) {

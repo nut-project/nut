@@ -9,6 +9,7 @@ const path = require( 'path' )
 const exit = require( 'exit' )
 const whyIsNodeRunning = require( 'why-is-node-running' )
 const { config, logger } = require( '@nut-project/core' )
+const detectPort = require( 'detect-port' )
 const {
   chain, serve, build, webpack, WebpackDevServer
 } = require( '@nut-project/webpack' )
@@ -275,6 +276,12 @@ class PagesDriver {
         after() {},
       }
 
+      const _port = await detectPort( serverOptions.port )
+      if ( _port !== serverOptions.port ) {
+        this.logger.warn( `Port ${ serverOptions.port } is occupied, use another port ${ this.colors.magenta( _port ) }\n` )
+        serverOptions.port = _port
+      }
+
       serverOptions = await this.hooks.serverOptions.promise( serverOptions )
 
       // add hmr feature
@@ -290,7 +297,7 @@ class PagesDriver {
       } )
 
       const server = serve( compiler, serverOptions, async () => {
-        await this.hooks.afterServe.promise( server )
+        await this.hooks.afterServe.promise( { server, compiler } )
       } )
 
       this._server = server
