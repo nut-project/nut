@@ -3,6 +3,7 @@ dist
 /website/demo
 /packages/**/README.md
 .DS_Store
+yarn.lock
 
 # Logs
 logs
