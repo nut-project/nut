@@ -18,7 +18,6 @@ const { serve, build } = require( '@nut-project/webpack' )
 const generateModules = require( './generate-modules' )
 const { getUniqueApplicationId } = require( './utils' )
 const extend = require( './webpack' )
-const addCreateCommand = require( './create' )
 
 const DEFAULT_HOST = '0.0.0.0'
 const DEFAULT_PORT = 9000
@@ -65,10 +64,6 @@ module.exports = {
       if ( !included ) {
         this.runtimeModules.push( { name, file, options } )
       }
-    } )
-
-    api.hooks.registerCommands.tap( ID, async cli => {
-      addCreateCommand( cli )
     } )
 
     api.hooks.beforeRun.tapPromise( ID, async () => {

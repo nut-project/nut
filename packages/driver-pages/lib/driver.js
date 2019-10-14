@@ -38,7 +38,7 @@ class PagesDriver {
   }
 
   async getConfig() {
-    const config = await this.configManager.get()
+    const config = ( await this.configManager.get() ) || {}
 
     const plugins = await this.normalizePlugins( config.plugins || [] )
 
@@ -146,11 +146,13 @@ class PagesDriver {
   async apply() {
     const { cli } = this
 
-    await this.checkConfigExists()
-
     await this.getConfig()
 
-    this.verbose = this.config.verbose === true
+    if ( await this.getConfigFile() ) {
+      this.verbose = this.config.verbose === true
+    } else {
+      this.verbose = false
+    }
 
     // core plugins can access every hook, but there is no env for them
     // if you want access env, consider use beforeRun hook

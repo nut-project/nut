@@ -1,0 +1,36 @@
+{
+  "name": "@nut-templates/create-pages",
+  "version": "1.0.0-alpha.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "scaffold for nut pages",
+  "keywords": [
+    "nut",
+    "pages"
+  ],
+  "main": "index.js",
+  "bin": {
+    "create-nut-pages": "./index.js"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/plugins/pages/microfrontends",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cac": "^6.5.3",
+    "jstransformer-handlebars": "^1.1.0",
+    "sao": "^1.7.0"
+  }
+}
