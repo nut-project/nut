@@ -1,6 +1,6 @@
 {
   "name": "@nut-plugins/pages-layout-side",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "publishConfig": {
     "access": "public"
   },
@@ -22,8 +22,7 @@
   "bugs": {
     "url": "https://github.com/nut-project/nut/issues/new/choose"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "author": {
     "name": "fengzilong",
     "email": "fengzilong1992@gmail.com",
