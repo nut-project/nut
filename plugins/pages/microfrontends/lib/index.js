@@ -2,10 +2,8 @@
 
 const fs = require( 'fs' )
 const path = require( 'path' )
-const chalk = require( 'chalk' )
 const boxen = require( 'boxen' )
 const open = require( 'open' )
-const exit = require( 'exit' )
 const address = require( 'address' )
 const webpackMerge = require( 'webpack-merge' )
 const table = require( 'text-table' )
@@ -17,9 +15,9 @@ const CopyPlugin = require( 'copy-webpack-plugin' )
 const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
 const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
 const { serve, build } = require( '@nut-project/webpack' )
+const generateModules = require( './generate-modules' )
 const { getUniqueApplicationId } = require( './utils' )
 const extend = require( './webpack' )
-const generateModules = require( './generate-modules' )
 const addCreateCommand = require( './create' )
 
 const DEFAULT_HOST = '0.0.0.0'
@@ -370,6 +368,7 @@ module.exports = {
             boxen(
               `Your sinlg page is available at${
                 getTips( {
+                  colors: api.colors,
                   host,
                   port,
                   routerMode,
@@ -385,7 +384,7 @@ module.exports = {
         } else {
           console.log(
             boxen(
-              `Your application is running at${ getTips( { host, port } ) }`,
+              `Your application is running at${ getTips( { colors: api.colors, host, port } ) }`,
               {
                 padding: 1,
                 borderColor: 'gray'
@@ -395,10 +394,10 @@ module.exports = {
         }
 
         console.log()
-        console.log( chalk.gray( 'Tips: ' ) )
-        console.log( chalk.gray( 'Press "Enter" to open in browser' ) )
-        console.log( chalk.gray( 'Press "r" to restart dev server' ) )
-        console.log( chalk.gray( 'Press "q" to quit' ) )
+        console.log( api.colors.gray( 'Tips: ' ) )
+        console.log( api.colors.gray( 'Press "Enter" to open in browser' ) )
+        console.log( api.colors.gray( 'Press "r" to restart dev server' ) )
+        console.log( api.colors.gray( 'Press "q" to quit' ) )
         console.log()
 
         const stdin = process.stdin
@@ -421,7 +420,7 @@ module.exports = {
             if ( typeof stdin.setRawMode === 'function' ) {
               stdin.setRawMode( false )
             }
-            exit( 0 )
+            this.api.exit()
             break
           default:
             break
@@ -522,7 +521,7 @@ module.exports = {
       return url + suffix
     }
 
-    function getTips( { host, port, routerMode, page } ) {
+    function getTips( { colors, host, port, routerMode, page } ) {
       const url = 'http://' + host + ':' + port
       const lanIP = address.ip()
       const lanUrl = lanIP ? `http://${ lanIP }:${ port }` : ''
@@ -532,8 +531,8 @@ module.exports = {
         suffix = ( routerMode === 'hash' ? '/#/' : '/' ) + page
       }
 
-      const localTips = `\n\nLocal:     ${ chalk.cyan( url + suffix ) }`
-      const lanTips = lanUrl ? `\n\nNetwork:   ${ chalk.cyan( lanUrl + suffix ) }` : ''
+      const localTips = `\n\nLocal:     ${ colors.cyan( url + suffix ) }`
+      const lanTips = lanUrl ? `\n\nNetwork:   ${ colors.cyan( lanUrl + suffix ) }` : ''
 
       return localTips + lanTips
     }
@@ -579,7 +578,8 @@ module.exports = {
   },
 
   async build() {
-    const { webpack: config, config: nutConfig } = this.api
+    const api = this.api
+    const { webpack: config, config: nutConfig } = api
 
     config.plugin( 'define' )
       .tap( args => {
@@ -615,7 +615,7 @@ module.exports = {
       nutConfig.chainWebpack( config )
     }
 
-    this.api.hooks.afterBuild.tapPromise( ID, async ( err, stats ) => {
+    api.hooks.afterBuild.tapPromise( ID, async ( err, stats ) => {
       if ( err ) {
         console.error( err )
         return
@@ -636,15 +636,15 @@ module.exports = {
       } )
 
       let output = [
-        [ ' File', 'Size' ].map( s => chalk.bold( s ) ),
-        [ ' ----', '----' ].map( s => chalk.dim( s ) )
+        [ ' File', 'Size' ].map( s => api.colors.bold( s ) ),
+        [ ' ----', '----' ].map( s => api.colors.dim( s ) )
       ]
 
       result.assets.sort( ( a, b ) => {
         return b.size - a.size
       } )
 
-      output = output.concat( result.assets.map( asset => [ chalk.green( ' ' + asset.name ), prettyBytes( asset.size ) ] ) )
+      output = output.concat( result.assets.map( asset => [ api.colors.green( ' ' + asset.name ), prettyBytes( asset.size ) ] ) )
 
       output = table( output, {
         stringLength: stringWidth,

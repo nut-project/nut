@@ -3,7 +3,7 @@ const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
 const WebpackBar = require( 'webpackbar' )
-const webpack = require( 'webpack' )
+const { webpack } = require( '@nut-project/webpack' )
 const threadLoader = require( 'thread-loader' )
 const resolveFrom = require( 'resolve-from' )
 
@@ -27,7 +27,7 @@ module.exports = function ( config, options ) {
   options.browserslist = options.browserslist ||
     [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ]
 
-  const root = path.join( __dirname, '../../' )
+  const root = path.join( __dirname, '../../../' )
 
   config.resolve.modules
     .clear()

@@ -15,7 +15,8 @@
     "dev": "npm run dev --prefix ./examples/simple",
     "build": "npm run build --prefix ./examples/simple",
     "dev:now2": "npm run dev --prefix ./examples/now2",
-    "build:compose": "npm run build --prefix ./examples/host"
+    "build:compose": "npm run build --prefix ./examples/host",
+    "dependency-check": "node scripts/dependency-check.js"
   },
   "husky": {
     "hooks": {

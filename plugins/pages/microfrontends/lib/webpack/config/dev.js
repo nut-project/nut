@@ -1,4 +1,4 @@
-const webpack = require( 'webpack' )
+const { webpack } = require( '@nut-project/webpack' )
 const CaseSensitivePathsPlugin = require( 'case-sensitive-paths-webpack-plugin' )
 const css = require( './css' )
 

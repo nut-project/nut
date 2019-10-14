@@ -1,17 +1,19 @@
-const { SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook } = require( 'tapable' )
-const path = require( 'path' )
-const chokidar = require( 'chokidar' )
-const chalk = require( 'chalk' )
 const prettyBytes = require( 'pretty-bytes' )
-const { logger } = require( '@nut-project/core' )
-const tildify = require( 'tildify' )
-const { chain } = require( '@nut-project/webpack' )
-const { config } = require( '@nut-project/core' )
 const resolveFrom = require( 'resolve-from' )
 const importFresh = require( 'import-fresh' )
+const chokidar = require( 'chokidar' )
 const readline = require( 'readline' )
+const tildify = require( 'tildify' )
+const chalk = require( 'chalk' )
+const path = require( 'path' )
 const exit = require( 'exit' )
-const { serve, build, webpack, WebpackDevServer } = require( '@nut-project/webpack' )
+const { config, logger } = require( '@nut-project/core' )
+const {
+  chain, serve, build, webpack, WebpackDevServer
+} = require( '@nut-project/webpack' )
+const {
+  SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook
+} = require( 'tapable' )
 const getPages = require( './get-pages' )
 
 class PagesDriver {
@@ -309,6 +311,10 @@ class PagesDriver {
 
   delay( duration = 0 ) {
     return new Promise( resolve => setTimeout( resolve, duration ) )
+  }
+
+  exit() {
+    exit( 0 )
   }
 
   restart() {
