@@ -1,5 +1,5 @@
 {
-  "name": "@nut-templates/create-pages",
+  "name": "@nut-templates/create-nut-pages",
   "version": "1.0.0-alpha.4",
   "publishConfig": {
     "access": "public"
