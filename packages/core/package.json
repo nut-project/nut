@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/core",
-  "version": "0.0.4-alpha.2",
+  "version": "1.0.0-alpha.0",
   "publishConfig": {
     "access": "public"
   },
@@ -42,9 +42,9 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "cosmiconfig": "^5.2.1",
+    "deepmerge": "^4.0.0",
     "globby": "^10.0.1",
     "gradient-string": "^1.2.0",
-    "signale": "^1.4.0",
-    "deepmerge": "^4.0.0"
+    "signale": "^1.4.0"
   }
 }
