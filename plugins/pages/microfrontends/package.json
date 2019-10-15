@@ -109,7 +109,6 @@
     "vue": "^2.6.10",
     "vue-loader": "^15.7.1",
     "vue-template-compiler": "^2.6.10",
-    "webpack-merge": "^4.2.1",
     "webpack-stats-plugin": "^0.3.0",
     "webpackbar": "^4.0.0"
   }

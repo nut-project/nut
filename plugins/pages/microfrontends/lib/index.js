@@ -5,7 +5,6 @@ const path = require( 'path' )
 const boxen = require( 'boxen' )
 const open = require( 'open' )
 const address = require( 'address' )
-const webpackMerge = require( 'webpack-merge' )
 const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
 const prettyBytes = require( 'pretty-bytes' )
@@ -14,13 +13,9 @@ const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
 const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
-const { serve, build } = require( '@nut-project/webpack' )
 const generateModules = require( './generate-modules' )
 const { getUniqueApplicationId } = require( './utils' )
 const extend = require( './webpack' )
-
-const DEFAULT_HOST = '0.0.0.0'
-const DEFAULT_PORT = 9000
 
 const dirs = {
   runtime: path.join( __dirname, '../files' ),
@@ -263,7 +258,7 @@ module.exports = {
     let pages = await this.api.getPages( rootPages )
     pages = pages.map( normalizePage )
 
-    for ( let plugin of plugins ) {
+    for ( const plugin of plugins ) {
       let pluginPages = await this.api.getPages( plugin.context )
       if ( this.api.verbose ) {
         this.api.logger.info( `found ${ pluginPages.length } pages from plugin: ${ this.api.colors.green( plugin.name ) }\n` )
@@ -355,7 +350,7 @@ module.exports = {
 
     api.hooks.serverOptions.tap( ID, ( options = {} ) => {
       const { host, port } = options
-      api.hooks.afterServe.tap( ID, ( { server } ) => {
+      api.hooks.afterServe.tap( ID, ( compiler, server ) => { // eslint-disable-line no-unused-vars
         const routerMode = ( nutConfig.router && nutConfig.router.mode ) || 'hash'
 
         if ( cliOptions.singlePage ) {

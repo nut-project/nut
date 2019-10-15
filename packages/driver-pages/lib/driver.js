@@ -253,7 +253,7 @@ class PagesDriver {
       compiler: new SyncHook( [ 'compiler' ] ),
       serverOptions: new SyncWaterfallHook( [ 'serverOptions' ] ),
       server: new SyncHook( [ 'server' ] ),
-      afterServe: new SyncHook( [ 'server' ] ),
+      afterServe: new SyncHook( [ 'compiler', 'server' ] ),
     }
   }
 
@@ -299,7 +299,7 @@ class PagesDriver {
       } )
 
       const server = serve( compiler, serverOptions, async () => {
-        await this.hooks.afterServe.promise( { server, compiler } )
+        await this.hooks.afterServe.promise( compiler, server )
       } )
 
       this._server = server
