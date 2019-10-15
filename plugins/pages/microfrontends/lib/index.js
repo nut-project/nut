@@ -47,21 +47,21 @@ module.exports = {
   async apply( api ) {
     this.api = api
 
-    this.runtimeModules = []
-    api.expose( 'addRuntimeModule', ( { file, options } ) => {
-      const caller = api.runningPlugin
-      const name = caller && caller.name
+    const runtimeModules = this.runtimeModules = []
 
-      const included = this.runtimeModules.some( v => {
+    api.expose( 'addRuntimeModule', function ( { file, options } ) {
+      const { name } = this.caller || {}
+
+      const included = runtimeModules.some( v => {
         return v.name === name && v.file === file
       } )
 
       if ( !included ) {
-        this.runtimeModules.push( { name, file, options } )
+        runtimeModules.push( { name, file, options } )
       }
     } )
 
-    api.hooks.beforeRun.tapPromise( ID, async () => {
+    api.hooks.chainWebpack.tapPromise( ID, async () => {
       extend( api.webpack, api.config, api.env )
 
       await this.base()

@@ -27,6 +27,7 @@ class PagesDriver {
     this.logger = logger.scope( this.scope )
     this.configManager = config( this.scope )
     this.colors = chalk
+    this._exposed = {}
   }
 
   async getPages( context ) {
@@ -80,9 +81,7 @@ class PagesDriver {
 
   async applyPlugins( plugins ) {
     for ( const plugin of plugins ) {
-      this.runningPlugin = plugin
       await this.applyPlugin( plugin )
-      this.runningPlugin = null
     }
   }
 
@@ -106,9 +105,10 @@ class PagesDriver {
             options: pluginOptions,
           }
         } catch ( e ) {
-          this.logger.error( `Invalid plugin found, skipped ${ tildify( pluginPath ) }` )
+          this.logger.error( `Invalid plugin found ${ this.colors.dim( '(' + tildify( pluginPath ) + ')' ) }\n` )
           console.log( chalk.dim( e.stack ) )
           console.log()
+          this.exit()
         }
 
         return false
@@ -123,8 +123,8 @@ class PagesDriver {
   async applyPlugin( plugin ) {
     try {
       if ( plugin.core ) {
-        this.expose = ( name, method, context ) => {
-          this[ name ] = context ? method.bind( context ) : method
+        this.expose = ( name, method ) => {
+          this._exposed[ name ] = method
         }
       } else {
         this.expose = () => {
@@ -132,7 +132,39 @@ class PagesDriver {
         }
       }
 
-      await plugin.apply( this, plugin.options )
+      // for proxy exposed methods
+      const api = new Proxy( this, {
+        get( target, name ) {
+          const value = target[ name ]
+          if ( typeof value !== 'undefined' ) {
+            if (
+              typeof value === 'function' &&
+              typeof target[ name ].bind === 'function'
+            ) {
+              return target[ name ].bind( target )
+            }
+
+            return target[ name ]
+          }
+
+          const exposed = target._exposed && target._exposed[ name ]
+          if ( typeof exposed !== 'undefined' ) {
+            if (
+              typeof exposed === 'function' &&
+              typeof exposed.bind === 'function'
+            ) {
+              const context = Object.assign( target, {
+                caller: plugin
+              } )
+              return exposed.bind( context )
+            }
+
+            return target._exposed[ name ]
+          }
+        }
+      } )
+
+      await plugin.apply( api, plugin.options )
       if ( this.verbose ) {
         this.logger.success( `applied ${ plugin.core ? 'core ' : '' }plugin: ${ chalk.green( plugin.name ) }\n` )
       }
@@ -241,12 +273,13 @@ class PagesDriver {
     this.hooks = {
       stdin: new AsyncSeriesHook( [ 'key' ] ),
       env: new AsyncSeriesWaterfallHook( [ 'env' ] ),
-      chainWebpack: new SyncHook( [ 'config' ] ),
+      chainWebpack: new AsyncSeriesHook( [ 'config' ] ),
       emitRoutes: new AsyncSeriesHook( [ 'routes' ] ),
       registerCommands: new SyncHook( [ 'cli' ] ),
       getConfig: new AsyncSeriesWaterfallHook( [ 'config' ] ),
       beforeUserPlugins: new AsyncSeriesWaterfallHook( [ 'plugins' ] ),
       beforeRun: new AsyncSeriesHook(),
+      afterClearConsole: new AsyncSeriesHook(),
       toConfig: new AsyncSeriesHook(),
       afterUserPlugins: new AsyncSeriesHook(),
       afterBuild: new AsyncSeriesHook( [ 'error', 'stats' ] ),
@@ -254,13 +287,19 @@ class PagesDriver {
       serverOptions: new SyncWaterfallHook( [ 'serverOptions' ] ),
       server: new SyncHook( [ 'server' ] ),
       afterServe: new SyncHook( [ 'compiler', 'server' ] ),
+      beforeExit: new AsyncSeriesHook(),
+      restart: new AsyncSeriesHook(),
     }
   }
 
   async run() {
     this.clearConsole()
 
+    await this.hooks.afterClearConsole.promise()
+
     const { env } = this
+
+    await this.hooks.chainWebpack.promise( this.webpack )
 
     const webpackConfig = this.webpack.toConfig()
 
@@ -335,11 +374,14 @@ class PagesDriver {
     return new Promise( resolve => setTimeout( resolve, duration ) )
   }
 
-  exit() {
+  async exit() {
+    await this.hooks.beforeExit.promise()
     exit( 0 )
   }
 
-  restart() {
+  async restart() {
+    await this.hooks.restart.promise()
+
     if ( !this.server ) {
       return
     }

@@ -1,0 +1,38 @@
+{
+  "name": "@nut-plugins/pages-materials",
+  "version": "1.0.0-alpha.3",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "materials",
+  "keywords": [
+    "nut",
+    "pages",
+    "plugin"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/plugins/pages/materials",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "detect-port": "^1.3.0",
+    "popper.js": "^1.15.0",
+    "ws": "^7.1.2"
+  }
+}

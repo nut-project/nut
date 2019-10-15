@@ -51,6 +51,7 @@ const config = {
         getNowOptions() :
         getNowOptions( { search: { debug: false } } )
     ],
+    path.join( __dirname, '../plugins/pages/materials' ),
     path.join( __dirname, '../plugins/pages/layout-kaola' ),
     path.join( __dirname, '../plugins/pages/layout-kaola' ),
     path.join( __dirname, '../plugins/pages/layout-side' ),
