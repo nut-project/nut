@@ -21,13 +21,11 @@ const getPages = require( './get-pages' )
 class PagesDriver {
   constructor( options ) {
     this.options = options
-
-    this.resetHooks()
-
     this.logger = logger.scope( this.scope )
     this.configManager = config( this.scope )
     this.colors = chalk
     this._exposed = {}
+    this.resetHooks()
   }
 
   async getPages( context ) {
@@ -92,8 +90,7 @@ class PagesDriver {
         let pluginOptions = {}
 
         if ( Array.isArray( plugin ) ) {
-          pluginPath = plugin[ 0 ]
-          pluginOptions = plugin[ 1 ]
+          [ pluginPath, pluginOptions ] = plugin
         }
 
         const pkgPath = resolveFrom.silent( pluginPath, './package.json' )

@@ -40,9 +40,6 @@ export default async function applyModules( modules = [], ctx = {} ) {
 
     const stubAPI = {
       ...ctx.api,
-      expose( name, value ) {
-        ctx.expose( pluginName, name, value )
-      },
       router: stubRouter
     }
 
@@ -80,6 +77,12 @@ export default async function applyModules( modules = [], ctx = {} ) {
       pages,
       api: stubAPI,
       events: stubEvents,
+      use( scope, name, ...args ) {
+        return ctx.use( scope, name, ...args )
+      },
+      expose( name, value ) {
+        return ctx.expose( pluginName, name, value )
+      },
     }, moduleOptions )
   }
 }

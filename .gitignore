@@ -1,6 +1,7 @@
 dist
 /server
 /website/demo
+/website/materials-url.js
 /packages/**/README.md
 .DS_Store
 yarn.lock

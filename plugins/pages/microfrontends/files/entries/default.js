@@ -102,7 +102,11 @@ import none from '../modules/layout-none'
     } )
   }
 
+  await applyModules( modules, context )
+
+  await events.emit( 'system:before-app', context )
   await app( context )
+  await events.emit( 'system:after-app', context )
 
   const homepage = context.api.homepage.get()
 
@@ -112,8 +116,6 @@ import none from '../modules/layout-none'
       router.alias( '/' )
     }
   }
-
-  await applyModules( modules, context )
 
   nico.on( 'notfound', () => {
     events.emit( 'route:notfound', context )

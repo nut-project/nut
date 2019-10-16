@@ -21,6 +21,12 @@ function getNowOptions( options = {} ) {
   }
 }
 
+let url = ''
+
+try {
+  url = require( './materials-url' )
+} catch ( e ) {}
+
 const config = {
   verbose: true,
   port: 9000,
@@ -51,7 +57,10 @@ const config = {
         getNowOptions() :
         getNowOptions( { search: { debug: false } } )
     ],
-    path.join( __dirname, '../plugins/pages/materials' ),
+    [
+      path.join( __dirname, '../plugins/pages/materials' ),
+      { url }
+    ],
     path.join( __dirname, '../plugins/pages/layout-kaola' ),
     path.join( __dirname, '../plugins/pages/layout-kaola' ),
     path.join( __dirname, '../plugins/pages/layout-side' ),

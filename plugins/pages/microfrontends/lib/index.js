@@ -8,6 +8,7 @@ const address = require( 'address' )
 const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
 const prettyBytes = require( 'pretty-bytes' )
+const detectPort = require( 'detect-port' )
 const slugify = require( '@sindresorhus/slugify' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
@@ -16,6 +17,7 @@ const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
 const generateModules = require( './generate-modules' )
 const { getUniqueApplicationId } = require( './utils' )
 const extend = require( './webpack' )
+const APIServer = require( './server' )
 
 const dirs = {
   runtime: path.join( __dirname, '../files' ),
@@ -48,6 +50,7 @@ module.exports = {
     this.api = api
 
     const runtimeModules = this.runtimeModules = []
+    this.coreRuntimeModules = []
 
     api.expose( 'addRuntimeModule', function ( { file, options } ) {
       const { name } = this.caller || {}
@@ -61,6 +64,30 @@ module.exports = {
       }
     } )
 
+    api.hooks.beforeUserPlugins.tap( ID, async () => {
+      const port = await detectPort()
+
+      if ( api.env === 'development' ) {
+        const server = new APIServer()
+        try {
+          await server.start( { port } )
+        } catch ( e ) {
+          console.log( e )
+          api.exit()
+        }
+
+        api.hooks.restart.tapPromise( ID, async () => {
+          await server.stop()
+        } )
+
+        api.expose( 'service', server )
+
+        await this.addBuiltinDevModules( { port } )
+      }
+    } )
+
+    // chainWebpack is after beforeRun
+    // let other plugins use beforeRun hook to add modules
     api.hooks.chainWebpack.tapPromise( ID, async () => {
       extend( api.webpack, api.config, api.env )
 
@@ -71,6 +98,14 @@ module.exports = {
       } else {
         await this.dev()
       }
+    } )
+  },
+
+  async addBuiltinDevModules( { port } ) {
+    this.coreRuntimeModules.push( {
+      name: ID,
+      file: path.join( __dirname, 'modules/command-palette/index.js' ),
+      options: { port }
     } )
   },
 
@@ -312,7 +347,7 @@ module.exports = {
     }, {
       env,
       cliOptions,
-      runtimeModules: this.runtimeModules,
+      runtimeModules: [ ...this.coreRuntimeModules, ...this.runtimeModules ],
       ...options,
     } )
   },

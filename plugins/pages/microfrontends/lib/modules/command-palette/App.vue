@@ -1,29 +1,32 @@
 <template>
   <div>
     <div
-      :class="[ 'nut-materials__trigger', isShow ? 'is-show-panels' : '' ]"
+      :class="[ 'nut-microfrontends__trigger', isShow ? 'is-show-panels' : '' ]"
       @click="showCommands"
       ref="trigger"
     >
-      <div class="nut-materials__trigger-bg"></div>
+      <div class="nut-microfrontends__trigger-bg"></div>
       <div
-        class="nut-materials__trigger-button"
+        class="nut-microfrontends__trigger-button"
       >
-        <img class="nut-materials__logo" :src="logo" alt="">
+        <img class="nut-microfrontends__logo" :src="logo" alt="">
       </div>
     </div>
 
     <ul
       ref="popper"
       v-if="isShowCommands"
-      class="nut-materials__commands"
+      class="nut-microfrontends__commands"
     >
-      <li class="nut-materials__command">应用信息</li>
-      <li class="nut-materials__command">物料市场</li>
+      <li
+        v-for="p in palette"
+        class="nut-microfrontends__command"
+        @click="onClickPalette( p )"
+      >{{ p.text }}</li>
     </ul>
 
-    <div :class="[ 'nut-materials__panels', isShow ? 'is-show-panels' : '' ]">
-      <img class="nut-materials__screenshot" v-for="block in blocks" :src="block.screenshot" alt="">
+    <div :class="[ 'nut-microfrontends__panels', isShow ? 'is-show-panels' : '' ]">
+      <img class="nut-microfrontends__screenshot" v-for="block in blocks" :src="block.screenshot" alt="">
     </div>
   </div>
 </template>
@@ -34,18 +37,19 @@ import logo from './logo.png'
 
 export default {
   props: {
-    blocks: {
+    palette: {
       type: Array,
       default() {
         return []
       }
-    },
+    }
   },
   data() {
     return {
       isShow: false,
       isShowCommands: false,
       logo,
+      blocks: [],
     }
   },
   mounted() {
@@ -69,6 +73,14 @@ export default {
     document.removeEventListener( 'click', this.onGlobalClick, false )
   },
   methods: {
+    onClickPalette( p ) {
+      if ( typeof p.click === 'function' ) {
+        p.click( {
+          hide: this.hideCommands.bind( this )
+        } )
+      }
+    },
+
     hideCommands() {
       if ( this.popper ) {
         this.popper.destroy()
@@ -98,8 +110,8 @@ export default {
     toggle() {
       this.isShow = !this.isShow
 
-      const offsetClass = 'nut-materials--offset'
-      const transitionClass = 'nut-materials--transition'
+      const offsetClass = 'nut-microfrontends--offset'
+      const transitionClass = 'nut-microfrontends--transition'
       const $app = document.getElementById( 'app' )
 
       if ( this.isShow ) {
@@ -116,7 +128,7 @@ export default {
 <style lang="less">
   @import './var.less';
 
-  .nut-materials {
+  .nut-microfrontends {
     &--transition {
       transition: transform .3s ease;
     }
@@ -130,7 +142,7 @@ export default {
 <style lang="less" scoped>
   @import './var.less';
 
-  .nut-materials {
+  .nut-microfrontends {
     &__trigger {
       position: fixed;
       right: 40px;
