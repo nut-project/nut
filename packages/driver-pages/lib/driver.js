@@ -10,6 +10,7 @@ const exit = require( 'exit' )
 const whyIsNodeRunning = require( 'why-is-node-running' )
 const { config, logger } = require( '@nut-project/core' )
 const detectPort = require( 'detect-port' )
+const install = require( 'install-packages' )
 const {
   chain, serve, build, webpack, WebpackDevServer
 } = require( '@nut-project/webpack' )
@@ -26,6 +27,13 @@ class PagesDriver {
     this.colors = chalk
     this._exposed = {}
     this.resetHooks()
+  }
+
+  async install( packages = [], options = {} ) {
+    return await install( {
+      packages,
+      ...options
+    } )
   }
 
   async getPages( context ) {
@@ -290,10 +298,6 @@ class PagesDriver {
   }
 
   async run() {
-    this.clearConsole()
-
-    await this.hooks.afterClearConsole.promise()
-
     const { env } = this
 
     await this.hooks.chainWebpack.promise( this.webpack )
@@ -315,9 +319,13 @@ class PagesDriver {
       }
 
       const _port = await detectPort( serverOptions.port )
+
       if ( _port !== serverOptions.port ) {
-        this.logger.warn( `Port ${ serverOptions.port } is occupied, use another port ${ this.colors.magenta( _port ) }\n` )
+        const oldPort = serverOptions.port
         serverOptions.port = _port
+        this.hooks.afterClearConsole.tapPromise( 'builtin:driver', async () => {
+          this.logger.warn( `Port ${ oldPort } is occupied, use another port ${ this.colors.magenta( _port ) }\n` )
+        } )
       }
 
       serverOptions = await this.hooks.serverOptions.promise( serverOptions )
@@ -333,6 +341,10 @@ class PagesDriver {
         const { heapUsed } = process.memoryUsage()
         console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
       } )
+
+      this.clearConsole()
+
+      await this.hooks.afterClearConsole.promise()
 
       const server = serve( compiler, serverOptions, async () => {
         await this.hooks.afterServe.promise( compiler, server )

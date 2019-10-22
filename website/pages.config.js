@@ -21,12 +21,6 @@ function getNowOptions( options = {} ) {
   }
 }
 
-let url = ''
-
-try {
-  url = require( './materials-url' )
-} catch ( e ) {}
-
 const config = {
   verbose: true,
   port: 9000,
@@ -59,7 +53,7 @@ const config = {
     ],
     [
       path.join( __dirname, '../plugins/pages/materials' ),
-      { url }
+      { url: `https://ice.alicdn.com/assets/materials/vue-materials.json` }
     ],
     path.join( __dirname, '../plugins/pages/layout-kaola' ),
     path.join( __dirname, '../plugins/pages/layout-kaola' ),

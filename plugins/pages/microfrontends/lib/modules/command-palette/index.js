@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import App from './App.vue'
+import toast from './toast'
 
 function deferred() {
   const object = {}
@@ -60,12 +61,12 @@ class Service {
     return response.data
   }
 
-  async send( message ) {
+  async message( message ) {
     await this._wsready.promise
     this.ws.send( JSON.stringify( message ) )
   }
 
-  on( type, handler ) {
+  onMessage( type, handler ) {
     if ( typeof handler !== 'function' ) {
       return
     }
@@ -78,6 +79,7 @@ class Service {
 class CommandPalette {
   constructor() {
     this.menu = []
+    this.emitter = new Vue()
   }
 
   prepend( item ) {
@@ -91,29 +93,57 @@ class CommandPalette {
   get() {
     return this.menu || []
   }
+
+  loadingStart() {
+    this.emitter.$emit( 'loading-start' )
+  }
+
+  loadingEnd() {
+    this.emitter.$emit( 'loading-end' )
+  }
 }
 
 export default ( ctx, { port } = {} ) => {
   // expose to other plugins
   const palette = new CommandPalette()
   const service = new Service( { port } )
+  let vm
 
   ctx.expose( 'palette', palette )
   ctx.expose( 'service', service )
+  ctx.expose( 'toast', toast )
+  ctx.expose( 'get-palette-node', () => {
+    return vm && vm.$el
+  } )
 
   ctx.events.on( 'system:before-startup', async () => {
-    const id = 'nut-plugin-microfrontends-root'
+    const paletteItems = palette.get()
+
+    if ( !paletteItems || paletteItems.length === 0 ) {
+      return
+    }
 
     const node = document.createElement( 'div' )
-    node.id = id
     document.body.appendChild( node )
 
-    new Vue( {
-      render: h => h( App, {
-        props: {
-          palette: palette.get(),
-        }
-      } ),
-    } ).$mount( '#' + id )
+    const Ctor = Vue.extend( App )
+
+    vm = new Ctor( {
+      propsData: {
+        palette: paletteItems,
+      }
+    } ).$mount( node )
+
+    palette.emitter.$on( 'loading-start', () => {
+      if ( vm ) {
+        vm.loadingStart()
+      }
+    } )
+
+    palette.emitter.$on( 'loading-end', () => {
+      if ( vm ) {
+        vm.loadingEnd()
+      }
+    } )
   } )
 }

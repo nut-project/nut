@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 
 const path = require( 'path' )
+const resolveFrom = require( 'resolve-from' )
 const dirs = require( '../utils/dirs' )
 const getBabelOptions = require( './get-babel-options' )
 const base = require( './config/base' )
@@ -100,6 +101,13 @@ module.exports = function extend( config, nutConfig = {}, env ) {
     dev( config, options )
   }
 
+  let vuePkgPath = resolveFrom.silent( process.cwd(), 'vue/package.json' )
+  if ( !vuePkgPath ) {
+    vuePkgPath = resolveFrom.silent( __dirname, 'vue/package.json' )
+  }
+
+  const vuePath = path.dirname( vuePkgPath )
+
   config
     .optimization
       .splitChunks( {
@@ -126,6 +134,7 @@ module.exports = function extend( config, nutConfig = {}, env ) {
     .resolve
       .alias
         .set( '@', path.join( dirs.project, 'src' ) )
+        .set( 'vue$', vuePath )
         .end()
       .modules
         .add( path.join( dirs.driver, '../../' ) )

@@ -100,12 +100,21 @@ module.exports = class MaterialsServer {
     this._callListeners[ type ] = handler
   }
 
-  on( type, handler ) {
+  onMessage( type, handler ) {
     this._listeners[ type ] = handler
   }
 
-  send( client, data ) {
-    client.send( JSON.stringify( data ) )
+  message( type, data ) {
+    const message = JSON.stringify( {
+      type,
+      data
+    } )
+
+    this.wss.clients.forEach( client => {
+      if ( client.readyState === WebSocket.OPEN ) {
+        client.send( message )
+      }
+    } )
   }
 
   async stop() {

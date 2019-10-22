@@ -43,8 +43,15 @@ export default function ( all = {} ) {
         if ( !instance ) {
           Vue.config.devtools = process.env.NODE_ENV === 'development'
 
-          const Ctor = Vue.extend( Page )
-          instance = new Ctor( {
+          // const Ctor = Vue.extend( Page )
+          // instance = new Ctor( {
+          //   ctx,
+          //   route: ctx.route || {},
+          // } )
+
+          // https://github.com/werbug/vue-hackernews-2.0/commit/a70341d507f102c926f28a4f00483121f46fa7c0
+          instance = new Vue( {
+            render: h => h( Page ),
             ctx,
             route: ctx.route || {},
           } )

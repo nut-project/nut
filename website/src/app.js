@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import * as Files from '@zeit-ui/vue/lib/files.common'
 import * as Link from '@zeit-ui/vue/lib/link.common'
 import * as Card from '@zeit-ui/vue/lib/card.common'
@@ -16,6 +18,7 @@ import '@zeit-ui/vue/lib/switcher.css'
 import '@/css/index.less'
 
 export default ( { api } ) => {
+  Vue.use( ElementUI )
   Files.install( Vue )
   Link.install( Vue )
   Card.install( Vue )

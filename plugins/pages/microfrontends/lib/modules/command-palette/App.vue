@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <div class="nut-microfrontends__palette">
     <div
-      :class="[ 'nut-microfrontends__trigger', isShow ? 'is-show-panels' : '' ]"
-      @click="showCommands"
+      :class="[ 'nut-microfrontends__trigger', isShowCommands ? 'is-show-commands' : '' ]"
+      @click="toggleCommands"
       ref="trigger"
     >
       <div class="nut-microfrontends__trigger-bg"></div>
+
+      <div v-show="loading" class="nut-microfrontends__trigger-spinner"></div>
+
       <div
         class="nut-microfrontends__trigger-button"
       >
@@ -24,10 +27,6 @@
         @click="onClickPalette( p )"
       >{{ p.text }}</li>
     </ul>
-
-    <div :class="[ 'nut-microfrontends__panels', isShow ? 'is-show-panels' : '' ]">
-      <img class="nut-microfrontends__screenshot" v-for="block in blocks" :src="block.screenshot" alt="">
-    </div>
   </div>
 </template>
 
@@ -46,10 +45,10 @@ export default {
   },
   data() {
     return {
-      isShow: false,
       isShowCommands: false,
       logo,
       blocks: [],
+      loading: false,
     }
   },
   mounted() {
@@ -90,6 +89,14 @@ export default {
       this.isShowCommands = false
     },
 
+    toggleCommands() {
+      if ( this.isShowCommands ) {
+        this.hideCommands()
+      } else {
+        this.showCommands()
+      }
+    },
+
     showCommands() {
       if ( this.isShowCommands ) {
         return
@@ -107,59 +114,34 @@ export default {
       } )
     },
 
-    toggle() {
-      this.isShow = !this.isShow
+    loadingStart() {
+      this.loading = true
+    },
 
-      const offsetClass = 'nut-microfrontends--offset'
-      const transitionClass = 'nut-microfrontends--transition'
-      const $app = document.getElementById( 'app' )
-
-      if ( this.isShow ) {
-        $app.classList.add( transitionClass )
-        $app.classList.add( offsetClass )
-      } else {
-        $app.classList.remove( offsetClass )
-      }
-    }
+    loadingEnd() {
+      this.loading = false
+    },
   }
 }
 </script>
 
-<style lang="less">
-  @import './var.less';
-
-  .nut-microfrontends {
-    &--transition {
-      transition: transform .3s ease;
-    }
-
-    &--offset {
-      transform: translate3d(-@panel-width,0,0);
-    }
-  }
-</style>
-
 <style lang="less" scoped>
-  @import './var.less';
-
   .nut-microfrontends {
-    &__trigger {
+    &__palette {
       position: fixed;
       right: 40px;
       bottom: 40px;
+    }
+
+    &__trigger {
       width: 60px;
       height: 60px;
       border-radius: 50%;
       overflow: hidden;
       box-shadow: 0 0 10px 6px rgba(0,0,0,.1);
       z-index: 9001;
-      transition: transform .3s ease;
 
-      &.is-show-panels {
-        transform: translate3d(-@panel-width,0,0);
-      }
-
-      &.is-show-panels &-button {
+      &.is-show-commands &-button {
         border: solid 3px #fff;
         mix-blend-mode: initial;
       }
@@ -171,6 +153,7 @@ export default {
       width: 100%;
       height: 100%;
       background-color: #fff;
+      border-radius: 50%;
     }
 
     &__trigger-button {
@@ -186,33 +169,47 @@ export default {
       opacity: .9;
       cursor: pointer;
       mix-blend-mode: difference;
+      transition: all .3s ease;
+    }
+
+    &__trigger-spinner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #fff;
+      background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+      animation: microfrontends-trigger-spin .6s infinite linear;
+    }
+
+    &__trigger-spinner:before {
+      width: 50%;
+      height: 50%;
+      background: #000;
+      border-radius: 100% 0 0 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      content: '';
+    }
+
+    &__trigger-spinner:after {
+      background: #fff;
+      width: 90%;
+      height: 90%;
+      border-radius: 50%;
+      content: '';
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
     }
 
     &__logo {
       width: 100%;
       height: 100%;
-    }
-
-    &__panels {
-      position: fixed;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: @panel-width;
-      border-left: solid 1px #f2f2f2;
-      background-color: #fff;
-      z-index: 9000;
-      transform: translate3d(100%,0,0);
-      transition: transform .3s ease;
-      overflow-y: auto;
-
-      &.is-show-panels {
-        transform: translate3d(0,0,0);
-      }
-    }
-
-    &__screenshot {
-      width: 80%;
     }
 
     &__commands {
@@ -235,6 +232,27 @@ export default {
         color: #000;
         background-color: #fafafa;
       }
+    }
+  }
+
+  @-webkit-keyframes microfrontends-trigger-spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes microfrontends-trigger-spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
   }
 </style>

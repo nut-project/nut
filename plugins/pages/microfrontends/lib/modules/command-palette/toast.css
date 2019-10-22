@@ -1,0 +1,244 @@
+.zi-toast-area {
+    position: fixed;
+    bottom: .625rem;
+    left: 1.25rem;
+    max-width: 26.25rem;
+    z-index: 2000;
+    transition: transform .4s,opacity .4s ease
+}
+
+.zi-toast-container {
+    transform: translateZ(0) scale(1);
+    transition: all .4s ease;
+    position: absolute;
+    bottom: 0;
+    height: 4.5rem;
+    left: 0;
+}
+
+.zi-toast-container:last-child {
+    animation: zi-toast-show-1 .4s ease forwards;
+    z-index: 2002
+}
+
+.zi-toast-container:nth-last-child(2) {
+    animation: zi-toast-show-2 .4s ease forwards;
+    z-index: 2001
+}
+
+.zi-toast-container:nth-last-child(3),.zi-toast-container:nth-last-child(4) {
+    animation: zi-toast-show-3 .4s ease forwards;
+    z-index: 2000
+}
+
+.zi-toast-container:nth-last-child(n+4) {
+    visibility: hidden
+}
+
+.zi-toast {
+    padding: 0 1.25rem;
+    border-radius: 5px;
+    border: 0;
+    width: 26.25rem;
+    height: 3.75rem;
+    color: var(--geist-foreground);
+    background-color: var(--geist-background);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 9px rgba(0,0,0,.12);
+    font-size: .875rem
+}
+
+.zi-toast.danger,.zi-toast.error {
+    background-color: var(--geist-error);
+    color: var(--geist-background)
+}
+
+.zi-toast.warning {
+    background-color: var(--geist-warning);
+    color: var(--geist-background)
+}
+
+.zi-toast.success {
+    background-color: var(--geist-success);
+    color: var(--geist-background)
+}
+
+.zi-toast .message {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    max-width: 70%;
+    margin: 0;
+    padding: 0
+}
+
+@-moz-keyframes zi-toast-show-1 {
+    0% {
+        transform: translate3d(0,72px,0)
+    }
+
+    to {
+        transform: translateZ(0)
+    }
+}
+
+@-webkit-keyframes zi-toast-show-1 {
+    0% {
+        transform: translate3d(0,72px,0)
+    }
+
+    to {
+        transform: translateZ(0)
+    }
+}
+
+@-o-keyframes zi-toast-show-1 {
+    0% {
+        transform: translate3d(0,72px,0)
+    }
+
+    to {
+        transform: translateZ(0)
+    }
+}
+
+@keyframes zi-toast-show-1 {
+    0% {
+        transform: translate3d(0,72px,0)
+    }
+
+    to {
+        transform: translateZ(0)
+    }
+}
+
+@-moz-keyframes zi-toast-show-2 {
+    0% {
+        transform: translateZ(0) scale(1)
+    }
+
+    to {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+}
+
+@-webkit-keyframes zi-toast-show-2 {
+    0% {
+        transform: translateZ(0) scale(1)
+    }
+
+    to {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+}
+
+@-o-keyframes zi-toast-show-2 {
+    0% {
+        transform: translateZ(0) scale(1)
+    }
+
+    to {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+}
+
+@keyframes zi-toast-show-2 {
+    0% {
+        transform: translateZ(0) scale(1)
+    }
+
+    to {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+}
+
+@-moz-keyframes zi-toast-show-3 {
+    0% {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+
+    to {
+        transform: translate3d(0,-28px,0) scale(.9)
+    }
+}
+
+@-webkit-keyframes zi-toast-show-3 {
+    0% {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+
+    to {
+        transform: translate3d(0,-28px,0) scale(.9)
+    }
+}
+
+@-o-keyframes zi-toast-show-3 {
+    0% {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+
+    to {
+        transform: translate3d(0,-28px,0) scale(.9)
+    }
+}
+
+@keyframes zi-toast-show-3 {
+    0% {
+        transform: translate3d(0,-14px,0) scale(.95)
+    }
+
+    to {
+        transform: translate3d(0,-28px,0) scale(.9)
+    }
+}
+
+@-moz-keyframes zi-toast-show-4 {
+    0% {
+        transform: translate3d(0,-28px,0) scale(.9);
+        opacity: 1
+    }
+
+    to {
+        transform: translate3d(0,-32px,0) scale(.85);
+        opacity: 0
+    }
+}
+
+@-webkit-keyframes zi-toast-show-4 {
+    0% {
+        transform: translate3d(0,-28px,0) scale(.9);
+        opacity: 1
+    }
+
+    to {
+        transform: translate3d(0,-32px,0) scale(.85);
+        opacity: 0
+    }
+}
+
+@-o-keyframes zi-toast-show-4 {
+    0% {
+        transform: translate3d(0,-28px,0) scale(.9);
+        opacity: 1
+    }
+
+    to {
+        transform: translate3d(0,-32px,0) scale(.85);
+        opacity: 0
+    }
+}
+
+@keyframes zi-toast-show-4 {
+    0% {
+        transform: translate3d(0,-28px,0) scale(.9);
+        opacity: 1
+    }
+
+    to {
+        transform: translate3d(0,-32px,0) scale(.85);
+        opacity: 0
+    }
+}
