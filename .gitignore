@@ -4,7 +4,6 @@ dist
 /website/materials-url.js
 /packages/**/README.md
 .DS_Store
-yarn.lock
 
 # Logs
 logs
