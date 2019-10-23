@@ -3,6 +3,14 @@ const axios = require( 'axios' )
 const tarStream = require( 'tar-stream' )
 const gunzip = require( 'gunzip-maybe' )
 const fse = require( 'fs-extra' )
+const compiler = require( 'vue-template-compiler' )
+const prettier = require( 'prettier' )
+const { parse } = require( '@babel/parser' )
+const parserHTML = require( 'posthtml-parser' )
+const renderHTML = require( 'posthtml-render' )
+const t = require( '@babel/types' )
+const generate = require( '@babel/generator' ).default
+const traverse = require( '@babel/traverse' ).default
 
 const ID = 'materials'
 
@@ -85,7 +93,7 @@ exports.apply = async ( api, options ) => {
         message: '正在下载区块源码...'
       } )
 
-      const extractPath = path.join( process.cwd(), `src/materials/${ page.page.replace( /^pages\//, '' ) }` )
+      const extractPath = path.join( process.cwd(), `src/materials/${ page.page.replace( /^pages\//, '' ) }`, 'block0' )
       await fse.mkdirp( extractPath )
 
       const files = await readTarball( tarball )
@@ -114,13 +122,109 @@ exports.apply = async ( api, options ) => {
       // eslint-disable-next-line
       const content = await fse.readFile( location, 'utf8' )
 
-      // TODO: insert new block
-      await fse.writeFile( location, ``, 'utf8' )
-
-      await api.delay( 1500 )
-
+      try {
+        const ast = compiler.parseComponent( content, {} )
+        // 处理template
+        ast.template.content = insertEnd( ast.template.content, [ 'block0' ] )
+        // 处理script
+        ast.script.content = insertBlocks( ast.script.content, [
+          { name: 'block0', location: '../materials/home/block0' }
+        ] )
+        // 处理style
+        const styles = ast.styles.map( _ => {
+          return `<style ${ Object.keys( _.attrs ).map( key => key + '=' + _.attrs[ key ] ).join( ' ' ) }>${ _.content }</style>`
+        } ).join( '\n' )
+        await fse.writeFile( location, `<template>
+        ${ ast.template.content }</template>
+        <script>
+        ${ ast.script.content }
+        </script>
+        ${ styles }
+        `, 'utf8' )
+        await api.delay( 1500 )
+      } catch ( error ) {
+        console.error( error )
+      }
       sendResponse( { success: true } )
     } )
+  } )
+}
+
+/**
+ *
+ * @param {*} content
+ * @param {*} blocks
+ * @example
+ * blocks = [
+  *   { name: 'block0', location: '../../blcok0.vue' }
+  * ]
+  */
+function insertBlocks( content, blocks ) {
+  const ast = parse( content, {
+    sourceType: 'module'
+  } )
+  const body = ast.program.body
+  // 插入声明
+  body.unshift(
+    ...blocks.map( _ => t.importDeclaration( [ t.importDefaultSpecifier( {
+      type: 'Identifier',
+      name: _.name
+    } ) ], t.stringLiteral( _.location ) ) )
+  )
+  // 引入components
+  const visitor = {
+    enter( path ) {
+      if ( t.isExportDefaultDeclaration( path.node ) ) {
+        const exportDefault = path.node.declaration
+        let components = exportDefault.properties.find( _ => _.key.name === 'components' )
+
+        const componentIdentifiers = blocks.map( _ => t.objectProperty( {
+          type: 'Identifier',
+          name: _.name
+        }, {
+          type: 'Identifier',
+          name: _.name
+        } ) )
+
+        if ( components ) {
+          components.value.properties.push( ...componentIdentifiers )
+        } else {
+          components = t.objectProperty(
+            {
+              type: 'Identifier',
+              name: 'components'
+            },
+            t.objectExpression( componentIdentifiers )
+          )
+          exportDefault.properties.push( components )
+        }
+      }
+    }
+  }
+
+  traverse( ast, visitor )
+  const { code } = generate(
+    {
+      type: 'Program',
+      body,
+    },
+    { comments: true, retainFunctionParens: true, compact: true }
+  )
+
+  return prettier.format( code, { parser: 'babel' } )
+}
+
+function insertEnd( content, blocks ) {
+  content = content.replace( /^\n/g, '' ).replace( /\n$/g, '' )
+  const ast = parserHTML( content )
+
+  ast[ 0 ].content.push( ...blocks.map( _ => ( {
+    tag: _
+  } ) ) )
+
+  return renderHTML( ast, {
+    singleTags: blocks,
+    closingSingleTag: 'slash'
   } )
 }
 
