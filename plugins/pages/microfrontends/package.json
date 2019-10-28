@@ -74,7 +74,6 @@
     "mdast-util-toc": "^4.2.0",
     "mini-css-extract-plugin": "^0.8.0",
     "nprogress": "^0.2.0",
-    "open": "^6.4.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "popper.js": "^1.15.0",
     "postcss-loader": "^3.0.0",

@@ -3,7 +3,6 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const boxen = require( 'boxen' )
-const open = require( 'open' )
 const address = require( 'address' )
 const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
@@ -431,7 +430,7 @@ module.exports = {
         this.api.hooks.stdin.tapPromise( ID, async key => {
           switch ( key ) {
           case ENTER:
-            await open( getOpenUrl( {
+            this.api.openBrowser( getOpenUrl( {
               host,
               port,
               routerMode,

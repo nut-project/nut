@@ -11,6 +11,7 @@ const whyIsNodeRunning = require( 'why-is-node-running' )
 const { config, logger } = require( '@nut-project/core' )
 const detectPort = require( 'detect-port' )
 const install = require( 'install-packages' )
+const openBrowser = require( './dev-utils/open-browser.js' )
 const {
   chain, serve, build, webpack, WebpackDevServer
 } = require( '@nut-project/webpack' )
@@ -34,6 +35,10 @@ class PagesDriver {
       packages,
       ...options
     } )
+  }
+
+  openBrowser( url ) {
+    return openBrowser( url )
   }
 
   async getPages( context ) {
