@@ -35,6 +35,9 @@
     "axios": "^0.19.0",
     "fs-extra": "^8.1.0",
     "gunzip-maybe": "^1.4.1",
-    "tar-stream": "^2.1.0"
+    "jscodeshift": "^0.6.4",
+    "pascalcase": "^1.0.0",
+    "tar-stream": "^2.1.0",
+    "vue-template-compiler": "^2.6.10"
   }
 }

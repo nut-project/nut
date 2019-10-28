@@ -4,6 +4,7 @@ dist
 /website/materials-url.js
 /packages/**/README.md
 .DS_Store
+package-lock.json
 
 # Logs
 logs

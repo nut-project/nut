@@ -1,7 +1,7 @@
 const http = require( 'http' )
 const WebSocket = require( 'ws' )
 
-module.exports = class MaterialsServer {
+module.exports = class APIServer {
   constructor() {
     this._listeners = {}
     this._callListeners = {}
