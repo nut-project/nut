@@ -10,7 +10,6 @@
         GitHub
       </a>
     </div>
-
   </section>
 </template>
 
@@ -21,24 +20,25 @@
         return value.toUpperCase()
       }
     },
+
     created() {
       this.$ctx.api.quicklink.prefetch( [
         'pages/guide/introduction',
         'pages/docs/config'
       ] )
     },
+
     methods: {
       onRoute( item ) {
         if ( item.route ) {
           this.$ctx.api.router.push( item.route )
           return
         }
-
         if ( item.link ) {
           window.open( item.link )
         }
       }
-    },
+    }
   }
 </script>
 

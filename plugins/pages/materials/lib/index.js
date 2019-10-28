@@ -4,13 +4,8 @@ const tarStream = require( 'tar-stream' )
 const gunzip = require( 'gunzip-maybe' )
 const fse = require( 'fs-extra' )
 const compiler = require( 'vue-template-compiler' )
-const prettier = require( 'prettier' )
-const { parse } = require( '@babel/parser' )
-const parserHTML = require( 'posthtml-parser' )
-const renderHTML = require( 'posthtml-render' )
-const t = require( '@babel/types' )
-const generate = require( '@babel/generator' ).default
-const traverse = require( '@babel/traverse' ).default
+const j = require( 'jscodeshift' )
+const pascalcase = require( 'pascalcase' )
 
 const ID = 'materials'
 
@@ -57,12 +52,10 @@ exports.apply = async ( api, options ) => {
       }
 
       if ( !tarball ) {
-        sendResponse( {
+        return sendResponse( {
           success: false,
           message: '未找到该区块',
         } )
-
-        return
       }
 
       delete dependencies.vue
@@ -79,6 +72,10 @@ exports.apply = async ( api, options ) => {
         await api.install( deps )
       } catch ( e ) {
         console.log( 'install error', e )
+        return sendResponse( {
+          success: false,
+          message: '区块依赖安装失败'
+        } )
       }
 
       api.service.message( 'toast', {
@@ -86,14 +83,12 @@ exports.apply = async ( api, options ) => {
         message: `区块依赖安装完毕(${ deps.length }/${ deps.length })...`
       } )
 
-      await api.delay( 1500 )
-
       api.service.message( 'toast', {
         success: true,
         message: '正在下载区块源码...'
       } )
 
-      const extractPath = path.join( process.cwd(), `src/materials/${ page.page.replace( /^pages\//, '' ) }`, 'block0' )
+      const extractPath = path.join( process.cwd(), `src/materials/${ page.page.replace( /^pages\//, '' ) }`, block.name )
       await fse.mkdirp( extractPath )
 
       const files = await readTarball( tarball )
@@ -123,109 +118,162 @@ exports.apply = async ( api, options ) => {
       const content = await fse.readFile( location, 'utf8' )
 
       try {
-        const ast = compiler.parseComponent( content, {} )
-        // 处理template
-        ast.template.content = insertEnd( ast.template.content, [ 'block0' ] )
-        // 处理script
-        ast.script.content = insertBlocks( ast.script.content, [
-          { name: 'block0', location: '../materials/home/block0' }
-        ] )
-        // 处理style
-        const styles = ast.styles.map( _ => {
-          return `<style ${ Object.keys( _.attrs ).map( key => key + '=' + _.attrs[ key ] ).join( ' ' ) }>${ _.content }</style>`
-        } ).join( '\n' )
-        await fse.writeFile( location, `<template>
-        ${ ast.template.content }</template>
-        <script>
-        ${ ast.script.content }
-        </script>
-        ${ styles }
-        `, 'utf8' )
-        await api.delay( 1500 )
+        const key = block.name
+        const identifier = pascalcase( block.name )
+        const source = path.relative( path.dirname( location ), extractPath )
+        const ast = compiler.parseComponent( content )
+
+        // handle template
+        const template = addBlockTag( ast.template.content, key )
+        // handle script
+        const script = addBlock( ast.script.content, {
+          key,
+          identifier,
+          source,
+        } )
+
+        // handle styles
+        const styles = ast.styles
+          .map( style => {
+            const attrs = style.attrs
+            const content = style.content
+
+            const attrsString = Object.keys( attrs )
+              .map( key => {
+                const value = attrs[ key ]
+                return value === true ? key : key + '=' + JSON.stringify( value )
+              } )
+              .join( ' ' )
+
+            return ( `<style ${ attrsString }>${ indentLines( content, 2 ) }</style>` )
+          } )
+          .join( '\n' )
+
+        let output = ``
+
+        output = output + `<template>${ indentLines( template, 2 ) }</template>\n\n`
+        output = output + `<script>${ indentLines( script, 2 ) }</script>\n\n`
+        output = output + styles
+
+        await fse.writeFile( location, output, 'utf8' )
+
+        sendResponse( { success: true } )
       } catch ( error ) {
         console.error( error )
+        return sendResponse( {
+          success: false,
+          message: '添加区块失败'
+        } )
       }
-      sendResponse( { success: true } )
     } )
   } )
 }
 
-/**
- *
- * @param {*} content
- * @param {*} blocks
- * @example
- * blocks = [
-  *   { name: 'block0', location: '../../blcok0.vue' }
-  * ]
-  */
-function insertBlocks( content, blocks ) {
-  const ast = parse( content, {
-    sourceType: 'module'
-  } )
-  const body = ast.program.body
-  // 插入声明
-  body.unshift(
-    ...blocks.map( _ => t.importDeclaration( [ t.importDefaultSpecifier( {
-      type: 'Identifier',
-      name: _.name
-    } ) ], t.stringLiteral( _.location ) ) )
+function indentLines( content, times ) {
+  return content
+    .split( '\n' )
+    .map( line => {
+      if ( line.trim() ) {
+        return ' '.repeat( times ) + line
+      }
+
+      return line
+    } )
+    .join( '\n' )
+}
+
+function addBlock( source = '', options = {} ) {
+  const ast = j( source )
+
+  const importDeclaration = j.importDeclaration(
+    [ j.importDefaultSpecifier( j.identifier( options.identifier ) ) ],
+    j.literal( options.source )
   )
-  // 引入components
-  const visitor = {
-    enter( path ) {
-      if ( t.isExportDefaultDeclaration( path.node ) ) {
-        const exportDefault = path.node.declaration
-        let components = exportDefault.properties.find( _ => _.key.name === 'components' )
 
-        const componentIdentifiers = blocks.map( _ => t.objectProperty( {
-          type: 'Identifier',
-          name: _.name
-        }, {
-          type: 'Identifier',
-          name: _.name
-        } ) )
+  const imports = ast.find( j.ImportDeclaration )
 
-        if ( components ) {
-          components.value.properties.push( ...componentIdentifiers )
-        } else {
-          components = t.objectProperty(
-            {
-              type: 'Identifier',
-              name: 'components'
-            },
-            t.objectExpression( componentIdentifiers )
-          )
-          exportDefault.properties.push( components )
+  if ( imports.size() > 0 ) {
+    imports.get().append( importDeclaration )
+  } else {
+    ast.find( j.Program ).get( 'body' ).unshift( importDeclaration )
+  }
+
+  const exportDefaults = ast.find( j.ExportDefaultDeclaration )
+
+  if ( exportDefaults.size() > 0 ) {
+    const last = exportDefaults.at( -1 ).get()
+    const declaration = last.node.declaration
+    if ( declaration.type === 'ObjectExpression' ) {
+      const properties = declaration.properties
+      let index
+      const hasComponents = properties.some( ( prop, i ) => {
+        const key = prop.key
+        const isComponents = prop.type === 'Property' &&
+          key && key.type === 'Identifier' && key.name === 'components'
+
+        if ( isComponents ) {
+          index = i
         }
+
+        return isComponents
+      } )
+
+      const prop = j.property(
+        'init',
+        j.literal( options.key ),
+        j.identifier( options.identifier )
+      )
+
+      if ( hasComponents ) {
+        last
+          .get( 'declaration', 'properties', index, 'value', 'properties' )
+          .push( prop )
+      } else {
+        const statement = j.property(
+          'init',
+          j.identifier( 'components' ),
+          j.objectExpression( [ prop ] )
+        )
+        last
+          .get( 'declaration', 'properties' )
+          .unshift( statement )
       }
     }
   }
 
-  traverse( ast, visitor )
-  const { code } = generate(
-    {
-      type: 'Program',
-      body,
-    },
-    { comments: true, retainFunctionParens: true, compact: true }
-  )
-
-  return prettier.format( code, { parser: 'babel' } )
+  return ast.toSource( {
+    quote: 'single',
+    tabWidth: 2,
+    arrayBracketSpacing: true,
+    objectCurlySpacing: true,
+  } )
 }
 
-function insertEnd( content, blocks ) {
-  content = content.replace( /^\n/g, '' ).replace( /\n$/g, '' )
-  const ast = parserHTML( content )
+function addBlockTag( content, blockName ) {
+  const indents = getIndents( content )
 
-  ast[ 0 ].content.push( ...blocks.map( _ => ( {
-    tag: _
-  } ) ) )
-
-  return renderHTML( ast, {
-    singleTags: blocks,
-    closingSingleTag: 'slash'
+  return content.replace( /\s*<\/[^>]+>\s*$/, $0 => {
+    const hasLineBreak = $0.charAt( 0 ) === '\n'
+    return `\n${ indents }<${ blockName } />${ hasLineBreak ? '' : '\n' }${ $0 }`
   } )
+}
+
+function getIndents( content ) {
+  const matches = content.match( /[ \t]*<\/[^>]+>/g )
+
+  if ( !matches ) {
+    return
+  }
+
+  const len = matches.length
+  const indentLen = getIndentLength( matches[ len - 1 ] )
+
+  return ' '.repeat( indentLen + 2 )
+}
+
+function getIndentLength( string ) {
+  const spaces = string.replace( /\t/g, '  ' ).match( /^\s*/ )
+  return ( spaces && spaces[ 0 ] && spaces[ 0 ].length ) || 0
 }
 
 async function readTarball( url ) {

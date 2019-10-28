@@ -30,18 +30,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@babel/generator": "^7.6.4",
-    "@babel/parser": "^7.6.4",
-    "@babel/traverse": "^7.6.3",
-    "@babel/types": "^7.6.3",
     "@zeit-ui/themes": "^0.1.0",
     "@zeit-ui/vue": "^2.0.0-alpha.0",
     "axios": "^0.19.0",
     "fs-extra": "^8.1.0",
     "gunzip-maybe": "^1.4.1",
-    "posthtml-parser": "^0.4.1",
-    "posthtml-render": "^1.1.5",
-    "prettier": "^1.18.2",
+    "jscodeshift": "^0.6.4",
+    "pascalcase": "^1.0.0",
     "tar-stream": "^2.1.0",
     "vue-template-compiler": "^2.6.10"
   }
