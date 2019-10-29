@@ -7,7 +7,6 @@ const address = require( 'address' )
 const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
 const prettyBytes = require( 'pretty-bytes' )
-const detectPort = require( 'detect-port' )
 const slugify = require( '@sindresorhus/slugify' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
@@ -64,7 +63,7 @@ module.exports = {
     } )
 
     api.hooks.beforeUserPlugins.tap( ID, async () => {
-      const port = await detectPort()
+      const port = await api.detectPort()
 
       if ( api.env === 'development' ) {
         const server = new APIServer()

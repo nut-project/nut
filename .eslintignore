@@ -2,4 +2,4 @@ node_modules
 iconfont.js
 templates/pages/template
 packages/webpack-mini-css-extract
-packages/driver-pages/dev-utils/open-browser.js
+packages/dev-utils/lib/open-browser.js

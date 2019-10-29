@@ -4,14 +4,12 @@ const importFresh = require( 'import-fresh' )
 const chokidar = require( 'chokidar' )
 const readline = require( 'readline' )
 const tildify = require( 'tildify' )
-const chalk = require( 'chalk' )
 const path = require( 'path' )
 const exit = require( 'exit' )
 const whyIsNodeRunning = require( 'why-is-node-running' )
-const { config, logger } = require( '@nut-project/core' )
-const detectPort = require( 'detect-port' )
-const install = require( 'install-packages' )
-const openBrowser = require( './dev-utils/open-browser.js' )
+const {
+  config, logger, openBrowser, detectPort, install, colors
+} = require( '@nut-project/dev-utils' )
 const {
   chain, serve, build, webpack, WebpackDevServer
 } = require( '@nut-project/webpack' )
@@ -25,7 +23,7 @@ class PagesDriver {
     this.options = options
     this.logger = logger.scope( this.scope )
     this.configManager = config( this.scope )
-    this.colors = chalk
+    this.colors = colors
     this._exposed = {}
     this.resetHooks()
   }
@@ -39,6 +37,10 @@ class PagesDriver {
 
   openBrowser( url ) {
     return openBrowser( url )
+  }
+
+  detectPort( ...args ) {
+    return detectPort( ...args )
   }
 
   async getPages( context ) {
@@ -116,7 +118,7 @@ class PagesDriver {
           }
         } catch ( e ) {
           this.logger.error( `Invalid plugin found ${ this.colors.dim( '(' + tildify( pluginPath ) + ')' ) }\n` )
-          console.log( chalk.dim( e.stack ) )
+          console.log( colors.dim( e.stack ) )
           console.log()
           this.exit()
         }
@@ -176,11 +178,11 @@ class PagesDriver {
 
       await plugin.apply( api, plugin.options )
       if ( this.verbose ) {
-        this.logger.success( `applied ${ plugin.core ? 'core ' : '' }plugin: ${ chalk.green( plugin.name ) }\n` )
+        this.logger.success( `applied ${ plugin.core ? 'core ' : '' }plugin: ${ colors.green( plugin.name ) }\n` )
       }
     } catch ( e ) {
-      this.logger.error( `apply ${ plugin.core ? 'core ' : '' }plugin failed: ${ chalk.red( plugin.name ) }\n` )
-      console.log( chalk.dim( e.stack ) )
+      this.logger.error( `apply ${ plugin.core ? 'core ' : '' }plugin failed: ${ colors.red( plugin.name ) }\n` )
+      console.log( colors.dim( e.stack ) )
       console.log()
     }
   }
@@ -344,7 +346,7 @@ class PagesDriver {
 
       compiler.hooks.done.tap( 'memory-usage', () => {
         const { heapUsed } = process.memoryUsage()
-        console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
+        console.log( colors.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
       } )
 
       this.clearConsole()

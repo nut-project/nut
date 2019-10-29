@@ -1,6 +1,6 @@
 const path = require( 'path' )
 const fse = require( 'fs-extra' )
-const { utils } = require( '@nut-project/core' )
+const { utils } = require( '@nut-project/dev-utils' )
 const { toRelativePath } = require( './utils' )
 
 const dirs = {

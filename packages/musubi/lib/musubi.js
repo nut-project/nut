@@ -1,5 +1,5 @@
 const cac = require( 'cac' )
-const { utils } = require( '@nut-project/core' )
+const { utils } = require( '@nut-project/dev-utils' )
 
 class Musubi {
   constructor() {
