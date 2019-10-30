@@ -251,6 +251,20 @@ class PagesDriver {
       .set( `#artifacts`, this.getModuleRootPath() )
       .end()
 
+    const root = path.join( __dirname, '../' )
+    // resolve
+    this.webpack.resolve.modules
+      .add( 'node_modules' ) // use closest node_modules first
+      .add( path.join( process.cwd(), 'node_modules' ) )
+      .add( path.join( root, '../../' ) )
+      .add( path.join( root, 'node_modules' ) )
+
+    this.webpack.resolveLoader.modules
+      .add( 'node_modules' )
+      .add( path.join( process.cwd(), 'node_modules' ) )
+      .add( path.join( root, '../../' ) )
+      .add( path.join( root, 'node_modules' ) )
+
     this.webpack
       .plugin( 'html' )
       .use( HtmlWebpackPlugin )

@@ -30,16 +30,10 @@ module.exports = function ( config, options ) {
   const root = path.join( __dirname, '../../../' )
 
   config.resolve.modules
-    .clear()
-    .add( 'node_modules' ) // use closest node_modules first
-    .add( path.join( process.cwd(), 'node_modules' ) )
     .add( path.join( root, '../../' ) )
     .add( path.join( root, 'node_modules' ) )
 
   config.resolveLoader.modules
-    .clear()
-    .add( 'node_modules' )
-    .add( path.join( process.cwd(), 'node_modules' ) )
     .add( path.join( root, '../../' ) )
     .add( path.join( root, 'node_modules' ) )
 
