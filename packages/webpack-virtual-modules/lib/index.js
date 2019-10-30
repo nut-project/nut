@@ -30,7 +30,10 @@ function getModulePath(filePath, compiler) {
 VirtualModulesPlugin.prototype.writeModule = function(filePath, contents) {
   var self = this;
 
-  checkActivation(self);
+  if ( !this._compiler ) {
+    this._staticModules[ filePath ] = contents
+    return
+  }
 
   var len = contents ? contents.length : 0;
   var date = new Date()

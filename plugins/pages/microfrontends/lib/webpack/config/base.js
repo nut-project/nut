@@ -168,8 +168,8 @@ function js( config, { browserslist, include, exclude } = {} ) {
     .add( exclude )
     .end()
     .oneOf( 'virtual' )
-  // cannot apply thread-loader to virtual modules
-    .resource( /auto-generated/ )
+    // cannot apply thread-loader to virtual modules
+    .resource( /\/\.nut\// )
     .use( 'babel' )
     .loader( 'babel-loader' )
     .options( babelOptions )

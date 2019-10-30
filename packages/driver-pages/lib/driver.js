@@ -7,6 +7,8 @@ const tildify = require( 'tildify' )
 const path = require( 'path' )
 const exit = require( 'exit' )
 const whyIsNodeRunning = require( 'why-is-node-running' )
+const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const {
   config, logger, openBrowser, detectPort, install, colors
 } = require( '@nut-project/dev-utils' )
@@ -187,8 +189,78 @@ class PagesDriver {
     }
   }
 
+  getModuleRootPath() {
+    return path.join( __dirname, '.nut' )
+  }
+
+  getModulePath( filename ) {
+    return path.join( this.getModuleRootPath(), filename )
+  }
+
+  // NOTE: filename already contains extension
+  provideModule( filename, source ) {
+    if ( !this._virtualModules ) {
+      return
+    }
+
+    const writePath = this.getModulePath( filename )
+
+    this._virtualModules.writeModule( writePath, source )
+  }
+
+  _getDefaultModules() {
+    const modules = {
+      'app.js': `export default {}`,
+      'pages.js': `export default []`,
+      'routes.js': `export default []`,
+      'pluginOptions.js': `export default {}`,
+    }
+
+    return Object.keys( modules )
+      .reduce( ( total, key ) => {
+        const modulePath = this.getModulePath( key )
+        total[ modulePath ] = modules[ key ]
+
+        return total
+      }, {} )
+  }
+
+  _setupWebpack() {
+    this._webpack = chain()
+
+    // virtual modules
+    const virtualModules = this._virtualModules = new VirtualModulesPlugin(
+      this._getDefaultModules()
+    )
+
+    this.webpack.plugin( 'virtual-modules' )
+      .init( () => virtualModules )
+      .use( VirtualModulesPlugin, [] )
+
+    // entry
+    this.webpack
+      .entry( 'index' )
+      .add( path.join( __dirname, 'runtime/entry' ) )
+
+    // alias
+    this.webpack
+      .resolve
+      .alias
+      .set( '#context', path.join( __dirname, 'runtime/context.js' ) )
+      .set( '#runtime', path.join( __dirname, 'runtime/fake-runtime.js' ) )
+      .set( `#artifacts`, this.getModuleRootPath() )
+      .end()
+
+    this.webpack
+      .plugin( 'html' )
+      .use( HtmlWebpackPlugin )
+  }
+
   async apply() {
     const { cli } = this
+
+    // make webpack available
+    this._setupWebpack()
 
     await this.getConfig()
 
@@ -422,14 +494,6 @@ class PagesDriver {
     } )
   }
 
-  chain() {
-    if ( !this._webpack ) {
-      this._webpack = chain()
-    }
-
-    return this._webpack
-  }
-
   get server() {
     return this._server
   }
@@ -455,7 +519,7 @@ class PagesDriver {
   }
 
   get webpack() {
-    return this.chain()
+    return this._webpack
   }
 }
 

@@ -35,7 +35,7 @@ const Layout = Regular.extend( {
         </ul>
       </div>
 
-      {#if currentPage && currentPage.page.type === 'markdown'}
+      {#if isMarkdown}
         <div class="${ styles.content }">
           <div class="${ styles.markdown } markdown-body" ref="$$mount">
           </div>
@@ -50,9 +50,14 @@ const Layout = Regular.extend( {
   `,
 
   computed: {
-    currentPage() {
-      const currentPages = this.getCurrentPages()
-      return currentPages.find( page => page.active ) || {}
+    isMarkdown() {
+      const page = this.data.ctx.pages.find( page => page.active )
+
+      if ( page ) {
+        return page.extension === '.md' || page.extension === '.vue.md'
+      }
+
+      return false
     },
   },
 
@@ -83,7 +88,7 @@ const Layout = Regular.extend( {
   },
 } )
 
-export default async function( ctx ) {
+export default async function ( ctx ) {
   let layout = null
 
   await ctx.api.layout.register( {
