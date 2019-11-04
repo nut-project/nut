@@ -8,7 +8,6 @@ import '../fonts/iconfont.css'
 import '#artifacts/markdownTheme.css'
 import '../css/override.less'
 
-import context from '#context'
 import modules from '#artifacts/runtimeModules.js'
 import config from '#artifacts/config.js'
 
@@ -28,7 +27,7 @@ import createAPI from '../context/api'
 
 import none from '../modules/layout-none'
 
-;( async function () {
+export default async function runtime( context ) {
   const { pages, routes, pluginOptions, events } = context
 
   if ( context.app.compose ) {
@@ -152,4 +151,4 @@ import none from '../modules/layout-none'
     context.pages = pages
     context.api = createAPI( { pages, router: rootRouter } )
   } )
-} )()
+}

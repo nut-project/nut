@@ -110,10 +110,9 @@ module.exports = {
     const { webpack: config, config: nutConfig } = this.api
 
     config
-      .entry( 'index' )
-        .clear()
-        .add( path.join( dirs.runtime, 'entries/default.js' ) )
-        .end()
+      .resolve
+      .alias
+      .set( '#runtime', path.join( dirs.runtime, 'entries/default-runtime.js' ) )
 
     let templatePath
 
