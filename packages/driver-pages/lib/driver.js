@@ -9,6 +9,8 @@ const exit = require( 'exit' )
 const whyIsNodeRunning = require( 'why-is-node-running' )
 const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
+const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin
+const WebpackBar = require( 'webpackbar' )
 const {
   config, logger, openBrowser, detectPort, install, colors
 } = require( '@nut-project/dev-utils' )
@@ -268,6 +270,15 @@ class PagesDriver {
     this.webpack
       .plugin( 'html' )
       .use( HtmlWebpackPlugin )
+
+    this.webpack
+      .plugin( 'webpackbar' )
+      .use( WebpackBar, [
+        {
+          name: 'client'
+        }
+      ] )
+      .end()
   }
 
   async apply() {
@@ -296,6 +307,30 @@ class PagesDriver {
     Object.keys( commands )
       .forEach( name => {
         commands[ name ].action( async cliOptions => {
+          if ( cliOptions.analyze ) {
+            this.webpack
+              .plugin( 'bundle-analyzer' )
+              .use( BundleAnalyzerPlugin )
+          }
+
+          if ( cliOptions.profile ) {
+            this.webpack
+              .plugin( 'webpackbar' )
+              .tap( args => {
+                return args.map( arg => {
+                  if ( !arg ) {
+                    arg = {}
+                  }
+
+                  return {
+                    ...arg,
+                    profile: true,
+                    reporters: [ 'fancy', 'profile' ],
+                  }
+                } )
+              } )
+          }
+
           this.start = async () => {
             let env = this._mapCommandToEnv( name )
 
@@ -316,6 +351,8 @@ class PagesDriver {
             await this.hooks.beforeUserPlugins.promise( this.config.userPlugins )
             await this.applyPlugins( this.config.userPlugins )
             await this.hooks.afterUserPlugins.promise()
+
+            await this.hooks.chainWebpack.promise( this.webpack )
 
             await this.hooks.beforeRun.promise()
 
@@ -378,7 +415,7 @@ class PagesDriver {
       beforeUserPlugins: new AsyncSeriesWaterfallHook( [ 'plugins' ] ),
       beforeRun: new AsyncSeriesHook(),
       afterClearConsole: new AsyncSeriesHook(),
-      toConfig: new AsyncSeriesHook(),
+      modifyWebpack: new AsyncSeriesHook(),
       afterUserPlugins: new AsyncSeriesHook(),
       afterBuild: new AsyncSeriesHook( [ 'error', 'stats' ] ),
       compiler: new SyncHook( [ 'compiler' ] ),
@@ -393,11 +430,9 @@ class PagesDriver {
   async run() {
     const { env } = this
 
-    await this.hooks.chainWebpack.promise( this.webpack )
-
     const webpackConfig = this.webpack.toConfig()
 
-    await this.hooks.toConfig.promise( webpackConfig )
+    await this.hooks.modifyWebpack.promise( webpackConfig )
 
     if ( env === 'development' ) {
       let serverOptions = {

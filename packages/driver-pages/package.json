@@ -41,18 +41,20 @@
   "license": "MIT",
   "dependencies": {
     "@nut-project/dev-utils": "^1.0.0-alpha.2",
-    "@nut-project/webpack-virtual-modules": "^1.0.0-alpha.2",
     "@nut-project/webpack": "^1.0.0-alpha.2",
-    "html-webpack-plugin": "^3.2.0",
+    "@nut-project/webpack-virtual-modules": "^1.0.0-alpha.2",
     "chokidar": "^3.1.0",
     "exit": "^0.1.2",
     "globby": "^10.0.1",
+    "html-webpack-plugin": "^3.2.0",
     "import-fresh": "^3.1.0",
     "pretty-bytes": "^5.2.0",
     "readline": "^1.3.0",
     "resolve-from": "^5.0.0",
     "tapable": "^1.1.3",
     "tildify": "^2.0.0",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpackbar": "^4.0.0",
     "why-is-node-running": "^2.1.0"
   }
 }

@@ -12,7 +12,7 @@ const ID = 'materials'
 exports.name = ID
 
 exports.apply = async ( api, options ) => {
-  api.hooks.beforeRun.tapPromise( ID, async () => {
+  api.hooks.chainWebpack.tapPromise( ID, async () => {
     if ( api.env !== 'development' ) {
       return
     }

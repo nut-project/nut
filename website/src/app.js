@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import * as Files from '@zeit-ui/vue/lib/files.common'
 import * as Link from '@zeit-ui/vue/lib/link.common'
 import * as Card from '@zeit-ui/vue/lib/card.common'
@@ -8,6 +6,7 @@ import * as Note from '@zeit-ui/vue/lib/note.common'
 import * as Fieldset from '@zeit-ui/vue/lib/fieldset.common'
 import * as Button from '@zeit-ui/vue/lib/button.common'
 import * as Switcher from '@zeit-ui/vue/lib/switcher.common'
+import '@zeit-ui/themes/index.css'
 import '@zeit-ui/vue/lib/files.css'
 import '@zeit-ui/vue/lib/link.css'
 import '@zeit-ui/vue/lib/card.css'
@@ -18,7 +17,6 @@ import '@zeit-ui/vue/lib/switcher.css'
 import '@/css/index.less'
 
 export default ( { api } ) => {
-  Vue.use( ElementUI )
   Files.install( Vue )
   Link.install( Vue )
   Card.install( Vue )
