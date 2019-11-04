@@ -17,6 +17,11 @@ exports.apply = async ( api, options ) => {
   } )
 
   api.hooks.beforeRun.tapPromise( ID, async () => {
+    if ( api.env !== 'development' ) {
+      return
+    }
+
+    // only enable in development mode
     api.service.onCall( 'get-blocks', async ( data, sendResponse ) => {
       if ( options.url ) {
         try {
