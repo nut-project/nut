@@ -2,7 +2,7 @@
 /* eslint-disable new-cap */
 
 import quicklink from 'quicklink'
-import nutConfig from '@/nut-auto-generated-nut-config'
+import context from '#context'
 
 const errors = {
   LAYOUT_NOT_FOUND( name ) {
@@ -355,7 +355,7 @@ export default function createNico(
             const page = this.page
 
             if ( page ) {
-              const DEFAULT_LAYOUT = nutConfig.layout || 'default'
+              const DEFAULT_LAYOUT = context.app.layout || 'default'
 
               let oldLayout = DEFAULT_LAYOUT
               let newLayout = DEFAULT_LAYOUT
@@ -469,52 +469,45 @@ export default function createNico(
     },
   }
 
-  if ( module.hot ) {
-    let oldLayoutName = ( nutConfig && nutConfig.layout ) || 'default'
-    module.hot.accept( '@/nut-auto-generated-nut-config', () => {
-      const currentPage = api.layout.currentPage
-      const newLayoutName = ( nutConfig && nutConfig.layout ) || 'default'
+  let oldLayoutName = ( context.app && context.app.layout ) || 'default'
+  events.on( 'dev:hot-accept-app', app => {
+    const currentPage = api.layout.currentPage
+    const newLayoutName = ( app && app.layout ) || 'default'
 
-      if ( !currentPage || !currentPage.page ) {
-        oldLayoutName = newLayoutName
+    if ( !currentPage || !currentPage.page ) {
+      oldLayoutName = newLayoutName
+      return
+    }
+
+    const pageLayoutName = api.page( currentPage.page.page ).get( 'layout' )
+
+    // layout changed and current page does not use custom layout
+    if (
+      ( newLayoutName !== oldLayoutName ) &&
+      !pageLayoutName
+    ) {
+      if ( !api.layout.hasLayout( newLayoutName ) ) {
+        ctx.logger.error( 'Error', errors.LAYOUT_NOT_FOUND( newLayoutName ) )
         return
       }
 
-      const pageLayoutName = api.page( currentPage.page.page ).get( 'layout' )
+      switchLayout( {
+        ctx,
+        name: newLayoutName,
+        app,
+      } )
+    } else {
+      updateLayoutState( {
+        layout: api.layout.getLayoutByName( pageLayoutName || newLayoutName ),
+        router: ctx.api.router.current,
+        app,
+      } )
+    }
 
-      // layout changed and current page does not use custom layout
-      if (
-        ( newLayoutName !== oldLayoutName ) &&
-        !pageLayoutName
-      ) {
-        if ( !api.layout.hasLayout( newLayoutName ) ) {
-          ctx.logger.error( 'Error', errors.LAYOUT_NOT_FOUND( newLayoutName ) )
-          return
-        }
+    oldLayoutName = newLayoutName
+  } )
 
-        switchLayout( ctx, newLayoutName )
-
-        updateLayoutState( {
-          layout: api.layout.getLayoutByName( newLayoutName ),
-          router: ctx.api.router.current,
-        } )
-      } else {
-        if ( !api.layout.hasLayout( pageLayoutName ) ) {
-          ctx.logger.error( 'Error', errors.LAYOUT_NOT_FOUND( pageLayoutName ) )
-          return
-        }
-
-        updateLayoutState( {
-          layout: api.layout.getLayoutByName( pageLayoutName ),
-          router: ctx.api.router.current,
-        } )
-      }
-
-      oldLayoutName = newLayoutName
-    } )
-  }
-
-  async function switchLayout( ctx, name ) {
+  async function switchLayout( { ctx, name, app } = {} ) {
     const { api } = ctx
     const page = api.layout.currentPage
     api.layout.unmountPage( page )
@@ -531,6 +524,7 @@ export default function createNico(
     await updateLayoutState( {
       layout: newLayout,
       router: ctx.api.router.current,
+      app,
     } )
 
     api.layout.mountPage( page )
@@ -585,10 +579,12 @@ export default function createNico(
     }
   }
 
-  async function updateLayoutState( { layout, router } ) {
+  async function updateLayoutState( { layout, router, app } ) {
     await events.emit( 'layout:before-update', { layout, router } )
 
-    ctx.app = nutConfig
+    if ( app ) {
+      ctx.app = app
+    }
 
     if ( ctx.app.sidebar ) {
       ctx.api.sidebar.configure( ctx.app.sidebar )

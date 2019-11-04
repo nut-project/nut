@@ -30,16 +30,10 @@ module.exports = function ( config, options ) {
   const root = path.join( __dirname, '../../../' )
 
   config.resolve.modules
-    .clear()
-    .add( 'node_modules' ) // use closest node_modules first
-    .add( path.join( process.cwd(), 'node_modules' ) )
     .add( path.join( root, '../../' ) )
     .add( path.join( root, 'node_modules' ) )
 
   config.resolveLoader.modules
-    .clear()
-    .add( 'node_modules' )
-    .add( path.join( process.cwd(), 'node_modules' ) )
     .add( path.join( root, '../../' ) )
     .add( path.join( root, 'node_modules' ) )
 
@@ -168,8 +162,8 @@ function js( config, { browserslist, include, exclude } = {} ) {
     .add( exclude )
     .end()
     .oneOf( 'virtual' )
-  // cannot apply thread-loader to virtual modules
-    .resource( /auto-generated/ )
+    // cannot apply thread-loader to virtual modules
+    .resource( /\/\.nut\// )
     .use( 'babel' )
     .loader( 'babel-loader' )
     .options( babelOptions )

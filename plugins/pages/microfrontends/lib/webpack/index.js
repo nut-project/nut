@@ -41,9 +41,9 @@ module.exports = function extend( config, nutConfig = {}, env ) {
     .concat( internalTranspileModules )
 
   const exclude = [
-    /src\/nut-auto-generated-pages\.js/,
-    /src\/nut-auto-generated-routes\.js/,
-    /src\/nut-auto-generated-route-components\//,
+    /\.nut\/pages\.js/,
+    /\.nut\/routes\.js/,
+    /\.nut\/route-components\//,
   ]
 
   const jsIncludeCaches = {}

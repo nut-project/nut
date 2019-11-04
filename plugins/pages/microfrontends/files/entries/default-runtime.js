@@ -5,15 +5,11 @@ import createRouter from 'unfancy-router/src/index'
 import '../css/reset.less'
 import '../css/markdown.less'
 import '../fonts/iconfont.css'
-import '@/nut-auto-generated-markdown-theme'
+import '#artifacts/markdownTheme.css'
 import '../css/override.less'
 
-import nutConfig from '@/nut-auto-generated-nut-config'
-import modules from '@/nut-auto-generated-runtime-modules'
-import pluginOptions from '@/nut-auto-generated-plugin-options'
-import pages from '@/nut-auto-generated-pages'
-import routes from '@/nut-auto-generated-routes'
-import config from '@/nut-auto-generated-config'
+import modules from '#artifacts/runtimeModules.js'
+import config from '#artifacts/config.js'
 
 import applyCompose from '../steps/apply-compose'
 import applyModules from '../steps/apply-modules'
@@ -26,21 +22,21 @@ import '../utils/add-require-ensure'
 import dynamicBuild from '../utils/dynamic-build'
 import logger from '../utils/logger'
 
-import app from '@/nut-auto-generated-app'
+import app from '#artifacts/appEntry.js'
 import createAPI from '../context/api'
-import events from '../context/events'
-import use from '../context/use'
 
 import none from '../modules/layout-none'
 
-;( async function () {
-  if ( nutConfig.compose ) {
-    const composed = await applyCompose( nutConfig.compose )
+export default async function runtime( context ) {
+  const { pages, routes, pluginOptions, events } = context
+
+  if ( context.app.compose ) {
+    const composed = await applyCompose( context.app.compose )
     pages.push( ...composed.pages )
     routes.push( ...composed.routes )
   }
 
-  const routerOptions = nutConfig.router || {}
+  const routerOptions = context.app.router || {}
   const router = createRouter( routerOptions )
 
   const rootRouter = router.create( {
@@ -53,25 +49,20 @@ import none from '../modules/layout-none'
   // add internal runtime module: layout none
   modules.unshift( [ 'builtin:layout-none', none, {} ] )
 
-  const context = {
-    config,
+  Object.assign( context, {
     env: process.env.NODE_ENV,
-    app: nutConfig,
     api: createAPI( { pages, router: rootRouter, globals } ),
-    pluginOptions,
-    events,
-    pages,
+    config,
     globals,
     logger,
-    ...use,
+  } )
+
+  if ( context.app.sidebar ) {
+    context.api.sidebar.configure( context.app.sidebar )
   }
 
-  if ( nutConfig.sidebar ) {
-    context.api.sidebar.configure( nutConfig.sidebar )
-  }
-
-  if ( nutConfig.homepage && ( typeof nutConfig.homepage === 'string' ) ) {
-    context.api.homepage.set( nutConfig.homepage )
+  if ( context.app.homepage && ( typeof context.app.homepage === 'string' ) ) {
+    context.api.homepage.set( context.app.homepage )
   }
 
   if ( routerOptions.cacheable && ( typeof routerOptions.cacheable === 'object' ) ) {
@@ -149,20 +140,15 @@ import none from '../modules/layout-none'
 
   events.emit( 'system:after-startup', context )
 
-  if ( module.hot ) {
-    module.hot.accept(
-      '@/nut-auto-generated-nut-config',
-      function refreshTheme() {
-        switchTheme( ( nutConfig && nutConfig.theme ) || 'ocean' )
-        const mode = ( nutConfig && nutConfig.router && nutConfig.router.mode ) ||
-          'hash'
-        rootRouter.switchMode( mode )
-      }
-    )
+  events.on( 'dev:hot-accept-app', app => {
+    switchTheme( ( app && app.theme ) || 'ocean' )
+    const mode = ( app && app.router && app.router.mode ) ||
+      'hash'
+    rootRouter.switchMode( mode )
+  } )
 
-    module.hot.accept( '@/nut-auto-generated-pages', () => {
-      context.pages = pages
-      context.api = createAPI( { pages, router: rootRouter } )
-    } )
-  }
-} )()
+  events.on( 'dev:hot-accept-pages', pages => {
+    context.pages = pages
+    context.api = createAPI( { pages, router: rootRouter } )
+  } )
+}

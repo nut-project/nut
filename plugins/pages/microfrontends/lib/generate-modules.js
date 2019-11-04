@@ -37,14 +37,14 @@ async function generateModules( artifacts = {}, options = {} ) {
   const app = await generateAppContent()
 
   const modules = {
-    'src/nut-auto-generated-pages.js': await generatePages( env, pages ),
-    'src/nut-auto-generated-routes.js': routes.source,
-    'src/nut-auto-generated-plugin-options': await generatePluginOptions( config ),
-    'src/nut-auto-generated-runtime-modules.js': await generateRuntimeModules( runtimeModules ),
-    'src/nut-auto-generated-config.js': await generateConfig( config, { env } ),
-    'src/nut-auto-generated-nut-config.js': await generateNutConfig( config ),
-    'src/nut-auto-generated-markdown-theme.css': await generateMarkdownThemeCSS( config ),
-    [ `src/nut-auto-generated-app${ app.extension }` ]: app.content,
+    'pages.js': await generatePages( env, pages ),
+    'routes.js': routes.source,
+    'pluginOptions.js': await generatePluginOptions( config ),
+    'runtimeModules.js': await generateRuntimeModules( runtimeModules ),
+    'config.js': await generateConfig( config, { env } ),
+    'app.js': await generateNutConfig( config ),
+    'markdownTheme.css': await generateMarkdownThemeCSS( config ),
+    [ `appEntry${ app.extension }` ]: app.content,
     ...routes.files,
   }
 
@@ -282,17 +282,17 @@ async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages 
         }
 
         module.hot.accept(
-          '@/nut-auto-generated-route-components/${ page.name }.js',
+          '#artifacts/route-components/${ page.name }.js',
           ${ page.name }_accept
         )
       ` )
     }
 
     if ( dynamic ) {
-      const filename = `nut-auto-generated-route-components/${ page.name }.js`
+      const filename = `route-components/${ page.name }.js`
 
       declarations.push( `
-        import _${ page.name } from '@/${ filename }'
+        import _${ page.name } from '#artifacts/${ filename }'
       ` )
 
       let content = `
@@ -308,7 +308,7 @@ async function generateRoutes( pages, dynamic, dynamicPages, lockedDynamicPages 
           }
         `
       }
-      files[ `src/${ filename }` ] = content
+      files[ filename ] = content
     } else {
       declarations.push( `
         function _${ page.name }() {

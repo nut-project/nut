@@ -11,7 +11,6 @@ const slugify = require( '@sindresorhus/slugify' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
-const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
 const generateModules = require( './generate-modules' )
 const { getUniqueApplicationId } = require( './utils' )
 const extend = require( './webpack' )
@@ -111,9 +110,9 @@ module.exports = {
     const { webpack: config, config: nutConfig } = this.api
 
     config
-      .entry( 'index' )
-        .add( path.join( dirs.runtime, 'entries/default.js' ) )
-        .end()
+      .resolve
+      .alias
+      .set( '#runtime', path.join( dirs.runtime, 'entries/default-runtime.js' ) )
 
     let templatePath
 
@@ -264,21 +263,18 @@ module.exports = {
       skipDiff: true
     } )
 
-    let virtualModules
-
-    config.plugin( 'virtual-modules' )
-      .init( ( Plugin, args ) => {
-        virtualModules = new Plugin( ...args )
-        return virtualModules
+    Object.keys( modules )
+      .forEach( filename => {
+        const source = modules[ filename ]
+        this.api.provideModule( filename, source )
       } )
-      .use( VirtualModulesPlugin, [ modules ] )
 
     if ( typeof nutConfig.chainWebpack === 'function' ) {
       nutConfig.chainWebpack( config )
     }
 
     this.api.hooks.toConfig.tapPromise( ID, async () => {
-      this.setupDevServer( nutConfig, virtualModules )
+      this.setupDevServer( nutConfig )
     } )
   },
 
@@ -350,7 +346,7 @@ module.exports = {
     } )
   },
 
-  async setupDevServer( nutConfig, virtualModules ) {
+  async setupDevServer( nutConfig ) {
     const api = this.api
     const { cliOptions } = api
     const dynamicPages = []
@@ -483,11 +479,8 @@ module.exports = {
             } )
 
             if ( Object.keys( modules ).length > 0 ) {
-              for ( const [ path, content ] of Object.entries( modules ) ) {
-                virtualModules.writeModule(
-                  path,
-                  content
-                )
+              for ( const [ filename, source ] of Object.entries( modules ) ) {
+                this.api.provideModule( filename, source )
               }
 
               await waitUntilValid()
@@ -516,11 +509,8 @@ module.exports = {
               } )
 
               if ( Object.keys( modules ).length > 0 ) {
-                for ( const [ path, content ] of Object.entries( modules ) ) {
-                  virtualModules.writeModule(
-                    path,
-                    content
-                  )
+                for ( const [ filename, source ] of Object.entries( modules ) ) {
+                  api.provideModule( filename, source )
                 }
 
                 await waitUntilValid()
@@ -561,21 +551,14 @@ module.exports = {
     }
 
     const rebuildModules = async () => {
-      if ( !virtualModules ) {
-        return
-      }
-
       try {
         const modules = await this.getModules( {
           dynamicPages,
           lockedDynamicPages,
         } )
 
-        for ( const [ path, content ] of Object.entries( modules ) ) {
-          virtualModules.writeModule(
-            path,
-            content
-          )
+        for ( const [ filename, source ] of Object.entries( modules ) ) {
+          api.provideModule( filename, source )
         }
       } catch ( e ) {
         console.log( e )
@@ -627,8 +610,11 @@ module.exports = {
 
     const modules = await this.getModules()
 
-    config.plugin( 'virtual-modules' )
-      .use( VirtualModulesPlugin, [ modules ] )
+    Object.keys( modules )
+      .forEach( filename => {
+        const source = modules[ filename ]
+        api.provideModule( filename, source )
+      } )
 
     if ( typeof nutConfig.chainWebpack === 'function' ) {
       nutConfig.chainWebpack( config )

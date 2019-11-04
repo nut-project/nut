@@ -61,7 +61,7 @@ const Layout = Regular.extend( {
                   <li class="${ styles.sidebar__item } { page.active ? '${ styles.is_active }' : '' }">
                     <a
                       href="javascript:;"
-                      on-click="{ this.onRoute( page.page ) }"
+                      on-click="{ this.onRoute( page ) }"
                       class="${ styles.sidebar__link }"
                     >
                       { page.title }
@@ -77,7 +77,7 @@ const Layout = Regular.extend( {
                 <li class="${ styles.sidebar__item } { item.active ? '${ styles.is_active }' : '' }">
                   <a
                     href="javascript:;"
-                    on-click="{ this.onRoute( item.page ) }"
+                    on-click="{ this.onRoute( item ) }"
                     class="${ styles.sidebar__link }"
                     style="padding-left: 20px;"
                   >
@@ -113,7 +113,7 @@ const Layout = Regular.extend( {
             {/list}
           </ul>
         {/if}
-        {#if currentPage && currentPage.type === 'markdown'}
+        {#if isMarkdown}
           <div
             class="${ styles.markdown } markdown-body"
             ref="$$mount"
@@ -128,8 +128,14 @@ const Layout = Regular.extend( {
   `,
 
   computed: {
-    currentPage() {
-      return this.data.ctx.pages.find( page => page.active )
+    isMarkdown() {
+      const page = this.data.ctx.pages.find( page => page.active )
+
+      if ( page ) {
+        return page.extension === '.md' || page.extension === '.vue.md'
+      }
+
+      return false
     },
     activePaths() {
       return this.data.ctx.api.sidebar.trace()
@@ -163,13 +169,19 @@ const Layout = Regular.extend( {
   },
 
   onRoute( item ) {
-    if ( item.route ) {
-      this.data.ctx.api.router.push( item.route )
+    const page = item.page
+
+    if ( !page ) {
       return
     }
 
-    if ( item.link ) {
-      window.open( item.link )
+    if ( page.route ) {
+      this.data.ctx.api.router.push( page.route )
+      return
+    }
+
+    if ( page.link ) {
+      window.open( page.link )
     }
   },
 
@@ -186,7 +198,7 @@ const Layout = Regular.extend( {
   },
 } )
 
-export default async function( ctx, options = {} ) {
+export default async function ( ctx, options = {} ) {
   let layout = null
 
   await ctx.api.layout.register( {

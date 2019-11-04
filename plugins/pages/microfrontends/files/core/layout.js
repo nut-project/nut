@@ -8,7 +8,7 @@
   layout#getMountNode
  */
 
-import events from '../context/events'
+import context from '#context'
 
 export default {
   _layouts: {},
@@ -39,13 +39,13 @@ export default {
   async register( layout ) {
     const name = layout.name
 
-    await events.emit( 'layout:before-register-layout', layout )
+    await context.events.emit( 'layout:before-register-layout', layout )
 
     if ( !this._layouts[ name ] ) {
       this._layouts[ name ] = layout
     }
 
-    await events.emit( 'layout:after-register-layout', layout )
+    await context.events.emit( 'layout:after-register-layout', layout )
   },
 
   getLayouts() {
