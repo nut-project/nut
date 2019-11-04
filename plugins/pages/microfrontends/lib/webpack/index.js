@@ -137,14 +137,14 @@ module.exports = function extend( config, nutConfig = {}, env ) {
         .set( 'vue$', vuePath )
         .end()
       .modules
-        .add( path.join( dirs.driver, '../../' ) )
-        .add( path.join( dirs.driver, 'node_modules' ) )
+        .add( path.join( dirs.root, '../../' ) )
+        .add( path.join( dirs.root, 'node_modules' ) )
         .end()
       .end()
     .resolveLoader
       .modules
-        .add( path.join( dirs.driver, '../../' ) )
-        .add( path.join( dirs.driver, 'node_modules' ) )
+        .add( path.join( dirs.root, '../../' ) )
+        .add( path.join( dirs.root, 'node_modules' ) )
         .end()
 
   const babelOptions = getBabelOptions()
