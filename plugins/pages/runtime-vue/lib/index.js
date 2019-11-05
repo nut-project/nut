@@ -1,3 +1,5 @@
+const path = require( 'path' )
+
 const ID = 'runtime-vue'
 
 module.exports = {
@@ -5,7 +7,12 @@ module.exports = {
 
   core: true,
 
-  async apply() {
-
+  async apply( api ) {
+    api.hooks.chainWebpack.tapPromise( ID, async config => {
+      config
+        .resolve
+        .alias
+        .set( '@', path.join( process.cwd(), 'src' ) )
+    } )
   }
 }
