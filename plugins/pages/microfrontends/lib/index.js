@@ -83,9 +83,10 @@ module.exports = {
       }
     } )
 
-    // chainWebpack is after beforeRun
-    // let other plugins use beforeRun hook to add modules
-    api.hooks.chainWebpack.tapPromise( ID, async () => {
+    // other plugins will use chainWebpack hook to add runtime modules
+    // core plugins is ahead of all user plugins
+    // so we should use beforeRun hook to get all runtime modules
+    api.hooks.beforeRun.tapPromise( ID, async () => {
       extend( api.webpack, api.config, api.env )
 
       await this.base()
@@ -273,9 +274,7 @@ module.exports = {
       nutConfig.chainWebpack( config )
     }
 
-    this.api.hooks.toConfig.tapPromise( ID, async () => {
-      this.setupDevServer( nutConfig )
-    } )
+    this.setupDevServer( nutConfig )
   },
 
   async getAllPages() {

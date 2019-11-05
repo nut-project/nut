@@ -2,7 +2,6 @@ const path = require( 'path' )
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
 const VueLoaderPlugin = require( 'vue-loader/lib/plugin' )
-const WebpackBar = require( 'webpackbar' )
 const { webpack } = require( '@nut-project/webpack' )
 const threadLoader = require( 'thread-loader' )
 const resolveFrom = require( 'resolve-from' )
@@ -44,7 +43,6 @@ module.exports = function ( config, options ) {
   ts( config, options )
   perfHints( config )
   extensions( config )
-  progress( config )
   vue( config )
   pug( config )
   image( config )
@@ -233,13 +231,6 @@ function pug( config ) {
     .use( 'pug' )
     .loader( 'pug-plain-loader' )
     .end()
-    .end()
-}
-
-function progress( config ) {
-  config
-    .plugin( 'webpackbar' )
-    .use( WebpackBar )
     .end()
 }
 

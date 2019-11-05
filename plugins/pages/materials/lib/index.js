@@ -12,14 +12,14 @@ const ID = 'materials'
 exports.name = ID
 
 exports.apply = async ( api, options ) => {
-  api.addRuntimeModule( {
-    file: path.join( __dirname, 'runtime/index.js' ),
-  } )
-
-  api.hooks.beforeRun.tapPromise( ID, async () => {
+  api.hooks.chainWebpack.tapPromise( ID, async () => {
     if ( api.env !== 'development' ) {
       return
     }
+
+    api.addRuntimeModule( {
+      file: path.join( __dirname, 'runtime/index.js' ),
+    } )
 
     // only enable in development mode
     api.service.onCall( 'get-blocks', async ( data, sendResponse ) => {

@@ -22,7 +22,7 @@ function getNowOptions( options = {} ) {
 }
 
 const config = {
-  verbose: true,
+  verbose: false,
   port: 9000,
   router: {
     mode: 'history',
