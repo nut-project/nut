@@ -61,7 +61,7 @@
     "resolve-from": "^5.0.0",
     "string-width": "^4.1.0",
     "text-table": "^0.2.0",
-    "tippy.js": "^4.2.1",
+    "tippy.js": "^5.0.0",
     "unfancy-router": "0.1.10",
     "unist-util-visit": "^1.4.1",
     "webpack-stats-plugin": "^0.3.0",
