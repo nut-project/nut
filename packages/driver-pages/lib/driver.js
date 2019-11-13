@@ -9,6 +9,7 @@ const exit = require( 'exit' )
 const whyIsNodeRunning = require( 'why-is-node-running' )
 const VirtualModulesPlugin = require( '@nut-project/webpack-virtual-modules' )
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
+const CopyPlugin = require( 'copy-webpack-plugin' )
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin
 const WebpackBar = require( 'webpackbar' )
 const {
@@ -21,6 +22,7 @@ const {
   SyncHook, SyncWaterfallHook, AsyncSeriesHook, AsyncSeriesWaterfallHook
 } = require( 'tapable' )
 const getPages = require( './get-pages' )
+const extendWebpack = require( './webpack' )
 
 class PagesDriver {
   constructor( options ) {
@@ -228,7 +230,11 @@ class PagesDriver {
   }
 
   _setupWebpack() {
+    const config = this.config
+
     this._webpack = chain()
+
+    extendWebpack( this )
 
     // virtual modules
     const virtualModules = this._virtualModules = new VirtualModulesPlugin(
@@ -268,8 +274,19 @@ class PagesDriver {
       .add( path.join( root, 'node_modules' ) )
 
     this.webpack
+      .plugin( 'copy' )
+      .use( CopyPlugin, [] )
+
+    this.webpack
       .plugin( 'html' )
-      .use( HtmlWebpackPlugin )
+      .use( HtmlWebpackPlugin, [
+        {
+          template: path.join( __dirname, './webpack/template.ejs' ),
+          title: config.html && config.html.title,
+          favicon: config.html && config.html.favicon,
+          excludeChunks: [],
+        }
+      ] )
 
     this.webpack
       .plugin( 'webpackbar' )
@@ -284,10 +301,10 @@ class PagesDriver {
   async apply() {
     const { cli } = this
 
-    // make webpack available
-    this._setupWebpack()
-
     await this.getConfig()
+
+    // make this.webpack available
+    this._setupWebpack()
 
     if ( await this.getConfigFile() ) {
       this.verbose = this.config.verbose === true
@@ -560,11 +577,11 @@ class PagesDriver {
   }
 
   get cliOptions() {
-    return this._cliOptions
+    return this._cliOptions || {}
   }
 
   get config() {
-    return this._config
+    return this._config || {}
   }
 
   get webpack() {

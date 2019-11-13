@@ -13,7 +13,6 @@ const resolveFrom = require( 'resolve-from' )
     env = 'development',
     clean = true,
     browserslist: [],
-    transpileModules: [],
     include,
     exclude,
   }

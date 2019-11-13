@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 
-const fs = require( 'fs' )
 const path = require( 'path' )
 const boxen = require( 'boxen' )
 const address = require( 'address' )
@@ -8,8 +7,6 @@ const table = require( 'text-table' )
 const stringWidth = require( 'string-width' )
 const prettyBytes = require( 'pretty-bytes' )
 const slugify = require( '@sindresorhus/slugify' )
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
-const CopyPlugin = require( 'copy-webpack-plugin' )
 const StatsWriterPlugin = require( 'webpack-stats-plugin' ).StatsWriterPlugin
 const generateModules = require( './generate-modules' )
 const { getUniqueApplicationId } = require( './utils' )
@@ -87,8 +84,6 @@ module.exports = {
     // core plugins is ahead of all user plugins
     // so we should use beforeRun hook to get all runtime modules
     api.hooks.beforeRun.tapPromise( ID, async () => {
-      extend( api.webpack, api.config, api.env )
-
       await this.base()
 
       if ( api.env === 'production' ) {
@@ -110,24 +105,16 @@ module.exports = {
   async base() {
     const { webpack: config, config: nutConfig } = this.api
 
+    extend( config, nutConfig )
+
     config
       .resolve
       .alias
       .set( '#runtime', path.join( dirs.runtime, 'entries/default-runtime.js' ) )
 
-    let templatePath
-
-    if ( nutConfig.html && nutConfig.html.template ) {
-      templatePath = nutConfig.html && nutConfig.html.template
-    } else if ( fs.existsSync( path.resolve( dirs.project, 'src/index.ejs' ) ) ) {
-      templatePath = path.resolve( dirs.project, 'src/index.ejs' )
-    } else {
-      templatePath = path.join( dirs.runtime, 'template.ejs' )
-    }
-
     config
-      .plugin( 'copy' )
-        .use( CopyPlugin, [
+      .plugin( 'copy-public' )
+        .use( config.plugin( 'copy' ).get( 'plugin' ), [
           [
             {
               from: {
@@ -143,14 +130,15 @@ module.exports = {
           }
         ] )
         .end()
-      .plugin( 'html' )
-        .use( HtmlWebpackPlugin, [
+      .plugin( 'html' ) // TODO: need rebuild after change html
+        .tap( ( [ options ] ) => [
           {
-            ...( nutConfig.html || {} ),
-            template: templatePath,
-            title: ( nutConfig.html && nutConfig.html.title ) || nutConfig.zh || nutConfig.en,
-            favicon: ( nutConfig.html && nutConfig.html.favicon ) || path.join( dirs.runtime, 'favicon.png' ),
-            excludeChunks: [ 'child' ],
+            ...options,
+            template: ( nutConfig.html && nutConfig.html.template ) ||
+              path.join( __dirname, './webpack/template.ejs' ),
+            excludeChunks: [ ...( options.excludeChunks || [] ), 'child' ],
+            title: options.title || nutConfig.zh || nutConfig.en,
+            favicon: options.favicon || path.join( __dirname, './webpack/favicon.png' )
           }
         ] )
         .end()

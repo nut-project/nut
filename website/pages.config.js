@@ -30,6 +30,7 @@ const config = {
   zh: 'nut project',
   html: {
     title: 'NUT 文档',
+    template: path.join( __dirname, 'src/index.ejs' ),
   },
   logo: '/logo.png',
   theme: 'ocean',

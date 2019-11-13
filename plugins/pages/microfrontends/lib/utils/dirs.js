@@ -1,6 +1,6 @@
 const path = require( 'path' )
 
 module.exports = {
-  driver: path.join( __dirname, '../../' ),
+  root: path.join( __dirname, '../../' ),
   project: process.cwd(),
 }

@@ -1,60 +1,101 @@
 {
   "name": "@nut-project/driver-pages",
   "version": "1.0.0-alpha.3",
-  "publishConfig": {
-    "access": "public"
-  },
   "description": "A framework born for micro frontends",
   "keywords": [
-    "microfrontends",
-    "micro",
-    "frontend",
     "architecture",
-    "spa",
     "cli",
-    "static site generator",
-    "hmr"
+    "frontend",
+    "hmr",
+    "micro",
+    "microfrontends",
+    "spa",
+    "static site generator"
   ],
-  "main": "lib/index.js",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/gatherer",
+  "license": "MIT",
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
   "files": [
     "bin",
     "lib",
     "yarn.lock",
     "README.md"
   ],
-  "engines": {
-    "node": ">=8.9.0"
-  },
-  "repository": "https://github.com/nut-project/nut/tree/master/packages/gatherer",
-  "homepage": "http://nut.js.org",
-  "bugs": {
-    "url": "https://github.com/nut-project/nut/issues/new/choose"
-  },
+  "main": "lib/index.js",
   "scripts": {
     "prepublishOnly": "cp ../../README.md ./README.md"
   },
-  "author": {
-    "name": "fengzilong",
-    "email": "fengzilong1992@gmail.com",
-    "url": "https://github.com/fengzilong"
-  },
-  "license": "MIT",
   "dependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.6.2",
     "@nut-project/dev-utils": "^1.0.0-alpha.2",
+    "@nut-project/mini-css-extract": "^1.0.0-alpha.2",
     "@nut-project/webpack": "^1.0.0-alpha.2",
     "@nut-project/webpack-virtual-modules": "^1.0.0-alpha.2",
+    "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
+    "@vue/babel-preset-jsx": "^1.1.0",
+    "autoprefixer": "^9.6.1",
+    "babel-loader": "^8.0.6",
+    "cache-loader": "^4.1.0",
+    "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "chokidar": "^3.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.4",
+    "css-loader": "^3.2.0",
     "exit": "^0.1.2",
+    "file-loader": "^4.2.0",
+    "fork-ts-checker-webpack-plugin": "^1.5.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
     "globby": "^10.0.1",
     "html-webpack-plugin": "^3.2.0",
     "import-fresh": "^3.1.0",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss": "^7.0.21",
+    "postcss-loader": "^3.0.0",
     "pretty-bytes": "^5.2.0",
+    "pug": "^2.0.4",
+    "pug-plain-loader": "^1.0.0",
+    "raw-loader": "^3.1.0",
     "readline": "^1.3.0",
     "resolve-from": "^5.0.0",
+    "sass": "^1.23.3",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "stylus": "^0.54.7",
+    "stylus-loader": "^3.0.2",
     "tapable": "^1.1.3",
+    "terser-webpack-plugin": "^2.1.0",
+    "thread-loader": "^2.1.3",
     "tildify": "^2.0.0",
+    "ts-loader": "^6.1.2",
+    "tslint": "^5.18.0",
+    "typescript": "^3.6.3",
+    "url-loader": "^2.1.0",
+    "vue": "^2.6.10",
+    "vue-loader": "^15.7.2",
+    "vue-template-compiler": "^2.6.10",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpackbar": "^4.0.0",
     "why-is-node-running": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
