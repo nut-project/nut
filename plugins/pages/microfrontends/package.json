@@ -63,7 +63,7 @@
     "text-table": "^0.2.0",
     "tippy.js": "^4.2.1",
     "unfancy-router": "0.1.10",
-    "unist-util-visit": "^1.4.1",
+    "unist-util-visit": "^2.0.0",
     "webpack-stats-plugin": "^0.3.0",
     "ws": "^7.1.2"
   }
