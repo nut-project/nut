@@ -30,7 +30,9 @@ function poweredBy( drivers ) {
 
   output = output + drivers
     .map( driver => {
-      return `${ colorize( driver.name ) } ${ chalk.dim( '(' + driver.version + ')' ) }`
+      const name = driver.constructor.name()
+      const version = driver.constructor.version()
+      return `${ colorize( 'driver-' + name ) }${ version ? chalk.dim( ' (' + version + ')' ) : '' }`
     } )
     .join( ' ' )
 

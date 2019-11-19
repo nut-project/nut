@@ -1,0 +1,13 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ../../packages/cli/bin/index.js pages dev",
+    "build": "node ../../packages/cli/bin/index.js pages build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

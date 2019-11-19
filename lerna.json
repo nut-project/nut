@@ -1,6 +1,7 @@
 {
   "packages": [
     "packages/*",
+    "other-packages/*",
     "templates/*",
     "plugins/pages/*"
   ],

@@ -1,5 +1,5 @@
 {
-  "name": "@nut-project/cli",
+  "name": "@nut-project/cli-pages",
   "version": "1.0.0-alpha.3",
   "publishConfig": {
     "access": "public"
@@ -15,11 +15,9 @@
     "static site generator",
     "hmr"
   ],
-  "bin": {
-    "nut": "bin/index.js"
-  },
+  "main": "lib/index.js",
   "files": [
-    "bin",
+    "lib",
     "yarn.lock",
     "README.md"
   ],
@@ -41,7 +39,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@nut-project/core": "^1.0.0-alpha.3",
-    "@nut-project/dev-utils": "^1.0.0-alpha.2"
+    "@nut-project/core": "^1.0.0-alpha.3"
   }
 }

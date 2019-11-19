@@ -16,7 +16,9 @@
     "build": "npm run build --prefix ./examples/simple",
     "dev:now2": "npm run dev --prefix ./examples/now2",
     "build:compose": "npm run build --prefix ./examples/host",
-    "dependency-check": "node scripts/dependency-check.js"
+    "dependency-check": "node scripts/dependency-check.js",
+    "dev:gene": "npm run dev --prefix ./examples/gene",
+    "build:gene": "npm run build --prefix ./examples/gene"
   },
   "husky": {
     "hooks": {
@@ -33,6 +35,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
+      "other-packages/*",
       "templates/*",
       "plugins/pages/*",
       "examples/*"
