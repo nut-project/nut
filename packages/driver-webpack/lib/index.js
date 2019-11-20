@@ -55,8 +55,12 @@ class WebpackDriver extends Driver {
 
     const config = chain()
 
-    extendWebpack( this, config, {
-      env
+    extendWebpack( config, {
+      env,
+      cliOptions,
+      userConfig,
+      driver: this,
+      cli,
     } )
 
     this.callHook( 'dangerously_chainWebpack', config )
