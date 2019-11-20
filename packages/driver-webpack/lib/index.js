@@ -1,5 +1,6 @@
 const { Driver } = require( '@nut-project/core' )
 const { chain, serve, build, hot, webpack } = require( '@nut-project/webpack' )
+const extendWebpack = require( './webpack' )
 
 const DEFAULTS = {
   host: '127.0.0.1',
@@ -54,7 +55,9 @@ class WebpackDriver extends Driver {
 
     const config = chain()
 
-    // TODO: prepare webpack config
+    extendWebpack( this, config, {
+      env
+    } )
 
     this.callHook( 'dangerously_chainWebpack', config )
 
