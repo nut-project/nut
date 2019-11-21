@@ -1,5 +1,19 @@
-const friendlyError = require( './friendly-error' )
+const abilities = [
+  require( './friendly-error' )
+]
 
-module.exports = function ( config, options ) {
-  friendlyError( config, options )
+exports.extendWebpack = function ( config, context ) {
+  abilities.forEach( ability => {
+    if ( ability.extend ) {
+      ability.extend( config, context )
+    }
+  } )
+}
+
+exports.exposeWebpack = function ( context = {} ) {
+  abilities.forEach( ability => {
+    if ( ability.expose ) {
+      ability.expose( context )
+    }
+  } )
 }

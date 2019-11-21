@@ -1,6 +1,6 @@
 const { Driver } = require( '@nut-project/core' )
 const { chain, serve, build, hot, webpack } = require( '@nut-project/webpack' )
-const extendWebpack = require( './webpack' )
+const { exposeWebpack, extendWebpack } = require( './webpack' )
 
 const DEFAULTS = {
   host: '127.0.0.1',
@@ -30,6 +30,7 @@ class WebpackDriver extends Driver {
 
   api() {
     this.expose( 'hello' )
+    exposeWebpack( { driver: this } )
   }
 
   apply( cli ) {
@@ -59,7 +60,6 @@ class WebpackDriver extends Driver {
       env,
       cliOptions,
       userConfig,
-      driver: this,
       cli,
     } )
 
