@@ -8,6 +8,9 @@ const abilities = [
   require( './mode' ),
   require( './minimize' ),
   require( './progress' ),
+  require( './envs' ),
+  require( './public-path' ),
+  require( './filename' ),
 ]
 
 exports.extendWebpack = function ( config, context ) {
