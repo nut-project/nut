@@ -1,6 +1,11 @@
 const WebpackBar = require( 'webpackbar' )
 
 exports.extend = function ( config, context ) {
+  // https://webpack.js.org/guides/build-performance/#progress-plugin
+  if ( context.env === 'production' ) {
+    return
+  }
+
   const options = {
     name: 'client'
   }
