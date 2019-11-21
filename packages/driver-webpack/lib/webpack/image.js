@@ -3,7 +3,7 @@ exports.extend = function ( config, context = {} ) {
 
   config.module
     .rule( 'image' )
-    .test( /\.(png|jpg|gif)$/i )
+    .test( /\.(png|jpg|jpeg|gif)$/i )
     .use( 'url' )
     .loader( require.resolve( 'url-loader' ) )
     .options( {

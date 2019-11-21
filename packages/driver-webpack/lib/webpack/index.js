@@ -1,5 +1,13 @@
 const abilities = [
-  require( './friendly-error' )
+  require( './friendly-error' ),
+  require( './image' ),
+  require( './media' ),
+  require( './font' ),
+  require( './copy' ),
+  require( './analyze' ),
+  require( './mode' ),
+  require( './minimize' ),
+  require( './progress' ),
 ]
 
 exports.extendWebpack = function ( config, context ) {
@@ -10,10 +18,10 @@ exports.extendWebpack = function ( config, context ) {
   } )
 }
 
-exports.exposeWebpack = function ( context = {} ) {
+exports.exposeWebpack = function ( driver, context = {} ) {
   abilities.forEach( ability => {
     if ( ability.expose ) {
-      ability.expose( context )
+      ability.expose( driver, context )
     }
   } )
 }

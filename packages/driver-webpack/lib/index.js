@@ -30,21 +30,18 @@ class WebpackDriver extends Driver {
 
   api() {
     this.expose( 'hello' )
-    exposeWebpack( { driver: this } )
+    exposeWebpack( this )
   }
 
   apply( cli ) {
     [ 'dev', 'build' ].forEach( command => {
       cli.action( command, async cliOptions => {
-        const userConfig = await cli.getConfig()
-        await this.compile( command, cli, cliOptions, userConfig )
+        await this.compile( command, cli, cliOptions )
       } )
     } )
   }
 
-  async compile( command = '', cli, cliOptions = {}, userConfig = {} ) {
-    this.callHook( 'cliOptions', cliOptions )
-
+  async compile( command = '', cli, cliOptions = {} ) {
     const COMMAND_TO_ENV = {
       dev: 'development',
       build: 'production',
@@ -53,6 +50,10 @@ class WebpackDriver extends Driver {
 
     process.env.NODE_ENV = env
     this.callHook( 'env', env )
+
+    this.callHook( 'cliOptions', cliOptions )
+
+    const userConfig = await cli.getConfig()
 
     const config = chain()
 
