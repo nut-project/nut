@@ -1,5 +1,6 @@
 const abilities = [
   require( './friendly-error' ),
+  require( './html-plugin' ),
   require( './image' ),
   require( './media' ),
   require( './font' ),
@@ -11,6 +12,12 @@ const abilities = [
   require( './envs' ),
   require( './public-path' ),
   require( './filename' ),
+  require( './entry' ),
+  require( './css' ),
+  require( './mcss' ),
+  require( './scss' ),
+  require( './less' ),
+  require( './stylus' ),
 ]
 
 exports.extendWebpack = function ( config, context ) {
