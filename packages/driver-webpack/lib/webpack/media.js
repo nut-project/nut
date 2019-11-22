@@ -6,6 +6,7 @@ exports.extend = function ( config ) {
     .loader( require.resolve( 'url-loader' ) )
     .options( {
       fallback: require.resolve( 'file-loader' ),
-      limit: 8192
+      limit: 8192,
+      name: `./static/media/[name].[hash:16].[ext]`
     } )
 }

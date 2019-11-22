@@ -8,6 +8,7 @@ exports.extend = function ( config, context = {} ) {
     .loader( require.resolve( 'url-loader' ) )
     .options( {
       fallback: require.resolve( 'file-loader' ),
-      limit: 8192
+      limit: 8192,
+      name: `./static/img/[name].[hash:16].[ext]`
     } )
 }

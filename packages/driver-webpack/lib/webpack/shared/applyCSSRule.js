@@ -3,7 +3,14 @@ function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
   const rule = webpackConfig.module
     .rule( lang )
     .test( test )
+
+  const normalCSSModulesRule = rule.oneOf( 'normal-css-modules' )
   const normalCSSRule = rule.oneOf( 'normal-css' )
+
+  // for *.module.*
+  normalCSSModulesRule.test( /\.module\.\w+$/ )
+
+  applyOneOfRule( normalCSSModulesRule, lang, loader, options, env, true )
   applyOneOfRule( normalCSSRule, lang, loader, options, env, false )
 }
 function applyOneOfRule( rule, lang, loader, options, env, modules ) {
