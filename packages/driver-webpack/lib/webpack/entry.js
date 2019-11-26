@@ -1,11 +1,19 @@
-const { utils } = require( '@nut-project/dev-utils' )
-exports.extend = function ( config, context = {} ) { // eslint-disable-line
-    const { userConfig } = context // eslint-disable-line
-  if ( userConfig && userConfig.pages ) {
-    Object.keys( userConfig.pages ).forEach( key => {
-      config.entry( key ).add( utils.getPath( userConfig.pages[ key ].entry || userConfig.pages[ key ] ) )
-    } )
+const localResolve = require( './shared/local-resolve' )
+
+exports.extend = function ( config, context = {} ) {
+  const { userConfig = {} } = context
+  const pages = userConfig.pages
+  const entry = userConfig.entry || 'src/index.js'
+
+  if ( pages ) {
+    for ( const key of Object.keys( pages ) ) {
+      if ( pages[ key ] ) {
+        const pageEntry = pages[ key ].entry || pages[ key ]
+
+        config.entry( key ).add( localResolve( pageEntry ) )
+      }
+    }
   } else {
-    config.entry( 'index' ).add( utils.getPath( 'src/index.js' ) )
+    config.entry( 'index' ).add( localResolve( entry ) )
   }
 }

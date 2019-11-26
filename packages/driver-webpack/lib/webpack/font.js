@@ -9,6 +9,6 @@ exports.extend = function ( config, context = {} ) {
     .options( {
       fallback: require.resolve( 'file-loader' ),
       limit: 8192,
-      name: `./static/fonts/[name].[hash:16].[ext]`
+      name: `static/fonts/[name].[hash:16].[ext]`
     } )
 }

@@ -2,7 +2,6 @@ const gradient = require( 'gradient-string' )
 const chalk = require( 'chalk' )
 const glob = require( 'globby' )
 const deepmerge = require( 'deepmerge' )
-const path = require( 'path' )
 
 function delay( duration = 0 ) {
   return new Promise( resolve => {
@@ -114,14 +113,6 @@ function merge( ...objects ) {
   } )
 }
 
-function getPath( pathName ) {
-  return path.join( process.cwd(), pathName )
-}
-
-function type( param ) {
-  return Object.prototype.toString.call( param ).slice( -7, -1 )
-}
-
 exports.delay = delay
 exports.randomInt = randomInt
 exports.poweredBy = poweredBy
@@ -130,5 +121,3 @@ exports.pick = pick
 exports.globby = globby
 exports.mergeFiles = mergeFiles
 exports.merge = merge
-exports.getPath = getPath
-exports.type = type

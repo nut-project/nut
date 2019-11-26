@@ -1,28 +1,28 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
+
 function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
   const rule = webpackConfig.module
     .rule( lang )
     .test( test )
 
-  const normalCSSModulesRule = rule.oneOf( 'normal-css-modules' )
-  const normalCSSRule = rule.oneOf( 'normal-css' )
+  const cssModulesRule = rule.oneOf( `${ lang }-modules` )
+  const cssRule = rule.oneOf( lang )
 
   // for *.module.*
-  normalCSSModulesRule.test( /\.module\.\w+$/ )
+  cssModulesRule.test( /\.module\.\w+$/ )
 
-  applyOneOfRule( normalCSSModulesRule, lang, loader, options, env, true )
-  applyOneOfRule( normalCSSRule, lang, loader, options, env, false )
+  apply( cssModulesRule, lang, loader, options, env, true )
+  apply( cssRule, lang, loader, options, env, false )
 }
-function applyOneOfRule( rule, lang, loader, options, env, modules ) {
+
+function apply( rule, lang, loader, options, env, modules ) {
   if ( env === 'production' ) {
     rule.use( 'mini-css-extract' )
       .loader( MiniCssExtractPlugin.loader )
       .options( {
         hmr: false,
       } )
-  }
-
-  if ( env === 'development' ) {
+  } else {
     rule.use( 'style' )
       .loader( 'style-loader' )
   }

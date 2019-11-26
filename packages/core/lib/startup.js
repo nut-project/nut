@@ -71,7 +71,8 @@ function normalizeDrivers( drivers ) {
           return require( driver )
         } catch ( e ) {
           logger.error( 'Invalid Driver: ' + driver )
-          console.log( e )
+          console.log()
+          console.log( e.stack )
         }
       }
 
