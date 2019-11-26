@@ -1,3 +1,6 @@
 module.exports = {
-  port: 9001,
+  devServer: {
+    port: 9001,
+  },
+  browserslist: []
 }

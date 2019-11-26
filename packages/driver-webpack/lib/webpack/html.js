@@ -65,6 +65,7 @@ exports.extend = function ( config, context = {} ) {
     const page = Object.assign( {}, defaultOptions, html ? {
       title: html.title,
       filename: html.filename,
+      favicon: html.favicon,
     } : undefined )
 
     config
