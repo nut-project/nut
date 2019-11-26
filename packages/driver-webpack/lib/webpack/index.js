@@ -1,16 +1,20 @@
 const abilities = [
-  require( './friendly-error' ),
-  require( './image' ),
+  require( './envs' ),
+  require( './public-path' ),
+  require( './filename' ),
+  require( './entry' ),
+  require( './babel' ),
+  require( './css' ),
+  require( './html' ),
   require( './media' ),
   require( './font' ),
   require( './copy' ),
+  require( './clean' ),
   require( './analyze' ),
   require( './mode' ),
   require( './minimize' ),
   require( './progress' ),
-  require( './envs' ),
-  require( './public-path' ),
-  require( './filename' ),
+  require( './friendly-error' ),
 ]
 
 exports.extendWebpack = function ( config, context ) {

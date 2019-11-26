@@ -1,3 +1,4 @@
+const path = require( 'path' )
 const { Driver } = require( '@nut-project/core' )
 const { chain, serve, build, hot, webpack } = require( '@nut-project/webpack' )
 const { exposeWebpack, extendWebpack } = require( './webpack' )
@@ -8,6 +9,10 @@ const DEFAULTS = {
 }
 
 class WebpackDriver extends Driver {
+  static id() {
+    return 'org.nut.webpack'
+  }
+
   static name() {
     return 'webpack'
   }
@@ -29,7 +34,6 @@ class WebpackDriver extends Driver {
   }
 
   api() {
-    this.expose( 'hello' )
     exposeWebpack( this )
   }
 
@@ -42,6 +46,12 @@ class WebpackDriver extends Driver {
   }
 
   async compile( command = '', cli, cliOptions = {} ) {
+    let pkg = {}
+
+    try {
+      pkg = require( path.join( process.cwd(), 'package.json' ) )
+    } catch {}
+
     const COMMAND_TO_ENV = {
       dev: 'development',
       build: 'production',
@@ -61,6 +71,7 @@ class WebpackDriver extends Driver {
       env,
       cliOptions,
       userConfig,
+      pkg,
       cli,
     } )
 
@@ -78,9 +89,11 @@ class WebpackDriver extends Driver {
   }
 
   serve( webpackConfig, userConfig ) {
+    const devServerConfig = userConfig.devServer || {}
+
     const serverOptions = {
-      host: userConfig.host || DEFAULTS.host,
-      port: userConfig.port || DEFAULTS.port,
+      host: devServerConfig.host || DEFAULTS.host,
+      port: devServerConfig.port || DEFAULTS.port,
       publicPath: webpackConfig.output && webpackConfig.output.publicPath,
       contentBase: false,
       hot: true,
