@@ -14,6 +14,5 @@ exports.extend = function ( config, context = {} ) {
     .loader( require.resolve( './babel/loader' ) )
     .options( {
       cacheCompression: env === 'production',
-      presets: []
     } )
 }
