@@ -13,6 +13,12 @@ class RemPlugin extends Plugin {
         // console.log( 'hook dangerously_chainWebpack', config )
       } )
     } )
+
+    api.cheerio( $ => {
+      console.log( $( 'title' ).html() )
+      $( 'title' ).text( 'Hello Plugin' )
+      console.log( $( 'title' ).html() )
+    } )
   }
 }
 

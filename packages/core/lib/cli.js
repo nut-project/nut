@@ -28,7 +28,7 @@ class CLI {
   }
 
   async getConfig() {
-    return await this._loader.get()
+    return await this._loader.get() || {}
   }
 
   async getConfigFile() {
