@@ -15,6 +15,7 @@ const abilities = [
   require( './minimize' ),
   require( './progress' ),
   require( './friendly-error' ),
+  require( './performance' ),
 ]
 
 exports.extendWebpack = function ( config, context ) {

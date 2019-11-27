@@ -6,7 +6,7 @@ exports.extend = function ( config, context = {} ) {
   // extensions
   config.resolve.extensions
     .merge( [
-      '.js', '.json',
+      '.js', '.json', '.jsx', '.ts', '.tsx', '.wasm', '.mjs',
       '.css', '.less', '.scss', '.sass', '.mcss', '.styl', '.stylus',
     ] )
 
