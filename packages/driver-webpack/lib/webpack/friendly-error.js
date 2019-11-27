@@ -9,3 +9,7 @@ exports.extend = function ( config, context = {} ) {
       { clearConsole: false }
     ] )
 }
+
+exports.extendDevServer = function ( serverOptions = {} ) {
+  serverOptions.quiet = true
+}

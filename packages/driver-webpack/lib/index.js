@@ -4,7 +4,7 @@ const chalk = require( 'chalk' )
 const { Driver } = require( '@nut-project/core' )
 const { chain, serve, build, hot, webpack } = require( '@nut-project/webpack' )
 const { logger, detectPort } = require( '@nut-project/dev-utils' )
-const { exposeWebpack, extendWebpack } = require( './webpack' )
+const { exposeWebpack, extendWebpack, extendDevServer } = require( './webpack' )
 
 class WebpackDriver extends Driver {
   static id() {
@@ -105,11 +105,13 @@ class WebpackDriver extends Driver {
         publicPath: webpackConfig.output && webpackConfig.output.publicPath,
         contentBase: false,
         hot: true,
-        quiet: true,
+        quiet: false,
         proxy: devServerConfig.proxy || defaultServerOptions.proxy,
         before() {},
         after() {},
       }
+
+      extendDevServer( serverOptions )
 
       const _port = await detectPort( serverOptions.port )
 

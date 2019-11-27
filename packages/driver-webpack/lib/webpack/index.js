@@ -14,11 +14,14 @@ const abilities = [
   require( './mode' ),
   require( './minimize' ),
   require( './progress' ),
-  require( './friendly-error' ),
+  require( './vue' ),
+  require( './define' ),
+  require( './resolve' ),
+  // require( './friendly-error' ),
   require( './performance' ),
 ]
 
-exports.extendWebpack = function ( config, context ) {
+exports.extendWebpack = function ( config, context = {} ) {
   abilities.forEach( ability => {
     if ( ability.extend ) {
       ability.extend( config, context )
@@ -30,6 +33,14 @@ exports.exposeWebpack = function ( driver, context = {} ) {
   abilities.forEach( ability => {
     if ( ability.expose ) {
       ability.expose( driver, context )
+    }
+  } )
+}
+
+exports.extendDevServer = function ( serverOptions, context = {} ) {
+  abilities.forEach( ability => {
+    if ( ability.extendDevServer ) {
+      ability.extendDevServer( serverOptions, context )
     }
   } )
 }
