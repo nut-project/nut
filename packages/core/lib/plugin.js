@@ -14,7 +14,7 @@ class Plugin {
 
   // override
   static name() {}
-  apply() {}
+  apply() {} // required
 }
 
 module.exports = Plugin

@@ -1,8 +1,4 @@
-const webpack = require( 'webpack' )
-
-module.exports = function build( config ) {
-  const compiler = webpack( config )
-
+module.exports = function build( compiler ) {
   return new Promise( ( resolve, reject ) => {
     compiler.run( ( err, stats ) => {
       if ( err ) {
