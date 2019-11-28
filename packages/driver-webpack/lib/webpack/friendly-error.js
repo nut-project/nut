@@ -1,12 +1,15 @@
 const FriendlyErrorsWebpackPlugin = require( 'friendly-errors-webpack-plugin' )
 
-exports.extend = function ( config, context = {} ) {
-  const { env, cliOptions, userConfig, cli } = context // eslint-disable-line
-
+exports.extend = function ( config ) {
   config
     .plugin( 'friendly-error' )
     .use( FriendlyErrorsWebpackPlugin, [
-      { clearConsole: false }
+      {
+        clearConsole: false,
+        additionalTransformers: [
+          require( './error/transformer-module-not-found' ),
+        ]
+      }
     ] )
 }
 

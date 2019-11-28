@@ -17,8 +17,11 @@ const abilities = [
   require( './vue' ),
   require( './define' ),
   require( './resolve' ),
-  // require( './friendly-error' ),
+  require( './friendly-error' ),
   require( './performance' ),
+
+  // produce very little effect
+  // require( './dll' ),
 ]
 
 exports.extendWebpack = function ( config, context = {} ) {

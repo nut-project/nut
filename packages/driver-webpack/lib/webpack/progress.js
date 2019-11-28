@@ -1,8 +1,11 @@
 const WebpackBar = require( 'webpackbar' )
 
-exports.extend = function ( config, context ) {
+exports.extend = function ( config, context = {} ) {
   // https://webpack.js.org/guides/build-performance/#progress-plugin
-  if ( context.env === 'production' ) {
+  // so we need to disable by default
+  const { cliOptions = {} } = context
+
+  if ( !cliOptions.progress ) {
     return
   }
 

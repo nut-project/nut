@@ -1,5 +1,6 @@
 const createInclude = require( './shared/create-include' )
 const parallel = require( './shared/parallel' )
+const threadLoader = require( 'thread-loader' )
 
 exports.extend = function ( config, context = {} ) {
   const { env, userConfig = {} } = context
@@ -12,6 +13,9 @@ exports.extend = function ( config, context = {} ) {
   rule.include.add( createInclude( babel && babel.transpileModules ) )
 
   if ( userConfig.parallel ) {
+    threadLoader.warmup( {}, [
+      require.resolve( './babel/loader' )
+    ] )
     parallel( rule )
   }
 
