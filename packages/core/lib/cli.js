@@ -1,6 +1,6 @@
 const cac = require( 'cac' )
+const memoize = require( 'fast-memoize' )
 const { config, utils, logger } = require( '@nut-project/dev-utils' )
-// const chokidar = require( 'chokidar' )
 
 class CLI {
   constructor() {
@@ -45,10 +45,36 @@ class CLI {
 
     utils.poweredBy( drivers )
 
+    function useDriver( driverName ) {
+      const driver = drivers.find(
+        driver => {
+          // lookup constructor inherit chain
+          let parent = driver.constructor
+
+          while ( parent ) {
+            if (
+              typeof parent.name === 'function' &&
+              parent.name() === driverName
+            ) {
+              return true
+            }
+
+            parent = Object.getPrototypeOf( parent )
+          }
+
+          return false
+        }
+      )
+
+      return driver.use()
+    }
+
     plugins.forEach( plugin => {
       const Plugin = plugin.plugin
-      const options = plugin.options || {}
-      new Plugin( { drivers } ).apply( options )
+      new Plugin().apply( {
+        cli: this,
+        use: memoize( useDriver ),
+      } )
     } )
 
     const pendings = drivers.map( driver => driver.apply( this ) )

@@ -111,7 +111,13 @@ class WebpackDriver extends Driver {
         after() {},
       }
 
-      extendDevServer( serverOptions )
+      extendDevServer( serverOptions, {
+        env,
+        cliOptions,
+        userConfig,
+        pkg,
+        cli,
+      } )
 
       const _port = await detectPort( serverOptions.port )
 

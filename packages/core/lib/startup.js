@@ -98,16 +98,6 @@ function normalizePlugins( plugins ) {
 
         context = getContext( plugin )
         options = {}
-      } else if ( plugin.resolve ) {
-        try {
-          resolved = importFresh( plugin.resolve )
-        } catch ( e ) {
-          logger.error( 'Invalid plugin: ' + plugin )
-          console.log( e )
-        }
-
-        context = getContext( plugin.resolve )
-        options = plugin.options
       }
 
       if ( !resolved ) {

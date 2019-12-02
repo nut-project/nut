@@ -1,10 +1,9 @@
 const prettyBytes = require( 'pretty-bytes' )
 const chalk = require( 'chalk' )
-const { Plugin } = require( '@nut-project/core' )
 
-class MemoryUsagePlugin extends Plugin {
-  apply() {
-    const { hook } = this.use( 'webpack' )
+class MemoryUsagePlugin {
+  apply( ctx ) {
+    const { hook } = ctx.use( 'webpack' )
 
     hook( 'compilerDone', () => {
       const { heapUsed } = process.memoryUsage()

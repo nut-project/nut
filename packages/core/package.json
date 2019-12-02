@@ -18,6 +18,7 @@
     "@nut-project/dev-utils": "^1.0.0-alpha.2",
     "cac": "^6.5.3",
     "chokidar": "^3.1.0",
+    "fast-memoize": "^2.5.1",
     "import-fresh": "^3.2.1",
     "please-upgrade-node": "^3.2.0",
     "resolve-from": "^5.0.0",

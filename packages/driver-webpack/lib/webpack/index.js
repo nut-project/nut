@@ -19,6 +19,7 @@ const abilities = [
   require( './resolve' ),
   require( './friendly-error' ),
   require( './performance' ),
+  require( './dev-server' ),
 
   // produce very little effect
   // require( './dll' ),

@@ -5,7 +5,7 @@ exports.extend = function ( config, context = {} ) {
   // so we need to disable by default
   const { cliOptions = {} } = context
 
-  if ( !cliOptions.progress ) {
+  if ( !cliOptions.progress && !cliOptions.profile ) {
     return
   }
 

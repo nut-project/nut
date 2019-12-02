@@ -1,8 +1,6 @@
-const { Plugin } = require( '@nut-project/core' )
-
-class RawHTMLPlugin extends Plugin {
-  apply() {
-    const { hook } = this.use( 'webpack' )
+class RawHTMLPlugin {
+  apply( ctx ) {
+    const { hook } = ctx.use( 'webpack' )
 
     hook( 'dangerously_chainWebpack', config => {
       config.module

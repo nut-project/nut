@@ -1,12 +1,11 @@
-const { Plugin } = require( '@nut-project/core' )
 const { openBrowser } = require( '@nut-project/dev-utils' )
 const chalk = require( 'chalk' )
 const address = require( 'address' )
 const boxen = require( 'boxen' )
 
-class ServerInfoPlugin extends Plugin {
-  apply() {
-    const { hook } = this.use( 'webpack' )
+class ServerInfoPlugin {
+  apply( ctx ) {
+    const { hook } = ctx.use( 'webpack' )
 
     let host, port
     hook( 'dangerously_serverOptions', ( serverOptions = {} ) => {
@@ -30,7 +29,7 @@ class ServerInfoPlugin extends Plugin {
         console.log()
         console.log(
           boxen(
-            `Your application is running at${ getTips( { host, port } ) }`,
+            `Your application will run at${ getTips( { host, port } ) }`,
             {
               padding: 1,
               borderColor: 'gray'

@@ -1,9 +1,8 @@
 const readline = require( 'readline' )
-const { Plugin } = require( '@nut-project/core' )
 
-class ClearConsoleBeforeRunPlugin extends Plugin {
-  apply() {
-    const { hook } = this.use( 'webpack' )
+class ClearConsoleBeforeRunPlugin {
+  apply( ctx ) {
+    const { hook } = ctx.use( 'webpack' )
     hook( 'env', env => {
       if ( env === 'development' ) {
         hook( 'beforeRun', async () => {

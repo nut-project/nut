@@ -79,9 +79,12 @@ class Driver {
     }
   }
 
-  // override in subclass
-  static name() {}
+  // override, optional
+  static id() {}
   static version() {}
+
+  // override, required
+  static name() {}
   hooks() {}
   api() {}
   apply() {}
