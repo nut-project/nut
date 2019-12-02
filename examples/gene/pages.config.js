@@ -1,6 +1,5 @@
-module.exports = {
+exports.config = {
   devServer: {
     port: 9001,
   },
-  browserslist: []
 }

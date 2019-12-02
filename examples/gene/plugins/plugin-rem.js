@@ -1,12 +1,10 @@
-const { Plugin } = require( '@nut-project/core' )
-
-class RemPlugin extends Plugin {
+class RemPlugin {
   static name() {
     return 'rem'
   }
 
-  async apply() {
-    const { api, hook } = this.use( 'webpack' )
+  async apply( ctx ) {
+    const { api, hook } = ctx.use( 'webpack' )
 
     hook( 'env', env => {
       hook( 'dangerously_chainWebpack', config => {
