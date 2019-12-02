@@ -5,6 +5,7 @@ const { Driver } = require( '@nut-project/core' )
 const { chain, serve, build, hot, webpack } = require( '@nut-project/webpack' )
 const { logger, detectPort } = require( '@nut-project/dev-utils' )
 const { exposeWebpack, extendWebpack, extendDevServer } = require( './webpack' )
+const schema = require( './schema' )
 
 class WebpackDriver extends Driver {
   static id() {
@@ -51,6 +52,7 @@ class WebpackDriver extends Driver {
   }
 
   async flow( command = '', cli, cliOptions = {} ) {
+    const warnings = []
     let pkg = {}
 
     try {
@@ -72,7 +74,15 @@ class WebpackDriver extends Driver {
 
     this.callHook( 'cliOptions', cliOptions )
 
-    const userConfig = await cli.getConfig()
+    const { config: userConfig } = ( await cli.getConfig() ) || {}
+
+    const [ error ] = schema.validate( userConfig )
+
+    if ( error ) {
+      logger.warn( error.message )
+      console.log()
+      exit( 0 )
+    }
 
     this.callHook( 'userConfig', userConfig )
 
@@ -121,7 +131,6 @@ class WebpackDriver extends Driver {
 
       const _port = await detectPort( serverOptions.port )
 
-      const warnings = []
       if ( _port !== serverOptions.port ) {
         warnings.push(
           `Port ${ serverOptions.port } is occupied, use another port ${ chalk.magenta( _port ) }\n`
@@ -142,7 +151,10 @@ class WebpackDriver extends Driver {
       await this.callHook( 'beforeRun' )
 
       if ( warnings.length > 0 ) {
-        logger.warn( warnings[ 0 ] )
+        warnings.forEach( warning => {
+          logger.warn( warning )
+          console.log()
+        } )
       }
 
       await this.serve( compiler, serverOptions )
