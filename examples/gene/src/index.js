@@ -1,5 +1,5 @@
 import './index.scss'
 
-document.body.innerHTML = `
+document.querySelector( '#app' ).innerHTML = `
   Hello World
 `
