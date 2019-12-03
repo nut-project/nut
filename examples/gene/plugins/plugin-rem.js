@@ -1,6 +1,6 @@
 class RemPlugin {
-  static name() {
-    return 'rem'
+  constructor( options ) {
+    console.log( 'rem options', options )
   }
 
   async apply( ctx ) {

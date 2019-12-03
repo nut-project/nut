@@ -1,34 +1,62 @@
 const cac = require( 'cac' )
 const memoize = require( 'fast-memoize' )
+const importFresh = require( 'import-fresh' )
 const { config, utils, logger } = require( '@nut-project/dev-utils' )
 
 class CLI {
   constructor() {
     this._loader = config( this.constructor.name() )
     this._cli = cac()
-    this._actions = {}
+    this._deferreds = {}
+    this._command = {
+      name: '',
+      options: {}
+    }
 
     const commands = this.commands() || []
 
     commands.forEach( ( { command = '', description = '' } ) => {
+      this._deferreds[ command ] = createDeferred()
+
       this._cli
         .command( command, description )
         .allowUnknownOptions()
         .action( options => {
-          const actions = this._actions[ command ]
-
-          if ( !actions || actions.length === 0 ) {
-            logger.error( `No actions is found for command "${ command }"` )
-            return
-          }
-
-          series( actions, options )
+          this._command.name = command
+          this._command.options = options
+          this._deferreds[ command ].resolve( options )
         } )
+    } )
+
+    this._cli.on( 'command:*', () => {
+      logger.error(
+        `Invalid command: ${ this._cli.args.join( ' ' ) }`
+      )
     } )
   }
 
+  async getUserConfig() {
+    const config = await this.getConfig()
+    return config.config || {}
+  }
+
+  async getUserPlugins() {
+    const config = await this.getConfig()
+    return config.plugins || {}
+  }
+
+  // contains config and plugin
   async getConfig() {
-    return await this._loader.get() || {}
+    let config = await this._loader.get()
+
+    if ( typeof config === 'function' ) {
+      config = config( {
+        command: this._command.name || '',
+        options: this._command.options || {},
+      } )
+    }
+
+    return config || {}
   }
 
   async getConfigFile() {
@@ -70,9 +98,20 @@ class CLI {
     }
 
     plugins.forEach( plugin => {
-      const Plugin = plugin.plugin
-      new Plugin().apply( {
-        cli: this,
+      const resolve = plugin.resolve
+      const options = plugin.options || {}
+
+      let Plugin
+      try {
+        Plugin = importFresh( resolve )
+      } catch ( e ) {
+        logger.error(
+          `Invalid plugin${ plugin.name ? '(' + plugin.name + ')' : '' }: ` + resolve
+        )
+        console.log( e )
+      }
+
+      new Plugin( options ).apply( {
         use: memoize( useDriver ),
       } )
     } )
@@ -83,8 +122,13 @@ class CLI {
   }
 
   action( name, callback ) {
-    this._actions[ name ] = this._actions[ name ] || []
-    this._actions[ name ].push( callback )
+    const deferred = this._deferreds[ name ]
+
+    if ( !deferred ) {
+      return
+    }
+
+    deferred.promise.then( callback )
   }
 
   parse( argv ) {
@@ -97,11 +141,15 @@ class CLI {
   commands() {}
 }
 
-function series( functions, options ) {
-  return functions.reduce( async ( total, fn ) => {
-    await total
-    await fn( options )
-  }, Promise.resolve() )
+function createDeferred() {
+  const deferred = {}
+
+  deferred.promise = new Promise( ( resolve, reject ) => {
+    deferred.resolve = resolve
+    deferred.reject = reject
+  } )
+
+  return deferred
 }
 
 module.exports = CLI

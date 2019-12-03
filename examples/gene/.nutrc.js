@@ -5,12 +5,14 @@ module.exports = {
       drivers: [
         require.resolve( '@nut-project/driver-webpack' )
       ],
-      plugins: [
-        require.resolve( './plugins/plugin-rem' ),
-        '@nut-project/driver-webpack/plugins/clear-console',
-        '@nut-project/driver-webpack/plugins/memory-usage',
-        '@nut-project/driver-webpack/plugins/server-info',
-      ],
+      plugins: {
+        rem: {
+          resolve: require.resolve( './plugins/plugin-rem' ),
+        },
+        clearConsole: '@nut-project/driver-webpack/plugins/clear-console',
+        memoryUsage: '@nut-project/driver-webpack/plugins/memory-usage',
+        serverInfo: '@nut-project/driver-webpack/plugins/server-info',
+      }
     }
   ]
 }
