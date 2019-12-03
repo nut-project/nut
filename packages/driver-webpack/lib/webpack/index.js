@@ -3,6 +3,8 @@ const abilities = [
   require( './public-path' ),
   require( './filename' ),
   require( './entry' ),
+  // error-overlay should be after entry
+  require( './error-overlay' ),
   require( './babel' ),
   require( './css' ),
   require( './html' ),

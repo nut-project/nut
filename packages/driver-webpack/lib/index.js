@@ -2,7 +2,7 @@ const path = require( 'path' )
 const exit = require( 'exit' )
 const chalk = require( 'chalk' )
 const { Driver } = require( '@nut-project/core' )
-const { chain, serve, build, hot, webpack } = require( '@nut-project/webpack' )
+const { chain, serve, build, webpack } = require( '@nut-project/webpack' )
 const { logger, detectPort } = require( '@nut-project/dev-utils' )
 const { exposeWebpack, extendWebpack, extendDevServer } = require( './webpack' )
 const schema = require( './schema' )
@@ -139,8 +139,6 @@ class WebpackDriver extends Driver {
       }
 
       this.callHook( 'dangerously_serverOptions', serverOptions )
-
-      hot( webpackConfig, serverOptions )
 
       const compiler = webpack( webpackConfig )
 
