@@ -4,3 +4,4 @@ templates/pages/template
 packages/webpack-mini-css-extract
 packages/dev-utils/lib/open-browser.js
 packages/driver-webpack/lib/webpack/plugins/InlineChunkHtmlPlugin.js
+packages/driver-webpack/lib/webpack/plugins/WatchMissingNodeModulesPlugin.js

@@ -20,6 +20,7 @@ const abilities = [
   require( './friendly-error' ),
   require( './performance' ),
   require( './dev-server' ),
+  require( './missing-node-modules' ),
 
   // produce very little effect
   // require( './dll' ),
