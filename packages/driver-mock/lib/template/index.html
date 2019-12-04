@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>mock-server</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        body {
+            background: #f7f7f7;
+        }
+        #app {
+            width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 4px;
+        }
+        .title {
+            border-bottom: 2px solid #8db8ef;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+        .container {
+            display: flex;
+        }
+        .left {
+            flex-basis: 200px;
+        }
+        .left .el-tabs__header.is-left{
+            float: right;
+            margin-right: 20px;
+        }
+        .left .el-tabs--left .el-tabs__item.is-left{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 200px;
+        }
+        .right {
+            flex: 1
+        }
+        .box-card {
+            margin-bottom: 20px;
+        }
+        .el-card__header {
+            background: #e6eff5;
+        }
+        .item-error {
+            color: #f00;
+        }
+        .main-btn {
+            float: right;
+        }
+        .btn {
+            margin-bottom: 20px;
+        }
+        .btn-custom {
+            float: right; 
+            padding: 3px 10px;
+        }
+        .group-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 600px;
+            display: inline-block;
+        }
+        .group-url {
+            color: #409EFF;
+            cursor: pointer;
+        }
+        .scene-header {
+            display: flex;
+            align-items: center;
+        }
+        .scene-title{
+            margin: 0 20px 0 0;
+            font-size: 20px;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .select-scene-wrap {
+            display: flex;
+            align-items: center;
+        }
+        .select-scene-wrap .btn-opera {
+            color: #409EFF;
+            cursor: pointer;
+        }
+    </style>
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+  <div id="app">
+      <h1 class="title">自定义场景 <el-button  class="main-btn" type="primary" @click="editSceneGroup(false)">新增场景组</el-button></h1>
+    <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="本地mock" name="mock">
+            <el-card class="box-card" v-for="item of mockList" :key="item.path">
+                <div slot="header" class="clearfix">
+                  <span>{{item.path}}</span>
+                </div>
+                <div :class="editError[item.path] ? 'item item-error' : 'item'">
+                    <pre :ref="item.path" contenteditable="true" @input.stop="editMock($event, item)">{{JSON.stringify(item.data, null, 4)}}</pre>
+                </div>
+            </el-card>
+        </el-tab-pane>
+        <el-tab-pane label="自定义场景组" name="scene">
+            <div>
+                <el-select v-model="curGroup" placeholder="请选择场景" filterable @change="changeSceneGroup">
+                    <el-option
+                        v-for="name in ALL_SCENE_GROUP"
+                        :key="name"
+                        :label="name"
+                        :value="name"
+                        >
+                    </el-option>
+                </el-select>
+                <el-button  class="btn" type="primary" @click="editSceneGroup(false)">新增场景组</el-button>
+            </div>
+            <el-card class="box-card" v-if="curSceneGroup && curSceneGroup.name">
+                <div slot="header" class="clearfix">
+                    <span class="group-title">{{curSceneGroup.name}}：
+                        <a :href="curSceneGroup.url" target="_blank" class="group-url">{{curSceneGroup.url}}</a>
+                    </span>
+                    <i class="btn-opera btn-custom el-icon-plus" @click="addApiScene(curSceneGroup)" title="新增API"></i>
+                    <i class="btn-opera btn-custom el-icon-delete" @click="deleteSceneGroup(curSceneGroup.name)" title="删除场景组"></i>
+                    <i class="btn-opera btn-custom el-icon-edit" @click="editSceneGroup(curSceneGroup)" title="编辑场景组"></i>
+                </div>
+                <div class="item">
+                    <div>
+                        <el-table :data="curSceneGroup.group" stripe style="width: 100%">
+                            <el-table-column prop="api" label="接口名">
+                                <template slot-scope="scope">
+                                    <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
+                                        <el-option
+                                            v-for="apiItem in API_LIST"
+                                            :key="apiItem.id"
+                                            :label="apiItem.api"
+                                            :value="apiItem.id"
+                                            :disabled="isDisabled(apiItem.id, curSceneGroup.group)">
+                                        </el-option>
+                                    </el-select>
+                                    <template v-else>
+                                        {{scope.row.api}}
+                                    </template>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="scene" label="场景">
+                                <template slot-scope="scope">
+                                    <el-select v-if="scope.row.id" v-model="scope.row.scene" filterable clearable placeholder="default" @change="changeApiScene">
+                                        <el-option
+                                            v-for="scene in ALL_API_SCENE[scope.row.id]"
+                                            :key="scene"
+                                            :label="scene"
+                                            :value="scene">
+                                        </el-option>
+                                    </el-select>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="100px">
+                                <template slot-scope="scope">
+                                    <i class="btn-opera el-icon-delete" @click="deleteApiScene(curSceneGroup.group, scope.$index)" title="删除API"></i>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </div>
+            </el-card>
+        </el-tab-pane>
+    </el-tabs> -->
+    <div class="container">
+        <el-tabs :tab-position="tabPosition" class="left" @tab-click="changeSceneGroup">
+            <el-tab-pane v-for="(name, index) of ALL_SCENE_GROUP"  :label="name" :key="index"></el-tab-pane>
+        </el-tabs>
+        <div class="right">
+            <el-row>
+                <el-col :span="15">
+                    <div class="scene-header">
+                        <h2 class="scene-title">{{curSceneGroup.url}}</h2>
+                        <el-switch
+                            @change="changeSwitch"
+                            v-model="curSceneGroup.on"
+                            inactive-color="#999">
+                        </el-switch>
+                    </div>
+                </el-col>
+                <el-col :span="9">
+                    <el-button class="btn"  type="primary" @click="addApiScene(curSceneGroup)">新增API</el-button>
+                    <el-button class="btn"  type="primary" @click="editSceneGroup(curSceneGroup)">编辑场景组</el-button>
+                    <el-button class="btn"  type="danger" @click="deleteSceneGroup(curSceneGroup.name)">删除场景组</el-button>
+                </el-col>
+            </el-row>
+            <el-table :data="curSceneGroup.group" border stripe style="width: 100%">
+                <el-table-column prop="api" label="接口名">
+                    <template slot-scope="scope">
+                        <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
+                            <el-option
+                                v-for="apiItem in API_LIST"
+                                :key="apiItem.id"
+                                :label="apiItem.api"
+                                :value="apiItem.id"
+                                :disabled="isDisabled(apiItem.id, curSceneGroup.group)">
+                            </el-option>
+                        </el-select>
+                        <template v-else>
+                            {{scope.row.api}}
+                        </template>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="scene" label="场景">
+                    <template slot-scope="scope">
+                        <div class="select-scene-wrap" v-if="scope.row.id" >
+                            <el-select v-model="scope.row.scene" allow-create filterable clearable placeholder="auto" @change="changeApiScene">
+                                <el-option
+                                    v-for="scene in ALL_API_SCENE[scope.row.id]"
+                                    :key="scene"
+                                    :label="scene"
+                                    :value="scene">
+                                </el-option>
+                            </el-select>
+                            <i v-if="scope.row.scene" class="btn-opera btn-custom el-icon-edit" @click="editSceneData({id: scope.row.id, api: scope.row.api, scene: scope.row.scene})" title="编辑场景数据"></i>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100px">
+                    <template slot-scope="scope">
+                        <i class="btn-opera el-icon-delete" @click="deleteApiScene(curSceneGroup.group, scope.$index)" title="删除API"></i>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+    </div>
+    <el-dialog :title="isEdit ? '编辑场景组' : '新增场景组'" :visible.sync="dialogVisible">
+        <el-form :model="form">
+            <el-form-item label="场景组名：" :label-width="formLabelWidth">
+                <el-input v-model="form.name"></el-input>
+            </el-form-item>
+            <el-form-item label="页面URL：" :label-width="formLabelWidth">
+                <el-input v-model="form.url"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveSceneGroup">确 定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog title="编辑数据" :visible.sync="editDataDialogVisible">
+        <div>
+            <pre ref="editSceneData" contenteditable="true" @input.stop="changeSceneData($event)">{{JSON.stringify(editData || '{}', null, 4)}}</pre>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="editDataDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveSceneData">确 定</el-button>
+        </div>
+    </el-dialog>
+  </div>
+</body>
+  <script>
+    new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                tabPosition: 'left',
+                //activeName: '',
+                editError: {},
+                mockList: [],
+                curGroup: '',
+                curSceneGroup: {},
+                sceneGroupList: [],
+                ALL_SCENE_GROUP: [],
+                API_LIST: [],
+                ALL_API_SCENE: {},
+                isEdit: true,
+                dialogVisible: false,
+                formLabelWidth: '100px',
+                form: {
+                    name: '',
+                    url: ''
+                },
+                editDataDialogVisible: false,
+                editData: {},
+                editDataKeys: {}
+            }
+        },
+        created(){
+            this.getMockList();
+            this.getSceneGroupList();
+            this.getApi();
+        },
+        methods: {
+            urlPartten(){
+                return new RegExp('(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]');
+            },
+            post(url, data) {
+                try {
+                    data = JSON.stringify(data)
+                    return fetch(url, {
+                        body:data,
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        method: 'POST',
+                    })
+                    .then(response => response.json()) // parses response to JSON
+                } catch {
+                    this.$message.error('数据不是合法JSON对象')
+                }
+            },
+            async getMockList(){
+                const res = await this.post('/mockServer/getAllData')
+                if(res && res.retCode === 200){
+                    this.mockList = res.data.sort((a, b) => {
+                        return a.path.localeCompare(b.path)
+                    });
+                }
+            },
+            async getSceneGroupList(){
+                const res = await this.post('/mockServer/getSceneGroup')
+                if(res && res.retCode === 200){
+                    if(res && res.retCode === 200){
+                        this.sceneGroupList = (res.data || []).map(item => {
+                            item.group = item.group || [];
+                            item.group.sort((a, b) => (a.api || '').localeCompare(b.api || ''));
+                            item.group.map( ({ id }) => {
+                                if( !this.ALL_API_SCENE[id] ){
+                                    this.getApiScene(id)
+                                }
+                            })
+                            return item;
+                        });
+                        this.changeSceneGroupList();
+                    }
+                }
+            },
+            changeSceneGroupList(){
+                this.ALL_SCENE_GROUP = this.sceneGroupList.map(item => item.name);
+                this.changeSceneGroup({label: this.curGroup ? this.curGroup : (this.sceneGroupList.length ? this.sceneGroupList[0].name : '')})
+            },
+            async getApi(){//获取所有API及其匹配的场景
+                const res = await this.post('/mockServer/getApiList')
+                if(res && res.retCode === 200){
+                    this.API_LIST = (res.data || []).sort((a, b) => (a.api || '').localeCompare(b.api|| ''));
+                }
+            },
+            async getApiScene(id){
+                const res = await this.post('/mockServer/getApiScene', {
+                    id
+                })
+                if(res && res.retCode === 200){
+                    this.$set(this.ALL_API_SCENE, id, res.data)
+                }
+            },
+            handleClick(e){
+                if(e.name === 'mock'){
+                    this.getMockList()
+                } else {
+                    this.getSceneGroupList()
+                }
+            },
+            editMock(event, item){
+                const str = this.$refs[item.path][0].innerText || '{}';
+                try {
+                    this.saveMock({
+                        filePath: item.path,
+                        data: JSON.parse(str)
+                    })
+                    this.$set(this.editError, item.path, false)
+                } catch(e){
+                    this.$set(this.editError, item.path, true)
+                }
+            },
+            async saveMock(data){
+                const res = await this.post('/mockServer/updateData', data)
+            },
+            changeSceneGroup( { label: curGroup } = {} ){
+                this.curGroup = curGroup || '';
+                const curSceneGroup = curGroup ? this.sceneGroupList.find(item => item.name === curGroup) : {};
+                this.$set(this, 'curSceneGroup', curSceneGroup)
+            },
+            changeApiScene(){
+                this.saveSceneGroupList()
+            },
+            changeApi(curId, item){
+                this.getApiScene(curId);
+                for(let { id, api } of this.API_LIST){
+                    if(id === curId){
+                        item.api = api;
+                        break;
+                    }
+                }
+                this.saveSceneGroupList();
+            },
+            isDisabled(id, group){
+                return group.some(api => {
+                    return api.id === id
+                })
+            },
+            editSceneGroup(obj){
+                this.isEdit = !!obj;
+                this.dialogVisible = true;
+                this.form.name = obj ? obj.name : '';
+                this.form.url = obj ? obj.url : '';
+            },
+            deleteSceneGroup(name){
+                this.$confirm('此操作会永久删除该场景组下的所有API配置，确认删除该场景组吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const index = this.sceneGroupList.findIndex(item => item.name === name);
+                    this.sceneGroupList.splice(index, 1);
+                    this.changeSceneGroup({label: this.curGroup ? this.curGroup : (this.sceneGroupList.length ? this.sceneGroupList[0].name : '')})
+                    this.changeSceneGroupList();
+                    this.saveSceneGroupList();
+                    this.$message.success('删除场景组成功！')
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            },
+            addApiScene(){
+                if(!this.curSceneGroup.group){
+                    this.$set(this.curSceneGroup, 'group', [])
+                }
+                this.curSceneGroup.group.unshift({
+                    api: '',
+                    id: '',
+                    scene: ''
+                })
+                const index = this.sceneGroupList.findIndex(item => item.name === this.curSceneGroup.name);
+                this.sceneGroupList.splice(index, 1, this.curSceneGroup)
+            },
+            deleteApiScene(group, index){
+                this.$confirm('确认删除该场景下的API吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    group.splice(index, 1);
+                    this.saveSceneGroupList();
+                    this.$message.success('删除API成功！')
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            },
+            async saveSceneGroupList(){
+                const res = await this.post('/mockServer/updateSceneGroup', { sceneGroupList: this.sceneGroupList})
+            },
+            saveSceneGroup(){
+                const { name = '', url = ''} = this.form;
+                if(!name || !url || !this.urlPartten().test(url)){
+                    this.$message.error('场景组和页面URL缺一不可，且URL要为合法地址哦～')
+                    return false;
+                }
+                const hadGroup = this.sceneGroupList.find(item => item.name === name);
+                if(this.curSceneGroup.name !== name && hadGroup){
+                    this.$message.error('场景名不能重复哦～')
+                    return false;
+                }
+                this.dialogVisible = false;
+                if(this.isEdit){
+                    Object.assign(this.curSceneGroup,this.form)
+                    this.curGroup = name;
+                } else {
+                    this.sceneGroupList.push(Object.assign({}, this.form))
+                }
+                this.changeSceneGroupList();
+                this.saveSceneGroupList();
+            },
+            changeSwitch(){
+                this.saveSceneGroupList();
+            },
+            async editSceneData( { id, api, scene }){
+                this.editDataDialogVisible = !this.editDataDialogVisible;
+                this.$set(this, 'editDataKeys', {
+                    id, api, scene
+                })
+                //this.editData = await 
+            },
+            changeSceneData(){
+                const str = this.$refs.editSceneData.innerText || '{}';
+                try {
+                    this.editData = JSON.stringify(str);
+                    this.$set(this, 'editSceneDataError', false)
+                } catch(e){
+                    this.$set(this, 'editSceneDataError', true)
+                }
+            },
+            async saveSceneData(){
+                if(!this.editData){
+                    this.$message.error('额，数据不是合法JSON对象～')
+                    return false;
+                }
+                this.$message.info('功能待实现～')
+                // const res = await this.post('/mockServer/updateSceneData', Object.assign({}, this.editDataKeys, {
+                //     data: this.editData
+                // }))
+                // if(res && res.retCode === 200){
+                //     this.$message.success('数据修改成功！')
+                // } else {
+                //     this.$message.error('数据修改失败！')
+                // }
+                    
+            }
+        }
+    })
+  </script>
+</html>

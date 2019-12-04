@@ -4,6 +4,9 @@ module.exports = function ( ctx ) {
     config: {
       devServer: {
         port: 9001,
+        proxy: {
+          '/api': 'http://127.0.0.1:8001'
+        }
       },
     },
 
@@ -13,6 +16,9 @@ module.exports = function ( ctx ) {
         options: {
           x: 1
         }
+      },
+      cmock: {
+        resolve: require.resolve( './plugins/plugin-mock-proxy' ),
       },
     },
   }

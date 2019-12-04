@@ -1,0 +1,55 @@
+{
+  "name": "@nut-project/driver-mock",
+  "version": "1.0.0-alpha.3",
+  "description": "A framework born for micro frontends",
+  "keywords": [
+    "architecture",
+    "cli",
+    "frontend",
+    "hmr",
+    "micro",
+    "microfrontends",
+    "spa",
+    "static site generator"
+  ],
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/gatherer",
+  "license": "MIT",
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "yarn.lock",
+    "README.md"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "prepublishOnly": "cp ../../README.md ./README.md"
+  },
+  "dependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.6.2",
+    "@nut-project/core": "^1.0.0-alpha.3",
+    "@nut-project/dev-utils": "^1.0.0-alpha.2",
+    "anyproxy": "^4.1.0",
+    "babel-loader": "^8.0.6",
+    "exit": "^0.1.2"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

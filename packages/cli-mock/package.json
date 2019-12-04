@@ -1,0 +1,45 @@
+{
+    "name": "@nut-project/cli-mock",
+    "version": "1.0.0-alpha.3",
+    "publishConfig": {
+      "access": "public"
+    },
+    "description": "A framework born for micro frontends",
+    "keywords": [
+      "microfrontends",
+      "micro",
+      "frontend",
+      "architecture",
+      "spa",
+      "cli",
+      "static site generator",
+      "hmr"
+    ],
+    "main": "lib/index.js",
+    "files": [
+      "lib",
+      "yarn.lock",
+      "README.md"
+    ],
+    "engines": {
+      "node": ">=8.9.0"
+    },
+    "repository": "https://github.com/nut-project/nut/tree/master/packages/cli",
+    "homepage": "http://nut.js.org",
+    "bugs": {
+      "url": "https://github.com/nut-project/nut/issues/new/choose"
+    },
+    "scripts": {
+      "prepublishOnly": "cp ../../README.md ./README.md"
+    },
+    "author": {
+      "name": "fengzilong",
+      "email": "fengzilong1992@gmail.com",
+      "url": "https://github.com/fengzilong"
+    },
+    "license": "MIT",
+    "dependencies": {
+      "@nut-project/core": "^1.0.0-alpha.3"
+    }
+  }
+  
