@@ -5,6 +5,7 @@ dist
 /packages/**/README.md
 .DS_Store
 package-lock.json
+yarn.lock
 
 # Logs
 logs
