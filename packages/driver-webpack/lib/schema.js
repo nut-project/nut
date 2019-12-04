@@ -1,40 +1,38 @@
-const { superstruct } = require( 'superstruct' )
+module.exports = function ( { struct } ) {
+  const output = struct.object( {
+    clean: 'boolean?',
+    html: struct.object( {
+      title: 'string?',
+      filename: 'string?',
+      favicon: 'string?',
+    }, {} ),
+    publicPath: 'string?',
+  }, {} )
 
-const struct = superstruct()
+  const babel = struct.object( {
+    transpileModules: [ 'string' ],
+  }, {
+    transpileModules: []
+  } )
 
-const output = struct.object( {
-  clean: 'boolean?',
-  html: struct.object( {
-    title: 'string?',
-    filename: 'string?',
-    favicon: 'string?',
-  }, {} ),
-  publicPath: 'string?',
-}, {} )
+  const devServer = struct.object( {
+    host: 'string?',
+    port: struct.optional( 'string | number' ),
+    historyApiFallback: struct.optional( 'boolean | object' ),
+    https: struct.optional( 'boolean | object' ),
+    proxy: 'object?',
+  }, {} )
 
-const babel = struct.object( {
-  transpileModules: [ 'string' ],
-}, {
-  transpileModules: []
-} )
-
-const devServer = struct.object( {
-  host: 'string?',
-  port: struct.optional( 'string | number' ),
-  historyApiFallback: struct.optional( 'boolean | object' ),
-  https: struct.optional( 'boolean | object' ),
-  proxy: 'object?',
-}, {} )
-
-module.exports = struct( {
-  entry: 'string?',
-  pages: 'object?',
-  output,
-  babel,
-  devServer,
-  envs: struct.record( [ 'string', 'string | number | boolean' ], {} ),
-  constants: struct.record( [ 'string', 'string | number | boolean' ], {} ),
-  alias: struct.record( [ 'string', 'string' ], {} ),
-  parallel: 'boolean?',
-  fast: 'boolean?',
-} )
+  return {
+    entry: 'string?',
+    pages: 'object?',
+    output,
+    babel,
+    devServer,
+    envs: struct.record( [ 'string', 'string | number | boolean' ], {} ),
+    constants: struct.record( [ 'string', 'string | number | boolean' ], {} ),
+    alias: struct.record( [ 'string', 'string' ], {} ),
+    parallel: 'boolean?',
+    fast: 'boolean?',
+  }
+}

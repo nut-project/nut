@@ -1,6 +1,8 @@
 const cac = require( 'cac' )
 const memoize = require( 'fast-memoize' )
 const importFresh = require( 'import-fresh' )
+const { superstruct } = require( 'superstruct' )
+const exit = require( 'exit' )
 const { config, utils, logger } = require( '@nut-project/dev-utils' )
 
 class CLI {
@@ -56,6 +58,19 @@ class CLI {
       } )
     }
 
+    if ( this._validator ) {
+      const userConfig = config.config || {}
+
+      const [ error ] = this._validator.validate( userConfig )
+
+      if ( error ) {
+        console.log()
+        logger.warn( error.message )
+        console.log()
+        exit( 0 )
+      }
+    }
+
     return config || {}
   }
 
@@ -70,6 +85,21 @@ class CLI {
   async use( { drivers: Drivers = [], plugins = [] } = {} ) {
     // api/hooks is ready after `new Driver`
     const drivers = Drivers.map( Driver => new Driver() )
+
+    // schema
+    const struct = superstruct()
+    const schema = Drivers
+      .map( Driver => Driver.schema( { struct } ) )
+      .filter( Boolean )
+      // merge into one
+      .reduce( ( all, schema ) => {
+        Object.assign( all, schema )
+        return all
+      }, {} )
+
+    if ( Object.keys( schema ).length > 0 ) {
+      this._validator = struct( schema )
+    }
 
     utils.poweredBy( drivers )
 

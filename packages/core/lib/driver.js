@@ -82,9 +82,10 @@ class Driver {
   // override, optional
   static id() {}
   static version() {}
+  static schema() {}
+  static name() {}
 
   // override, required
-  static name() {}
   hooks() {}
   api() {}
   apply() {}

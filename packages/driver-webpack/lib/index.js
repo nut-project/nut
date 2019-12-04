@@ -20,6 +20,10 @@ class WebpackDriver extends Driver {
     return require( '../package.json' ).version
   }
 
+  static schema( { struct } ) {
+    return schema( { struct } )
+  }
+
   hooks() {
     this.addAsyncSeriesHook( 'forceExit', [] )
     this.addSyncHook( 'stdin', [ 'key' ] )
@@ -75,14 +79,6 @@ class WebpackDriver extends Driver {
     this.callHook( 'cliOptions', cliOptions )
 
     const { config: userConfig } = ( await cli.getConfig() ) || {}
-
-    const [ error ] = schema.validate( userConfig )
-
-    if ( error ) {
-      logger.warn( error.message )
-      console.log()
-      exit( 0 )
-    }
 
     this.callHook( 'userConfig', userConfig )
 
