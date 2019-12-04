@@ -7,7 +7,7 @@ class MockCLI extends CLI {
 
   commands() {
     return [
-      { command: 'dev', description: 'start a mock server' },
+      { command: '', description: 'start a mock server' },
     ]
   }
 }

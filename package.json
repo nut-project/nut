@@ -18,7 +18,8 @@
     "build:compose": "npm run build --prefix ./examples/host",
     "dependency-check": "node scripts/dependency-check.js",
     "dev:gene": "npm run dev --prefix ./examples/gene",
-    "build:gene": "npm run build --prefix ./examples/gene"
+    "build:gene": "npm run build --prefix ./examples/gene",
+    "mock:gene": "npm run mock --prefix ./examples/gene"
   },
   "husky": {
     "hooks": {

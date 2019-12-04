@@ -22,7 +22,7 @@ class MockDriver extends Driver {
   }
 
   apply( cli ) {
-    [ 'dev' ].forEach( command => {
+    [ '' ].forEach( command => {
       cli.action( command, () => {
         this.run( cli )
       } )
@@ -30,7 +30,7 @@ class MockDriver extends Driver {
   }
 
   async run( cli ) {
-    const userConfig = await cli.getConfig()
+    const { config: userConfig } = ( await cli.getConfig() ) || {}
 
     this.callHook( 'beforeRun' )
     serve( this, { userConfig } )

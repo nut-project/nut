@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node ../../packages/cli/bin/index.js pages dev --profile",
-    "build": "node ../../packages/cli/bin/index.js pages build"
+    "build": "node ../../packages/cli/bin/index.js pages build",
+    "mock": "node ../../packages/cli/bin/index.js mock"
   },
   "nut": {
     "presets": "./presets-package.js"
