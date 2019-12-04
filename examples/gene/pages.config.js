@@ -9,6 +9,7 @@ module.exports = function ( ctx ) {
 
     plugins: {
       rem: {
+        resolve: require.resolve( './plugins/plugin-rem' ),
         options: {
           x: 1
         }

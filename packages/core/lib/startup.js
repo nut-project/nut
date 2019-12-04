@@ -1,5 +1,5 @@
 require( 'v8-compile-cache' )
-const { logger } = require( '@nut-project/dev-utils' )
+const { logger, localRequire } = require( '@nut-project/dev-utils' )
 const pkg = require( '../package.json' )
 
 require( 'please-upgrade-node' )( pkg, {
@@ -15,7 +15,7 @@ async function startup( { presets = [] } = {} ) {
   const argv = process.argv
   const scope = argv[ 2 ]
 
-  normalizePresets( presets )
+  presets = normalizePresets( presets )
 
   const preset = presets.find( preset => {
     return preset.cli.name() === scope
@@ -45,12 +45,18 @@ async function startup( { presets = [] } = {} ) {
 }
 
 function normalizePresets( presets ) {
+  if ( typeof presets === 'string' ) {
+    presets = localRequire( presets )
+  }
+
   presets.forEach( preset => {
     const { cli = '', drivers = [], plugins = [] } = preset
     preset.cli = normalizeCLI( cli )
     preset.drivers = normalizeDrivers( drivers )
     preset.plugins = normalizePlugins( plugins )
   } )
+
+  return presets
 }
 
 function normalizeCLI( cli ) {

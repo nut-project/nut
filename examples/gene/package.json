@@ -7,6 +7,9 @@
     "dev": "node ../../packages/cli/bin/index.js pages dev --profile",
     "build": "node ../../packages/cli/bin/index.js pages build"
   },
+  "nut": {
+    "presets": "./presets-package.js"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT"
