@@ -17,6 +17,8 @@ class RemPlugin {
       $( 'title' ).text( 'Hello Plugin' )
       console.log( $( 'title' ).html() )
     } )
+
+    api.entry.prepend( require.resolve( './runtime' ) )
   }
 }
 
