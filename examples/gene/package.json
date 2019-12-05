@@ -8,9 +8,12 @@
     "build": "node ../../packages/cli/bin/index.js pages build"
   },
   "nut": {
-    "presets": "./presets-package.js"
+    "presets": "@nut-project/presets-alpha"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@nut-project/presets-alpha": "1.0.0-alpha.2"
+  }
 }

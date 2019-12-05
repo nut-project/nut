@@ -1,22 +1,15 @@
 {
   "name": "@nut-project/driver-webpack",
   "version": "1.0.0-alpha.3",
-  "description": "A framework born for micro frontends",
+  "description": "webpack driver for nut",
   "keywords": [
-    "architecture",
-    "cli",
-    "frontend",
-    "hmr",
-    "micro",
-    "microfrontends",
-    "spa",
-    "static site generator"
+    "webpack"
   ],
   "homepage": "http://nut.js.org",
   "bugs": {
     "url": "https://github.com/nut-project/nut/issues/new/choose"
   },
-  "repository": "https://github.com/nut-project/nut/tree/master/packages/gatherer",
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/driver-webpack",
   "license": "MIT",
   "author": {
     "name": "fengzilong",
@@ -31,7 +24,6 @@
   ],
   "main": "lib/index.js",
   "scripts": {
-    "prepublishOnly": "cp ../../README.md ./README.md"
   },
   "engines": {
     "node": ">=8.9.0"
