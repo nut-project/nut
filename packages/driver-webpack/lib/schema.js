@@ -33,6 +33,7 @@ module.exports = function ( { struct } ) {
     constants: struct.record( [ 'string', 'string | number | boolean' ], {} ),
     alias: struct.record( [ 'string', 'string' ], {} ),
     parallel: 'boolean?',
+    minimize: 'boolean?',
     fast: 'boolean?',
   }
 }

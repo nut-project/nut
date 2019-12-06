@@ -14,6 +14,7 @@ const abilities = [
   require( './clean' ),
   require( './analyze' ),
   require( './mode' ),
+  require( './minimizer' ),
   require( './minimize' ),
   require( './progress' ),
   require( './vue' ),
