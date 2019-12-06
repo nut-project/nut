@@ -1,6 +1,6 @@
 {
   "name": "@nut-plugins/pages-runtime-vue",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "publishConfig": {
     "access": "public"
   },
@@ -29,8 +29,5 @@
     "email": "fengzilong1992@gmail.com",
     "url": "https://github.com/fengzilong"
   },
-  "license": "MIT",
-  "dependencies": {
-
-  }
+  "license": "MIT"
 }

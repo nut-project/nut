@@ -1,7 +1,7 @@
 {
   "name": "gene",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@nut-project/presets-alpha": "1.0.0-alpha.2"
+    "@nut-project/presets-alpha": "^1.0.0-alpha.3"
   }
 }
