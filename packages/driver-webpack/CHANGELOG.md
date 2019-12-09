@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.7](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.6...@nut-project/driver-webpack@1.0.0-alpha.7) (2019-12-09)
+
+
+### Bug Fixes
+
+* add output.path and add fallback postcss config ([ee3bfc7](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/ee3bfc7ac39dff6295418cc917af34b9c8855b59))
+* remove plugins field to let postcss-loader search for postcss config file in project ([e9ee123](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/e9ee12304989116bde77ccd91df9dea58ece71d1))
+
+
+
+
+
 # [1.0.0-alpha.6](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.5...@nut-project/driver-webpack@1.0.0-alpha.6) (2019-12-09)
 
 
