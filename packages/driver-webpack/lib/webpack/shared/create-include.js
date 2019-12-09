@@ -4,9 +4,7 @@ module.exports = function ( transpileModules = [] ) {
   return memoize( function ( filepath = '' ) {
     filepath = filepath.replace( /\\/g, '/' )
 
-    // skip code from overlay which has been added to entries
-    // it's only necessary for not being installed with npm but with path
-    // i.e. during development
+    // skip transpiling overlay code for development mode
     if ( filepath.includes( 'driver-webpack/lib/webpack/overlay' ) ) {
       return false
     }
