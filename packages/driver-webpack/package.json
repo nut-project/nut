@@ -19,6 +19,7 @@
   "files": [
     "bin",
     "lib",
+    "plugins",
     "yarn.lock",
     "README.md"
   ],
