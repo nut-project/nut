@@ -5,9 +5,9 @@ module.exports = [
       require.resolve( '@nut-project/driver-webpack' ),
     ],
     plugins: {
-      clearConsole: '@nut-project/driver-webpack/plugins/clear-console',
-      memoryUsage: '@nut-project/driver-webpack/plugins/memory-usage',
-      serverInfo: '@nut-project/driver-webpack/plugins/server-info',
+      clearConsole: require.resolve( '@nut-project/driver-webpack/plugins/clear-console' ),
+      memoryUsage: require.resolve( '@nut-project/driver-webpack/plugins/memory-usage' ),
+      serverInfo: require.resolve( '@nut-project/driver-webpack/plugins/server-info' ),
     }
   }
 ]
