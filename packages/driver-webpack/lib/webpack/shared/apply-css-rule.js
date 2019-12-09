@@ -39,9 +39,7 @@ function apply( rule, lang, loader, options, env, modules ) {
   rule.use( 'postcss' )
     .loader( 'postcss-loader' )
     .options( {
-      plugins: [
-        require( 'autoprefixer' )()
-      ],
+      ident: 'postcss'
     } )
 
   if ( loader ) {
