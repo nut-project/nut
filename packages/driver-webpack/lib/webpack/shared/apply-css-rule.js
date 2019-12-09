@@ -1,4 +1,7 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
+const { config } = require( '@nut-project/dev-utils' )
+
+const hasPostCSSConfig = Boolean( config( 'postcss' ).loadSync() )
 
 function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
   const rule = webpackConfig.module
@@ -36,11 +39,27 @@ function apply( rule, lang, loader, options, env, modules ) {
       importLoaders: loader ? 2 : 1,
     } )
 
+  const postcssOptions = {
+    ident: 'postcss',
+  }
+
+  if ( !hasPostCSSConfig ) {
+    // config default postcss config
+    // with plugins field set, postcss-loader will not search for config file
+    postcssOptions.plugins = [
+      require( 'postcss-flexbugs-fixes' ),
+      require( 'postcss-preset-env' )( {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+        stage: 3,
+      } )
+    ]
+  }
+
   rule.use( 'postcss' )
     .loader( 'postcss-loader' )
-    .options( {
-      ident: 'postcss'
-    } )
+    .options( postcssOptions )
 
   if ( loader ) {
     rule.use( lang )

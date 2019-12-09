@@ -1,5 +1,6 @@
 module.exports = function ( { struct } ) {
   const output = struct.object( {
+    path: 'string?',
     clean: 'boolean?',
     html: struct.object( {
       title: 'string?',

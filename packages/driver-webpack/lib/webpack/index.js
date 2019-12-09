@@ -25,6 +25,7 @@ const abilities = [
   require( './dev-server' ),
   require( './missing-node-modules' ),
   require( './hot' ),
+  require( './outdir' ),
 
   // produce very little effect
   // require( './dll' ),
