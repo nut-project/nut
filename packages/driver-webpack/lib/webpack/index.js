@@ -24,6 +24,7 @@ const abilities = [
   require( './performance' ),
   require( './dev-server' ),
   require( './missing-node-modules' ),
+  require( './hot' ),
 
   // produce very little effect
   // require( './dll' ),
