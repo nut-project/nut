@@ -61,7 +61,7 @@ class WebpackDriver extends Driver {
 
     try {
       pkg = require( path.join( process.cwd(), 'package.json' ) )
-    } catch {}
+    } catch ( e ) {} // eslint-disable-line
 
     const COMMAND_TO_ENV = {
       dev: 'development',
