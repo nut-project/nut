@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.8](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.7...@nut-project/driver-webpack@1.0.0-alpha.8) (2019-12-10)
+
+**Note:** Version bump only for package @nut-project/driver-webpack
+
+
+
+
+
 # [1.0.0-alpha.7](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.6...@nut-project/driver-webpack@1.0.0-alpha.7) (2019-12-09)
 
 
