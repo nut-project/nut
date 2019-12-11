@@ -1,4 +1,4 @@
-const localResolve = require( './shared/local-resolve' )
+const localJoin = require( './shared/local-join' )
 
 exports.extend = function ( config, context = {} ) {
   const { userConfig = {} } = context
@@ -10,11 +10,11 @@ exports.extend = function ( config, context = {} ) {
       if ( pages[ key ] ) {
         const pageEntry = pages[ key ].entry || pages[ key ]
 
-        config.entry( key ).add( localResolve( pageEntry ) )
+        config.entry( key ).add( localJoin( pageEntry ) )
       }
     }
   } else {
-    config.entry( 'index' ).add( localResolve( entry ) )
+    config.entry( 'index' ).add( localJoin( entry ) )
   }
 }
 

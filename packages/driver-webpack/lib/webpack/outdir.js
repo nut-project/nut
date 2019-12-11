@@ -1,3 +1,5 @@
+const path = require( 'path' )
+
 exports.extend = function ( config, context = {} ) {
   const { userConfig = {} } = context
 
@@ -5,6 +7,6 @@ exports.extend = function ( config, context = {} ) {
   if ( outdir ) {
     config.output.path( outdir )
   } else {
-    config.output.path( 'dist' )
+    config.output.path( path.join( process.cwd(), 'dist' ) )
   }
 }

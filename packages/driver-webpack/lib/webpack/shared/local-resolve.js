@@ -1,5 +1,5 @@
-const path = require( 'path' )
+const resolveFrom = require( 'resolve-from' )
 
-module.exports = function ( segment ) {
-  return path.join( process.cwd(), segment )
+module.exports = ( id, context = process.cwd() ) => {
+  return resolveFrom.silent( context, id )
 }

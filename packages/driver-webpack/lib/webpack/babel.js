@@ -5,6 +5,7 @@ const threadLoader = require( 'thread-loader' )
 exports.extend = function ( config, context = {} ) {
   const { env, userConfig = {} } = context
   const { babel = {} } = userConfig
+  const cache = env === 'development' && userConfig.cache !== false
 
   const rule = config.module.rule( 'js' )
 
@@ -19,12 +20,12 @@ exports.extend = function ( config, context = {} ) {
     parallel( rule )
   }
 
+  const babelOptions = {
+    cacheCompression: env === 'production',
+    cacheDirectory: cache
+  }
+
   rule.use( 'babel' )
     .loader( require.resolve( './babel/loader' ) )
-    .options( {
-      // 1. disable cache on production build
-      // 2. should enable by user manually
-      cacheDirectory: env !== 'production' && babel.cache,
-      cacheCompression: env === 'production',
-    } )
+    .options( babelOptions )
 }

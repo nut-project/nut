@@ -27,11 +27,11 @@ function apply( rule, lang, loader, options, env, modules ) {
       } )
   } else {
     rule.use( 'style' )
-      .loader( 'style-loader' )
+      .loader( require.resolve( 'style-loader' ) )
   }
 
   rule.use( 'css' )
-    .loader( 'css-loader' )
+    .loader( require.resolve( 'css-loader' ) )
     .options( {
       modules: modules ? {
         localIdentName: '[local]___[hash:base64:5]',
@@ -58,12 +58,12 @@ function apply( rule, lang, loader, options, env, modules ) {
   }
 
   rule.use( 'postcss' )
-    .loader( 'postcss-loader' )
+    .loader( require.resolve( 'postcss-loader' ) )
     .options( postcssOptions )
 
   if ( loader ) {
     rule.use( lang )
-      .loader( loader )
+      .loader( require.resolve( loader ) )
       .options( options || {} )
   }
 }
