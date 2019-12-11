@@ -130,6 +130,13 @@ class CLI {
     plugins.forEach( plugin => {
       const resolve = plugin.resolve
       const options = plugin.options || {}
+      const enable = plugin.enable
+      const name = plugin.name
+
+      if ( enable === false ) {
+        logger.info( `Plugin${ name ? ' "' + name + '"' : '' } is disabled by "enable: false"` )
+        return
+      }
 
       let Plugin
       try {
@@ -143,8 +150,11 @@ class CLI {
 
       new Plugin( options ).apply( {
         use: memoize( useDriver ),
+        logger,
       } )
     } )
+
+    console.log()
 
     const pendings = drivers.map( driver => driver.apply( this ) )
 

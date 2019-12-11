@@ -17,7 +17,8 @@ module.exports = function ( ctx ) {
         resolve: require.resolve( './plugins/plugin-rem' ),
         options: {
           x: 1
-        }
+        },
+        enable: true,
       },
     },
   }

@@ -114,8 +114,10 @@ function mergePlugin( name, presetPlugin = {}, userPlugin = {} ) {
 
   const merged = {}
 
-  ;[ 'name', 'resolve', 'options' ].forEach( key => {
-    merged[ key ] = userPlugin[ key ] || presetPlugin[ key ]
+  ;[ 'name', 'resolve', 'options', 'enable' ].forEach( key => {
+    merged[ key ] = typeof userPlugin[ key ] !== 'undefined' ? // eslint-disable-line
+      userPlugin[ key ] :
+      presetPlugin[ key ]
   } )
 
   return merged
@@ -134,11 +136,13 @@ function normalizePlugins( plugins = {} ) {
 
       const options = plugin.options
       const resolve = plugin.resolve
+      const enable = plugin.enable !== false
 
       return {
         name,
         resolve,
         options,
+        enable,
       }
     } )
     .reduce( ( all, plugin ) => {
