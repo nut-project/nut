@@ -1,9 +1,10 @@
 const tapable = require( 'tapable' )
 
 class Driver {
-  constructor() {
+  constructor( { cli } = {} ) {
     this._hooks = {}
     this._api = {}
+    this._cli = cli
 
     const hooks = [
       'SyncHook',
@@ -79,13 +80,24 @@ class Driver {
     }
   }
 
+  // get config by name
+  getConfig() {
+    const name = this.constructor.name
+
+    if ( typeof name !== 'function' || !name() ) {
+      return {}
+    }
+
+    return this._cli.getDriverConfig( name() )
+  }
+
   // override, optional
   static id() {}
   static version() {}
   static schema() {}
-  static name() {}
 
   // override, required
+  static name() {} // used as config key
   hooks() {}
   api() {}
   apply() {}

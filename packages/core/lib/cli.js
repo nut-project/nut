@@ -58,16 +58,20 @@ class CLI {
       } )
     }
 
-    if ( this._validator ) {
+    const validators = this._validators
+
+    if ( validators ) {
       const userConfig = config.config || {}
 
-      const [ error ] = this._validator.validate( userConfig )
+      for ( const key of Object.keys( validators ) ) {
+        const [ error ] = validators[ key ].validate( userConfig[ key ] || {} )
 
-      if ( error ) {
-        console.log()
-        logger.warn( error.message )
-        console.log()
-        exit( 0 )
+        if ( error ) {
+          console.log()
+          logger.scope( key + ' validation' ).warn( error.message )
+          console.log()
+          exit( 0 )
+        }
       }
     }
 
@@ -78,28 +82,47 @@ class CLI {
     return await this._loader.getFile()
   }
 
+  // only be exposed to driver
+  async getDriverConfig( name ) {
+    const config = await this.getUserConfig()
+
+    if ( typeof config[ name ] === 'undefined' ) {
+      return {}
+    }
+
+    return config[ name ]
+  }
+
   watch() {
 
   }
 
   async use( { drivers: Drivers = [], plugins = [] } = {} ) {
     // api/hooks is ready after `new Driver`
-    const drivers = Drivers.map( Driver => new Driver() )
+    const drivers = Drivers.map( Driver => new Driver( { cli: this } ) )
 
     // schema
     const struct = superstruct()
-    const schema = Drivers
-      .map( Driver => Driver.schema( { struct } ) )
+    this._validators = Drivers
+      .map( Driver => {
+        if (
+          typeof Driver.name !== 'function' ||
+          typeof Driver.schema !== 'function'
+        ) {
+          return false
+        }
+
+        return {
+          name: Driver.name(),
+          schema: Driver.schema( { struct } ) || {},
+        }
+      } )
       .filter( Boolean )
-      // merge into one
+      // group by name
       .reduce( ( all, schema ) => {
-        Object.assign( all, schema )
+        all[ schema.name ] = struct( schema.schema )
         return all
       }, {} )
-
-    if ( Object.keys( schema ).length > 0 ) {
-      this._validator = struct( schema )
-    }
 
     utils.poweredBy( drivers )
 

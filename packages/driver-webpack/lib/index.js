@@ -50,12 +50,12 @@ class WebpackDriver extends Driver {
   apply( cli ) {
     [ 'dev', 'build' ].forEach( command => {
       cli.action( command, async cliOptions => {
-        await this.flow( command, cli, cliOptions )
+        await this.flow( command, cliOptions )
       } )
     } )
   }
 
-  async flow( command = '', cli, cliOptions = {} ) {
+  async flow( command = '', cliOptions = {} ) {
     const warnings = []
     let pkg = {}
 
@@ -78,7 +78,7 @@ class WebpackDriver extends Driver {
 
     this.callHook( 'cliOptions', cliOptions )
 
-    const { config: userConfig } = ( await cli.getConfig() ) || {}
+    const userConfig = ( await this.getConfig() ) || {}
 
     this.callHook( 'userConfig', userConfig )
 
@@ -89,7 +89,7 @@ class WebpackDriver extends Driver {
       cliOptions,
       userConfig,
       pkg,
-      cli,
+      driver: this,
     } )
 
     this.callHook( 'dangerously_chainWebpack', config )
@@ -122,7 +122,7 @@ class WebpackDriver extends Driver {
         cliOptions,
         userConfig,
         pkg,
-        cli,
+        driver: this,
       } )
 
       const _port = await detectPort( serverOptions.port )
