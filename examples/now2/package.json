@@ -1,7 +1,7 @@
 {
   "name": "now2",
   "private": true,
-  "version": "0.0.4-alpha.0",
+  "version": "0.0.4",
   "description": "my awesome nut project",
   "keywords": [],
   "scripts": {

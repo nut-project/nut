@@ -1,6 +1,6 @@
 {
   "name": "host",
-  "version": "1.0.5-alpha.0",
+  "version": "1.0.5",
   "private": true,
   "description": "",
   "main": "app.js",

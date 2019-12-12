@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/driver-pages",
-  "version": "0.2.0-alpha.0",
+  "version": "0.2.0",
   "publishConfig": {
     "access": "public"
   },
@@ -43,11 +43,11 @@
     "@mapbox/rehype-prism": "^0.3.1",
     "@mdx-js/mdx": "^1.0.21",
     "@mdx-js/vue": "1.0.20",
-    "@nut-project/core": "^0.0.4-alpha.2",
+    "@nut-project/core": "^0.0.4",
     "@nut-project/gatherer-pages": "^0.0.4-alpha.1",
     "@nut-project/runtime-pages": "^0.2.1-alpha.1",
-    "@nut-project/webpack": "^0.0.1-alpha.1",
-    "@nut-project/webpack-virtual-modules": "^0.0.2-alpha.0",
+    "@nut-project/webpack": "^0.0.1",
+    "@nut-project/webpack-virtual-modules": "^0.0.2",
     "@sindresorhus/slugify": "^0.9.1",
     "@vue/babel-preset-jsx": "^1.1.0",
     "address": "^1.1.2",

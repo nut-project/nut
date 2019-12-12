@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/webpack",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1",
   "publishConfig": {
     "access": "public"
   },
@@ -36,7 +36,7 @@
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.6.2",
-    "@nut-project/mini-css-extract": "^0.0.1-alpha.1",
+    "@nut-project/mini-css-extract": "^0.0.1",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
     "@vue/babel-preset-jsx": "^1.1.0",
     "autoprefixer": "^9.6.1",
