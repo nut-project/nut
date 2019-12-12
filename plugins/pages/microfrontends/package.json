@@ -45,7 +45,7 @@
     "fs-extra": "^8.1.0",
     "hash-sum": "^2.0.0",
     "headroom.js": "^0.9.4",
-    "marked": "^0.6.1",
+    "marked": "^0.8.0",
     "mdast-util-toc": "^4.2.0",
     "nprogress": "^0.2.0",
     "popper.js": "^1.15.0",
