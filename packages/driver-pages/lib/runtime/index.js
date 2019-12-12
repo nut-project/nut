@@ -201,7 +201,8 @@ class PagesRuntime {
       dynamicPages: [],
       lockedDynamicPages: [],
       // skipDiff to make sure modules is available on restart
-      skipDiff: true
+      skipDiff: true,
+      modifyRoute: nutConfig.hooks && nutConfig.hooks.modifyRoute
     } )
 
     let virtualModules
@@ -291,6 +292,7 @@ class PagesRuntime {
             cliOptions: cli.options,
             dynamicPages,
             lockedDynamicPages,
+            modifyRoute: nutConfig.hooks && nutConfig.hooks.modifyRoute,
           } )
 
           if ( Object.keys( modules ).length > 0 ) {
@@ -326,6 +328,7 @@ class PagesRuntime {
               dynamicPages,
               // used for generate `module.hot.accept`s, ensure no page refresh
               lockedDynamicPages,
+              modifyRoute: nutConfig.hooks && nutConfig.hooks.modifyRoute,
             } )
 
             if ( Object.keys( modules ).length > 0 ) {
@@ -521,6 +524,7 @@ class PagesRuntime {
           cliOptions: cli.options,
           dynamicPages,
           lockedDynamicPages,
+          modifyRoute: nutConfig.hooks && nutConfig.hooks.modifyRoute,
         } )
 
         for ( const [ path, content ] of Object.entries( modules ) ) {
@@ -565,7 +569,8 @@ class PagesRuntime {
       } )
 
     const modules = await generateModules( await gatherer.getArtifacts(), {
-      env: 'prod'
+      env: 'prod',
+      modifyRoute: nutConfig.hooks && nutConfig.hooks.modifyRoute,
     } )
 
     config.plugin( 'virtual-modules' )

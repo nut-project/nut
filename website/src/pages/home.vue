@@ -40,7 +40,9 @@ export default {
   methods: {
     onRoute( item ) {
       if ( item.route ) {
-        this.$ctx.api.router.push( item.route )
+        this.$ctx.api.router.push( {
+          page: item.route
+        } )
         return
       }
 

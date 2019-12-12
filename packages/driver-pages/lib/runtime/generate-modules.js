@@ -17,9 +17,10 @@ async function generateModules( artifacts = {}, options = {} ) {
     dynamicPages = [],
     lockedDynamicPages = [],
     skipDiff = false,
+    modifyRoute,
   } = options
 
-  addRouteForPages( pages )
+  addRouteForPages( pages, modifyRoute )
 
   if ( cliOptions.singlePage ) {
     pages = pages.filter( page => {
@@ -57,12 +58,16 @@ async function generateModules( artifacts = {}, options = {} ) {
   return diffed
 }
 
-function addRouteForPages( pages ) {
+function addRouteForPages( pages, modifyRoute ) {
   pages.forEach( page => {
     page.route = '/' + page.page.replace( /(\/_)(.+)/g, '/:$2' )
 
     if ( page.provider === 'plugin' ) {
       page.route = page.route + '@' + page.plugin
+    }
+
+    if ( typeof modifyRoute === 'function' ) {
+      page.route = modifyRoute( page.route )
     }
   } )
 

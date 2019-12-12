@@ -1786,6 +1786,48 @@
   resolved "https://registry.yarnpkg.com/@nut-plugins/login/-/login-0.0.0.tgz#42ae9ce04426905b4c5e68f9311c971649508ef3"
   integrity sha512-6WUzne/ZgLBYpuvnxmKwOcA9bB6sctQgLPILcK9vo7cXy6OKKd141IfTbVIHtHCUtC0ltoBm4cihhhoxrredkQ==
 
+"@nut-project/gatherer-pages@^0.0.4-alpha.1":
+  version "0.0.4-alpha.1"
+  resolved "https://registry.yarnpkg.com/@nut-project/gatherer-pages/-/gatherer-pages-0.0.4-alpha.1.tgz#3c6ced6dbe88fb3e34ea87a08a546c8debae71b9"
+  integrity sha512-zVCoTOswEliLjHjZjInewPdrBBpDLawv86ZPRLgSeXez42fGYvRzzoMzzoEySkY2FrPHqDSS71XwXYr8bIuziw==
+  dependencies:
+    "@nut-project/core" "^0.0.4-alpha.1"
+    "@sindresorhus/slugify" "^0.9.1"
+    chokidar "^3.1.0"
+    globby "^10.0.1"
+    resolve-from "^5.0.0"
+
+"@nut-project/runtime-pages@^0.2.1-alpha.1":
+  version "0.2.1-alpha.1"
+  resolved "https://registry.yarnpkg.com/@nut-project/runtime-pages/-/runtime-pages-0.2.1-alpha.1.tgz#14852b7c4ecf9a3094a94ebcf9700fc174cf5082"
+  integrity sha512-egB7z8xrWzYcnnf5An4cdHbxUO7KzFJuHhqRjkCtvKZbQcfZwoKkRqT0INWt7giSzEFq/BJ24Li/6kI4GYuSoA==
+  dependencies:
+    "@nut-project/core" "^0.0.4-alpha.1"
+    "@nut-project/webpack-virtual-modules" "^0.0.2-alpha.0"
+    address "^1.1.2"
+    axios "^0.19.0"
+    boxen "^4.1.0"
+    chalk "^2.4.2"
+    copy-webpack-plugin "^5.0.4"
+    deepmerge "^4.0.0"
+    docsearch.js "^2.6.3"
+    exit "^0.1.2"
+    fs-extra "^8.1.0"
+    hash-sum "^2.0.0"
+    headroom.js "^0.9.4"
+    html-webpack-plugin "^3.2.0"
+    nprogress "^0.2.0"
+    open "^6.4.0"
+    query-string "5"
+    quicklink "^1.0.0"
+    react "^16.8.6"
+    react-dom "^16.8.6"
+    regularjs "^0.6.2"
+    tippy.js "^4.2.1"
+    unfancy-router "0.1.10"
+    vue "^2.6.10"
+    webpack-stats-plugin "^0.3.0"
+
 "@octokit/endpoint@^5.1.0":
   version "5.3.5"
   resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-5.3.5.tgz#2822c3b01107806dbdce3863b6205e3eff4289ed"

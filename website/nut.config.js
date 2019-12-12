@@ -22,6 +22,11 @@ const config = {
   babel: {
     transpileModules: [ '@zeit-ui/vue' ]
   },
+  hooks: {
+    // modifyRoute( route ) {
+    //   return route.replace( /^\/pages/, '/app' )
+    // },
+  },
   plugins: {
     nowCustom: {
       path: path.join( __dirname, './src/plugins/now-custom/index.js' ),
