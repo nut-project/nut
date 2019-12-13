@@ -1,0 +1,39 @@
+{
+  "name": "@nut-plugins/vue-ssr",
+  "version": "1.0.0-alpha.4",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "vue ssr",
+  "keywords": [
+    "nut",
+    "vue",
+    "ssr",
+    "plugin"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "files"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/plugins/vue-ssr",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "null-loader": "^3.0.0",
+    "vue-server-renderer": "^2.6.10",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

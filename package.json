@@ -38,6 +38,7 @@
       "other-packages/*",
       "templates/*",
       "plugins/pages/*",
+      "plugins/vue-ssr",
       "examples/*"
     ]
   },

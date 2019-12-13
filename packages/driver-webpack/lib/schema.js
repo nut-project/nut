@@ -35,6 +35,7 @@ module.exports = function ( { struct } ) {
     alias: struct.record( [ 'string', 'string' ], {} ),
     parallel: 'boolean?',
     minimize: 'boolean?',
+    cache: 'boolean?',
     fast: 'boolean?',
   }
 }

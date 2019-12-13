@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node ../../packages/cli/bin/index.js pages dev --profile",
-    "build": "node ../../packages/cli/bin/index.js pages build"
+    "dev": "node ../../packages/cli/bin/index.js pages dev --progress",
+    "build": "node ../../packages/cli/bin/index.js pages build --progress"
   },
   "nut": {
     "presets": "@nut-project/presets-alpha"
@@ -19,6 +19,7 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-router": "^3.1.3"
   }
 }

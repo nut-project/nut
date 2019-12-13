@@ -28,15 +28,20 @@ class WebpackDriver extends Driver {
     this.addAsyncSeriesHook( 'forceExit', [] )
     this.addSyncHook( 'stdin', [ 'key' ] )
     this.addSyncHook( 'compilerDone', [] )
+    this.addSyncHook( 'compilerError', [] )
     this.addSyncHook( 'cliOptions', [ 'cliOptions' ] )
     this.addSyncHook( 'userConfig', [ 'userConfig' ] )
     this.addSyncHook( 'env', [ 'env' ] )
-    this.addSyncHook( 'dangerously_chainWebpack', [ 'config' ] )
+    this.addSyncHook( 'dangerously_webpackChainFactory', [ 'factory' ] )
+    this.addSyncHook( 'dangerously_chainWebpack', [ 'config', 'options' ] )
+    this.addSyncHook( 'dangerously_chainedWebpack', [ 'config' ] )
     this.addSyncHook( 'compiler', [ 'compiler' ] )
     this.addAsyncSeriesHook( 'beforeRun', [] )
 
     // dev
     this.addSyncHook( 'dangerously_serverOptions', [ 'serverOptions' ] )
+    this.addSyncHook( 'beforeMiddlewares', [ 'object' ] )
+    this.addSyncHook( 'afterMiddlewares', [ 'object' ] )
     this.addAsyncSeriesHook( 'afterServe', [ 'object' ] )
 
     // build
@@ -45,6 +50,23 @@ class WebpackDriver extends Driver {
 
   api() {
     exposeWebpack( this )
+
+    // middlewares
+    this.expose( 'middlewares', {
+      prepend: middleware => {
+        this.useHook( 'beforeMiddlewares', ( { app } ) => {
+          app.use( middleware )
+        } )
+      },
+
+      append: middleware => {
+        this.useHook( 'afterMiddlewares', ( { app } ) => {
+          app.use( middleware )
+        } )
+      }
+    } )
+
+    this.expose( 'dangerously_webpack', webpack )
   }
 
   apply( cli ) {
@@ -53,6 +75,16 @@ class WebpackDriver extends Driver {
         await this.flow( command, cliOptions )
       } )
     } )
+  }
+
+  createWebpackChain( options, extraOptions = {} ) {
+    const config = chain()
+
+    extendWebpack( config, options )
+
+    this.callHook( 'dangerously_chainWebpack', config, extraOptions )
+
+    return config
   }
 
   async flow( command = '', cliOptions = {} ) {
@@ -82,9 +114,7 @@ class WebpackDriver extends Driver {
 
     this.callHook( 'userConfig', userConfig )
 
-    const config = chain()
-
-    extendWebpack( config, {
+    const config = this.createWebpackChain( {
       env,
       cliOptions,
       userConfig,
@@ -92,7 +122,16 @@ class WebpackDriver extends Driver {
       driver: this,
     } )
 
-    this.callHook( 'dangerously_chainWebpack', config )
+    this.callHook( 'dangerously_webpackChainFactory', this.createWebpackChain.bind( this, {
+      env,
+      cliOptions,
+      userConfig,
+      pkg,
+      driver: this,
+    } ) )
+
+    // access fullly chained config here
+    this.callHook( 'dangerously_chainedWebpack', config )
 
     const webpackConfig = config.toConfig()
 
@@ -113,8 +152,20 @@ class WebpackDriver extends Driver {
         hot: true,
         quiet: false,
         proxy: devServerConfig.proxy || defaultServerOptions.proxy,
-        before() {},
-        after() {},
+        before: ( app, server, compiler ) => {
+          this.callHook( 'beforeMiddlewares', {
+            app,
+            server,
+            compiler,
+          } )
+        },
+        after: ( app, server, compiler ) => {
+          this.callHook( 'afterMiddlewares', {
+            app,
+            server,
+            compiler,
+          } )
+        },
       }
 
       extendDevServer( serverOptions, {
@@ -142,14 +193,14 @@ class WebpackDriver extends Driver {
 
       this.listenCompilerDone( compiler )
 
-      await this.callHook( 'beforeRun' )
-
       if ( warnings.length > 0 ) {
         warnings.forEach( warning => {
           logger.warn( warning )
           console.log()
         } )
       }
+
+      await this.callHook( 'beforeRun' )
 
       await this.serve( compiler, serverOptions )
     } else if ( env === 'production' ) {
@@ -166,8 +217,12 @@ class WebpackDriver extends Driver {
   }
 
   listenCompilerDone( compiler ) {
-    compiler.hooks.done.tap( 'driver-webpack', () => {
-      this.callHook( 'compilerDone' )
+    compiler.hooks.done.tap( 'driver-webpack', stats => {
+      if ( stats.hasErrors() ) {
+        this.callHook( 'compilerError' )
+      } else {
+        this.callHook( 'compilerDone' )
+      }
     } )
   }
 

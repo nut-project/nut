@@ -6,12 +6,13 @@ module.exports = function ( ctx ) {
   return {
     config: {
       webpack: {
-        output: {
-          path: path.join( __dirname, '../test' ),
-        },
+        entry: path.join( __dirname, 'src/entry-client.js' ),
+        output: {},
         devServer: {
           port: 9000,
+          historyApiFallback: false,
         },
+        cache: false,
       }
     },
 
@@ -23,6 +24,28 @@ module.exports = function ( ctx ) {
         },
         enable: true,
       },
+      vuessr: {
+        enable: true,
+        resolve: '@nut-plugins/vue-ssr',
+        options: {
+          entry: path.join( __dirname, 'src/entry-server.js' ),
+          html: `
+            <html>
+              <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+                {{{ renderResourceHints() }}}
+                <!-- styles will be rendered -->
+                {{{ renderStyles() }}}
+              </head>
+              <body>
+                <!--vue-ssr-outlet-->
+                {{{ renderState() }}}
+                {{{ renderScripts() }}}
+              </body>
+            </html>
+          `
+        }
+      }
     },
   }
 }
