@@ -6,6 +6,8 @@ const { chain, serve, build, webpack } = require( '@nut-project/webpack' )
 const { logger, detectPort } = require( '@nut-project/dev-utils' )
 const { exposeWebpack, extendWebpack, extendDevServer } = require( './webpack' )
 const schema = require( './schema' )
+const localResolve = require( './webpack/shared/local-resolve' )
+const localRequire = require( './webpack/shared/local-require' )
 
 class WebpackDriver extends Driver {
   static id() {
@@ -67,6 +69,8 @@ class WebpackDriver extends Driver {
     } )
 
     this.expose( 'dangerously_webpack', webpack )
+    this.expose( 'localResolve', localResolve )
+    this.expose( 'localRequire', localRequire )
   }
 
   apply( cli ) {

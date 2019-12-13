@@ -174,6 +174,7 @@ class CLI {
       new Plugin( options ).apply( {
         use: memoize( useDriver ),
         logger,
+        exit,
       } )
     } )
 

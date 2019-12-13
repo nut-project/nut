@@ -16,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "@nut-project/presets-alpha": "^1.0.0-alpha.9",
+    "vue-server-renderer": "^2.6.10",
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {

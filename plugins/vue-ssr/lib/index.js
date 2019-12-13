@@ -1,6 +1,3 @@
-const { createBundleRenderer } = require( 'vue-server-renderer' )
-const VueSSRClientWebpackPlugin = require( 'vue-server-renderer/client-plugin' )
-const VueSSRServerWebpackPlugin = require( 'vue-server-renderer/server-plugin' )
 const nodeExternals = require( 'webpack-node-externals' )
 const path = require( 'path' )
 const fs = require( 'fs' )
@@ -15,6 +12,18 @@ class VueSSRPlugin {
     const { entry, html = '' } = this._options
     const { api, hook } = ctx.use( 'webpack' )
     const webpack = api.dangerously_webpack
+
+    if ( !api.localResolve( 'vue-server-renderer' ) ) {
+      console.log()
+      ctx.logger.error( 'You should install vue-server-renderer in your project first' )
+      console.log()
+      ctx.exit()
+      return
+    }
+
+    const { createBundleRenderer } = api.localRequire( 'vue-server-renderer' )
+    const VueSSRClientWebpackPlugin = api.localRequire( 'vue-server-renderer/client-plugin' )
+    const VueSSRServerWebpackPlugin = api.localRequire( 'vue-server-renderer/server-plugin' )
 
     let clientManifest
     let serverBundle
@@ -79,7 +88,7 @@ class VueSSRPlugin {
 
         if ( env === 'development' ) {
           hook( 'beforeRun', async () => {
-            config = ssrify( config, entry )
+            config = ssrify( config, entry, VueSSRServerWebpackPlugin )
             compiler = webpack( config.toConfig() )
 
             const mfs = new webpack.MemoryOutputFileSystem()
@@ -103,7 +112,7 @@ class VueSSRPlugin {
           } )
         } else {
           hook( 'beforeRun', async () => {
-            config = ssrify( config, entry )
+            config = ssrify( config, entry, VueSSRServerWebpackPlugin )
             compiler = webpack( config.toConfig() )
 
             // must compile after client bundle(maybe cleaned by client compiler)
@@ -138,14 +147,13 @@ class VueSSRPlugin {
           // disable historyApiFallback
           serverOptions.historyApiFallback = false
           removeMagicHtml( serverOptions )
-          console.log( serverOptions.features )
         } )
       }
     } )
   }
 }
 
-function ssrify( config, entry ) {
+function ssrify( config, entry, VueSSRServerWebpackPlugin ) {
   if ( config.plugins.has( 'webpackbar' ) ) {
     config.plugin( 'webpackbar' ).tap( ( [ options ] ) => {
       options.name = 'server'

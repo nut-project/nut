@@ -33,7 +33,6 @@
   "license": "MIT",
   "dependencies": {
     "null-loader": "^3.0.0",
-    "vue-server-renderer": "^2.6.10",
     "webpack-node-externals": "^1.7.2"
   }
 }
