@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/nut-project/nut/compare/gene@1.1.0...gene@1.2.0) (2019-12-13)
+
+
+### Features
+
+* add vue ssr ([3b3c3ed](https://github.com/nut-project/nut/commit/3b3c3ed9954d26ac5e06a7b6ef6aeccb702a6c57))
+
+
+
+
+
 # [1.1.0](https://github.com/nut-project/nut/compare/gene@1.0.5...gene@1.1.0) (2019-12-11)
 
 

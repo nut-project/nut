@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.10](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.9...@nut-project/driver-webpack@1.0.0-alpha.10) (2019-12-13)
+
+
+### Features
+
+* add vue ssr ([3b3c3ed](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/3b3c3ed9954d26ac5e06a7b6ef6aeccb702a6c57))
+
+
+
+
+
 # [1.0.0-alpha.9](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.8...@nut-project/driver-webpack@1.0.0-alpha.9) (2019-12-11)
 
 
