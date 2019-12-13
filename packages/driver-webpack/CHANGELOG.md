@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.11](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.10...@nut-project/driver-webpack@1.0.0-alpha.11) (2019-12-13)
+
+
+### Bug Fixes
+
+* use vue-server-renderer in user project ([aa86bdd](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/aa86bdd0694478949bdfeada0dc63229de534ecc))
+
+
+
+
+
 # [1.0.0-alpha.10](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.9...@nut-project/driver-webpack@1.0.0-alpha.10) (2019-12-13)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/driver-webpack",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "webpack driver for nut",
   "keywords": [
     "webpack"
@@ -38,7 +38,7 @@
     "@babel/plugin-transform-runtime": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "@babel/runtime": "^7.7.4",
-    "@nut-project/core": "^1.0.0-alpha.5",
+    "@nut-project/core": "^1.0.0-alpha.6",
     "@nut-project/dev-utils": "^1.0.0-alpha.3",
     "@nut-project/webpack": "^1.0.0-alpha.3",
     "address": "^1.1.2",

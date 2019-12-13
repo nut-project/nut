@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.6](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/compare/@nut-plugins/vue-ssr@1.0.0-alpha.5...@nut-plugins/vue-ssr@1.0.0-alpha.6) (2019-12-13)
+
+
+### Bug Fixes
+
+* use vue-server-renderer in user project ([aa86bdd](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/commit/aa86bdd0694478949bdfeada0dc63229de534ecc))
+
+
+
+
+
 # 1.0.0-alpha.5 (2019-12-13)
 
 

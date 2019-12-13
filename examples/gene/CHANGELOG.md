@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/nut-project/nut/compare/gene@1.2.0...gene@1.2.1) (2019-12-13)
+
+
+### Bug Fixes
+
+* use vue-server-renderer in user project ([aa86bdd](https://github.com/nut-project/nut/commit/aa86bdd0694478949bdfeada0dc63229de534ecc))
+
+
+
+
+
 # [1.2.0](https://github.com/nut-project/nut/compare/gene@1.1.0...gene@1.2.0) (2019-12-13)
 
 
