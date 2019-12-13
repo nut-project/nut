@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.13](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.12...@nut-project/driver-webpack@1.0.0-alpha.13) (2019-12-13)
+
+
+### Bug Fixes
+
+* **driver-webpack:** add missing sass-loader ([22ac842](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/22ac8420a11d89d7334d46f0a6a7bbeee2752edd))
+
+
+
+
+
 # [1.0.0-alpha.12](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.11...@nut-project/driver-webpack@1.0.0-alpha.12) (2019-12-13)
 
 
