@@ -3,7 +3,7 @@ const { config } = require( '@nut-project/dev-utils' )
 
 const hasPostCSSConfig = Boolean( config( 'postcss' ).loadSync() )
 
-function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
+function applyCSSRule( webpackConfig, lang, test, loader, options, extract ) {
   const rule = webpackConfig.module
     .rule( lang )
     .test( test )
@@ -14,12 +14,12 @@ function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
   // for *.module.*
   cssModulesRule.test( /\.module\.\w+$/ )
 
-  apply( cssModulesRule, lang, loader, options, env, true )
-  apply( cssRule, lang, loader, options, env, false )
+  apply( cssModulesRule, lang, loader, options, extract, true )
+  apply( cssRule, lang, loader, options, extract, false )
 }
 
-function apply( rule, lang, loader, options, env, modules ) {
-  if ( env === 'production' ) {
+function apply( rule, lang, loader, options, extract, modules ) {
+  if ( extract ) {
     rule.use( 'mini-css-extract' )
       .loader( MiniCssExtractPlugin.loader )
       .options( {

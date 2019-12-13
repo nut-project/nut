@@ -66,7 +66,7 @@ class VueSSRPlugin {
       // only process client config here
       config.plugin( 'define' )
         .tap( ( [ options ] ) => {
-          options[ 'process.env.VUE_ENV' ] = 'client'
+          options[ 'process.env.VUE_ENV' ] = JSON.stringify( 'client' )
           return [ options ]
         } )
 
@@ -180,11 +180,10 @@ function ssrify( config, entry, VueSSRServerWebpackPlugin ) {
 
   config.plugin( 'define' )
     .tap( ( [ options ] ) => {
-      options[ 'process.env.VUE_ENV' ] = 'server'
+      options[ 'process.env.VUE_ENV' ] = JSON.stringify( 'server' )
       return [ options ]
     } )
 
-  // will cause bug
   ;[ 'scss', 'stylus', 'css', 'less', 'mcss', 'css' ]
     .forEach( lang => {
       if ( !config.module.rules.has( lang ) ) {
@@ -205,6 +204,7 @@ function ssrify( config, entry, VueSSRServerWebpackPlugin ) {
     .delete( 'html-inline-chunk' )
     .delete( 'html-cheerio' )
     .delete( 'clean' )
+    .delete( 'hmr' )
 
   return config
 }

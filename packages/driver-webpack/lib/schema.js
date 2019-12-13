@@ -37,5 +37,8 @@ module.exports = function ( { struct } ) {
     minimize: 'boolean?',
     cache: 'boolean?',
     fast: 'boolean?',
+    css: struct.object( {
+      extract: 'boolean?'
+    }, {} ),
   }
 }
