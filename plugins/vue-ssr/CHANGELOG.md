@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.7](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/compare/@nut-plugins/vue-ssr@1.0.0-alpha.6...@nut-plugins/vue-ssr@1.0.0-alpha.7) (2019-12-13)
+
+
+### Features
+
+* add css.extract option ([30f4ef1](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/commit/30f4ef153bd16c300a48ec0b78f67e1073aedaba))
+
+
+
+
+
 # [1.0.0-alpha.6](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/compare/@nut-plugins/vue-ssr@1.0.0-alpha.5...@nut-plugins/vue-ssr@1.0.0-alpha.6) (2019-12-13)
 
 

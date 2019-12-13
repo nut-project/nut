@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.12](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.11...@nut-project/driver-webpack@1.0.0-alpha.12) (2019-12-13)
+
+
+### Features
+
+* add css.extract option ([30f4ef1](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/30f4ef153bd16c300a48ec0b78f67e1073aedaba))
+
+
+
+
+
 # [1.0.0-alpha.11](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.10...@nut-project/driver-webpack@1.0.0-alpha.11) (2019-12-13)
 
 
