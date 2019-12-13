@@ -18,7 +18,8 @@
     "build:compose": "npm run build --prefix ./examples/host",
     "dependency-check": "node scripts/dependency-check.js",
     "dev:gene": "npm run dev --prefix ./examples/gene",
-    "build:gene": "npm run build --prefix ./examples/gene"
+    "build:gene": "npm run build --prefix ./examples/gene",
+    "incubate": "list all presets && incubate cli from presets"
   },
   "husky": {
     "hooks": {
