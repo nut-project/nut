@@ -51,6 +51,10 @@ class CLI {
   async getConfig() {
     let config = await this._loader.get()
 
+    if ( !config ) {
+      return {}
+    }
+
     if ( typeof config === 'function' ) {
       config = config( {
         command: this._command.name || '',
