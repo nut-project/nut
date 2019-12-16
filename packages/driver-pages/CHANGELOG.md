@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.2.0...@nut-project/driver-pages@0.2.1) (2019-12-16)
+
+
+### Bug Fixes
+
+* traverse sidebar to get first route ([224df89](https://github.com/nut-project/nut/tree/master/packages/gatherer/commit/224df8933cbec052fb04ca1801b208d5a074234b))
+
+
+
+
+
 # [0.2.0-alpha.0](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.1.1-alpha.1...@nut-project/driver-pages@0.2.0-alpha.0) (2019-10-08)
 
 
