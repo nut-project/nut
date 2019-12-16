@@ -25,7 +25,7 @@ module.exports = function ( ctx ) {
         enable: true,
       },
       vuessr: {
-        enable: true,
+        enable: false,
         resolve: '@nut-plugins/vue-ssr',
         options: {
           entry: path.join( __dirname, 'src/entry-server.js' ),

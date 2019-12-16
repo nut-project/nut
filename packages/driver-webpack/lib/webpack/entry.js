@@ -7,13 +7,16 @@ exports.extend = function ( config, context = {} ) {
 
   if ( pages ) {
     for ( const key of Object.keys( pages ) ) {
-      if ( pages[ key ] ) {
-        const pageEntry = pages[ key ].entry || pages[ key ]
+      const page = pages[ key ]
+      if ( page ) {
+        const pageEntry = typeof page === 'string' ? page : page.entry
 
-        config.entry( key ).add( localJoin( pageEntry ) )
+        if ( typeof pageEntry === 'string' ) {
+          config.entry( key ).add( localJoin( pageEntry ) )
+        }
       }
     }
-  } else {
+  } else if ( typeof entry === 'string' ) {
     config.entry( 'index' ).add( localJoin( entry ) )
   }
 }

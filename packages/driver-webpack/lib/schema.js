@@ -6,6 +6,7 @@ module.exports = function ( { struct } ) {
       title: 'string?',
       filename: 'string?',
       favicon: 'string?',
+      template: 'string?',
     }, {} ),
     publicPath: 'string?',
   }, {} )
@@ -24,9 +25,22 @@ module.exports = function ( { struct } ) {
     proxy: 'object?',
   }, {} )
 
+  const htmlPluginOptions = struct.object( {
+    entry: 'string',
+    title: 'string?',
+    filename: 'string?',
+    favicon: 'string?',
+    template: 'string?',
+  } )
+
+  const pages = struct.record( [
+    'string',
+    htmlPluginOptions
+  ], {} )
+
   return {
     entry: 'string?',
-    pages: 'object?',
+    pages,
     output,
     babel,
     devServer,

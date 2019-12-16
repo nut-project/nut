@@ -58,6 +58,15 @@ class VueSSRPlugin {
       }
     }
 
+    hook( 'userConfig', userConfig => {
+      if ( typeof userConfig.pages !== 'undefined' ) {
+        console.log()
+        ctx.logger.scope( 'vue-ssr' ).warn( 'vue-ssr plugin currently only support SPA' )
+        console.log()
+        ctx.exit()
+      }
+    } )
+
     hook( 'dangerously_chainWebpack', ( config, options ) => {
       if ( options && options.type === 'server' ) {
         return
