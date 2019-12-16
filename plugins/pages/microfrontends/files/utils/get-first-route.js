@@ -3,26 +3,31 @@ export default function getFirstRoute( context ) {
 
   const sidebar = context.api.sidebar.get()
 
-  sidebar.some( s => {
-    if ( s.page ) {
-      found = s
-      return true
+  walkChildren( sidebar, null, child => {
+    if ( child.page && !found ) {
+      found = child
     }
-
-    const children = s.children
-
-    // TODO: use walkChildren
-    if ( children && children[ 0 ] ) {
-      found = children[ 0 ]
-      return true
-    }
-
-    return false
   } )
 
-  if ( !found ) {
+  if ( !found || !found.page ) {
     return
   }
 
   return found.page.route
+}
+
+function walkChildren( children, parent, callback ) {
+  if ( !children ) {
+    return
+  }
+
+  if ( Array.isArray( children ) ) {
+    children.forEach( ( v, i ) => {
+      callback( v, i, parent )
+
+      if ( Array.isArray( v.children ) ) {
+        walkChildren( v.children, v, callback )
+      }
+    } )
+  }
 }
