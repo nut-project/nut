@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/nut-project/nut/compare/gene@1.2.3...gene@1.3.0) (2019-12-16)
+
+
+### Features
+
+* expose output.html.template ([d0f2ed9](https://github.com/nut-project/nut/commit/d0f2ed98c6287319b70e73d8bcf2559218971027))
+
+
+
+
+
 ## [1.2.3](https://github.com/nut-project/nut/compare/gene@1.2.2...gene@1.2.3) (2019-12-13)
 
 **Note:** Version bump only for package gene

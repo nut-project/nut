@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.14](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.13...@nut-project/driver-webpack@1.0.0-alpha.14) (2019-12-16)
+
+
+### Features
+
+* expose output.html.template ([d0f2ed9](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/d0f2ed98c6287319b70e73d8bcf2559218971027))
+
+
+
+
+
 # [1.0.0-alpha.13](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.12...@nut-project/driver-webpack@1.0.0-alpha.13) (2019-12-13)
 
 

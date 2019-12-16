@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/presets-alpha",
-  "version": "1.0.0-alpha.12",
+  "version": "1.0.0-alpha.13",
   "publishConfig": {
     "access": "public"
   },
@@ -30,7 +30,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@nut-project/cli-pages": "^1.0.0-alpha.6",
-    "@nut-project/driver-webpack": "^1.0.0-alpha.13"
+    "@nut-project/cli-pages": "^1.0.0-alpha.7",
+    "@nut-project/driver-webpack": "^1.0.0-alpha.14"
   }
 }

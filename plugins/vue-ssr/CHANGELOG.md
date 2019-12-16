@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.8](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/compare/@nut-plugins/vue-ssr@1.0.0-alpha.7...@nut-plugins/vue-ssr@1.0.0-alpha.8) (2019-12-16)
+
+
+### Features
+
+* expose output.html.template ([d0f2ed9](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/commit/d0f2ed98c6287319b70e73d8bcf2559218971027))
+
+
+
+
+
 # [1.0.0-alpha.7](https://github.com/nut-project/nut/tree/master/plugins/vue-ssr/compare/@nut-plugins/vue-ssr@1.0.0-alpha.6...@nut-plugins/vue-ssr@1.0.0-alpha.7) (2019-12-13)
 
 
