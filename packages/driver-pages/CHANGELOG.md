@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.4](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@1.0.0-alpha.3...@nut-project/driver-pages@1.0.0-alpha.4) (2019-12-06)
+
+
+### Features
+
+* add --analyze and --profile flags ([af79a4d](https://github.com/nut-project/nut/tree/master/packages/gatherer/commit/af79a4da34b0d748cfb7423d4b6684f812da75c9))
+* add materials plugin ([ea14f1c](https://github.com/nut-project/nut/tree/master/packages/gatherer/commit/ea14f1cbcef1cf9df0b8537d480735eaf0912df5))
+* use applescript to open chrome ([4a348de](https://github.com/nut-project/nut/tree/master/packages/gatherer/commit/4a348defb8accec833312de6571c70b664522665))
+
+
+
+
+
 # [0.2.0-alpha.0](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.1.1-alpha.1...@nut-project/driver-pages@0.2.0-alpha.0) (2019-10-08)
 
 

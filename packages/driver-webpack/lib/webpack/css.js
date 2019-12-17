@@ -1,27 +1,48 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
 const { applyCSSRule } = require( './shared/apply-css-rule' )
+const localResolve = require( './shared/local-resolve' )
+const localRequire = require( './shared/local-require' )
 
 exports.extend = function ( config, context = {} ) {
-  applyCSSRule( config, 'css', /\.css$/, null, {}, context.env )
+  const { env = '', userConfig = {} } = context
 
-  applyCSSRule( config, 'less', /\.less$/, 'less-loader', {}, context.env )
+  let extractCSS = userConfig && userConfig.css && userConfig.css.extract
+  if ( typeof extractCSS !== 'boolean' ) {
+    extractCSS = env === 'production'
+  }
 
-  applyCSSRule( config, 'sass', /\.sass$/, 'sass-loader', {
-    implementation: require( 'sass' ),
+  // perfer local sass/node-sass, fallback to sass in driver-webpack
+  // as dart-sass does not support /deep/ syntax(use ::v-deep instead)
+  // for more details, see https://github.com/vuejs/vue-cli/issues/3399
+  const scssOptions = {}
+
+  if ( ( localResolve( 'node-sass' ) ) ) {
+    scssOptions.implementation = localRequire( 'node-sass' )
+  } else if ( ( localResolve( 'sass' ) ) ) {
+    scssOptions.implementation = localRequire( 'sass' )
+  } else {
+    scssOptions.implementation = require( 'sass' )
+  }
+
+  const sassOptions = Object.assign( {}, scssOptions, {
     indentedSyntax: true,
-  }, context.env )
+  } )
 
-  applyCSSRule( config, 'scss', /\.scss$/, 'sass-loader', {
-    implementation: require( 'sass' )
-  }, context.env )
+  applyCSSRule( config, 'css', /\.css$/, null, {}, extractCSS )
 
-  applyCSSRule( config, 'mcss', /\.mcss$/, null, {}, context.env )
+  applyCSSRule( config, 'less', /\.less$/, 'less-loader', {}, extractCSS )
+
+  applyCSSRule( config, 'scss', /\.scss$/, 'sass-loader', scssOptions, extractCSS )
+
+  applyCSSRule( config, 'sass', /\.sass$/, 'sass-loader', sassOptions, extractCSS )
+
+  applyCSSRule( config, 'mcss', /\.mcss$/, null, {}, extractCSS )
 
   applyCSSRule( config, 'stylus', /\.styl(us)?$/, 'stylus-loader', {
     preferPathResolver: 'webpack',
-  }, context.env )
+  }, extractCSS )
 
-  if ( context.env === 'production' ) {
+  if ( extractCSS ) {
     config
       .plugin( 'extract-css' )
       .use( MiniCssExtractPlugin, [ {

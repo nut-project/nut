@@ -1,13 +1,21 @@
+const path = require( 'path' )
+
 module.exports = function ( ctx ) {
   console.log( 'pages.config.js ctx:', ctx )
+
   return {
     config: {
-      devServer: {
-        port: 9001,
-        proxy: {
-          '/api': 'http://127.0.0.1:8001'
-        }
-      },
+      webpack: {
+        output: {},
+        devServer: {
+          port: 9000,
+          historyApiFallback: false,
+          proxy: {
+            '/api': 'http://127.0.0.1:8001'
+          }
+        },
+        cache: false,
+      }
     },
 
     plugins: {
@@ -15,6 +23,29 @@ module.exports = function ( ctx ) {
         resolve: require.resolve( './plugins/plugin-rem' ),
         options: {
           x: 1
+        },
+        enable: true,
+      },
+      vuessr: {
+        enable: false,
+        resolve: '@nut-plugins/vue-ssr',
+        options: {
+          entry: path.join( __dirname, 'src/entry-server.js' ),
+          html: `
+            <html>
+              <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+                {{{ renderResourceHints() }}}
+                <!-- styles will be rendered -->
+                {{{ renderStyles() }}}
+              </head>
+              <body>
+                <!--vue-ssr-outlet-->
+                {{{ renderState() }}}
+                {{{ renderScripts() }}}
+              </body>
+            </html>
+          `
         }
       }
     },

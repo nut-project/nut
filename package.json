@@ -19,7 +19,8 @@
     "dependency-check": "node scripts/dependency-check.js",
     "dev:gene": "npm run dev --prefix ./examples/gene",
     "build:gene": "npm run build --prefix ./examples/gene",
-    "mock:gene": "npm run mock --prefix ./examples/gene"
+    "mock:gene": "npm run mock --prefix ./examples/gene",
+    "incubate": "list all presets && incubate cli from presets"
   },
   "husky": {
     "hooks": {
@@ -39,6 +40,7 @@
       "other-packages/*",
       "templates/*",
       "plugins/pages/*",
+      "plugins/vue-ssr",
       "examples/*"
     ]
   },

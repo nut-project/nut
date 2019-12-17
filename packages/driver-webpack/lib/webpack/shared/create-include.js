@@ -4,6 +4,11 @@ module.exports = function ( transpileModules = [] ) {
   return memoize( function ( filepath = '' ) {
     filepath = filepath.replace( /\\/g, '/' )
 
+    // skip transpiling overlay code for development mode
+    if ( filepath.includes( 'driver-webpack/lib/webpack/overlay' ) ) {
+      return false
+    }
+
     // transpile modules outside node_modules
     if ( !filepath.includes( 'node_modules' ) ) {
       return true

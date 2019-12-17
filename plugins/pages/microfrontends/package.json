@@ -1,6 +1,6 @@
 {
   "name": "@nut-plugins/pages-microfrontends",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "publishConfig": {
     "access": "public"
   },
@@ -34,7 +34,7 @@
     "@mapbox/rehype-prism": "^0.3.1",
     "@mdx-js/mdx": "^1.0.21",
     "@mdx-js/vue": "1.0.20",
-    "@nut-project/dev-utils": "^1.0.0-alpha.2",
+    "@nut-project/dev-utils": "^1.0.0-alpha.3",
     "@sindresorhus/slugify": "^0.9.1",
     "address": "^1.1.2",
     "axios": "^0.19.0",

@@ -30,9 +30,9 @@ exports.extendDevServer = function ( serverOptions, context = {} ) {
 
   const oldBefore = serverOptions.before
 
-  serverOptions.before = function ( app, server ) {
+  serverOptions.before = function ( app, server, compiler ) {
     if ( oldBefore ) {
-      oldBefore( app, server )
+      oldBefore( app, server, compiler )
     }
 
     app.use( errorOverlayMiddleware() )

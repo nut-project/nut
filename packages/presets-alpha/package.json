@@ -1,0 +1,36 @@
+{
+  "name": "@nut-project/presets-alpha",
+  "version": "1.0.0-alpha.13",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "presets alpha 初号机",
+  "keywords": [
+    "webpack"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib",
+    "yarn.lock",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/presets-alpha",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@nut-project/cli-pages": "^1.0.0-alpha.7",
+    "@nut-project/driver-webpack": "^1.0.0-alpha.14"
+  }
+}

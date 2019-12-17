@@ -1,6 +1,4 @@
-exports.extend = function ( config, context = {} ) {
-  const { env, cliOptions, userConfig, cli } = context // eslint-disable-line
-
+exports.extend = function ( config ) {
   config.module
     .rule( 'font' )
     .test( /\.(ttf|eot|woff|woff2|svg)(\?t=\d+)?$/i )

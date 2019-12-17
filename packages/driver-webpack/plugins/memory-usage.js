@@ -7,7 +7,9 @@ class MemoryUsagePlugin {
 
     hook( 'compilerDone', () => {
       const { heapUsed } = process.memoryUsage()
-      console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
+      setTimeout( () => {
+        console.log( chalk.gray( `\n${ prettyBytes( heapUsed ) } Memory Used\n` ) )
+      }, 1000 )
     } )
   }
 }

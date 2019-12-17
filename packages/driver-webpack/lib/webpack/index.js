@@ -14,6 +14,7 @@ const abilities = [
   require( './clean' ),
   require( './analyze' ),
   require( './mode' ),
+  require( './minimizer' ),
   require( './minimize' ),
   require( './progress' ),
   require( './vue' ),
@@ -23,6 +24,8 @@ const abilities = [
   require( './performance' ),
   require( './dev-server' ),
   require( './missing-node-modules' ),
+  require( './hot' ),
+  require( './outdir' ),
 
   // produce very little effect
   // require( './dll' ),

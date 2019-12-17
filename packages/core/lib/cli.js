@@ -1,6 +1,8 @@
 const cac = require( 'cac' )
 const memoize = require( 'fast-memoize' )
 const importFresh = require( 'import-fresh' )
+const { superstruct } = require( 'superstruct' )
+const exit = require( 'exit' )
 const { config, utils, logger } = require( '@nut-project/dev-utils' )
 
 class CLI {
@@ -49,11 +51,32 @@ class CLI {
   async getConfig() {
     let config = await this._loader.get()
 
+    if ( !config ) {
+      return {}
+    }
+
     if ( typeof config === 'function' ) {
       config = config( {
         command: this._command.name || '',
         options: this._command.options || {},
       } )
+    }
+
+    const validators = this._validators
+
+    if ( validators ) {
+      const userConfig = config.config || {}
+
+      for ( const key of Object.keys( validators ) ) {
+        const [ error ] = validators[ key ].validate( userConfig[ key ] || {} )
+
+        if ( error ) {
+          console.log()
+          logger.scope( key + ' validation' ).warn( error.message )
+          console.log()
+          exit( 0 )
+        }
+      }
     }
 
     return config || {}
@@ -63,13 +86,47 @@ class CLI {
     return await this._loader.getFile()
   }
 
+  // only be exposed to driver
+  async getDriverConfig( name ) {
+    const config = await this.getUserConfig()
+
+    if ( typeof config[ name ] === 'undefined' ) {
+      return {}
+    }
+
+    return config[ name ]
+  }
+
   watch() {
 
   }
 
   async use( { drivers: Drivers = [], plugins = [] } = {} ) {
     // api/hooks is ready after `new Driver`
-    const drivers = Drivers.map( Driver => new Driver() )
+    const drivers = Drivers.map( Driver => new Driver( { cli: this } ) )
+
+    // schema
+    const struct = superstruct()
+    this._validators = Drivers
+      .map( Driver => {
+        if (
+          typeof Driver.name !== 'function' ||
+          typeof Driver.schema !== 'function'
+        ) {
+          return false
+        }
+
+        return {
+          name: Driver.name(),
+          schema: Driver.schema( { struct } ) || {},
+        }
+      } )
+      .filter( Boolean )
+      // group by name
+      .reduce( ( all, schema ) => {
+        all[ schema.name ] = struct( schema.schema )
+        return all
+      }, {} )
 
     utils.poweredBy( drivers )
 
@@ -100,6 +157,13 @@ class CLI {
     plugins.forEach( plugin => {
       const resolve = plugin.resolve
       const options = plugin.options || {}
+      const enable = plugin.enable
+      const name = plugin.name
+
+      if ( enable === false ) {
+        logger.info( `Plugin${ name ? ' "' + name + '"' : '' } is disabled by "enable: false"` )
+        return
+      }
 
       let Plugin
       try {
@@ -113,8 +177,12 @@ class CLI {
 
       new Plugin( options ).apply( {
         use: memoize( useDriver ),
+        logger,
+        exit,
       } )
     } )
+
+    console.log()
 
     const pendings = drivers.map( driver => driver.apply( this ) )
 
