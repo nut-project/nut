@@ -1,4 +1,4 @@
-const localResolve = require( './shared/local-resolve' )
+const localJoin = require( './shared/local-join' )
 
 exports.extend = function ( config, context = {} ) {
   const { userConfig = {} } = context
@@ -7,13 +7,42 @@ exports.extend = function ( config, context = {} ) {
 
   if ( pages ) {
     for ( const key of Object.keys( pages ) ) {
-      if ( pages[ key ] ) {
-        const pageEntry = pages[ key ].entry || pages[ key ]
+      const page = pages[ key ]
+      if ( page ) {
+        const pageEntry = typeof page === 'string' ? page : page.entry
 
-        config.entry( key ).add( localResolve( pageEntry ) )
+        if ( typeof pageEntry === 'string' ) {
+          config.entry( key ).add( localJoin( pageEntry ) )
+        }
       }
     }
-  } else {
-    config.entry( 'index' ).add( localResolve( entry ) )
+  } else if ( typeof entry === 'string' ) {
+    config.entry( 'index' ).add( localJoin( entry ) )
   }
+}
+
+exports.expose = function ( driver ) {
+  driver.expose( 'entry', {
+    prepend( injectEntry ) {
+      driver.useHook( 'dangerously_chainWebpack', config => {
+        const entryKeys = config.entryPoints.store.keys()
+        for ( const key of entryKeys ) {
+          if ( config.entryPoints.has( key ) ) {
+            config.entry( key ).prepend( injectEntry )
+          }
+        }
+      } )
+    },
+
+    append( injectEntry ) {
+      driver.useHook( 'dangerously_chainWebpack', config => {
+        const entryKeys = config.entryPoints.store.keys()
+        for ( const key of entryKeys ) {
+          if ( config.entryPoints.has( key ) ) {
+            config.entry( key ).append( injectEntry )
+          }
+        }
+      } )
+    }
+  } )
 }

@@ -55,7 +55,7 @@ exports.extend = function ( config, context = {} ) {
       const page = Object.assign( {}, defaultOptions, {
         filename: `${ entryName }.html`,
         chunks: [ 'chunk-vendors', 'chunk-common', entryName ]
-      }, pages[ entryName ] )
+      }, typeof pages[ entryName ] === 'string' ? {} : pages[ entryName ] )
 
       delete page.entry
 
@@ -68,6 +68,7 @@ exports.extend = function ( config, context = {} ) {
       title: html.title,
       filename: html.filename || defaultOptions.filename,
       favicon: html.favicon,
+      template: html.template || defaultOptions.template,
     } : undefined )
 
     config

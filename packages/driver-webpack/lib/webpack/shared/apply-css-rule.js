@@ -1,6 +1,9 @@
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' )
+const { config } = require( '@nut-project/dev-utils' )
 
-function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
+const hasPostCSSConfig = Boolean( config( 'postcss' ).loadSync() )
+
+function applyCSSRule( webpackConfig, lang, test, loader, options, extract ) {
   const rule = webpackConfig.module
     .rule( lang )
     .test( test )
@@ -11,12 +14,12 @@ function applyCSSRule( webpackConfig, lang, test, loader, options, env ) {
   // for *.module.*
   cssModulesRule.test( /\.module\.\w+$/ )
 
-  apply( cssModulesRule, lang, loader, options, env, true )
-  apply( cssRule, lang, loader, options, env, false )
+  apply( cssModulesRule, lang, loader, options, extract, true )
+  apply( cssRule, lang, loader, options, extract, false )
 }
 
-function apply( rule, lang, loader, options, env, modules ) {
-  if ( env === 'production' ) {
+function apply( rule, lang, loader, options, extract, modules ) {
+  if ( extract ) {
     rule.use( 'mini-css-extract' )
       .loader( MiniCssExtractPlugin.loader )
       .options( {
@@ -24,11 +27,11 @@ function apply( rule, lang, loader, options, env, modules ) {
       } )
   } else {
     rule.use( 'style' )
-      .loader( 'style-loader' )
+      .loader( require.resolve( 'style-loader' ) )
   }
 
   rule.use( 'css' )
-    .loader( 'css-loader' )
+    .loader( require.resolve( 'css-loader' ) )
     .options( {
       modules: modules ? {
         localIdentName: '[local]___[hash:base64:5]',
@@ -36,17 +39,31 @@ function apply( rule, lang, loader, options, env, modules ) {
       importLoaders: loader ? 2 : 1,
     } )
 
+  const postcssOptions = {
+    ident: 'postcss',
+  }
+
+  if ( !hasPostCSSConfig ) {
+    // config default postcss config
+    // with plugins field set, postcss-loader will not search for config file
+    postcssOptions.plugins = [
+      require( 'postcss-flexbugs-fixes' ),
+      require( 'postcss-preset-env' )( {
+        autoprefixer: {
+          flexbox: 'no-2009',
+        },
+        stage: 3,
+      } )
+    ]
+  }
+
   rule.use( 'postcss' )
-    .loader( 'postcss-loader' )
-    .options( {
-      plugins: [
-        require( 'autoprefixer' )()
-      ],
-    } )
+    .loader( require.resolve( 'postcss-loader' ) )
+    .options( postcssOptions )
 
   if ( loader ) {
     rule.use( lang )
-      .loader( loader )
+      .loader( require.resolve( loader ) )
       .options( options || {} )
   }
 }

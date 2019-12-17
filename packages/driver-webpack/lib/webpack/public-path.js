@@ -1,5 +1,6 @@
 exports.extend = function ( config, context = {} ) {
-  const output = context.userConfig.output
+  const { userConfig = {} } = context
+  const output = userConfig.output
 
   if ( output && output.publicPath ) {
     config.output.publicPath( output.publicPath )

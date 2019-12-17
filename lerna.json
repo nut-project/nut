@@ -3,7 +3,8 @@
     "packages/*",
     "other-packages/*",
     "templates/*",
-    "plugins/pages/*"
+    "plugins/pages/*",
+    "plugins/vue-ssr"
   ],
   "version": "independent",
   "useWorkspaces": true,

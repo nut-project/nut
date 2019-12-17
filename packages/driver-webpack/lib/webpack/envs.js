@@ -1,7 +1,8 @@
 const { webpack } = require( '@nut-project/webpack' )
 
 exports.extend = function ( config, context = {} ) {
-  const envs = context.userConfig.envs || {}
+  const { userConfig = {} } = context
+  const envs = userConfig.envs || {}
 
   config
     .plugin( 'envs' )
