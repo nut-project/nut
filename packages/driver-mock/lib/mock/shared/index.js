@@ -6,3 +6,6 @@ exports.getSceneGroupFile = function () {
 exports.getApiListFile = function () {
   return path.join( process.cwd(), CONF.SCENE_API_PATH )
 }
+exports.getSwitchFile = function () {
+  return path.join( process.cwd(), CONF.SCENE_ON )
+}

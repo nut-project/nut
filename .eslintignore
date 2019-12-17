@@ -6,3 +6,4 @@ packages/dev-utils/lib/open-browser.js
 packages/driver-webpack/lib/webpack/plugins/InlineChunkHtmlPlugin.js
 packages/driver-webpack/lib/webpack/plugins/WatchMissingNodeModulesPlugin.js
 packages/driver-webpack/lib/webpack/overlay
+packages/driver-mock/lib/assets

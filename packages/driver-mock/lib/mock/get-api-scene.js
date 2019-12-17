@@ -6,7 +6,7 @@ exports.getApiScene = async function ( driver, { requestDetail = {} } = {} ) {
       error: '额，参数错误～'
     }
   }
-  const apiSceneList = await driver.addAsyncSeriesWaterfallHook( 'fetchScenes', id )
+  const apiSceneList = await driver.addAsyncSeriesWaterfallHook( 'fetchSchemaScenes', id )
   return {
     retCode: 200,
     retDesc: 'success',

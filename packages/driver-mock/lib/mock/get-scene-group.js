@@ -1,7 +1,7 @@
 const fs = require( 'fs-extra' )
 const { getSceneGroupFile } = require( './shared' )
 
-exports.getSceneGroup = async function ( ) {
+exports.getSceneGroup = async function () {
   const sceneFile = getSceneGroupFile()
   try {
     await fs.ensureFile( sceneFile )

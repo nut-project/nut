@@ -13,7 +13,8 @@ class MockDriver extends Driver {
   hooks() {
     this.addSyncHook( 'beforeRun', [ ] )
     this.addAsyncSeriesWaterfallHook( 'fetchSchemas', [ 'config' ] )
-    this.addAsyncSeriesWaterfallHook( 'fetchScenes', [ 'id' ] )
+    this.addAsyncSeriesWaterfallHook( 'fetchSchemaScenes', [ 'id' ] )
+    this.addAsyncSeriesWaterfallHook( 'fetchSceneMockData', [ 'requestDetail' ] )
     this.addAsyncSeriesWaterfallHook( 'notfound', [ 'requestDetail' ] )
     this.addAsyncSeriesHook( 'afterServe', [ 'server' ] )
   }

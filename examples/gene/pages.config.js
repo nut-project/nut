@@ -16,10 +16,7 @@ module.exports = function ( ctx ) {
         options: {
           x: 1
         }
-      },
-      cmock: {
-        resolve: require.resolve( './plugins/plugin-mock-proxy' ),
-      },
+      }
     },
   }
 }
