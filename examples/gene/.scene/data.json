@@ -1,1 +1,13 @@
-[]
+[
+    {
+        "url": "公共场景",
+        "type": "common",
+        "scenes": [
+            {
+                "name": "123",
+                "group": [],
+                "extendScenes": []
+            }
+        ]
+    }
+]

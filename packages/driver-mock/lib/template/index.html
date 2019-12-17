@@ -5,7 +5,6 @@
     <title>mock-server</title>
     <!-- import CSS -->
     <link rel="stylesheet" href="mockServer/assets/element-ui@2.13.0/theme-chalk/index.css">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link href="mockServer/assets/jsoneditor/index.css" rel="stylesheet">
     <style>
         body {
@@ -173,6 +172,23 @@
         .demo-form-inline {
             margin-bottom: 20px;
         }
+        .new-module {
+            margin: 40px;
+            border: 1px solid #409EFF;
+            padding: 20px 10px;
+            text-align: center;
+            color: #fff;
+            border-radius: 2px;
+            height: 100%;
+            cursor: pointer;
+            background: #409EFF;
+        }
+        .btn-opera-wrap {
+            float: right;
+        }
+        .form-item {
+            width: 400px;
+        }
     </style>
     <!-- import Vue before Element -->
     <script src="mockServer/assets/vue@2.6.11/vue.js"></script>
@@ -183,97 +199,60 @@
 <body>
     <div id="app">
         <div class="container">
-            <el-form :inline="true" class="demo-form-inline">
-                <el-form-item label="模块：">
-                    <el-select  class="scene-select" :disabled="hasDefaultUrl" v-model="curUrl" filterable placeholder="请选择" @change="changeUrl">
-                        <el-option-group
-                            v-for="moduleGroup in MODULE_LIST"
-                            :key="moduleGroup.label"
-                            :label="moduleGroup.label">
-                            <el-option
-                                v-for="item in moduleGroup.options"
-                                :key="item.value"
-                                :label="item.value"
-                                :value="item.value">
-                            </el-option>
-                        </el-option-group>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="场景组：">
-                    <el-select v-model="curGroup" filterable placeholder="请选择" @change="changeSceneGroup" class="scene-select">
-                        <template v-for="({url, type, scenes = []}) of sceneGroupList" v-if="curUrl ? url === curUrl : true">
-                            <el-option
-                                v-for="item in scenes"
-                                :key="item.name"
-                                :label="item.name"
-                                :value="item.name">
-                                <span class="option-text">{{ item.name }}</span>
-                                <span :class="`item-${getTag(type).tag}`" style="float: right; font-size: 13px">{{ getTag(type).text }}</span>
-                            </el-option>
-                        </template>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="editSceneGroup(curSceneGroup)">新增</el-button>
-                    <el-button v-if="curUrl" type="text" @click="goSwitchList()">{{showSwitchList ? '收起场景组开关列表' : '展开场景组开关列表'}}</el-button>
-                </el-form-item>
-            </el-form>
-            <template v-if="!showSwitchList">
-                <template v-if="curSceneGroup && curSceneGroup.name">
-                    <div class="btn-wrap">
-                        <el-switch
-                            class="switch-item"
-                            @change="saveSwitch"
-                            v-model="switchObj[curSceneGroup.name]"
-                            inactive-color="#999">
-                        </el-switch>
-                        <el-button class="btn" plain type="primary" @click="addApiScene(curSceneGroup)">新增API</el-button>
-                        <el-button class="btn"  type="primary" @click="editSceneGroup(curSceneGroup, true)">{{isNeedSave ? '保存' : '另存为'}}</el-button>
-                        <el-button v-if="curSceneGroup.type !== 'common' && curGroup" type="primary" @click="relevanceSceneGroup(curSceneGroup)">关联公共场景组</el-button>
-                        <el-button v-if="curGroup" type="danger" @click="deleteSceneGroup(curSceneGroup)">删除</el-button>
-                    </div>
-                    <el-table :data="curSceneGroup.group" border stripe style="width: 100%">
-                        <el-table-column prop="api" label="接口名">
-                            <template slot-scope="scope">
-                                <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
-                                    <el-option
-                                        v-for="apiItem in API_LIST"
-                                        :key="apiItem.id"
-                                        :label="apiItem.api"
-                                        :value="apiItem.id"
-                                        :disabled="isDisabled(apiItem.id, curSceneGroup.group)">
-                                    </el-option>
-                                </el-select>
-                                <template v-else>
-                                    {{scope.row.api}}
-                                </template>
+            <div class="new-module" v-if="!hasModule()" @click="editSceneGroup(curSceneGroup)">
+                新增场景组 +
+            </div>
+            <template v-else>
+                <el-form :inline="true" class="demo-form-inline">
+                    <el-form-item label="模块：">
+                        <el-select  class="scene-select" :disabled="hasDefaultUrl" v-model="curUrl" filterable placeholder="请选择" @change="changeUrl">
+                            <el-option-group
+                                v-for="moduleGroup in MODULE_LIST"
+                                :key="moduleGroup.label"
+                                :label="moduleGroup.label">
+                                <el-option
+                                    v-for="item in moduleGroup.options"
+                                    :key="item.value"
+                                    :label="item.value"
+                                    :value="item.value">
+                                </el-option>
+                            </el-option-group>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="场景组：">
+                        <el-select v-model="curGroup" filterable placeholder="请选择" @change="changeSceneGroup" class="scene-select">
+                            <template v-for="({url, type, scenes = []}) of sceneGroupList" v-if="curUrl ? url === curUrl : true">
+                                <el-option
+                                    v-for="item in scenes"
+                                    :key="item.name"
+                                    :label="item.name"
+                                    :value="item.name">
+                                    <span class="option-text">{{ item.name }}</span>
+                                    <span :class="`item-${getTag(type).tag}`" style="float: right; font-size: 13px">{{ getTag(type).text }}</span>
+                                </el-option>
                             </template>
-                        </el-table-column>
-                        <el-table-column prop="scene" label="场景">
-                            <template slot-scope="scope">
-                                <div class="select-scene-wrap" v-if="scope.row.id" >
-                                    <el-select v-model="scope.row.scene" allow-create filterable clearable placeholder="default" @change="changeScene">
-                                        <el-option
-                                            v-for="scene in ALL_API_SCENE[scope.row.id]"
-                                            :key="scene"
-                                            :label="scene"
-                                            :value="scene">
-                                        </el-option>
-                                    </el-select>
-                                    <i v-if="scope.row.scene" class="btn-opera btn-custom el-icon-edit" @click="editSceneData({id: scope.row.id, api: scope.row.api, scene: scope.row.scene})" title="编辑场景数据"></i>
-                                </div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="操作" width="100px">
-                            <template slot-scope="scope">
-                                <i class="btn-opera icon-delete el-icon-delete" @click="deleteApiScene(curSceneGroup.group, scope.$index)" title="删除API"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-    
-                    <div class="extend-scene-wrap" v-for="name in curSceneGroup.extendScenes">
-                        <h3 class="extend-scene">关联场景：{{name}}</h3>
-                        <el-table :data="getExtendDetail(name)" border stripe style="width: 100%">
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item class="btn-opera-wrap">
+                        <el-button type="primary" @click="editSceneGroup(curSceneGroup)">新增场景组</el-button>
+                        <el-button v-if="curUrl" type="text" @click="goSwitchList()">{{showSwitchList ? '收起场景组开关列表' : '展开场景组开关列表'}}</el-button>
+                    </el-form-item>
+                </el-form>
+                <template v-if="!showSwitchList">
+                    <template v-if="curSceneGroup && curSceneGroup.name">
+                        <div class="btn-wrap">
+                            <el-switch
+                                class="switch-item"
+                                @change="saveSwitch"
+                                v-model="switchObj[curSceneGroup.name]"
+                                inactive-color="#999">
+                            </el-switch>
+                            <el-button class="btn" plain type="primary" @click="addApiScene(curSceneGroup)">新增API</el-button>
+                            <el-button class="btn"  type="primary" @click="editSceneGroup(curSceneGroup, true)">{{isNeedSave ? '保存场景组' : '另存为新场景组'}}</el-button>
+                            <el-button v-if="curSceneGroup.type !== 'common' && curGroup" type="primary" @click="relevanceSceneGroup(curSceneGroup)">关联公共场景组</el-button>
+                            <el-button v-if="curGroup" type="danger" @click="deleteSceneGroup(curSceneGroup)">删除</el-button>
+                        </div>
+                        <el-table :data="curSceneGroup.group" border stripe style="width: 100%">
                             <el-table-column prop="api" label="接口名">
                                 <template slot-scope="scope">
                                     <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
@@ -293,7 +272,7 @@
                             <el-table-column prop="scene" label="场景">
                                 <template slot-scope="scope">
                                     <div class="select-scene-wrap" v-if="scope.row.id" >
-                                        <el-select v-model="scope.row.scene" allow-create filterable clearable placeholder="auto" @change="changeScene">
+                                        <el-select v-model="scope.row.scene" no-match-text="可直接输入进行创建" allow-create filterable clearable placeholder="default" @change="changeScene">
                                             <el-option
                                                 v-for="scene in ALL_API_SCENE[scope.row.id]"
                                                 :key="scene"
@@ -305,27 +284,70 @@
                                     </div>
                                 </template>
                             </el-table-column>
+                            <el-table-column label="操作" width="100px">
+                                <template slot-scope="scope">
+                                    <i class="btn-opera icon-delete el-icon-delete" @click="deleteApiScene(curSceneGroup.group, scope.$index)" title="删除API"></i>
+                                </template>
+                            </el-table-column>
                         </el-table>
-                    </div>
+        
+                        <div class="extend-scene-wrap" v-for="name in curSceneGroup.extendScenes">
+                            <h3 class="extend-scene">关联场景：{{name}}</h3>
+                            <el-table :data="getExtendDetail(name)" border stripe style="width: 100%">
+                                <el-table-column prop="api" label="接口名">
+                                    <template slot-scope="scope">
+                                        <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
+                                            <el-option
+                                                v-for="apiItem in API_LIST"
+                                                :key="apiItem.id"
+                                                :label="apiItem.api"
+                                                :value="apiItem.id"
+                                                :disabled="isDisabled(apiItem.id, curSceneGroup.group)">
+                                            </el-option>
+                                        </el-select>
+                                        <template v-else>
+                                            {{scope.row.api}}
+                                        </template>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="scene" label="场景">
+                                    <template slot-scope="scope">
+                                        <div class="select-scene-wrap" v-if="scope.row.id" >
+                                            <el-select v-model="scope.row.scene" no-match-text="可直接输入进行创建" allow-create filterable clearable placeholder="auto" @change="changeScene">
+                                                <el-option
+                                                    v-for="scene in ALL_API_SCENE[scope.row.id]"
+                                                    :key="scene"
+                                                    :label="scene"
+                                                    :value="scene">
+                                                </el-option>
+                                            </el-select>
+                                            <i v-if="scope.row.scene" class="btn-opera btn-custom el-icon-edit" @click="editSceneData({id: scope.row.id, api: scope.row.api, scene: scope.row.scene})" title="编辑场景数据"></i>
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </template>
+                </template>
+                <template v-else>
+                    <ul v-for="({url, type, scenes = []}) of sceneGroupList" v-if="curUrl ? url === curUrl : true">
+                        <template v-if="scenes && scenes.length">
+                            <li class="switch-list" v-for="item in scenes">
+                                <el-switch
+                                    @change="saveSwitch"
+                                    v-model="switchObj[item.name]"
+                                    inactive-color="#999">
+                                </el-switch>
+                                {{ item.name }}
+                            </li>
+                        </template>
+                        <li v-else>
+                            暂无场景组
+                        </li>
+                    </ul>
                 </template>
             </template>
-            <template v-else>
-                <ul v-for="({url, type, scenes = []}) of sceneGroupList" v-if="curUrl ? url === curUrl : true">
-                    <template v-if="scenes && scenes.length">
-                        <li class="switch-list" v-for="item in scenes">
-                            <el-switch
-                                @change="saveSwitch"
-                                v-model="switchObj[item.name]"
-                                inactive-color="#999">
-                            </el-switch>
-                            {{ item.name }}
-                        </li>
-                    </template>
-                    <li v-else>
-                        暂无场景组
-                    </li>
-                </ul>
-            </template>
+           
         </div>
         <el-dialog :title="isEdit ? '编辑场景组' : '新增场景组'" :visible.sync="dialogVisible">
             <el-form :model="form">
@@ -335,8 +357,8 @@
                             <el-radio v-for="item of ALL_TYPES" :label="item.type" :key="item.type">{{item.text}}</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item v-if="form.type === 'url'" :label=`${getUrlName(form.type)}：` :label-width="formLabelWidth">
-                        <el-select v-model="form.url"  :disabled="this.hasDefaultUrl" allow-create filterable clearable placeholder="输入路由">
+                    <el-form-item required v-if="form.type === 'url'" :label=`${getUrlName(form.type)}：` :label-width="formLabelWidth">
+                        <el-select class="form-item" v-model="form.url" :disabled="this.hasDefaultUrl" no-match-text="可直接输入进行创建" allow-create filterable clearable placeholder="输入路由">
                             <el-option-group
                                 v-for="moduleGroup in MODULE_LIST"
                                 v-if="moduleGroup.type === form.type"
@@ -351,8 +373,8 @@
                             </el-option-group>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="场景组名：" :label-width="formLabelWidth">
-                        <el-input v-model="form.name"></el-input>
+                    <el-form-item required label="场景组名：" :label-width="formLabelWidth">
+                        <el-input v-model="form.name" class="form-item"></el-input>
                     </el-form-item>
                 </template>
             </el-form>
@@ -365,7 +387,7 @@
             <div>
                 <div id="monaco" style="width: 100%; height: 400px;">
                 </div>
-                <!-- <div id="jsoneditor" style="width: 100%; height: 400px;"></div> -->
+                <div id="jsoneditor" style="width: 100%; height: 400px;"></div>
                 <!-- <pre ref="editSceneData" contenteditable="true" @input.stop="changeSceneData($event)">{{JSON.stringify(editData || '{}', null, 4)}}</pre> -->
             </div>
             <div slot="footer" class="dialog-footer">
@@ -404,10 +426,10 @@
                     type: "common",
                     tag: "success",
                     text: "公共"
-                }, {
-                    type: "wander",
-                    tag: "info",
-                    text: "游荡"
+                // }, {
+                //     type: "wander",
+                //     tag: "info",
+                //     text: "不分组"
                 }],
                 hasDefaultUrl: !!defaultUrl,
                 curUrl: defaultUrl,
@@ -417,6 +439,7 @@
                 curGroup: '',
                 curSceneGroup: {},
                 sceneGroupList: [],
+                getSceneGroupFinished: false,
                 ALL_SCENE_GROUP: [],
                 API_LIST: [],
                 ALL_API_SCENE: {},
@@ -494,9 +517,12 @@
             this.getSceneGroupList();
             this.getApi();
             this.getSwitch();
-            this.createJSONEditor();
+            //this.createJSONEditor();
         },
         methods: {
+            hasModule(){
+                return !this.MODULE_LIST.every( item => !Object.keys(item || {}).length)
+            },
             createJSONEditor(){
                 const container = document.getElementById("jsoneditor")
                 const options = {}
@@ -555,9 +581,6 @@
                     return item2.name === name;
                 }) || {}).group || [];
             },
-            // getExtendScenes(){
-            //     return this.curSceneGroup.checkedCommonScene.join('、')
-            // },
             findScene(){
                 const { name, url } = this.curSceneGroup;
                 const i1 = this.sceneGroupList.findIndex(item => item.url === url);
@@ -590,6 +613,7 @@
                 const res = await this.post('/mockServer/getSceneGroup', {
                     router: this.curUrl
                 })
+                this.getSceneGroupFinished = true;
                 if(res && res.retCode === 200){
                     this.afterGetSceneGroupList(res.data || [])
                 }
@@ -644,7 +668,6 @@
                 }
             },
             async getMock(){
-                console.log(this.editDataKeys, '==key')
                 const { api, scene} = this.editDataKeys
                 const res = await this.post('/mockServer/getData', { 
                     api,
@@ -660,7 +683,6 @@
                 }
                 if(res && res.retCode === 200){
                     this.editor.set(initialJson )
-                    console.log(this.editor.get())
                 }
             },
             async saveMock(data){
@@ -733,7 +755,6 @@
             },
             editSceneGroup(obj, isSave){ //curSceneGroup
                 this.isEdit = !!isSave;
-                console.log(obj, '===obj')
                 const { name = '', url = this.hasDefaultUrl ? this.curUrl : '', type = this.hasDefaultUrl ? 'url' : '' } = obj;
                 if(this.isNeedSave){
                     this.saveSceneGroupList(() => {
@@ -750,7 +771,7 @@
                     extendScenes: (obj || {}).extendScenes || [],
                     name: isSave ? name : '',
                     url,
-                    type: type || 'wander',
+                    type: type || 'common',
                 })
             },
             deleteSceneGroup(obj){
@@ -839,7 +860,6 @@
                     let errorCount = 0;
                     this.sceneGroupList.map(item => {
                         item.scenes.map(sceneItem => {
-                            sceneItem.group.find( ({api}) => !api ) &&  console.log(sceneItem, '===')
                             errorCount = sceneItem.group.find( ({api}) => !api ) ? errorCount + 1 : errorCount
                         })
                     })
@@ -851,7 +871,6 @@
                 this.sceneGroupList.map(item => item.scenes.map(item2 => {
                     delete item2.type;
                     delete item2.url;
-                    //delete item2.on;
                 }))
                 const res = await this.post('/mockServer/updateSceneGroup', { sceneGroupList: this.sceneGroupList})
                 if(res && res.retCode === 200){
@@ -960,7 +979,6 @@
                 this.isIndeterminate = false;
             },
             handleCheckedSceneChange(value) {
-                console.log(value, '====')
                 const allCount = this.COMMON_LIST.map(item => (item.scenes || []).length).reduce((sum, a) => sum + a);
                 let checkedCount = value.length;
                 this.checkAll = checkedCount === allCount;
