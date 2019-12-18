@@ -10,7 +10,7 @@ exports.extend = function ( config, context = {} ) {
 }
 
 exports.expose = function ( driver ) {
-  driver.expose( 'env', ( key, value ) => {
+  driver.expose( 'constant', ( key, value ) => {
     driver.useHook( 'dangerously_chainWebpack', config => {
       config.plugin( 'envs' )
         .tap( args => {
