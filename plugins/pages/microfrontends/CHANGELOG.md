@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.5](https://github.com/nut-project/nut/tree/master/plugins/pages/microfrontends/compare/@nut-plugins/pages-microfrontends@1.0.0-alpha.4...@nut-plugins/pages-microfrontends@1.0.0-alpha.5) (2019-12-19)
+
+
+### Bug Fixes
+
+* traverse sidebar to get first route ([075b04f](https://github.com/nut-project/nut/tree/master/plugins/pages/microfrontends/commit/075b04f1032e66a9d01f1f2c29ae2ec23f25590c))
+
+
+
+
+
 # [1.0.0-alpha.4](https://github.com/nut-project/nut/tree/master/plugins/pages/microfrontends/compare/@nut-plugins/pages-microfrontends@1.0.0-alpha.3...@nut-plugins/pages-microfrontends@1.0.0-alpha.4) (2019-12-06)
 
 
