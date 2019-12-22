@@ -528,7 +528,7 @@
                 formLabelWidth: '100px',
 
                 //接口列表
-                activeIndex: '1',
+                activeIndex: window.location.hash === '#2' ? '2' : '1',
                 isCollapse: false,
                 curSearchApi: '',
                 activeApi: '',
@@ -679,6 +679,7 @@
             handleSelect(index){
                 this.activeIndex = index;
                 this.hideSceneGroup = true;
+                window.location.hash = index;
             },
             handleSelectApi(api){
                 this.activeApi = api;
@@ -1086,9 +1087,9 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    const { url, name } = this.activeSceneGroup;
+                    const { name } = this.activeSceneGroup;
                     const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST))
-                    const setting = params.find(item => item.url === url)
+                    const setting = params.find(item => item.url === this.activeRouter)
                     const sceneGroup = (setting.scenes || []).find(item => item.name === name)
                     sceneGroup.group.splice(index, 1)
                     this.updateRouter(params, () => {
@@ -1113,13 +1114,14 @@
             //保存场景组接口数据
             saveSceneGroup(){
                 const { api, scene } = this.apiMapForm;
-                const { url, name } = this.activeSceneGroup;
+                const { name } = this.activeSceneGroup;
                 if(!api || !scene){
                     this.$message.error('接口和场景缺一不可～')
                     return false;
                 }
                 const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST))
-                const setting = params.find(item => item.url === url)
+                const setting = params.find(item => item.url === this.activeRouter)
+                console.log(setting, '===sessing')
                 if(setting){
                     const sceneGroup = (setting.scenes || []).find(item => item.name === name)
                     if(sceneGroup){
@@ -1147,6 +1149,7 @@
                         })
                         return false
                     }
+                    console.log(sceneGroup, '====sceneGroup')
                 }
                 this.$message.error('未匹配到场景，请刷新页面重新操作～')
             },
