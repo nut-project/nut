@@ -1,9 +1,9 @@
-const { getApiListFile } = require( './shared' )
+const { getApiFile } = require( './shared' )
 const fs = require( 'fs-extra' )
 
-// 获取自动填充的api的列表
-exports.getApiList = async function ( driver, { config = {}, cache = true } ) {
-  const apiFile = getApiListFile()
+// 获取所有用户设置的API列表数据
+exports.getApi = async function ( driver, { cache = true } ) {
+  const apiFile = getApiFile()
   let apiList = []
   try {
     if ( cache ) {
@@ -14,11 +14,6 @@ exports.getApiList = async function ( driver, { config = {}, cache = true } ) {
         retDesc: 'success',
         data: apiList || []
       }
-    }
-    apiList = await driver.addAsyncSeriesWaterfallHook( 'fetchSchemas', config )
-    if ( apiList ) {
-      const apiListStr = JSON.stringify( apiList || [], null, 4 )
-      fs.outputFile( apiFile, apiListStr )
     }
   } catch ( err ) {
     return {

@@ -1,13 +1,12 @@
-[{
-    "id": 1,
-    "name": "data1",
-    "api": "/api/data1"
-}, {
-    "id": 2,
-    "name": "data2",
-    "api": "/api/data2"
-}, {
-    "id": 3,
-    "name": "data3",
-    "api": "/api/data3"
-}]
+[
+    {
+        "id": 1,
+        "name": "data1",
+        "api": "/api/data1",
+        "activeScene": "default",
+        "scenes": [
+            "default",
+            "场景1"
+        ]
+    }
+]

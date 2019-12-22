@@ -6,408 +6,514 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="mockServer/assets/element-ui@2.13.0/theme-chalk/index.css">
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <link href="mockServer/assets/jsoneditor/index.css" rel="stylesheet">
     <style>
-        body {
-            background: #f7f7f7;
-            margin: 0;
-            height: 100vh;
-            padding: 0;
-        }
-        #app {
-            width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 4px;
-            min-height: 100vh;
-        }
-        .title {
-            border-bottom: 2px solid #8db8ef;
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-            font-size: 26px;
-        }
-        .container {
-            /* display: flex; */
-        }
-        .left {
-            flex-basis: 200px;
-        }
-        .left .el-tabs__header.is-left{
-            float: right;
-            margin-right: 20px;
-        }
-        .left .el-tabs--left .el-tabs__item.is-left{
+        .text-overflow-style {
             overflow: hidden;
             text-overflow: ellipsis;
-            width: 200px;
         }
+        .text-no-wrap {
+            white-space: nowrap;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        #app {
+            height: 100%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            background: rgb(84, 92, 100);
+            align-items: center;
+        }
+        .logo-wrap {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            margin: 0 30px 0 20px;
+            text-decoration: none;
+        }
+        .logo {
+            margin-right: 10px;
+        }
+        .el-menu-main {
+            flex: 1;
+        }
+        .content {
+            display: flex;
+            height: calc(100% - 60px);
+            background: #f7f7f7;
+        }
+        .left {
+            flex-basis: 320px;
+            background: #fff;
+            border-right: 1px solid #ccc;
+            overflow-y: auto;
+        }
+        .left-header {
+            padding: 15px;
+            border-bottom: 1px solid #f9f6f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .search-wrap {
+            margin-right: 10px;
+        }
+        .icon-plus-api {
+            cursor: pointer;
+            color: #666666;
+        }
+        .icon-plus-api:hover {
+            color: #50a6ff
+        }
+        .el-menu-vertical-wrap {
+            border-right: none;
+        }
+        /* .el-menu-item-api {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        } */
+        .el-munu-item-wrap {
+            display: flex;
+            position: relative;
+            justify-content: space-between;
+        }
+        .el-menu-btns {
+            display: none;
+            background: #afa8a8;
+            position: absolute;
+            right: -20px;
+            border-top-left-radius: 10px;
+            height: 27px;
+            align-items: center;
+            bottom: 0;
+            color:#fff;
+        }
+        .menu-opera-icon {
+            font-size: 12px!important;
+            color: #fff!important;
+        }
+        .el-munu-item-wrap:hover .el-menu-btns {
+            display: flex;
+        }
+
         .right {
-            flex: 1
+            flex: 1;
+            padding: 15px;
         }
-        .box-card {
+        .right-header {
+            display: flex;
+            align-items: center;
+        }
+        .right-title {
+            margin-right: 15px;
+        }
+        /* .scenes-wrap {
+            display: flex;
+        } */
+        .scene-card-wrap {
             margin-bottom: 20px;
         }
-        .el-card__header {
-            background: #e6eff5;
+        .scene-card-add-wrap {
+            cursor: pointer;
         }
-        .item-error {
-            color: #f00;
+
+
+        .scene-card {
+            width: 240px;
         }
-        .btn-wrap {
-            float: right;
+        .scene-active-card {
+            box-shadow: 0 2px 12px 0 rgba(5, 116, 230, 0.6) !important;
         }
-        .main-btn {
-            float: right;
+        .scene-desc {
+            font-size: 13px;
+            color: #999;
         }
-        .btn {
-            margin-bottom: 20px;
+        
+        .scene-bottom {
+            margin-top: 13px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
         }
-        .btn-custom {
-            float: right; 
-            padding: 3px 10px;
+        .scene-extra-bottom {
+            justify-content: space-between;
         }
-        .group-title {
+        .scene-title {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            width: 600px;
-            display: inline-block;
         }
-        .group-url {
-            color: #409EFF;
+        .scene-button .scene-icon {
+            color: #4ba4ff;
+            margin-left: 10px;
             cursor: pointer;
+        }
+        .scene-button .el-icon-turn-off {
+            color:#ccc;
+        }
+        /* .scene-card:hover .el-icon-turn-off {
+            color: #4ba4ff;
+        } */
+        .scene-image {
+            width: 100%;
+            height: 100px;
+            background: #949292;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            color: #ccc;
+        }
+        .scene-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 10px;
+        }
+        .scene-image-add {
+            background: #f7f7ff;
+        }
+        .scene-text-add {
+            font-size: 50px;
+        }
+
+        .form-item {
+            width: 300px;
         }
         .scene-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
-        .scene-title{
-            margin: 0 20px 0 0;
-            font-size: 20px;
-            max-width: 400px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .select-scene-wrap {
-            display: flex;
-            align-items: center;
-        }
-        .select-scene-wrap .btn-opera {
-            color: #409EFF;
-            cursor: pointer;
-        }
-        .pane-wrap {
-            display: flex;
-            align-items: center;
-        }
-        .pane-title {
-            display: inline-block;
-            width: 100px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .item-success{
-            color: #67c23a
-        }
-        .item-primary{
-            color: #409eff
-        }
-        .item-info{
-            color: #cccccc
-        }
-        .option-text {
-            float: left;
-            max-width: 450px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-right: 10px;
-        }
-        .scene-select {
-            width: 300px;
-        }
-        .icon-delete {
-            color:#409eff;
-            cursor: pointer;
-        }
-        .url-text {
-            color: #999999;
-            overflow: hidden;
-            width: 600px;
-            text-overflow: ellipsis;
-            display: inline-block;
-            white-space: nowrap;
-        }
-        .extend-scene-wrap {
-            margin-top: 40px;
-        }
-        .extend-scene-wrap:first-child{
-            border-top: 1px dashed #ccc;
-            margin-top: 100px;
-            padding-top: 40px;
-        }
-        .extend-scene {
-            color: #666;
-        }
-        .extra-info {
-            color: #999999;
-            overflow: hidden;
-            width: 130px;
-            text-overflow: ellipsis;
-            display: inline-block;
-            white-space: nowrap;
-            font-size: 12px;
-            position: relative;
-            top: 4px;
-        }
-        .check-all {
-            margin-bottom: 15px;
-        }
-        .switch-list {
-            margin-bottom: 15px;
-        }
-        .switch-item {
-            margin-right: 15px;
-        }
-        .demo-form-inline {
-            margin-bottom: 20px;
-        }
-        .new-module {
-            margin: 40px;
-            border: 1px solid #409EFF;
-            padding: 20px 10px;
-            text-align: center;
-            color: #fff;
-            border-radius: 2px;
-            height: 100%;
-            cursor: pointer;
-            background: #409EFF;
-        }
-        .btn-opera-wrap {
-            float: right;
-        }
-        .form-item {
-            width: 400px;
-        }
+
     </style>
     <!-- import Vue before Element -->
     <script src="mockServer/assets/vue@2.6.11/vue.js"></script>
     <!-- import JavaScript -->
     <script src="mockServer/assets/element-ui@2.13.0/index.js"></script>
-    <script src="mockServer/assets/jsoneditor/index.js"></script> 
 </head>
 <body>
     <div id="app">
-        <div class="container">
-            <div class="new-module" v-if="!hasModule()" @click="editSceneGroup(curSceneGroup)">
-                新增场景组 +
-            </div>
-            <template v-else>
-                <el-form :inline="true" class="demo-form-inline">
-                    <el-form-item label="模块：">
-                        <el-select  class="scene-select" :disabled="hasDefaultUrl" v-model="curUrl" filterable placeholder="请选择" @change="changeUrl">
-                            <el-option-group
-                                v-for="moduleGroup in MODULE_LIST"
-                                :key="moduleGroup.label"
-                                :label="moduleGroup.label">
-                                <el-option
-                                    v-for="item in moduleGroup.options"
-                                    :key="item.value"
-                                    :label="item.value"
-                                    :value="item.value">
-                                </el-option>
-                            </el-option-group>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="场景组：">
-                        <el-select v-model="curGroup" filterable placeholder="请选择" @change="changeSceneGroup" class="scene-select">
-                            <template v-for="({url, type, scenes = []}) of sceneGroupList" v-if="curUrl ? url === curUrl : true">
-                                <el-option
-                                    v-for="item in scenes"
-                                    :key="item.name"
-                                    :label="item.name"
-                                    :value="item.name">
-                                    <span class="option-text">{{ item.name }}</span>
-                                    <span :class="`item-${getTag(type).tag}`" style="float: right; font-size: 13px">{{ getTag(type).text }}</span>
-                                </el-option>
-                            </template>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item class="btn-opera-wrap">
-                        <el-button type="primary" @click="editSceneGroup(curSceneGroup)">新增场景组</el-button>
-                        <el-button v-if="curUrl" type="text" @click="goSwitchList()">{{showSwitchList ? '收起场景组开关列表' : '展开场景组开关列表'}}</el-button>
-                    </el-form-item>
-                </el-form>
-                <template v-if="!showSwitchList">
-                    <template v-if="curSceneGroup && curSceneGroup.name">
-                        <div class="btn-wrap">
-                            <el-switch
-                                class="switch-item"
-                                @change="saveSwitch"
-                                v-model="switchObj[curSceneGroup.name]"
-                                inactive-color="#999">
-                            </el-switch>
-                            <el-button class="btn" plain type="primary" @click="addApiScene(curSceneGroup)">新增API</el-button>
-                            <el-button class="btn"  type="primary" @click="editSceneGroup(curSceneGroup, true)">{{isNeedSave ? '保存场景组' : '另存为新场景组'}}</el-button>
-                            <el-button v-if="curSceneGroup.type !== 'common' && curGroup" type="primary" @click="relevanceSceneGroup(curSceneGroup)">关联公共场景组</el-button>
-                            <el-button v-if="curGroup" type="danger" @click="deleteSceneGroup(curSceneGroup)">删除</el-button>
-                        </div>
-                        <el-table :data="curSceneGroup.group" border stripe style="width: 100%">
-                            <el-table-column prop="api" label="接口名">
-                                <template slot-scope="scope">
-                                    <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
-                                        <el-option
-                                            v-for="apiItem in API_LIST"
-                                            :key="apiItem.id"
-                                            :label="apiItem.api"
-                                            :value="apiItem.id"
-                                            :disabled="isDisabled(apiItem.id, curSceneGroup.group)">
-                                        </el-option>
-                                    </el-select>
-                                    <template v-else>
-                                        {{scope.row.api}}
-                                    </template>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="scene" label="场景">
-                                <template slot-scope="scope">
-                                    <div class="select-scene-wrap" v-if="scope.row.id" >
-                                        <el-select v-model="scope.row.scene" no-match-text="可直接输入进行创建" allow-create filterable clearable placeholder="default" @change="changeScene">
-                                            <el-option
-                                                v-for="scene in ALL_API_SCENE[scope.row.id]"
-                                                :key="scene"
-                                                :label="scene"
-                                                :value="scene">
-                                            </el-option>
-                                        </el-select>
-                                        <i v-if="scope.row.scene" class="btn-opera btn-custom el-icon-edit" @click="editSceneData({id: scope.row.id, api: scope.row.api, scene: scope.row.scene})" title="编辑场景数据"></i>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="操作" width="100px">
-                                <template slot-scope="scope">
-                                    <i class="btn-opera icon-delete el-icon-delete" @click="deleteApiScene(curSceneGroup.group, scope.$index)" title="删除API"></i>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-        
-                        <div class="extend-scene-wrap" v-for="name in curSceneGroup.extendScenes">
-                            <h3 class="extend-scene">关联场景：{{name}}</h3>
-                            <el-table :data="getExtendDetail(name)" border stripe style="width: 100%">
-                                <el-table-column prop="api" label="接口名">
-                                    <template slot-scope="scope">
-                                        <el-select v-if="!scope.row.id" v-model="scope.row.id" placeholder="请选择API" filterable @change="changeApi($event, scope.row)">
-                                            <el-option
-                                                v-for="apiItem in API_LIST"
-                                                :key="apiItem.id"
-                                                :label="apiItem.api"
-                                                :value="apiItem.id"
-                                                :disabled="isDisabled(apiItem.id, curSceneGroup.group)">
-                                            </el-option>
-                                        </el-select>
-                                        <template v-else>
-                                            {{scope.row.api}}
-                                        </template>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="scene" label="场景">
-                                    <template slot-scope="scope">
-                                        <div class="select-scene-wrap" v-if="scope.row.id" >
-                                            <el-select v-model="scope.row.scene" no-match-text="可直接输入进行创建" allow-create filterable clearable placeholder="auto" @change="changeScene">
-                                                <el-option
-                                                    v-for="scene in ALL_API_SCENE[scope.row.id]"
-                                                    :key="scene"
-                                                    :label="scene"
-                                                    :value="scene">
-                                                </el-option>
-                                            </el-select>
-                                            <i v-if="scope.row.scene" class="btn-opera btn-custom el-icon-edit" @click="editSceneData({id: scope.row.id, api: scope.row.api, scene: scope.row.scene})" title="编辑场景数据"></i>
-                                        </div>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </div>
-                    </template>
-                </template>
-                <template v-else>
-                    <ul v-for="({url, type, scenes = []}) of sceneGroupList" v-if="curUrl ? url === curUrl : true">
-                        <template v-if="scenes && scenes.length">
-                            <li class="switch-list" v-for="item in scenes">
-                                <el-switch
-                                    @change="saveSwitch"
-                                    v-model="switchObj[item.name]"
-                                    inactive-color="#999">
-                                </el-switch>
-                                {{ item.name }}
-                            </li>
-                        </template>
-                        <li v-else>
-                            暂无场景组
-                        </li>
-                    </ul>
-                </template>
-            </template>
-           
+        <div class="header">
+            <a href="/" class="logo-wrap">
+                <img src="https://img.alicdn.com/tfs/TB18Xm_q5_1gK0jSZFqXXcpaXXa-34-34.svg" class="logo" />
+                MOCK平台
+            </a>
+            <el-menu
+                :default-active="activeIndex"
+                class="el-menu-main"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#545c64"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+                <el-menu-item index="1">接口列表</el-menu-item>
+                <el-menu-item index="2">场景中心</el-menu-item>
+              </el-menu>
         </div>
-        <el-dialog :title="isEdit ? '编辑场景组' : '新增场景组'" :visible.sync="dialogVisible">
-            <el-form :model="form">
-                <template v-if="!form.isSave || form.isSaveas !== '0'">
-                    <el-form-item label="场景类型：" :label-width="formLabelWidth">
-                        <el-radio-group v-model="form.type" :disabled="this.hasDefaultUrl">
-                            <el-radio v-for="item of ALL_TYPES" :label="item.type" :key="item.type">{{item.text}}</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item required v-if="form.type === 'url'" :label=`${getUrlName(form.type)}：` :label-width="formLabelWidth">
-                        <el-select class="form-item" v-model="form.url" :disabled="this.hasDefaultUrl" no-match-text="可直接输入进行创建" allow-create filterable clearable placeholder="输入路由">
-                            <el-option-group
-                                v-for="moduleGroup in MODULE_LIST"
-                                v-if="moduleGroup.type === form.type"
-                                :key="moduleGroup.label"
-                                :label="moduleGroup.label">
-                                <el-option
-                                    v-for="item in moduleGroup.options"
-                                    :key="item.value"
-                                    :label="item.value"
-                                    :value="item.value">
-                                </el-option>
-                            </el-option-group>
+        <div class="content" v-if="activeIndex === '1'">
+            <div class="left">
+                <div class="left-header">
+                    <div class="search-wrap">
+                        <el-input placeholder="输入接口搜索" v-model="curSearchApi" class="input-with-select">
+                            <el-button slot="append" icon="el-icon-search"></el-button>
+                        </el-input>
+                    </div>
+                    <el-button type="primary" @click="addorEditApi">新增</el-button>
+                </div>
+                <el-menu :default-active="activeApi" @select="handleSelectApi" class="el-menu-vertical-wrap" :collapse="isCollapse">
+                    <el-menu-item v-show="!curSearchApi || item.api.includes(curSearchApi)" :index="item.api" v-for="(item, index) of API_LIST" :title="item.api" :key="item.api">
+                        <div class="el-munu-item-wrap">
+                            <span class="text-overflow-style">
+                                {{item.api}}
+                            </span>
+                            <span class="el-menu-btns">
+                                <i class="el-icon-edit menu-opera-icon" @click="addorEditApi(index, item.api)" title="编辑"></i>
+                                <i class="el-icon-delete menu-opera-icon" title="删除" @click="deleteApi(index)"></i>
+                            </span>
+                        </div>
+                    </el-menu-item>
+                </el-menu>
+            </div>
+            <div class="right">
+                <template v-if="activeApi">
+                    <div class="right-header">
+                        <h3 class="right-title">{{activeApi}}</h3>
+                        <el-tooltip effect="dark" content="同一接口同一时间只能开启一个场景哦" placement="bottom">
+                            <i class="el-icon-info"></i>
+                        </el-tooltip>
+                    </div>
+                    <el-row class="scenes-wrap">
+                        <el-col :span="4" class="scene-card-wrap scene-card-add-wrap">
+                            <el-card  class="scene-card" :body-style="{ padding: '0px' }">
+                                <span class="scene-image scene-image-add" @click="addApiScene">
+                                    <span class="scene-text scene-text-add">+</span>
+                                </span>
+                            <div style="padding: 14px;">
+                                <div class="scene-bottom">
+                                    <div class="scene-desc">
+                                        新增接口场景
+                                    </div>
+                                </div>
+                            </div>
+                            </el-card>
+                        </el-col>
+                        <template v-if="activeAPISetting && activeAPISetting.scenes && activeAPISetting.scenes.length" >
+                            <el-col :span="4" class="scene-card-wrap" v-for="(scene, index) of activeAPISetting.scenes" :key="scene">
+                                <el-card  :class="activeAPISetting.activeScene === scene ? 'scene-card scene-active-card' : 'scene-card'" :body-style="{ padding: '0px' }" >
+                                    <span class="scene-image">
+                                        <span class="scene-text">{{scene}}</span>
+                                    </span>
+                                <div style="padding: 14px;">
+                                    <div class="scene-bottom">
+                                        <div class="scene-button">
+                                            <el-tooltip effect="dark" content="当前场景开启，点击关闭" placement="top" v-if="activeAPISetting.activeScene === scene">
+                                                <i class="el-icon-open scene-icon" @click="changeActiveScene(scene, false)"></i>
+                                            </el-tooltip>
+                                            <el-tooltip effect="dark" content="当前场景关闭，点击开启" placement="top" v-else>
+                                                <i class="el-icon-turn-off scene-icon" @click="changeActiveScene(scene, true)"></i>
+                                            </el-tooltip>
+                                            <i class="el-icon-edit scene-icon" @click="addApiScene(index, scene)"></i>
+                                            <i class="el-icon-delete scene-icon" @click="deleteApiScene(index)"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                </el-card>
+                            </el-col>
+                        </template>
+                    </el-row>
+                </template>
+            </div>
+        </div>
+
+        <div class="content" v-if="activeIndex === '2'">
+            <div class="left">
+                <div class="left-header">
+                    <div class="search-wrap">
+                        <el-input placeholder="输入页面路由搜索" v-model="curSearchRouter" class="input-with-select">
+                            <el-button slot="append" icon="el-icon-search"></el-button>
+                        </el-input>
+                    </div>
+                    <el-button type="primary" @click="addRouter">新增</el-button>
+                </div>
+                    <el-menu :default-active="activeRouter" @select="handleSelectRouter" class="el-menu-vertical-wrap" :collapse="isCollapse">
+                        <el-menu-item v-show="!curSearchRouter || item.url.includes(curSearchRouter)" :index="item.url" v-for="(item, index) of ROUTER_SCENE_GROUP_LIST" :title="item.url" :key="item.url">
+                            <div class="el-munu-item-wrap">
+                                <span class="text-overflow-style">
+                                    {{item.url}}
+                                </span>
+                                <span class="el-menu-btns">
+                                    <i class="el-icon-edit menu-opera-icon" @click="addRouter(index, item.url)" title="编辑"></i>
+                                    <i class="el-icon-delete menu-opera-icon" @click="deleteRouter(index)" title="删除"></i>
+                                </span>
+                            </div>
+                        </el-menu-item>
+                    </el-menu>
+
+            </div>
+            <div class="right">
+                <template v-if="activeRouter && hideSceneGroup">
+                    <div class="right-header">
+                        <h3 class="right-title">路由：{{activeRouter}}</h3>
+                        <el-tooltip effect="dark" content="XXXX" placement="bottom">
+                            <i class="el-icon-info"></i>
+                        </el-tooltip>
+                    </div>
+
+                    <el-row class="scenes-wrap">
+                        <el-col :span="4" class="scene-card-wrap scene-card-add-wrap" >
+                            <el-card  class="scene-card" :body-style="{ padding: '0px' }" >
+                                <span class="scene-image scene-image-add" @click="addRouterScene">
+                                    <span class="scene-text scene-text-add">+</span>
+                                </span>
+                            <div style="padding: 27px;">
+                                <div class="scene-bottom">
+                                    <div class="scene-desc">
+                                        新增页面场景组
+                                    </div>
+                                </div>
+                            </div>
+                            </el-card>
+                        </el-col>
+                        <template v-if="activeRouterSetting && activeRouterSetting.scenes" >
+                            <el-col :span="4" class="scene-card-wrap" v-for="(sceneItem, index) of (activeRouterSetting.scenes || [])" :key="sceneItem.name">
+                                <el-card  :class="sceneItem.name === activeRouterSetting.activeScene ? 'scene-card scene-active-card' : 'scene-card'" :body-style="{ padding: '0px' }" >
+                                    <span class="scene-image">
+                                        <span class="scene-text">{{sceneItem.name}}</span>
+                                    </span>
+                                    <div style="padding: 14px;">
+                                        <div class="scene-title">场景组：{{sceneItem.name}}</div>
+                                        <div class="scene-bottom scene-extra-bottom">
+                                            <div class="scene-desc">
+                                                接口：{{(sceneItem.group || []).length}} 个
+                                            </div>
+                                            <div class="scene-button">
+                                                <el-tooltip effect="dark" content="当前场景开启，点击关闭" placement="top" v-if="sceneItem.name === activeRouterSetting.activeScene">
+                                                    <i class="el-icon-open scene-icon" @click="changeActiveSceneGroup(sceneItem.name, false)"></i>
+                                                </el-tooltip>
+                                                <el-tooltip effect="dark" content="当前场景关闭，点击开启" placement="top" v-else>
+                                                    <i class="el-icon-turn-off scene-icon" @click="changeActiveSceneGroup(sceneItem.name, true)"></i>
+                                                </el-tooltip>
+                                                <i class="el-icon-edit scene-icon" @click="addRouterScene(index, sceneItem.name)"></i>
+                                                <i class="el-icon-delete scene-icon" @click="deleteRouterScene(index)"></i>
+                                                <el-tooltip effect="dark" content="查看关联API" placement="top">
+                                                    <i class="el-icon-d-arrow-right scene-icon" @click="goSceneGroupDetail(index, sceneItem)"></i>
+                                                </el-tooltip>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                        </template>
+                    </el-row>
+                </template>
+                <template v-if="!hideSceneGroup">
+                    <div class="scene-header">
+                        <h3>
+                            场景组： {{activeSceneGroup.name}}
+                            <el-button type="text" @click="goback">返回</el-button>
+                        </h3>
+                        <el-button plain type="primary" @click="addApiMap">新增API</el-button>
+                    </div>
+                    <el-table :data="activeSceneGroup.group" border style="width: 100%">
+                        <el-table-column prop="api" label="接口名">
+                            <template slot-scope="scope">
+                                <template>
+                                    <el-tooltip effect="dark" :content="scope.row.api" placement="top">
+                                        <div class="text-overflow-style text-nowrap">{{scope.row.api}}</div>
+                                    </el-tooltip>
+                                </template>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="scene" label="场景">
+                            <template slot-scope="scope">
+                                <div class="select-scene-wrap">
+                                    <template>
+                                        {{scope.row.scene || 'default'}}
+                                    </template>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" width="100px">
+                            <template slot-scope="scope">
+                                <i class="el-icon-edit btn-opera" @click="addApiMap(scope.$index, scope.row)"></i>
+                                <i class="el-icon-delete btn-opera" @click="deleteApiMap(scope.$index)" title="删除API"></i>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </div>
+        </div>
+
+        <!-- 新增api -->
+        <el-dialog :title="apiEditIndex > -1 ? '编辑接口' : '新增接口'" :visible.sync="addApiVisible" width="500px">
+            <el-form :model="addApiForm">
+                <template>
+                    <el-form-item required label="接口路径" :label-width="formLabelWidth">
+                        <el-select class="form-item" v-model="addApiForm.api" no-match-text="请输入接口路径" allow-create filterable clearable placeholder="请输入接口路径">
+                            <el-option
+                                v-for="item in AUTO_API_LIST"
+                                :key="item.api"
+                                :label="item.api"
+                                :value="item.api">
+                            </el-option>
                         </el-select>
-                    </el-form-item>
-                    <el-form-item required label="场景组名：" :label-width="formLabelWidth">
-                        <el-input v-model="form.name" class="form-item"></el-input>
                     </el-form-item>
                 </template>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button @click="addApiVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveApi">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!-- 新增接口场景 -->
+        <el-dialog :title="apiSceneEditIndex > -1 ? '编辑接口场景' : '新增接口场景'" :visible.sync="addApiSceneVisible" width="50%">
+            <el-form :model="addApiSceneForm">
+                <template>
+                    <el-form-item required label="场景名称" :label-width="formLabelWidth">
+                        <el-select class="form-item" v-model="addApiSceneForm.scene" no-match-text="请输入场景名称" allow-create filterable clearable placeholder="请输入场景名称">
+                            <el-option
+                                v-for="item in AUTO_API_SCENE_LIST"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item required label="场景数据" :label-width="formLabelWidth">
+                        <textarea v-model="addApiSceneForm.data" id="jsonEditor" style="width: 100%; height: 400px;">
+                        </textarea>
+                    </el-form-item>
+                </template>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addApiSceneVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveApiScene">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!-- 新增页面路由 -->
+        <el-dialog :title="routerEditIndex > -1 ? '编辑页面路由' : '新增页面路由'" :visible.sync="addRouterVisible" width="500px">
+            <el-form :model="addRouterForm">
+                <template>
+                    <el-form-item required label="页面路由" :label-width="formLabelWidth">
+                        <el-input v-model="addRouterForm.url" class="form-item"></el-input>
+                    </el-form-item>
+                </template>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addRouterVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveRouter">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!-- 新增路由场景组 -->
+        <el-dialog :title="routerSceneEditIndex > -1 ? '编辑路由场景组' : '新增路由场景组'" :visible.sync="addRouterSceneVisible" width="500px">
+            <el-form :model="addRouterSceneForm">
+                <template>
+                    <el-form-item required label="场景名称" :label-width="formLabelWidth">
+                        <el-input v-model="addRouterSceneForm.name" class="form-item"></el-input>
+                    </el-form-item>
+                </template>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="addRouterSceneVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveRouterScene">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!-- 场景组内接口 -->
+        <el-dialog title="编辑场景组接口" :visible.sync="apiMapVisible" width="500px">
+            <el-form :model="apiMapForm">
+                <template>
+                    <el-form-item required label="接口：" :label-width="formLabelWidth">
+                        <el-select class="form-item" v-model="apiMapForm.api" placeholder="请选择API" filterable>
+                            <el-option
+                                v-for="apiItem in API_LIST"
+                                :key="apiItem.api"
+                                :label="apiItem.api"
+                                :value="apiItem.api"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item required label="场景：" :label-width="formLabelWidth">
+                        <el-select class="form-item" v-model="apiMapForm.scene" placeholder="请选择场景" filterable>
+                            <template v-for="apiItem in API_LIST" v-if="apiItem.api === apiMapForm.api">
+                                <el-option
+                                    v-for="scene of apiItem.scenes"
+                                    :key="scene"
+                                    :label="scene"
+                                    :value="scene"
+                                >
+                                </el-option>
+                            </template>
+                        </el-select>
+                    </el-form-item>
+                </template>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="apiMapVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveSceneGroup">确 定</el-button>
-            </div>
-        </el-dialog>
-        <el-dialog title="编辑数据" :visible.sync="editDataDialogVisible">
-            <div>
-                <div id="monaco" style="width: 100%; height: 400px;">
-                </div>
-                <div id="jsoneditor" style="width: 100%; height: 400px;"></div>
-                <!-- <pre ref="editSceneData" contenteditable="true" @input.stop="changeSceneData($event)">{{JSON.stringify(editData || '{}', null, 4)}}</pre> -->
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="editDataDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveMock">确 定</el-button>
-            </div>
-        </el-dialog>
-        <el-dialog title="关联公共场景组" :visible.sync="editRelevanceDialogVisible">
-            <div>
-                <el-checkbox class="check-all" :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                <el-checkbox-group v-model="checkedCommonScene" @change="handleCheckedSceneChange">
-                    <template v-for="{url, type, scenes = []} in COMMON_LIST">
-                        <el-checkbox v-for="item in scenes" :label="item.name" :key="item.name">{{item.name}}<span class="extra-info">（{{url}}）</span></el-checkbox>
-                    </template>
-                </el-checkbox-group>
-            </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="editRelevanceDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveRelevance">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -419,130 +525,167 @@
         el: '#app',
         data: function() {
             return {
-                ALL_TYPES: [{
-                    type: "url",
-                    tag: "primary",
-                    text: "路由"
-                }, {
-                    type: "common",
-                    tag: "success",
-                    text: "公共"
-                // }, {
-                //     type: "wander",
-                //     tag: "info",
-                //     text: "不分组"
-                }],
-                hasDefaultUrl: !!defaultUrl,
-                curUrl: defaultUrl,
-                tabPosition: 'left',
-                editError: {},
-                mockList: [],
-                curGroup: '',
-                curSceneGroup: {},
-                sceneGroupList: [],
-                getSceneGroupFinished: false,
-                ALL_SCENE_GROUP: [],
-                API_LIST: [],
-                ALL_API_SCENE: {},
-                isEdit: true,
-                dialogVisible: false,
                 formLabelWidth: '100px',
-                form: {
-                    name: '',
+
+                //接口列表
+                activeIndex: '1',
+                isCollapse: false,
+                curSearchApi: '',
+                activeApi: '',
+                API_LIST: [],
+                AUTO_API_LIST: [], //第三方平台拉取的，可以自动填充的
+                AUTO_API_SCENE_LIST: [], //第三方平台拉取的，可以自动填充的接口的scene
+
+                //新增api
+                addApiVisible: false,
+                apiEditIndex: -1, //编辑还是新增, -1 为新增，其他为编辑
+                addApiForm: {
+                    api: ''
+                },
+
+                //新增api场景
+                addApiSceneVisible: false,
+                apiSceneEditIndex: -1,
+                addApiSceneForm: {
+                    scene: '',
+                    data: "{}"
+                },
+
+                // 场景中心
+                curSearchRouter: '',
+                activeRouter: '',
+
+                // 新增页面路由
+                addRouterVisible: false,
+                routerEditIndex: -1, //编辑还是新增, -1 为新增，其他为编辑
+                addRouterForm: {
                     url: ''
                 },
-                editDataDialogVisible: false,
-                editData: {},
-                editDataKeys: {},
-                emptyMatchedUrlData: {
-                    url: '',
-                    type: '',
-                    scenes: []
+
+                //新增路由场景组
+                addRouterSceneVisible: false,
+                routerSceneEditIndex: -1,
+                addRouterSceneForm: {
+                    name: ''
                 },
-                isNeedSave: false,
-                editRelevanceDialogVisible: false,
-                checkedCommonScene: [],
-                isIndeterminate: true,
-                checkAll: false,
-                showSwitchList: false,
-                editor: null,
-                switchObj: {},
-            }
-        },
-        watch: {
-            sceneGroupList: {
-                handler(newVal){
-                    if(newVal){
-                        this.updateDefaultCurGroup()
-                    }
+
+                //场景组内接口
+                hideSceneGroup: true,
+                activeSceneGroup: {}, //当前查看的场景组
+                apiMapVisible: false,
+                apiMapEditIndex: -1,
+                apiMapForm: {
+                    api: '',
+                    scene: ''
                 },
-                immediate: true
+                sceneGroupList: [],//场景中心数据
             }
         },
         computed: {
-            curMatchedUrlData(){
-                return this.curUrl ? (this.sceneGroupList || []).find( ({ url }) => {
-                    return url === this.curUrl
-                }) || {
-                    ...this.emptyMatchedUrlData
-                } : null
-            },
-            MODULE_LIST(){
-                const allModuleKey = [];
-                const MODULE_LIST = [{}, {}, {}];
-                this.sceneGroupList.map( item => {
-                    const { url, type, scenes = [] } = item;
-                    const index = allModuleKey.indexOf(type);
-                    const i = this.getTypeIndex(type);
-                    if(index < 0){
-                        allModuleKey.splice(i, 1, type);
-                        const { text, type: tempType } = this.getTag(type);
-                        MODULE_LIST.splice(i, 1, {
-                            type: tempType,
-                            label: text,
-                            options: []
-                        })
-                    }
-                    MODULE_LIST[i].options.push({
-                        value: url
-                    })
+            activeAPISetting(){
+                const apiSetting = this.API_LIST.find(item => {
+                    return item.api === this.activeApi
                 })
-                return MODULE_LIST;
+                return apiSetting ? apiSetting : {}
             },
-            COMMON_LIST(){ //找出公共场景组
-                const COMMON_LIST = [];
-                return this.sceneGroupList.filter( ({type}) => type === 'common')
+            activeScene(){
+                if(this.activeAPISetting){
+                    const { scenes = [], activeScene:scene = '' } = this.activeAPISetting;
+                    if(scenes.includes(scene)){
+                        return scene
+                    }
+                }
+                return ''
+            },
+            ROUTER_SCENE_GROUP_LIST(){
+                this.activeRouter = this.sceneGroupList && this.sceneGroupList.length ? this.sceneGroupList[0].url : '';
+                return this.sceneGroupList
+            },
+            activeRouterSetting(){
+                const routerSetting = this.ROUTER_SCENE_GROUP_LIST.find(item => {
+                    return item.url === this.activeRouter
+                })
+                return routerSetting ? routerSetting : {}
             }
         },
         created(){
-            this.getSceneGroupList();
-            this.getApi();
-            this.getSwitch();
-            //this.createJSONEditor();
+            this.getSceneGroupList(); //获取场景中心数据
+            this.getApi(); //获取接口列表数据
         },
         methods: {
-            hasModule(){
-                return !this.MODULE_LIST.every( item => !Object.keys(item || {}).length)
-            },
-            createJSONEditor(){
-                const container = document.getElementById("jsoneditor")
-                const options = {}
-                this.editor = new JSONEditor(container, options)
-            },
-            getTag(curType){
-                return this.ALL_TYPES.find((item, index) => {
-                    if(curType === item.type){
-                        return item
+            createEditor(data){
+                let editor = CodeMirror.fromTextArea(document.getElementById("jsonEditor"), {
+                    mode: 'application/json',
+                    tabSize: 4,
+                    indentUnit : 4,  // 缩进单位，默认2
+                    smartIndent : true,  // 是否智能缩进
+                    //显示行号
+                    styleActiveLine: true,
+                    lineNumbers:true,
+                    lineWrapping:true,
+                    //设置主题
+                    //theme:"eclipse",
+                    // //绑定Vim
+                    //keyMap:"vim",
+                    //代码折叠
+                    lineWrapping:true,
+                    foldGutter: true,
+                    gutters:["CodeMirror-linenumbers", "CodeMirror-foldgutter","CodeMirror-lint-markers"],
+                    //CodeMirror-lint-markers是实现语法报错功能
+                    //lint: true,
+                    //括号匹配
+                    matchBrackets:true,
+                    //快捷键
+                    extraKeys:{
+                        "Alt-Space": "autocomplete",//ctrl-space唤起智能提示
+                        "F11": function(cm) {
+                            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                        },
+                        "Esc": function(cm) {
+                            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        },
+                        "Ctrl-/": "toggleComment",
+                        // "Ctrl-S": function () {
+                        //     $('#save').click();
+                        // },
+                        "Ctrl-Z":function (editor) {
+                            editor.undo();
+                        },//undo
+                        "F8":function (editor) {
+                            editor.redo();
+                        },//Redo
+                        "F7": function autoFormat(cm) {
+                            var totalLines = cm.lineCount();
+                            cm.autoFormatRange({line:0, ch:0}, {line:totalLines});
+                        }//代码格式化
                     }
-                }) || {}
+                });
+                CodeMirror.commands.autocomplete = function(cm) {
+                    cm.showHint({hint: CodeMirror.hint.anyword});
+                };
+                editor.setValue(data)
+                this.editor = editor;
             },
-            getTypeIndex(curType){
-                return this.ALL_TYPES.findIndex(({type}, index) => {
-                    return curType === type
-                })
+            save(){
+                    var ob = this.editor.getValue();  // 得到所有内容
+                    try{
+                        ob = JSON.parse(JSON.stringify(ob))
+                        console.log(ob, 'AAAA____', typeof ob)
+                    } catch(e){
+                        console.log(1111, e)
+                    }
+                    console.log(ob, '===obj', typeof ob)
             },
-            getUrlName(type){
-                return type === 'url' ? '页面路由' : '模块名称';
+            handleSelect(index){
+                this.activeIndex = index;
+                this.hideSceneGroup = true;
+            },
+            handleSelectApi(api){
+                this.activeApi = api;
+            },
+            handleSelectRouter(router){
+                this.activeRouter = router;
+                this.hideSceneGroup = true;
             },
             urlPartten(){
                 return new RegExp('(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]');
@@ -562,92 +705,453 @@
                     this.$message.error('数据不是合法JSON对象')
                 }
             },
-            updateDefaultCurGroup(){
-                if(!this.curGroup){
-                    const matchSceneGroup = this.sceneGroupList.find(item => {
-                        return (item.url === this.curUrl || !this.curUrl) && (item.scenes || []).length
-                    })
-                    if(matchSceneGroup){
-                        this.curGroup = matchSceneGroup.scenes[0].name;
-                    }
-                }
-            },
-            getExtendDetail(name){
-                const sceneGroup = this.sceneGroupList.find(item => {
-                    return item.type === 'common' && item.scenes.find(item2 => {
-                        return item2.name === name;
-                    })
-                })
-                return (sceneGroup.scenes.find(item2 => {
-                    return item2.name === name;
-                }) || {}).group || [];
-            },
-            findScene(){
-                const { name, url } = this.curSceneGroup;
-                const i1 = this.sceneGroupList.findIndex(item => item.url === url);
-                const i2 = i1 > -1 ? (this.sceneGroupList[i1].scenes || []).findIndex(item => item.name === name) : -1;
-                if(i2 > -1){
-                    return {
-                        scenes: this.sceneGroupList[i1].scenes,
-                        index: i2
-                    }
-                }
-                return false;
-            },
-            changeUrl( curUrl ){
-                const { scenes = [], url = '', type = '' }  = this.curMatchedUrlData;
-                if(scenes.length){
-                    this.curGroup = (scenes.find(({group}) => {
-                        return group
-                    }) || {}).name || ''
-                    this.changeSceneGroup(this.curGroup)
-                } else {
-                    this.curGroup = ''
-                    this.curSceneGroup = {
-                        url,
-                        type,
-                        group: []
-                    }
-                }
-            },
             async getSceneGroupList(){
                 const res = await this.post('/mockServer/getSceneGroup', {
                     router: this.curUrl
                 })
                 this.getSceneGroupFinished = true;
                 if(res && res.retCode === 200){
-                    this.afterGetSceneGroupList(res.data || [])
+                    this.sceneGroupList = res.data || []
+                    //this.afterGetSceneGroupList(res.data || [])
                 }
             },
             afterGetSceneGroupList(list = []){
-                list.sort((a, b) => {
-                    return  this.getTypeIndex(a.type) - this.getTypeIndex(b.type)
-                })
                 this.sceneGroupList = list.map( item => {
                     const { scenes = [] } = item;
                     item.scenes = scenes.map(groupItem => {
                         groupItem.group = groupItem.group || [];
                         groupItem.group.sort((a, b) => (a.api || '').localeCompare(b.api || ''));
-                        groupItem.group.map( ({ id }) => {
-                            // if( !this.ALL_API_SCENE[id] ){
-                            //     this.getApiScene(id)
-                            // }
-                        })
                         return groupItem;
                     })
                     return item;
                 })
-                if(!this.hasDefaultUrl && this.sceneGroupList.length && !this.curUrl){
-                    this.curUrl = this.sceneGroupList[0].url
-                }
-                this.changeSceneGroup(this.curGroup || '')
             },
-            async getApi(){//获取所有API及其匹配的场景
-                const res = await this.post('/mockServer/getApiList')
+
+            async getApi(){
+                const res = await this.post('/mockServer/getApi')
                 if(res && res.retCode === 200){
                     this.API_LIST = (res.data || []).sort((a, b) => (a.api || '').localeCompare(b.api|| ''));
+                    this.activeApi = this.API_LIST && this.API_LIST.length ? this.API_LIST[0].api : '';
                 }
             },
+            //删除API
+            deleteApi(index){
+                const params = JSON.parse(JSON.stringify(this.API_LIST));
+                this.$confirm('此操作会永久删除该接口及接口下的场景配置，确认删除吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    params.splice(index, 1)
+                    this.updateApi(params, () => {
+                        this.$message.success('删除接口成功')
+                        this.activeApi = this.API_LIST && this.API_LIST.length ? this.API_LIST[0].api : '';
+                    });
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            },
+            // 新增API
+            async addorEditApi(index, api = ''){
+                if(!this.AUTO_API_LIST.length){
+                    await this.getApiList();
+                }
+                this.apiEditIndex = (index || index === 0) ? index : -1;
+                this.addApiForm.api = api || ''; 
+                this.addApiVisible = true;
+            },
+            saveApi(){
+                let needUpdateActiveAPI = false;
+                const { api = '' } = this.addApiForm;
+                if(!api){
+                    this.$message.error('请输入接口路径～')
+                    return false
+                }
+                const params = JSON.parse(JSON.stringify(this.API_LIST));
+                if(this.apiEditIndex > -1){
+                    if(params[this.apiEditIndex].api === api){
+                        this.$message.error('貌似未做任何更改哦~')
+                        return false
+                    }
+                    if(this.activeApi === params[this.apiEditIndex].api){
+                        needUpdateActiveAPI = true;
+                    }
+                    params[this.apiEditIndex].api = api
+                } else {
+                    const had = params.find(item => item.api === api)
+                    if(had){
+                        this.$message.error('接口已存在，请勿重复创建～')
+                        return false
+                    } else {
+                        params.unshift({
+                            api,
+                            activeScene: '',
+                            scenes: []
+                        })  
+                    }
+                }
+                
+                this.updateApi(params, () => {
+                    this.$message.success(this.apiEditIndex > -1 ? '编辑接口成功' : '新增接口成功')
+                    this.activeApi = api;
+                    this.addApiVisible = false;
+                });
+            },
+            async updateApi(params, callback){
+                const res = await this.post('/mockServer/updateApi', {
+                    apis: params
+                })
+                if(res && res.retCode === 200){
+                    this.API_LIST = params;
+                    callback && callback();
+                } else {
+                    this.$message.error(res && res.retDesc || '数据更新失败')
+                }
+            },
+            //获取所有API及其匹配的场景
+            async getApiList(){
+                const res = await this.post('/mockServer/getApiList')
+                if(res && res.retCode === 200){
+                    this.AUTO_API_LIST = (res.data || []).sort((a, b) => (a.api || '').localeCompare(b.api|| ''));
+                }
+            },
+
+            //删除api场景
+            deleteApiScene(index){
+                const params = JSON.parse(JSON.stringify(this.API_LIST));
+                this.$confirm('确认删除该接口下的场景吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const apiSetting = params.find(item => item.api === this.activeApi);
+                    apiSetting.scenes = apiSetting.scenes || [];
+                    apiSetting.scenes.splice(index, 1)
+                    if(!apiSetting.scenes.includes(apiSetting.activeScene)){
+                        apiSetting.activeScene = apiSetting.scenes.length ? apiSetting.scenes[0] : '';
+                    }
+                    this.updateApi(params, () => {
+                        this.$message.success('删除接口场景成功')
+                        //this.activeApi = this.API_LIST && this.API_LIST.length ? this.API_LIST[0].api : '';
+                    });
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: e|| '已取消删除'
+                    });          
+                });
+            },
+            //新增api场景
+            addApiScene(index, scene = ''){
+                // if(!this..length){
+                //     await this.getApiList();
+                // }
+                this.apiSceneEditIndex = (index || index === 0) ? index : -1;
+                this.addApiSceneForm.scene = scene || ''; 
+                this.addApiSceneForm.data = {};
+                this.addApiSceneVisible = true;
+                if(scene){
+                    this.getMock({
+                        api: this.activeApi,
+                        scene,
+                    })
+                }
+            },
+            async saveApiScene(){
+                const { scene = '', data = "{}" } = this.addApiSceneForm;
+                if(!scene){
+                    this.$message.error('请输入场景名称～')
+                    return false
+                }
+                const params = JSON.parse(JSON.stringify(this.API_LIST));
+                const curApiSetting = params.find(item => item.api === this.activeApi);
+                if(this.apiSceneEditIndex > -1){
+                    curApiSetting.scenes[this.apiSceneEditIndex] = scene;
+                } else {
+                    if(curApiSetting.scenes.includes(scene)){
+                        this.$message.error('场景已存在，请勿重复创建～')
+                        return false
+                    }
+                    curApiSetting.scenes.unshift(scene);
+                }
+
+                // this.saveMock({
+                //     api: this.activeApi,
+                //     scene,
+                //     data: JSON.parse(data)
+                // })
+
+                this.updateApi(params, () => {
+                    this.$message.success(this.apiSceneEditIndex > -1 ? '编辑接口场景成功' : '新增接口场景成功')
+                    this.addApiSceneVisible = false;
+                })
+            },
+            // 切换api场景开管
+            changeActiveScene(scene, isOn = false){
+                const params = JSON.parse(JSON.stringify(this.API_LIST));
+                this.$confirm(isOn ? '同一接口同一时间只能有一个场景默认开启，确认开启吗？' : '确认关闭该接口的场景吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const apiSetting = params.find(item => item.api === this.activeApi);
+                    apiSetting.activeScene = isOn ? scene : '';
+                    this.updateApi(params, () => {
+                        this.$message.success(isOn ? '场景切换成功' : '场景关闭成功')
+                    });
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: e|| '已取消删除'
+                    });          
+                });
+            },
+
+            //删除路由
+            deleteRouter(index){
+                const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST));
+                this.$confirm('此操作会永久删除该路由及其所有的场景配置，确认删除吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    params.splice(index, 1)
+                    this.updateRouter(params, () => {
+                        this.$message.success('删除页面路由成功')
+                        this.activeRouter = this.ROUTER_SCENE_GROUP_LIST && this.ROUTER_SCENE_GROUP_LIST.length ? this.ROUTER_SCENE_GROUP_LIST[0].url : '';
+                    });
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            },
+            //新增路由
+            addRouter(index, url = ''){
+                this.routerEditIndex = (index || index === 0) ? index : -1;
+                this.addRouterForm.url = url || ''; 
+                this.addRouterVisible = true;
+            },
+            async saveRouter(){
+                let needUpdateActiveRouter = false;
+                const { url = '' } = this.addRouterForm;
+                if(!url){
+                    this.$message.error('请输入页面路由～')
+                    return false
+                }
+                const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST));
+                if(this.routerEditIndex > -1){
+                    if(params[this.routerEditIndex].url === url){
+                        this.$message.error('貌似未做任何更改哦~')
+                        return false
+                    }
+                    if(this.activeRouter === params[this.routerEditIndex].url){
+                        needUpdateActiveRouter = true;
+                    }
+                    params[this.routerEditIndex].url = url
+                } else {
+                    const had = params.find(item => item.url === url)
+                    if(had){
+                        this.$message.error('页面路由已存在，请勿重复创建～')
+                        return false
+                    } else {
+                        params.unshift({
+                            url,
+                            scenes: []
+                        })  
+                    }
+                }
+                
+                this.updateRouter(params, () => {
+                    this.$message.success(this.routerEditIndex > -1 ? '编辑页面路由成功' : '新增页面路由成功')
+                    this.activeRouter = url;
+                    this.addRouterVisible = false;
+                });
+            },
+            async updateRouter(params, callback){
+                const res = await this.post('/mockServer/updateSceneGroup', { sceneGroupList: params})
+                // if(res && res.retCode === 200){
+                //     this.afterGetSceneGroupList(this.sceneGroupList)
+                //     if(callback){
+                //         callback(res.data)
+                //     } else {
+                //         this.$message.success('数据保存成功！')
+                //     }
+                // }
+                // const res = await this.post('/mockServer/updateApi', {
+                //     apis: params
+                // })
+                if(res && res.retCode === 200){
+                    this.sceneGroupList = params;
+                    callback && callback();
+                } else {
+                    this.$message.error(res && res.retDesc || '数据更新失败')
+                }
+            },  
+
+            //删除路由场景组
+            deleteRouterScene(index){
+                const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST));
+                this.$confirm('确认删除该场景组吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const setting = params.find(item => item.url === this.activeRouter);
+                    setting.scenes = setting.scenes || [];
+                    setting.scenes.splice(index, 1)
+                    // if(!setting.scenes.includes(setting.activeScene)){
+                    //     apiSetting.activeScene = apiSetting.scenes.length ? apiSetting.scenes[0] : '';
+                    // }
+                    this.updateRouter(params, () => {
+                        this.$message.success('删除场景组成功')
+                        //this.activeApi = this.API_LIST && this.API_LIST.length ? this.API_LIST[0].api : '';
+                    });
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: e|| '已取消删除'
+                    });          
+                });
+            },
+            //新增路由场景组
+            addRouterScene(index, name = ''){
+                this.routerSceneEditIndex = (index || index === 0) ? index : -1;
+                this.addRouterSceneForm.name = name || ''; 
+                this.addRouterSceneVisible = true;
+            },
+            async saveRouterScene(){
+                const { name = '' } = this.addRouterSceneForm;
+                if(!name){
+                    this.$message.error('请输入场景组名称～')
+                    return false
+                }
+                const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST));
+                const curSetting = params.find(item => item.url === this.activeRouter);
+                if(this.routerSceneEditIndex > -1){
+                    curSetting.scenes[this.routerSceneEditIndex].name = name;
+                } else {
+                    if(curSetting.scenes.find(item => item.name === name)){
+                        this.$message.error('场景组已存在，请勿重复创建～')
+                        return false
+                    }
+                    curSetting.scenes.unshift({
+                        name,
+                        group: []
+                    });
+                }
+                
+                this.updateRouter(params, () => {
+                    this.$message.success(this.routerSceneEditIndex > -1 ? '编辑场景组成功' : '新增场景组成功')
+                    this.addRouterSceneVisible = false;
+                })
+            },
+            //切换场景组开关
+            changeActiveSceneGroup(scene, isOn = false){
+                const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST));
+                this.$confirm(isOn ? '同一页面路由同一时间只能有一个场景组默认开启，确认开启吗？' : '确认关闭该场景组吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const setting = params.find(item => item.url === this.activeRouter);
+                    setting.activeScene = isOn ? scene : '';
+                    this.updateRouter(params, () => {
+                        this.$message.success(isOn ? '场景组切换成功' : '场景组关闭成功')
+                    });
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: e|| '已取消删除'
+                    });          
+                });
+            },
+            //编辑当前场景组详情-既接口列表
+            goSceneGroupDetail(index, item){
+                this.hideSceneGroup = false;
+                this.activeSceneGroup = item;
+            },
+            goback(){
+                this.hideSceneGroup = true;
+                this.activeSceneGroup = {};
+            },
+            //删除场景组的api
+            deleteApiMap(index){
+                this.$confirm('确定删除场景组下的API吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const { url, name } = this.activeSceneGroup;
+                    const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST))
+                    const setting = params.find(item => item.url === url)
+                    const sceneGroup = (setting.scenes || []).find(item => item.name === name)
+                    sceneGroup.group.splice(index, 1)
+                    this.updateRouter(params, () => {
+                        this.sceneGroupList = params;
+                        this.activeSceneGroup = sceneGroup;
+                        this.$message.success('场景组API删除成功')
+                    })
+                }).catch((e) => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            },
+            //新增场景组的api
+            addApiMap(index, item = {}){
+                this.apiMapEditIndex = (index || index === 0) ? index : -1;
+                this.apiMapForm.api = item.api || '';
+                this.apiMapForm.scene = item.scene || '';
+                this.apiMapVisible = true;
+            },
+            //保存场景组接口数据
+            saveSceneGroup(){
+                const { api, scene } = this.apiMapForm;
+                const { url, name } = this.activeSceneGroup;
+                if(!api || !scene){
+                    this.$message.error('接口和场景缺一不可～')
+                    return false;
+                }
+                const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST))
+                const setting = params.find(item => item.url === url)
+                if(setting){
+                    const sceneGroup = (setting.scenes || []).find(item => item.name === name)
+                    if(sceneGroup){
+                        if(this.apiMapEditIndex > -1){
+                            sceneGroup.group[apiMapEditIndex] = {
+                                api, 
+                                scene
+                            };
+                        } else {
+                            if(sceneGroup.group.find(item => item.api === api)){
+                                this.$message.error('该场景组下已存在此接口，请勿重复创建～')
+                                return false
+                            }
+                            sceneGroup.group.push({
+                                api,
+                                scene
+                            })
+                        }
+                
+                        this.updateRouter(params, () => {
+                            this.apiMapVisible = false;
+                            this.activeSceneGroup = sceneGroup;
+                            this.sceneGroupList = params;
+                            this.$message.success('场景组数据更新成功')
+                        })
+                        return false
+                    }
+                }
+                this.$message.error('未匹配到场景，请刷新页面重新操作～')
+            },
+
+
             async getApiScene(id){
                 const res = await this.post('/mockServer/getApiScene', {
                     id
@@ -656,337 +1160,21 @@
                     this.$set(this.ALL_API_SCENE, id, res.data)
                 }
             },
-            async getSwitch(list){
-                const res = await this.post('/mockServer/getSwitch', {})
-                this.switchObj = res && res.data || [];
-            },
-            async saveSwitch(){
-                const res = await this.post('/mockServer/saveSwitch', { 
-                    switchObj: this.switchObj
-                })
-                if(res && res.retCode === 200){
-                    this.$message.success('开关状态切换成功～')
-                }
-            },
-            async getMock(){
-                const { api, scene} = this.editDataKeys
+            async getMock({api, scene}){
                 const res = await this.post('/mockServer/getData', { 
                     api,
                     scene
                 })
-                const initialJson = {
-                    "Array": [1, 2, 3],
-                    "Boolean": true,
-                    "Null": null,
-                    "Number": 123,
-                    "Object": {"a": "b", "c": "d"},
-                    "String": "Hello World"
-                }
                 if(res && res.retCode === 200){
-                    this.editor.set(initialJson )
+                    this.addApiSceneForm.data = JSON.stringify(res.data || {}, null, 4)
                 }
             },
-            async saveMock(data){
-                const { api, scene} = this.editDataKeys
+            async saveMock({api, scene, data}){
                 const res = await this.post('/mockServer/updateData', {
                     scene,
                     api, 
-                    data: this.editor.get()
+                    data
                 })
-                if(res && res.retCode === 200){
-                    this.$message.success('数据保存成功')
-                    this.editDataDialogVisible = !this.editDataDialogVisible;
-                }
-            },
-            changeSceneGroup( curGroup = '' ){
-                this.curGroup = curGroup || '';
-                let curSceneGroup = {};
-                for(let {url , scenes, type} of this.sceneGroupList){
-                    if(!this.curUrl || url === this.curUrl){
-                        curSceneGroup = scenes.find(({name}) => {
-                            return curGroup ? name === curGroup : name
-                        }) || {}
-                        if(Object.keys(curSceneGroup).length){
-                            curSceneGroup.type = type;
-                            curSceneGroup.url = url;
-                            break;
-                        }
-                    }
-                    
-                }
-                this.$set(this, 'curSceneGroup', curSceneGroup)
-            },
-            changeApiScene(){
-                this.saveSceneGroupList()
-            },
-            changeApi(curId, item){
-                this.getApiScene(curId);
-                for(let { id, api } of this.API_LIST){
-                    if(id === curId){
-                        item.api = api;
-                        break;
-                    }
-                }
-            },
-            isDisabled(id, group){
-                return group.some(api => {
-                    return api.id === id
-                })
-            },
-            relevanceSceneGroup(){
-                const { extendScenes = [] } = this.curSceneGroup;
-                this.checkedCommonScene = extendScenes;
-                this.editRelevanceDialogVisible = true;
-            },
-            saveRelevance(){
-                const { url } = this.curSceneGroup;
-                const index = this.sceneGroupList.findIndex(item => item.url === url)
-                if(index > -1){
-                    const item = (this.sceneGroupList[index].scenes ||[]).find( item => item.name === this.curGroup)
-                    if(item){
-                        item.extendScenes = this.checkedCommonScene;
-                    }
-                }
-                this.saveSceneGroupList(() => {
-                    this.curSceneGroup.extendScenes = this.checkedCommonScene.slice(0);
-                    this.$message.success('场景关联成功');
-                    this.editRelevanceDialogVisible = false;
-                    this.checkedCommonScene = [];
-                })
-            },
-            editSceneGroup(obj, isSave){ //curSceneGroup
-                this.isEdit = !!isSave;
-                const { name = '', url = this.hasDefaultUrl ? this.curUrl : '', type = this.hasDefaultUrl ? 'url' : '' } = obj;
-                if(this.isNeedSave){
-                    this.saveSceneGroupList(() => {
-                        this.$message.success('数据保存成功！')
-                        this.isNeedSave = false;
-                    })
-                    return false
-                }
-                this.dialogVisible = true;
-                this.$set(this, 'form', {
-                    isSave: isSave,
-                    isSaveas: '1',
-                    group: (obj || {}).group || [],
-                    extendScenes: (obj || {}).extendScenes || [],
-                    name: isSave ? name : '',
-                    url,
-                    type: type || 'common',
-                })
-            },
-            deleteSceneGroup(obj){
-                const { url, name, groups, type } = obj;
-                if(type === 'common'){
-                    let error = [];
-                    this.sceneGroupList.map(item => {
-                        
-                        const matchedObj = item.scenes.find(item2 => {
-                            return (item2.extendScenes || []).includes(name)
-                        })
-
-                        if(item.type !== 'common' && matchedObj){
-                            error.push(matchedObj.name)
-                        }
-                    })
-                    if(error.length){
-                        this.$message.error(`此公共场景组被其他场景组关联（${error.join('、')}），无法删除哦～`)
-                        return false;
-                    }
-                    
-                }
-                
-
-                this.$confirm('此操作会永久删除该场景组下的所有API配置，确认删除该场景组吗？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    const sceneData = this.findScene();
-                    if(sceneData){
-                        const { scenes, index } = sceneData;
-                        scenes.splice(index, 1);
-                        this.changeUrl(this.curUrl)
-                        //this.changeSceneGroup(this.curGroup ? this.curGroup : '')
-                        this.saveSceneGroupList(() => {
-                            this.$message.success('删除场景组成功！')
-                        });
-                    } else {
-                        this.$message.error('数据未找到')
-                    }
-                        
-                }).catch((e) => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });          
-                });
-            },
-            addApiScene(){
-                this.isNeedSave = true;
-                if(!this.curSceneGroup.group){
-                    this.$set(this.curSceneGroup, 'group', [])
-                }
-                this.curSceneGroup.group.unshift({
-                    api: '',
-                    id: '',
-                    scene: ''
-                })
-                const { url , name } = this.curSceneGroup;
-                const sceneData = this.findScene();
-                if(sceneData){
-                    const { scenes, index } = sceneData
-                    scenes[index].group = this.curSceneGroup.group;
-                }
-            },
-            deleteApiScene(group, index){
-                this.$confirm('确认删除该场景下的API吗？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    group.splice(index, 1);
-                    this.saveSceneGroupList(() => {
-                        this.$message.success('删除API成功！')
-                    }, true);
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });          
-                });
-            },
-            async saveSceneGroupList(callback, isDeleteApi){
-                if(!isDeleteApi){
-                    let errorCount = 0;
-                    this.sceneGroupList.map(item => {
-                        item.scenes.map(sceneItem => {
-                            errorCount = sceneItem.group.find( ({api}) => !api ) ? errorCount + 1 : errorCount
-                        })
-                    })
-                    if(errorCount){
-                        this.$message.error(`有接口未填充，请补充哦～`)
-                        return false
-                    }
-                }
-                this.sceneGroupList.map(item => item.scenes.map(item2 => {
-                    delete item2.type;
-                    delete item2.url;
-                }))
-                const res = await this.post('/mockServer/updateSceneGroup', { sceneGroupList: this.sceneGroupList})
-                if(res && res.retCode === 200){
-                    this.afterGetSceneGroupList(this.sceneGroupList)
-                    if(callback){
-                        callback(res.data)
-                    } else {
-                        this.$message.success('数据保存成功！')
-                    }
-                }
-            },
-            saveSceneGroup(){
-                const { name = '', type = 'wander', isDisabled, isSave = false, isSaveas = '0', group = [], extendScenes = [] } = this.form;
-                const url = type === 'wander' ? '未分组' : type === 'common' ?  '公共场景': this.form.url;
-                if(type === 'url' && url === ('未分组' || '公共场景')){
-                    this.$message.error('请输入合法路由哦～')
-                    return false
-                }
-                
-                const isSimpleSave = isSave && isSaveas === '0';
-                if(isSimpleSave){
-                    this.saveSceneGroupList(() => {
-                        this.$message.success('数据保存成功！')
-                        this.dialogVisible = false;
-                    })
-                    return false
-                }
-
-                let error = '';
-                
-                if(!name){
-                    error = '场景组名称不能为空哦～'
-                } else if(type !== 'wander'){
-                    if(!url){
-                        error = `${this.getUrlName(type)}不能为空哦～`
-                    // } else {
-                    //     if(type === 'url' && !this.urlPartten().test(url)){
-                    //         error = '路由要为合法地址哦～'
-                    //     }
-                    }
-                }
-                if(error){
-                    this.$message.error(error)
-                    return false;
-                }
-
-                const nameConflict = this.sceneGroupList.some(({scenes = []}) => {
-                    return scenes.some( item => item.name == name)
-                })
-                if(nameConflict){
-                    this.$message.error('场景组名称已经存在了哦～')
-                    return false;
-                }
-                
-                const obj = this.sceneGroupList.find(item => item.url === url);
-
-                if(obj){
-                    obj.scenes.push({
-                        name,
-                        group,
-                        extendScenes
-                    })
-                } else {
-                    this.sceneGroupList.push({
-                        url,
-                        type,
-                        scenes: [{
-                            name,
-                            group: [],
-                            extendScenes: []
-                        }]
-                    })
-                }
-                this.saveSceneGroupList(() => {
-                    this.$message.success('数据保存成功！')
-                    this.dialogVisible = false;
-                });
-            },
-            async editSceneData( { api, scene }){
-                this.editDataDialogVisible = !this.editDataDialogVisible;
-                this.$set(this, 'editDataKeys', {
-                    api, scene
-                })
-                this.getMock()
-            },
-            changeSceneData(){
-                const str = this.$refs.editSceneData.innerText || '{}';
-                try {
-                    this.editData = JSON.stringify(str);
-                    this.$set(this, 'editSceneDataError', false)
-                } catch(e){
-                    this.$set(this, 'editSceneDataError', true)
-                }
-            },
-            changeScene(){
-                this.isNeedSave = true;
-            },
-            handleCheckAllChange(val) {
-                const allScene = [];
-                this.COMMON_LIST.map(item => {
-                    item.scenes.map(({name}) => {
-                        allScene.push(name)
-                    })
-                })
-                this.checkedCommonScene = val ? allScene: [];
-                this.isIndeterminate = false;
-            },
-            handleCheckedSceneChange(value) {
-                const allCount = this.COMMON_LIST.map(item => (item.scenes || []).length).reduce((sum, a) => sum + a);
-                let checkedCount = value.length;
-                this.checkAll = checkedCount === allCount;
-                this.isIndeterminate = checkedCount > 0 && checkedCount < allCount;
-            },
-            goSwitchList(){
-                this.showSwitchList = !this.showSwitchList;
             }
         }
     })

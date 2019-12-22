@@ -4,9 +4,9 @@ const { updateData } = require( './update-data' )
 const { getSceneGroup } = require( './get-scene-group' )
 const { updateSceneGroup } = require( './update-scene-group' )
 const { getApiList } = require( './get-apilist' )
+const { getApi } = require( './get-api' )
+const { updateApi } = require( './update-api' )
 const { getApiScene } = require( './get-api-scene' )
-const { getSwitch } = require( './get-switch' )
-const { saveSwitch } = require( './save-switch' )
 
 exports.ruleMatchApi = {
   getData,
@@ -14,8 +14,8 @@ exports.ruleMatchApi = {
   updateData,
   getSceneGroup,
   updateSceneGroup,
+  getApi,
+  updateApi,
   getApiList,
   getApiScene,
-  getSwitch,
-  saveSwitch
 }
