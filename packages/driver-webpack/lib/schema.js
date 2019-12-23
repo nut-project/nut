@@ -44,7 +44,6 @@ module.exports = function ( { struct } ) {
     output,
     babel,
     devServer,
-    envs: struct.record( [ 'string', 'string | number | boolean' ], {} ),
     constants: struct.record( [ 'string', 'string | number | boolean' ], {} ),
     alias: struct.record( [ 'string', 'string' ], {} ),
     parallel: 'boolean?',

@@ -1,5 +1,4 @@
 const abilities = [
-  require( './envs' ),
   require( './public-path' ),
   require( './filename' ),
   require( './entry' ),
