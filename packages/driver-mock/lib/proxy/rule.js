@@ -54,40 +54,47 @@ function handleReponese( res, contentType ) {
   return {}
 }
 async function addsceneHeader( driver, { url, config, requestDetail } ) {
+  const { requestOptions = {} } = requestDetail
+  const { referer = '' } = requestOptions.headers || {}
   const res = await ruleMatchApi.getSceneGroup( driver, { config, requestDetail } )
-  const _res = await ruleMatchApi.getSwitch( driver, { config, requestDetail } )
-  const switchObj = ( _res && _res.data ) || {}
-  if ( res && res.data ) {
-    const matchedAPI = [];
-    ( res.data || [] ).map( groupItem => {
-      return ( groupItem.scenes || [] ).map( item => {
-        return switchObj[ item.name ] && item.group.map( item2 => {
-          const { api, id, scene } = item2
-          if ( url === api ) {
-            matchedAPI.push( {
-              id,
-              api,
-              scene,
-              url: groupItem.url,
-              type: groupItem.type
+  if ( res && res.data ) { // 匹配场景组的API
+    const list = res.data || []
+    const matchedAPI = []
+    list.map( listItem => {
+      const { scenes = [], activeScene, url: router } = listItem
+      if ( !referer || ( new RegExp( router ) ).test( referer ) ) {
+        if ( activeScene ) {
+          const matchedScene = scenes.find( item => item.name === activeScene )
+          if ( matchedScene ) {
+            matchedScene.group.find( ( { api, id, scene } ) => {
+              if ( url === api ) {
+                matchedAPI.push( {
+                  id,
+                  api,
+                  scene
+                } )
+              }
+              return url === api
             } )
           }
-          return item2
-        } )
-      } )
+        }
+      }
+      return listItem
     } )
+    if ( !matchedAPI.length ) { // 匹配默认场景
+      const _res = await ruleMatchApi.getApi( driver, { config, requestDetail } )
+      const apiList = ( _res && _res.data ) || []
+      const matched = apiList.find( item => item.api === url )
+      if ( matched ) {
+        matchedAPI.push( {
+          id: matched.id,
+          api: matched.api,
+          scene: matched.activeScene
+        } )
+      }
+    }
     requestDetail.requestData.scene = matchedAPI.length ? matchedAPI[ 0 ].scene : ''
     requestDetail.requestOptions.headers[ 'x-driver-mock-scene' ] = requestDetail.requestData.scene
-
-    // console.log(matchedAPI, '===matchedAPI=',url)
-    // if ( curSceneGroup ) {
-    //   const curApi = ( curSceneGroup.group || [] ).find( ( { api } ) => {
-    //     return url === api
-    //   } )
-    //   if ( curApi && curApi.scene ) {
-    //     requestDetail.requestOptions.headers[ 'x-driver-mock-scene' ] = curApi.scene
-    //   }
-    // }
   }
 }
 exports.rule = function ( driver, { config = {} } = {} ) {

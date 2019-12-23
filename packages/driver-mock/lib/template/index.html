@@ -147,7 +147,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .scene-button .scene-icon {
+        .scene-button .scene-icon, .btn-opera {
             color: #4ba4ff;
             margin-left: 10px;
             cursor: pointer;
@@ -519,8 +519,8 @@
     </div>
 </body>
 <script>
-    const search = window.location.search;
-    const defaultUrl = search.indexOf('?url=') === 0 ? search.substr(5) : '';
+    // const search = window.location.search;
+    // const defaultUrl = search.indexOf('?url=') === 0 ? search.substr(5) : '';
     new Vue({
         el: '#app',
         data: function() {
@@ -578,7 +578,7 @@
                     api: '',
                     scene: ''
                 },
-                sceneGroupList: [],//场景中心数据
+                ROUTER_SCENE_GROUP_LIST: [],//场景中心数据
             }
         },
         computed: {
@@ -596,10 +596,6 @@
                     }
                 }
                 return ''
-            },
-            ROUTER_SCENE_GROUP_LIST(){
-                this.activeRouter = this.sceneGroupList && this.sceneGroupList.length ? this.sceneGroupList[0].url : '';
-                return this.sceneGroupList
             },
             activeRouterSetting(){
                 const routerSetting = this.ROUTER_SCENE_GROUP_LIST.find(item => {
@@ -712,21 +708,22 @@
                 })
                 this.getSceneGroupFinished = true;
                 if(res && res.retCode === 200){
-                    this.sceneGroupList = res.data || []
+                    this.ROUTER_SCENE_GROUP_LIST = res.data || []
+                    this.activeRouter = this.ROUTER_SCENE_GROUP_LIST && this.ROUTER_SCENE_GROUP_LIST.length ? this.ROUTER_SCENE_GROUP_LIST[0].url : '';
                     //this.afterGetSceneGroupList(res.data || [])
                 }
             },
-            afterGetSceneGroupList(list = []){
-                this.sceneGroupList = list.map( item => {
-                    const { scenes = [] } = item;
-                    item.scenes = scenes.map(groupItem => {
-                        groupItem.group = groupItem.group || [];
-                        groupItem.group.sort((a, b) => (a.api || '').localeCompare(b.api || ''));
-                        return groupItem;
-                    })
-                    return item;
-                })
-            },
+            // afterGetSceneGroupList(list = []){
+            //     this.sceneGroupList = list.map( item => {
+            //         const { scenes = [] } = item;
+            //         item.scenes = scenes.map(groupItem => {
+            //             groupItem.group = groupItem.group || [];
+            //             groupItem.group.sort((a, b) => (a.api || '').localeCompare(b.api || ''));
+            //             return groupItem;
+            //         })
+            //         return item;
+            //     })
+            // },
 
             async getApi(){
                 const res = await this.post('/mockServer/getApi')
@@ -879,6 +876,7 @@
                     curApiSetting.scenes.unshift(scene);
                 }
 
+                //需要保存数据
                 // this.saveMock({
                 //     api: this.activeApi,
                 //     scene,
@@ -975,19 +973,8 @@
             },
             async updateRouter(params, callback){
                 const res = await this.post('/mockServer/updateSceneGroup', { sceneGroupList: params})
-                // if(res && res.retCode === 200){
-                //     this.afterGetSceneGroupList(this.sceneGroupList)
-                //     if(callback){
-                //         callback(res.data)
-                //     } else {
-                //         this.$message.success('数据保存成功！')
-                //     }
-                // }
-                // const res = await this.post('/mockServer/updateApi', {
-                //     apis: params
-                // })
                 if(res && res.retCode === 200){
-                    this.sceneGroupList = params;
+                    this.ROUTER_SCENE_GROUP_LIST = params;
                     callback && callback();
                 } else {
                     this.$message.error(res && res.retDesc || '数据更新失败')
@@ -1093,7 +1080,7 @@
                     const sceneGroup = (setting.scenes || []).find(item => item.name === name)
                     sceneGroup.group.splice(index, 1)
                     this.updateRouter(params, () => {
-                        this.sceneGroupList = params;
+                        this.ROUTER_SCENE_GROUP_LIST = params;
                         this.activeSceneGroup = sceneGroup;
                         this.$message.success('场景组API删除成功')
                     })
@@ -1121,12 +1108,11 @@
                 }
                 const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST))
                 const setting = params.find(item => item.url === this.activeRouter)
-                console.log(setting, '===sessing')
                 if(setting){
                     const sceneGroup = (setting.scenes || []).find(item => item.name === name)
                     if(sceneGroup){
                         if(this.apiMapEditIndex > -1){
-                            sceneGroup.group[apiMapEditIndex] = {
+                            sceneGroup.group[this.apiMapEditIndex] = {
                                 api, 
                                 scene
                             };
@@ -1144,25 +1130,24 @@
                         this.updateRouter(params, () => {
                             this.apiMapVisible = false;
                             this.activeSceneGroup = sceneGroup;
-                            this.sceneGroupList = params;
+                            this.ROUTER_SCENE_GROUP_LIST = params;
                             this.$message.success('场景组数据更新成功')
                         })
                         return false
                     }
-                    console.log(sceneGroup, '====sceneGroup')
                 }
                 this.$message.error('未匹配到场景，请刷新页面重新操作～')
             },
 
 
-            async getApiScene(id){
-                const res = await this.post('/mockServer/getApiScene', {
-                    id
-                })
-                if(res && res.retCode === 200){
-                    this.$set(this.ALL_API_SCENE, id, res.data)
-                }
-            },
+            // async getApiScene(id){
+            //     const res = await this.post('/mockServer/getApiScene', {
+            //         id
+            //     })
+            //     if(res && res.retCode === 200){
+            //         this.$set(this.ALL_API_SCENE, id, res.data)
+            //     }
+            // },
             async getMock({api, scene}){
                 const res = await this.post('/mockServer/getData', { 
                     api,

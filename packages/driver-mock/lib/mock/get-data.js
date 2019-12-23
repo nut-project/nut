@@ -4,7 +4,7 @@ const fs = require( 'fs-extra' )
 exports.getData = async function ( driver, { config = {}, requestDetail = {} } = {} ) {
   const { api, scene } = ( requestDetail || {} ).requestData || {}
   const url = api || requestDetail.url
-  const filePath = path.join( config.context, `${ url }/data${ scene ? '-' + scene : '' }.json` )
+  const filePath = path.join( config.context, `${ url }/data${ ( scene && scene !== 'default' ) ? '-' + scene : '' }.json` )
   try {
     const isExists = await fs.pathExists( filePath )
     if ( isExists ) {

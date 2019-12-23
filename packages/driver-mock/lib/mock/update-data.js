@@ -10,7 +10,7 @@ exports.updateData = function ( driver, { config = {}, requestDetail = {} } ) {
     }
   }
   try {
-    const filePath = path.join( config.context, `${ api }/data${ scene ? '-' + scene : '' }.json` )
+    const filePath = path.join( config.context, `${ api }/data${ ( scene && scene !== 'default' ) ? '-' + scene : '' }.json` )
     fs.ensureFile( filePath )
 
     fs.outputFile( filePath, JSON.stringify( data, null, 4 ) )
