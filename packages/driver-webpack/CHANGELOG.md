@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.16](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.15...@nut-project/driver-webpack@1.0.0-alpha.16) (2019-12-23)
+
+
+### Bug Fixes
+
+* public folder exists in dist ([01b5bd4](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/01b5bd42dfe21000833219d19b8c21cc441c496c))
+
+
+
+
+
 # [1.0.0-alpha.15](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.14...@nut-project/driver-webpack@1.0.0-alpha.15) (2019-12-19)
 
 

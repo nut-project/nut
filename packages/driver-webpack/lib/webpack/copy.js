@@ -1,3 +1,4 @@
+const path = require( 'path' )
 const CopyPlugin = require( 'copy-webpack-plugin' )
 
 exports.extend = function ( config ) {
@@ -7,16 +8,15 @@ exports.extend = function ( config ) {
       [
         {
           from: {
-            glob: 'public/**/*',
+            glob: '**/*',
             dot: true
           },
           to: '.',
-          ignore: [ '.DS_Store' ]
+          ignore: [ '.DS_Store' ],
+          context: path.join( process.cwd(), 'public' )
         }
       ],
-      {
-        context: process.cwd()
-      }
+      {}
     ] )
 }
 
@@ -35,6 +35,7 @@ exports.expose = function ( driver ) {
               },
               to: copy.to || '.',
               toType: copy.toType,
+              context: copy.context || process.cwd(),
               ignore: [ '.DS_Store' ]
             } )
 

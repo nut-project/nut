@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.15](https://github.com/nut-project/nut/tree/master/packages/presets-alpha/compare/@nut-project/presets-alpha@1.0.0-alpha.14...@nut-project/presets-alpha@1.0.0-alpha.15) (2019-12-23)
+
+**Note:** Version bump only for package @nut-project/presets-alpha
+
+
+
+
+
 # [1.0.0-alpha.14](https://github.com/nut-project/nut/tree/master/packages/presets-alpha/compare/@nut-project/presets-alpha@1.0.0-alpha.13...@nut-project/presets-alpha@1.0.0-alpha.14) (2019-12-19)
 
 **Note:** Version bump only for package @nut-project/presets-alpha
