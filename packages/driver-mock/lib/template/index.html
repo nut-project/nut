@@ -340,7 +340,7 @@
                         <template v-if="activeRouterSetting && activeRouterSetting.scenes" >
                             <el-col :span="4" class="scene-card-wrap" v-for="(sceneItem, index) of (activeRouterSetting.scenes || [])" :key="sceneItem.name">
                                 <el-card  :class="sceneItem.name === activeRouterSetting.activeScene ? 'scene-card scene-active-card' : 'scene-card'" :body-style="{ padding: '0px' }" >
-                                    <span class="scene-image">
+                                    <span class="scene-image" @click="goSceneGroupDetail(index, sceneItem)">
                                         <span class="scene-text">{{sceneItem.name}}</span>
                                     </span>
                                     <div style="padding: 14px;">
@@ -435,7 +435,7 @@
                     <el-form-item required label="场景名称" :label-width="formLabelWidth">
                         <el-select class="form-item" v-model="addApiSceneForm.scene" no-match-text="请输入场景名称" allow-create filterable clearable placeholder="请输入场景名称">
                             <el-option
-                                v-for="item in AUTO_API_SCENE_LIST"
+                                v-for="item in (AUTO_API_SCENE[this.activeApi] || [])"
                                 :key="item"
                                 :label="item"
                                 :value="item">
@@ -534,7 +534,7 @@
                 activeApi: '',
                 API_LIST: [],
                 AUTO_API_LIST: [], //第三方平台拉取的，可以自动填充的
-                AUTO_API_SCENE_LIST: [], //第三方平台拉取的，可以自动填充的接口的scene
+                AUTO_API_SCENE: {},// 所有接口自动拉取的第三方场景
 
                 //新增api
                 addApiVisible: false,
@@ -575,10 +575,19 @@
                 apiMapVisible: false,
                 apiMapEditIndex: -1,
                 apiMapForm: {
+                    id: '',
                     api: '',
                     scene: ''
                 },
                 ROUTER_SCENE_GROUP_LIST: [],//场景中心数据
+            }
+        },
+        watch: {
+            activeApi(newVal){
+                if(newVal){
+                    const matchAPI = this.API_LIST.find(item => item.api === newVal)
+                    matchAPI && matchAPI.id && this.getApiScene(matchAPI.id)
+                }
             }
         },
         computed: {
@@ -768,6 +777,8 @@
                     this.$message.error('请输入接口路径～')
                     return false
                 }
+                const matchAPI = this.AUTO_API_LIST.find(item => item.api === api)
+
                 const params = JSON.parse(JSON.stringify(this.API_LIST));
                 if(this.apiEditIndex > -1){
                     if(params[this.apiEditIndex].api === api){
@@ -778,6 +789,9 @@
                         needUpdateActiveAPI = true;
                     }
                     params[this.apiEditIndex].api = api
+                    if(matchAPI){
+                        params[this.apiEditIndex].id = matchAPI.id;
+                    }
                 } else {
                     const had = params.find(item => item.api === api)
                     if(had){
@@ -785,6 +799,7 @@
                         return false
                     } else {
                         params.unshift({
+                            id: (matchAPI && matchAPI.id) || '',
                             api,
                             activeScene: '',
                             scenes: []
@@ -819,14 +834,31 @@
 
             //删除api场景
             deleteApiScene(index){
-                const params = JSON.parse(JSON.stringify(this.API_LIST));
                 this.$confirm('确认删除该接口下的场景吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    const params = JSON.parse(JSON.stringify(this.API_LIST));
                     const apiSetting = params.find(item => item.api === this.activeApi);
                     apiSetting.scenes = apiSetting.scenes || [];
+
+                    let matchSceneGroupName = ''
+                    const matchRouter = this.ROUTER_SCENE_GROUP_LIST.find(( {url, scenes = []} ) => {
+                        console.log(url , scenes, '=====lx')
+                        return scenes.find( ( {group = [], name = ''} ) => {
+                            const findScene = group.find(item => item.scene === apiSetting.scenes[index])
+                            if(findScene){
+                                matchSceneGroupName = name;
+                            }
+                            return findScene
+                        })
+                    })
+                    if(matchRouter){
+                        this.$message.error(`该场景因被路由：${matchRouter.url} 场景组：${matchSceneGroupName} 引用无法被删除，请先解除关联再操作～`)
+                        return false
+                    }
+
                     apiSetting.scenes.splice(index, 1)
                     if(!apiSetting.scenes.includes(apiSetting.activeScene)){
                         apiSetting.activeScene = apiSetting.scenes.length ? apiSetting.scenes[0] : '';
@@ -1094,6 +1126,7 @@
             //新增场景组的api
             addApiMap(index, item = {}){
                 this.apiMapEditIndex = (index || index === 0) ? index : -1;
+                this.apiMapForm.id = item.id || '';
                 this.apiMapForm.api = item.api || '';
                 this.apiMapForm.scene = item.scene || '';
                 this.apiMapVisible = true;
@@ -1106,6 +1139,10 @@
                     this.$message.error('接口和场景缺一不可～')
                     return false;
                 }
+                const matchAPI = this.API_LIST.find(item => item.api === api)
+                if(matchAPI){
+                    this.apiMapForm.id = matchAPI.id;
+                }
                 const params = JSON.parse(JSON.stringify(this.ROUTER_SCENE_GROUP_LIST))
                 const setting = params.find(item => item.url === this.activeRouter)
                 if(setting){
@@ -1113,6 +1150,7 @@
                     if(sceneGroup){
                         if(this.apiMapEditIndex > -1){
                             sceneGroup.group[this.apiMapEditIndex] = {
+                                id: this.apiMapForm.id || '',
                                 api, 
                                 scene
                             };
@@ -1122,6 +1160,7 @@
                                 return false
                             }
                             sceneGroup.group.push({
+                                id: this.apiMapForm.id || '',
                                 api,
                                 scene
                             })
@@ -1140,14 +1179,17 @@
             },
 
 
-            // async getApiScene(id){
-            //     const res = await this.post('/mockServer/getApiScene', {
-            //         id
-            //     })
-            //     if(res && res.retCode === 200){
-            //         this.$set(this.ALL_API_SCENE, id, res.data)
-            //     }
-            // },
+            async getApiScene(id){
+                if(this.AUTO_API_SCENE[id]){
+                    return false;
+                }
+                const res = await this.post('/mockServer/getApiScene', {
+                    id
+                })
+                if(res && res.retCode === 200){
+                    this.$set(this.AUTO_API_SCENE, id, res.data)
+                }
+            },
             async getMock({api, scene}){
                 const res = await this.post('/mockServer/getData', { 
                     api,
