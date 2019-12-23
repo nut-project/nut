@@ -108,12 +108,15 @@ exports.rule = function ( driver, { config = {} } = {} ) {
         return null
       }
       if ( url === '' || url === '/' || url.indexOf( '/?url=' ) === 0 ) {
-        const htmlStr = await fs.readFile( path.join( __dirname, '../template/index.html' ), 'utf8' )
+        const htmlStr = await fs.readFile( path.join( __dirname, '../../client/src/index.html' ), 'utf8' )
         return {
           response: handleReponese( htmlStr, 'text/html; charset=utf-8' )
         }
-      } else if ( url.indexOf( '/mockServer/assets/' ) > -1 ) {
-        const str = await fs.readFile( path.join( __dirname, '../', url.substr( 12 ) ), 'utf8' )
+      // dist资源
+      } else if ( url.indexOf( '/mockServer/dist/' ) > -1 || url.indexOf( '.main.js' ) > -1 ) {
+        const filePath = path.join( __dirname, '../../client', url.substr( 12 ) )
+
+        const str = await fs.readFile( filePath, 'utf8' )
         const TYPES_OBJ = {
           '.css': 'text/css',
           '.svg': 'text/xml',
