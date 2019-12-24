@@ -16,6 +16,7 @@ module.exports = function ( config ) {
         cache: true,
         parallel: true,
         sourceMap: false,
+        extractComments: false,
         terserOptions: {
           parse: {
             ecma: 8
@@ -72,5 +73,11 @@ module.exports = function ( config ) {
 
   config.optimization
     .minimizer( 'css' )
-    .use( OptimizeCSSAssetsPlugin )
+    .use( OptimizeCSSAssetsPlugin, [
+      {
+        cssProcessorPluginOptions: {
+          preset: [ 'default', { discardComments: { removeAll: true } } ],
+        }
+      }
+    ] )
 }
