@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.4](https://github.com/nut-project/nut/compare/simple@1.1.3...simple@1.1.4) (2019-12-27)
+
+
+### Bug Fixes
+
+* add alias for regularjs ([e732ae2](https://github.com/nut-project/nut/commit/e732ae2))
+
+
+
+
+
 # [1.1.0](https://github.com/fengzilong/nut/compare/simple@1.0.2...simple@1.1.0) (2019-09-10)
 
 
