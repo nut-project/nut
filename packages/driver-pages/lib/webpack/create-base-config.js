@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 
 const path = require( 'path' )
+const resolveFrom = require( 'resolve-from' )
 const dirs = require( '../utils/dirs' )
 const { getBabelOptions, createConfig } = require( '@nut-project/webpack' )
 
@@ -88,6 +89,12 @@ module.exports = function createBaseConfig( nutConfig = {}, env ) {
     publicPath: nutConfig.output && nutConfig.output.publicPath,
     transpileModules: allTranspileModules,
   } )
+
+  const regularjsPath = resolveFrom.silent( process.cwd(), 'regularjs' )
+
+  if ( regularjsPath ) {
+    config.resolve.alias.set( 'regularjs', regularjsPath )
+  }
 
   config
     .optimization
