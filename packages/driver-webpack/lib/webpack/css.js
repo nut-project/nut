@@ -36,7 +36,7 @@ exports.extend = function ( config, context = {} ) {
 
   applyCSSRule( config, 'sass', /\.sass$/, 'sass-loader', sassOptions, extractCSS )
 
-  applyCSSRule( config, 'mcss', /\.mcss$/, null, {}, extractCSS )
+  applyCSSRule( config, 'mcss', /\.mcss$/, 'mcss-loader', {}, extractCSS )
 
   applyCSSRule( config, 'stylus', /\.styl(us)?$/, 'stylus-loader', {
     preferPathResolver: 'webpack',
