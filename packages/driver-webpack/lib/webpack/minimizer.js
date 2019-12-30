@@ -15,6 +15,7 @@ exports.extend = function ( config, context = {} ) {
         cache: userConfig.cache !== false,
         parallel: true,
         sourceMap: false,
+        extractComments: false,
         terserOptions: {
           parse: {
             ecma: 8
@@ -71,5 +72,11 @@ exports.extend = function ( config, context = {} ) {
 
   config.optimization
     .minimizer( 'css' )
-    .use( OptimizeCSSAssetsPlugin )
+    .use( OptimizeCSSAssetsPlugin, [
+      {
+        cssProcessorPluginOptions: {
+          preset: [ 'default', { discardComments: { removeAll: true } } ],
+        }
+      }
+    ] )
 }

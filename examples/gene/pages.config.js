@@ -10,7 +10,7 @@ module.exports = function ( ctx ) {
         output: {},
         devServer: {
           port: 9000,
-          historyApiFallback: false,
+          historyApiFallback: true,
         },
         cache: false,
       }
