@@ -1,7 +1,7 @@
 {
   "name": "gene",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@nut-project/presets-alpha": "^1.0.0-alpha.17",
+    "@nut-project/presets-alpha": "^1.0.0-alpha.18",
     "vue-server-renderer": "^2.6.10",
     "vue-template-compiler": "^2.6.10"
   },
