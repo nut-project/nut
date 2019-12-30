@@ -12,7 +12,9 @@ class HtmlCheerioPlugin {
 
       await callbacks.reduce( async ( last, callback ) => {
         await last
-        const $ = cheerio.load( data.html )
+        const $ = cheerio.load( data.html, {
+          decodeEntities: false,
+        } )
         await callback( $ )
         data.html = $.html()
       }, Promise.resolve() )
