@@ -44,8 +44,6 @@
     "@mdx-js/mdx": "^1.0.21",
     "@mdx-js/vue": "1.0.20",
     "@nut-project/core": "^0.0.4",
-    "@nut-project/gatherer-pages": "^0.0.4-alpha.1",
-    "@nut-project/runtime-pages": "^0.2.1-alpha.1",
     "@nut-project/webpack": "^0.0.2",
     "@nut-project/webpack-virtual-modules": "^0.0.2",
     "@sindresorhus/slugify": "^0.9.1",
