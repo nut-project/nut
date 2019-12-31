@@ -46,6 +46,14 @@ module.exports = {
   markdown: {
     theme: 'prism-okaidia',
   },
+  hooks: {
+    filterPage( page ) {
+      if ( page.page === 'pages/documents/index' ) {
+        return false
+      }
+      return true
+    },
+  },
   devServer: {
     proxy: {
       '/api': 'http://127.0.0.1:7000'
@@ -92,7 +100,7 @@ module.exports = {
       ]
     },
     plugins: [
-      new BundleAnalyzerPlugin()
+      // new BundleAnalyzerPlugin()
     ]
   },
   homepage: 'pages/documents/index'

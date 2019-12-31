@@ -23,7 +23,15 @@ module.exports = async function ( { name, env } = {} ) {
   Object.assign( emitter, {
     async getArtifacts() {
       const config = await this.getConfig()
-      const pages = await getPages( config.plugins )
+      let pages = await getPages( config.plugins )
+
+      if (
+        config &&
+        config.hooks &&
+        typeof config.hooks.filterPage === 'function'
+      ) {
+        pages = pages.filter( config.hooks.filterPage )
+      }
 
       return {
         config,
