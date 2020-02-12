@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.3.0...@nut-project/driver-pages@0.4.0) (2020-02-12)
+
+
+### Features
+
+* pass ctx prop to root react component ([a930cb6](https://github.com/nut-project/nut/tree/master/packages/gatherer/commit/a930cb6))
+
+
+
+
+
 # [0.3.0](https://github.com/nut-project/nut/tree/master/packages/gatherer/compare/@nut-project/driver-pages@0.2.5...@nut-project/driver-pages@0.3.0) (2019-12-31)
 
 

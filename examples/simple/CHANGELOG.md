@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/nut-project/nut/compare/simple@1.2.0...simple@1.3.0) (2020-02-12)
+
+
+### Features
+
+* pass ctx prop to root react component ([a930cb6](https://github.com/nut-project/nut/commit/a930cb6))
+
+
+
+
+
 # [1.2.0](https://github.com/nut-project/nut/compare/simple@1.1.4...simple@1.2.0) (2019-12-31)
 
 
