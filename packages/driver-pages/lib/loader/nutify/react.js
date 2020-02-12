@@ -7,7 +7,7 @@ export default function ( all = {} ) {
   const Page = all.default || {}
   const attributes = all.attributes || {}
 
-  Page.$$nut = () => {
+  Page.$$nut = ctx => {
     let el
     let instance
     let mounted = false
@@ -23,7 +23,9 @@ export default function ( all = {} ) {
           node.appendChild( el )
 
           if ( !mounted ) {
-            instance = ReactDOM.render( React.createElement( Page ), el )
+            instance = ReactDOM.render( React.createElement( Page, {
+              ctx,
+            } ), el )
             mounted = true
           }
         }
