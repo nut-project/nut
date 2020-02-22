@@ -1,0 +1,39 @@
+{
+  "name": "@nut-project/babel-preset",
+  "version": "1.0.0-alpha.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "babel preset for nut",
+  "keywords": [
+    "nut",
+    "babel"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/packages/babel-preset",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/runtime": "^7.7.4",
+    "@babel/preset-modules": "^0.1.3"
+  }
+}

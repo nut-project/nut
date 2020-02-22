@@ -1,0 +1,36 @@
+{
+  "name": "@nut-plugins/modern-build",
+  "version": "1.0.0-alpha.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "modern build plugin for nut",
+  "keywords": [
+    "nut",
+    "vue",
+    "modern build",
+    "plugin"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "repository": "https://github.com/nut-project/nut/tree/master/plugins/modern-build",
+  "homepage": "http://nut.js.org",
+  "bugs": {
+    "url": "https://github.com/nut-project/nut/issues/new/choose"
+  },
+  "scripts": {},
+  "author": {
+    "name": "fengzilong",
+    "email": "fengzilong1992@gmail.com",
+    "url": "https://github.com/fengzilong"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "fast-copy": "^2.0.4"
+  }
+}

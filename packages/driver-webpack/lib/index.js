@@ -2,12 +2,13 @@ const path = require( 'path' )
 const exit = require( 'exit' )
 const chalk = require( 'chalk' )
 const { Driver } = require( '@nut-project/core' )
-const { chain, serve, build, webpack } = require( '@nut-project/webpack' )
+const { chain, serve, build, webpack, webpackResolve, webpackRequire } = require( '@nut-project/webpack' )
 const { logger, detectPort } = require( '@nut-project/dev-utils' )
 const { exposeWebpack, extendWebpack, extendDevServer } = require( './webpack' )
 const schema = require( './schema' )
 const localResolve = require( './webpack/shared/local-resolve' )
 const localRequire = require( './webpack/shared/local-require' )
+const { override: overrideBabelLoader } = require( './webpack/babel/loader' )
 
 class WebpackDriver extends Driver {
   static id() {
@@ -69,6 +70,13 @@ class WebpackDriver extends Driver {
     } )
 
     this.expose( 'dangerously_webpack', webpack )
+    // resolve file in webpack directory
+    this.expose( 'dangerously_webpackResolve', webpackResolve )
+    this.expose( 'dangerously_webpackRequire', webpackRequire )
+    // resolve module in driver node_modules
+    this.expose( 'dangerously_resolve', id => require.resolve( id ) )
+    this.expose( 'dangerously_require', id => require( id ) )
+    // resolve file in user project node_modules
     this.expose( 'localResolve', localResolve )
     this.expose( 'localRequire', localRequire )
   }
@@ -117,6 +125,9 @@ class WebpackDriver extends Driver {
     const userConfig = ( await this.getConfig() ) || {}
 
     this.callHook( 'userConfig', userConfig )
+
+    // custom babel-loader
+    this.customBabel()
 
     const config = this.createWebpackChain( {
       env,
@@ -218,6 +229,49 @@ class WebpackDriver extends Driver {
 
       await this.build( compiler )
     }
+  }
+
+  customBabel() {
+    overrideBabelLoader( babel => {
+      const defaultPreset = babel.createConfigItem(
+        require.resolve( './webpack/babel/preset' ),
+        { type: 'preset' }
+      )
+
+      return {
+        customOptions( { isModern = false, ...loader } = {} ) {
+          if ( loader.cacheDirectory && isModern ) {
+            // maybe unnecessary to add `-modern` suffix
+            // as babel partial config is different internally
+            // and modern build is only enabled in production mode
+            // cache is only enabled in development mode
+            loader.cacheIdentifier = loader.cacheIdentifier + '-modern'
+          }
+
+          return {
+            custom: { isModern },
+            loader,
+          }
+        },
+
+        config( cfg, { customOptions = {} } = {} ) {
+          const { isModern } = customOptions
+          const options = Object.assign( {}, cfg.options )
+
+          options.caller.isModern = isModern
+
+          if ( cfg.hasFilesystemConfig() ) {
+            // TODO: check whether contains preset in modern build plugin
+            return options
+          }
+
+          return {
+            ...options,
+            presets: [ ...( options.presets || [] ), defaultPreset ]
+          }
+        }
+      }
+    } )
   }
 
   listenCompilerDone( compiler ) {

@@ -1,11 +1,12 @@
 const createInclude = require( './shared/create-include' )
 const parallel = require( './shared/parallel' )
 const threadLoader = require( 'thread-loader' )
+const getCacheConfig = require( './shared/get-cache-config' )
 
 exports.extend = function ( config, context = {} ) {
   const { env, userConfig = {} } = context
   const { babel = {} } = userConfig
-  const cache = env === 'development' && userConfig.cache !== false
+  const cache = userConfig.cache
 
   const rule = config.module.rule( 'js' )
 
@@ -22,7 +23,20 @@ exports.extend = function ( config, context = {} ) {
 
   const babelOptions = {
     cacheCompression: env === 'production',
-    cacheDirectory: cache
+  }
+
+  const babelCacheConfig = getCacheConfig( `nut-babel-loader`, {
+    '@babel/core': require( '@babel/core/package.json' ).version,
+    'babel-loader': require( 'babel-loader/package.json' ).version,
+  } )
+
+  if ( typeof cache === 'undefined' ) {
+    // by default only enable cache in development
+    if ( env === 'development' ) {
+      Object.assign( babelOptions, babelCacheConfig )
+    }
+  } else if ( cache === true ) {
+    Object.assign( babelOptions, babelCacheConfig )
   }
 
   rule.use( 'babel' )

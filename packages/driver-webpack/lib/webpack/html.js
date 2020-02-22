@@ -6,6 +6,7 @@ const HtmlCheerioPlugin = require( './plugins/HtmlCheerioPlugin' )
 exports.extend = function ( config, context = {} ) {
   const { userConfig = {} } = context
   const pages = userConfig.pages
+  const minimize = userConfig.minimize
   const html = userConfig.output && userConfig.output.html
 
   const defaultOptions = {
@@ -13,21 +14,29 @@ exports.extend = function ( config, context = {} ) {
     template: path.join( __dirname, 'template.ejs' ),
   }
 
-  if ( context.env === 'production' ) {
-    Object.assign( defaultOptions, {
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      }
-    } )
+  const minifyOptions = {
+    removeComments: true,
+    collapseWhitespace: true,
+    removeRedundantAttributes: true,
+    useShortDoctype: true,
+    removeEmptyAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    keepClosingSlash: true,
+    minifyJS: true,
+    minifyCSS: true,
+    minifyURLs: true,
+  }
+
+  if ( typeof minimize === 'undefined' ) {
+    if ( context.env === 'production' ) {
+      defaultOptions.minify = minifyOptions
+    } else {
+      defaultOptions.minify = false
+    }
+  } else if ( minimize ) {
+    defaultOptions.minify = minifyOptions
+  } else {
+    defaultOptions.minify = false
   }
 
   // splitChunks

@@ -1,21 +1,17 @@
 const babelLoader = require( 'babel-loader' )
 
-module.exports = babelLoader.custom( babel => {
-  const preset = babel.createConfigItem(
-    require( './preset' ),
-    { type: 'preset' }
-  )
+const overrides = {}
 
-  return {
-    config( cfg ) {
-      if ( cfg.hasFilesystemConfig() ) {
-        return cfg.options
-      }
-
-      return {
-        ...cfg.options,
-        presets: [ ...cfg.options.presets, preset ]
-      }
-    }
-  }
+module.exports = babelLoader.custom( () => {
+  return overrides
 } )
+
+module.exports.override = function ( getOverrides = () => {} ) {
+  let localBabel
+
+  babelLoader.custom( babel => {
+    localBabel = babel
+  } )
+
+  Object.assign( overrides, getOverrides( localBabel ) || {} )
+}
