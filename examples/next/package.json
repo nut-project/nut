@@ -1,5 +1,5 @@
 {
-  "name": "gene",
+  "name": "next",
   "private": true,
   "version": "1.4.1",
   "description": "",
@@ -16,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "@nut-project/presets-alpha": "^1.0.0-alpha.18",
+    "@nut-plugins/modern-build": "^1.0.0-alpha.0",
     "vue-server-renderer": "^2.6.10",
     "vue-template-compiler": "^2.6.10"
   },

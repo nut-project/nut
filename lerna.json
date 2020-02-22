@@ -4,7 +4,8 @@
     "other-packages/*",
     "templates/*",
     "plugins/pages/*",
-    "plugins/vue-ssr"
+    "plugins/vue-ssr",
+    "plugins/modern-build"
   ],
   "version": "independent",
   "useWorkspaces": true,

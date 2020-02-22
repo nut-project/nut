@@ -17,8 +17,8 @@
     "dev:now2": "npm run dev --prefix ./examples/now2",
     "build:compose": "npm run build --prefix ./examples/host",
     "dependency-check": "node scripts/dependency-check.js",
-    "dev:gene": "npm run dev --prefix ./examples/gene",
-    "build:gene": "npm run build --prefix ./examples/gene",
+    "dev:next": "npm run dev --prefix ./examples/next",
+    "build:next": "npm run build --prefix ./examples/next",
     "incubate": "list all presets && incubate cli from presets"
   },
   "husky": {
@@ -29,7 +29,7 @@
   },
   "lint-staged": {
     "{packages,plugins}/**/*.js": [
-      "eslint --fix",
+      "eslint --format friendly --quiet --fix",
       "git add"
     ]
   },
@@ -40,6 +40,7 @@
       "templates/*",
       "plugins/pages/*",
       "plugins/vue-ssr",
+      "plugins/modern-build",
       "examples/*"
     ]
   },
@@ -62,6 +63,7 @@
     "dependency-check": "^4.1.0",
     "eslint": "6.0.1",
     "eslint-config-mo": "0.5.2",
+    "eslint-formatter-friendly": "^7.0.0",
     "gh-pages": "2.1.1",
     "globby": "^10.0.1",
     "husky": "3.0.0",

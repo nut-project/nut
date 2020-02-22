@@ -6,17 +6,25 @@ module.exports = function ( ctx ) {
   return {
     config: {
       webpack: {
+        minimize: false,
         entry: path.join( __dirname, 'src/entry-client.js' ),
         output: {},
         devServer: {
           port: 9000,
           historyApiFallback: true,
         },
-        cache: false,
+        cache: true,
+        constants: {
+          HELLO: JSON.stringify( 'world!!!' )
+        }
       }
     },
 
     plugins: {
+      modernBuild: {
+        resolve: '@nut-plugins/modern-build',
+        options: {},
+      },
       rem: {
         resolve: require.resolve( './plugins/plugin-rem' ),
         options: {

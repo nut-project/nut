@@ -2,11 +2,7 @@ const TerserJSPlugin = require( 'terser-webpack-plugin' )
 const OptimizeCSSAssetsPlugin = require( 'optimize-css-assets-webpack-plugin' )
 
 exports.extend = function ( config, context = {} ) {
-  const { env = '', userConfig = {} } = context
-
-  if ( env !== 'production' ) {
-    return
-  }
+  const { userConfig = {} } = context
 
   config.optimization
     .minimizer( 'js' )
