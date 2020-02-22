@@ -5,7 +5,7 @@
     "dev:docs": "npm run dev --prefix ./website",
     "build:docs": "npm run build --prefix ./website",
     "deploy": "npm run build:docs && gh-pages -d ./website/dist",
-    "lint": "eslint packages --quiet",
+    "lint": "eslint packages plugins --quiet",
     "test": "npm run lint",
     "prepublishOnly": "npm test",
     "clean": "lerna clean",
