@@ -49,7 +49,7 @@
     "css-loader": "^3.2.0",
     "exit": "^0.1.2",
     "fast-memoize": "^2.5.1",
-    "file-loader": "^4.3.0",
+    "file-loader": "^5.0.0",
     "friendly-errors-webpack-plugin": "1.7.0",
     "hash-sum": "^2.0.0",
     "html-webpack-plugin": "^4.0.0-beta.4",
