@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/driver-webpack",
-  "version": "1.0.0-alpha.20",
+  "version": "1.0.0-alpha.21",
   "description": "webpack driver for nut",
   "keywords": [
     "webpack"
@@ -33,10 +33,10 @@
   },
   "dependencies": {
     "@babel/core": "^7.7.5",
-    "@nut-project/babel-preset": "^1.0.0-alpha.1",
-    "@nut-project/core": "^1.0.0-alpha.7",
-    "@nut-project/dev-utils": "^1.0.0-alpha.3",
-    "@nut-project/webpack": "^1.0.0-alpha.4",
+    "@nut-project/babel-preset": "^1.0.0-alpha.2",
+    "@nut-project/core": "^1.0.0-alpha.8",
+    "@nut-project/dev-utils": "^1.0.0-alpha.4",
+    "@nut-project/webpack": "^1.0.0-alpha.5",
     "address": "^1.1.2",
     "autodll-webpack-plugin": "^0.4.2",
     "babel-loader": "^8.0.6",

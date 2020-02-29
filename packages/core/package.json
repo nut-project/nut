@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/core",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "description": "",
   "main": "lib/index.js",
   "scripts": {},
@@ -15,7 +15,7 @@
     "node": ">=8.9.0"
   },
   "dependencies": {
-    "@nut-project/dev-utils": "^1.0.0-alpha.3",
+    "@nut-project/dev-utils": "^1.0.0-alpha.4",
     "cac": "^6.5.3",
     "chokidar": "^3.1.0",
     "exit": "^0.1.2",

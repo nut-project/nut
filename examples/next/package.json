@@ -1,7 +1,7 @@
 {
   "name": "next",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.5.1-alpha.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@nut-plugins/modern-build": "^1.0.0-alpha.1",
-    "@nut-project/presets-alpha": "^1.0.0-alpha.19",
+    "@nut-plugins/modern-build": "^1.0.0-alpha.2",
+    "@nut-project/presets-alpha": "^1.0.0-alpha.20",
     "vue-server-renderer": "^2.6.10",
     "vue-template-compiler": "^2.6.10"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/cli",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "publishConfig": {
     "access": "public"
   },
@@ -41,7 +41,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@nut-project/core": "^1.0.0-alpha.7",
-    "@nut-project/dev-utils": "^1.0.0-alpha.3"
+    "@nut-project/core": "^1.0.0-alpha.8",
+    "@nut-project/dev-utils": "^1.0.0-alpha.4"
   }
 }

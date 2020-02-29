@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/driver-pages",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "A framework born for micro frontends",
   "keywords": [
     "architecture",
@@ -40,10 +40,10 @@
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.6.2",
-    "@nut-project/dev-utils": "^1.0.0-alpha.3",
-    "@nut-project/mini-css-extract": "^1.0.0-alpha.3",
-    "@nut-project/webpack": "^1.0.0-alpha.4",
-    "@nut-project/webpack-virtual-modules": "^1.0.0-alpha.3",
+    "@nut-project/dev-utils": "^1.0.0-alpha.4",
+    "@nut-project/mini-css-extract": "^1.0.0-alpha.4",
+    "@nut-project/webpack": "^1.0.0-alpha.5",
+    "@nut-project/webpack-virtual-modules": "^1.0.0-alpha.4",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
     "@vue/babel-preset-jsx": "^1.1.0",
     "autoprefixer": "^9.6.1",
