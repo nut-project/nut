@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.20](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.19...@nut-project/driver-webpack@1.0.0-alpha.20) (2020-02-29)
+
+
+### Bug Fixes
+
+* display hidden compiler failed errors ([b3aea99](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/b3aea9966f50fae448384b4cf46c4e7f164d3bc5))
+
+
+### Features
+
+* add modern build plugin ([#83](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/issues/83)) ([c3539c5](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/commit/c3539c533ba293a48b62d7255c49331975396e36))
+
+
+
+
+
 # [1.0.0-alpha.19](https://github.com/nut-project/nut/tree/master/packages/driver-webpack/compare/@nut-project/driver-webpack@1.0.0-alpha.18...@nut-project/driver-webpack@1.0.0-alpha.19) (2019-12-30)
 
 
