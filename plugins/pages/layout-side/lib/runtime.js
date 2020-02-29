@@ -135,7 +135,7 @@ Layout.filter( 't', function ( v ) {
   return `<span class="${ styles.first_letter }">${ first }</span>${ rest }`
 } )
 
-export default async function( ctx ) {
+export default async function ( ctx ) {
   let layout = null
 
   await ctx.api.layout.register( {

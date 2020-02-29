@@ -371,7 +371,7 @@ function routerModeFilter( url ) {
   return url
 }
 
-export default async function( ctx, options = {} ) {
+export default async function ( ctx, options = {} ) {
   let layout = null
 
   const progressElId = 'nut-layout-now2-progress'
