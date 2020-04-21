@@ -4,7 +4,9 @@
 const MiniCssExtractPlugin = require( '@nut-project/mini-css-extract' )
 
 module.exports = function applyCSSRules( webpackConfig = {}, env = 'development' ) {
-  applyCSSRule( webpackConfig, 'less', /\.less$/, 'less-loader', {}, env )
+  applyCSSRule( webpackConfig, 'less', /\.less$/, 'less-loader', {
+    javascriptEnabled: true,
+  }, env )
 
   applyCSSRule( webpackConfig, 'scss', /\.scss$/, 'sass-loader', {
     implementation: require( 'sass' )
