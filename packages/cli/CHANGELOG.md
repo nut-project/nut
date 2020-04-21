@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.44](https://github.com/nut-project/nut/tree/master/packages/cli/compare/@nut-project/cli@0.3.43...@nut-project/cli@0.3.44) (2020-04-21)
+
+**Note:** Version bump only for package @nut-project/cli
+
+
+
+
+
 ## [0.3.43](https://github.com/nut-project/nut/tree/master/packages/cli/compare/@nut-project/cli@0.3.42...@nut-project/cli@0.3.43) (2020-02-12)
 
 **Note:** Version bump only for package @nut-project/cli

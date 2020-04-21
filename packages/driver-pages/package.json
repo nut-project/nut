@@ -1,6 +1,6 @@
 {
   "name": "@nut-project/driver-pages",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publishConfig": {
     "access": "public"
   },
@@ -44,7 +44,7 @@
     "@mdx-js/mdx": "^1.0.21",
     "@mdx-js/vue": "1.0.20",
     "@nut-project/core": "^0.0.4",
-    "@nut-project/webpack": "^0.0.2",
+    "@nut-project/webpack": "^0.1.0",
     "@nut-project/webpack-virtual-modules": "^0.0.2",
     "@sindresorhus/slugify": "^0.9.1",
     "@vue/babel-preset-jsx": "^1.1.0",
