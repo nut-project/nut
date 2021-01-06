@@ -32,7 +32,7 @@
   "dependencies": {
     "@zeit-ui/themes": "^0.1.0",
     "@zeit-ui/vue": "^2.0.0-alpha.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.0",
     "fs-extra": "^8.1.0",
     "gunzip-maybe": "^1.4.1",
     "jscodeshift": "^0.6.4",
