@@ -6013,10 +6013,10 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
-eslint-config-mo@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/eslint-config-mo/-/eslint-config-mo-0.5.2.tgz#bbd901a05e78e7c027ead28d1675c4da3117f6ca"
-  integrity sha512-1hJHyXqH6GDCC4NCgcOESHv/SAN2yvSHwRuFoG+w7Polon+yRC7qPVHXEHznG1Tw0wZ8Sb0XVnMg1F9hPtY+WQ==
+eslint-config-mo@0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/eslint-config-mo/-/eslint-config-mo-0.5.3.tgz#4212360e6e34bee4fb6250f1058278d2ae556a01"
+  integrity sha512-RogBs/GrqNQ6UzT6/HRYk9elioViN8kogE2MvTlnY3lbhI4WzW1vlaYNjGfSS3sH2+++Ut+SODN5UQ86r7QBVQ==
 
 eslint-formatter-friendly@^7.0.0:
   version "7.0.0"
