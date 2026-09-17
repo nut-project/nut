@@ -85,7 +85,7 @@
     "tslint": "^5.18.0",
     "typescript": "^3.6.3",
     "url-loader": "^2.1.0",
-    "vue": "^2.6.10",
+    "vue": "^3.0.0",
     "vue-loader": "^15.7.2",
     "vue-template-compiler": "^2.6.10",
     "webpack-bundle-analyzer": "^3.6.0",
